@@ -1,0 +1,20 @@
+# PRECOMPILED CORE DEPENDENCIES
+matplotlib
+mdanalysis
+netCDF4
+numpy
+scipy
+sympy
+
+# SELF-COMPILED CORE DEPENDENCIES
+# constvplugin
+openmm
+
+# DOCUMENTATION DEPENDENCIES
+furo
+numpydoc
+sphinx
+sphinx-copybutton
+
+# TEST DEPENDENCIES
+tidynamics

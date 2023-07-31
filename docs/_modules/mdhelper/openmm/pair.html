@@ -1,0 +1,1291 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
+        <title>mdhelper.openmm.pair - MDHelper documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">MDHelper  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/mdhelper.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.html">algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.correlation.html">correlation</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of correlation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.correlation.correlation_fft.html">correlation_fft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.correlation.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.correlation.msd_fft.html">msd_fft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.correlation.msd_shift.html">msd_shift</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.molecule.html">molecule</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of molecule</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.molecule.center_of_mass.html">center_of_mass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.molecule.radius_of_gyration.html">radius_of_gyration</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.closest_factors.html">closest_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.rebin.html">rebin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.replicate.html">replicate</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.html">polymer</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of polymer</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.relaxation_time.html">relaxation_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.ParallelSingleChainStructureFactor.html">ParallelSingleChainStructureFactor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.html">profile</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of profile</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.potential_profile.html">potential_profile</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.DensityProfile.html">DensityProfile</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.html">structure</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.coordination_number.html">coordination_number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.html">transport</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of transport</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.coefficients.html">coefficients</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.conductivity.html">conductivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.electrophoretic_mobility.html">electrophoretic_mobility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.msd_fft.html">msd_fft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.msd_shift.html">msd_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.transference_number.html">transference_number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.Onsager.html">Onsager</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.fit.html">fit</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of fit</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.fit.distribution.html">distribution</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of distribution</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.distribution.weibull.html">weibull</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.html">exponential</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle navigation of exponential</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.exp.html">exp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.exp1.html">exp1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.exp2.html">exp2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.stretched_exp.html">stretched_exp</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.fit.fourier.html">fourier</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle navigation of fourier</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.fourier.fourier.html">fourier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.fourier.fourier1.html">fourier1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.fourier.fourier2.html">fourier2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.fourier.fourier3.html">fourier3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.fourier.fourier4.html">fourier4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.fourier.fourier5.html">fourier5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.fourier.fourier6.html">fourier6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.fourier.fourier7.html">fourier7</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.fourier.fourier8.html">fourier8</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.fit.gaussian.html">gaussian</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle navigation of gaussian</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.gaussian.gauss.html">gauss</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.gaussian.gauss1.html">gauss1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.gaussian.gauss2.html">gauss2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.gaussian.gauss3.html">gauss3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.gaussian.gauss4.html">gauss4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.gaussian.gauss5.html">gauss5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.gaussian.gauss6.html">gauss6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.gaussian.gauss7.html">gauss7</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.gaussian.gauss8.html">gauss8</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.fit.polynomial.html">polynomial</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle navigation of polynomial</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.polynomial.poly.html">poly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.polynomial.poly1.html">poly1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.polynomial.poly2.html">poly2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.polynomial.poly3.html">poly3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.polynomial.poly4.html">poly4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.polynomial.poly5.html">poly5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.polynomial.poly6.html">poly6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.polynomial.poly7.html">poly7</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.polynomial.poly8.html">poly8</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.polynomial.poly9.html">poly9</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.fit.power.html">power</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle navigation of power</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.power.power.html">power</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.power.power1.html">power1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.power.power2.html">power2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.html">openmm</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle navigation of openmm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.bond.html">bond</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle navigation of bond</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.bond.fene.html">fene</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.file.html">file</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle navigation of file</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.file.NetCDFFile.html">NetCDFFile</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.html">pair</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle navigation of pair</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.coul_gauss.html">coul_gauss</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.gauss.html">gauss</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.lj_coul.html">lj_coul</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.ljts.html">ljts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.solvation.html">solvation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.yukawa.html">yukawa</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.reporter.html">reporter</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" role="switch" type="checkbox"/><label for="toctree-checkbox-24"><div class="visually-hidden">Toggle navigation of reporter</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.reporter.NetCDFReporter.html">NetCDFReporter</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.system.html">system</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle navigation of system</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.electric_field.html">electric_field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.image_charges.html">image_charges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.register_particles.html">register_particles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.slab_correction.html">slab_correction</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" role="switch" type="checkbox"/><label for="toctree-checkbox-26"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.create_atoms.html">create_atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.subset.html">subset</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.html">unit</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle navigation of unit</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.lj_scaling.html">lj_scaling</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" role="switch" type="checkbox"/><label for="toctree-checkbox-28"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.utility.optimize_pme.html">optimize_pme</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.html">plot</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of plot</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.axis.html">axis</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of axis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.plot.axis.tabular_legend.html">tabular_legend</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.rcparam.html">rcparam</a><input class="toctree-checkbox" id="toctree-checkbox-31" name="toctree-checkbox-31" role="switch" type="checkbox"/><label for="toctree-checkbox-31"><div class="visually-hidden">Toggle navigation of rcparam</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.plot.rcparam.update.html">update</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/mdhelper.utility.log.html">log</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for mdhelper.openmm.pair</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Custom OpenMM pair potentials</span>
+<span class="sd">=============================</span>
+<span class="sd">.. moduleauthor:: Benjamin B. Ye &lt;bye@caltech.edu&gt;</span>
+
+<span class="sd">This module contains implementations of commonly used pair potentials</span>
+<span class="sd">that are not available in OpenMM, such as the Gaussian and Yukawa</span>
+<span class="sd">potentials. Generally, the pair potentials are named after their LAMMPS</span>
+<span class="sd">:code:`pair_style` counterparts, if available.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">openmm</span>
+<span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">unit</span>
+
+<span class="kn">from</span> <span class="nn">.unit</span> <span class="kn">import</span> <span class="n">VACUUM_PERMITTIVITY</span>
+
+<span class="k">def</span> <span class="nf">_setup_pair</span><span class="p">(</span>
+        <span class="n">cnbforce</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">,</span>
+        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]],</span>
+        <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets up a :class:`openmm.CustomNonbondedForce` object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cnbforce : `openmm.CustomNonbondedForce`</span>
+<span class="sd">        Custom nonbonded force object.</span>
+
+<span class="sd">    cutoff : `float` or `openmm.unit.Quantity`</span>
+<span class="sd">        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded</span>
+<span class="sd">        interactions in the simulation sytem. Must be less than half the</span>
+<span class="sd">        periodic simulation box dimensions. </span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    global_params : `dict`, optional</span>
+<span class="sd">        Global parameters.</span>
+
+<span class="sd">    per_params : `list`, optional</span>
+<span class="sd">        Per-particle parameters.</span>
+
+<span class="sd">    tab_funcs : `dict`, optional</span>
+<span class="sd">        Optional tabulated functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">global_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">cnbforce</span><span class="o">.</span><span class="n">addGlobalParameter</span><span class="p">(</span><span class="o">*</span><span class="n">param</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">per_params</span><span class="p">:</span>
+        <span class="n">cnbforce</span><span class="o">.</span><span class="n">addPerParticleParameter</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">tab_funcs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">):</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">cnbforce</span><span class="o">.</span><span class="n">addTabulatedFunction</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+    <span class="n">cnbforce</span><span class="o">.</span><span class="n">setCutoffDistance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
+    <span class="n">cnbforce</span><span class="o">.</span><span class="n">setNonbondedMethod</span><span class="p">(</span><span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="o">.</span><span class="n">CutoffPeriodic</span><span class="p">)</span>
+
+<div class="viewcode-block" id="coul_gauss"><a class="viewcode-back" href="../../../api/mdhelper.openmm.pair.coul_gauss.html#mdhelper.openmm.pair.coul_gauss">[docs]</a><span class="k">def</span> <span class="nf">coul_gauss</span><span class="p">(</span>
+        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+        <span class="n">g_ewald</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dims</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">]:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the smeared Coulomb pair potential.</span>
+<span class="sd">    </span>
+<span class="sd">    The charges have spherical Gaussian-distributed charge </span>
+<span class="sd">    distributions [1]_ [2]_</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       u_\textrm{Coul}(r_{12})=\frac{q_1q_2}{4\pi\varepsilon_0 r_{12}}</span>
+<span class="sd">       \textrm{erf}(\alpha_{12}r_{12})</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`q_1` and :math:`q_2` are the particle charges in e,</span>
+<span class="sd">    :math:`\varepsilon_0` is the vacuum permittivity, and</span>
+<span class="sd">    :math:`\alpha_{12}` is an inverse screening length or damping</span>
+<span class="sd">    parameter. Effectively, electrostatic interactions are dampened for</span>
+<span class="sd">    high charges at small separation distances.</span>
+
+<span class="sd">    :math:`q_1`, :math:`q_2`, and :math:`\alpha_{12}` are determined</span>
+<span class="sd">    from the per-particle parameters `charge` and `alpha`, respectively,</span>
+<span class="sd">    which are set in the main script using</span>
+<span class="sd">    :meth:`openmm.openmm.NonbondedForce.addParticle`.</span>
+
+<span class="sd">    To account for a solvent implicitly using its relative permittivity</span>
+<span class="sd">    :math:`\varepsilon_\textrm{r}`, scale the particle charges</span>
+<span class="sd">    :math:`q_i` by :math:`1/\sqrt{\varepsilon_\textrm{r}}`.</span>
+
+<span class="sd">    In addition to the default mixing rule for :math:`\alpha_{12}`, an</span>
+<span class="sd">    implementation of the Gaussian core model is available:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       u_\textrm{Coul}(r_{12})=\frac{q_1q_2}{4\pi\varepsilon_0 r_{12}}</span>
+<span class="sd">       \textrm{erf}\left(\frac{\pi^{1/2}}{2^{1/2}a_{12}}r_{12}\right)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cutoff : `float` or `openmm.unit.Quantity`</span>
+<span class="sd">        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded</span>
+<span class="sd">        interactions in the simulation sytem. Must be less than half the</span>
+<span class="sd">        periodic simulation box dimensions. </span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    tol : `float`, default: :code:`1e-4`</span>
+<span class="sd">        Error tolerance :math:`\delta` for Ewald summation.</span>
+
+<span class="sd">    g_ewald : `float` or `openmm.unit.Quantity`, keyword-only, optional</span>
+<span class="sd">        Ewald splitting parameter :math:`g_\textrm{Ewald}`. If not</span>
+<span class="sd">        provided, `g_ewald` is computed using</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           g_\textrm{Ewald}=\frac{\sqrt{-\log(2\delta)}}{r_\textrm{cut}}</span>
+
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}^{-1}`.</span>
+
+<span class="sd">    dims : `array_like` or `openmm.unit.Quantity`, keyword-only, optional</span>
+<span class="sd">        Simulation system dimensions. Must be provided with `g_ewald` to</span>
+<span class="sd">        calculate the number of mesh nodes :math:`n_\textrm{mesh}`.</span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    mix : `str`, keyword-only, default: :code:`&quot;default&quot;`</span>
+<span class="sd">        Mixing rule for :math:`\alpha_{12}`.</span>
+
+<span class="sd">        .. container::</span>
+
+<span class="sd">           **Valid values**:</span>
+<span class="sd">        </span>
+<span class="sd">           * :code:`&quot;default&quot;`: Default mixing rule.</span>
+
+<span class="sd">             .. math::</span>
+<span class="sd">                \alpha_{12}=\frac{\alpha_1\alpha_2}</span>
+<span class="sd">                {\sqrt{\alpha_1^2+\alpha_2^2}}</span>
+
+<span class="sd">           * :code:`&quot;core&quot;`: Gaussian core model.</span>
+
+<span class="sd">             .. math::</span>
+<span class="sd">                \begin{gather*}</span>
+<span class="sd">                  a_{12}^2=a_1^2+a_2^2\\ </span>
+<span class="sd">                  \alpha_{12}=\sqrt{\frac{\pi}{2a_{12}^2}}</span>
+<span class="sd">                \end{gather*}</span>
+
+<span class="sd">             This is equivalent to setting </span>
+<span class="sd">             :math:`\alpha_i=\sqrt{\pi/(2a_i^2)}`. :math:`a_{12}`, which </span>
+<span class="sd">             has units of :math:`\textrm{nm}`, is determined from the</span>
+<span class="sd">             per-particle parameter `a`. `a` is automatically added to</span>
+<span class="sd">             `per_params` and should be set in the main script using</span>
+<span class="sd">             :meth:`openmm.openmm.NonbondedForce.addParticle`.</span>
+
+<span class="sd">        Alternatively, a custom mixing rule can be provided as a string</span>
+<span class="sd">        with valid C++ syntax. The expression must have the form</span>
+<span class="sd">        :code:`&quot;alpha12 = ...;&quot;`. Unless custom global or per-particle</span>
+<span class="sd">        parameters are defined, the expression should contain</span>
+<span class="sd">        :code:`&quot;alpha1&quot;` and :code:`&quot;alpha2&quot;`. If a mixing rule is not</span>
+<span class="sd">        provided, the default mixing rule is used.</span>
+
+<span class="sd">    global_params : `dict`, keyword-only, optional</span>
+<span class="sd">        Additional global parameters for use in the definition of</span>
+<span class="sd">        :math:`\alpha_{12}`.</span>
+
+<span class="sd">    per_params : `list`, keyword-only, optional</span>
+<span class="sd">        Additional per-particle parameters for use in the definition of</span>
+<span class="sd">        :math:`\alpha_{12}`.</span>
+
+<span class="sd">    tab_funcs : `dict`, keyword-only, optional</span>
+<span class="sd">        Optional tabulated functions for use in the definition of</span>
+<span class="sd">        :math:`\alpha_{12}`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pair_coul_gauss_dir : `openmm.CustomNonbondedForce`</span>
+<span class="sd">        Short-range electrostatic contribution evaluated in real space.</span>
+<span class="sd">        </span>
+<span class="sd">    pair_coul_gauss_recip : `openmm.NonbondedForce`</span>
+<span class="sd">        Long-range electrostatic contribution evaluated in Fourier</span>
+<span class="sd">        (reciprocal) space.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Kiss, P. T.; Sega, M.; Baranyai, A. Efficient Handling of</span>
+<span class="sd">       Gaussian Charge Distributions: An Application to Polarizable</span>
+<span class="sd">       Molecular Models. *J. Chem. Theory Comput.* **2014**, *10* (12),</span>
+<span class="sd">       5513–5519. https://doi.org/10.1021/ct5009069.</span>
+
+<span class="sd">    .. [2] Eslami, H.; Khani, M.; Müller-Plathe, F. Gaussian Charge</span>
+<span class="sd">       Distributions for Incorporation of Electrostatic Interactions in</span>
+<span class="sd">       Dissipative Particle Dynamics: Application to Self-Assembly of</span>
+<span class="sd">       Surfactants. *J. Chem. Theory Comput.* **2019**, *15* (7),</span>
+<span class="sd">       4197–4207. https://doi.org/10.1021/acs.jctc.9b00174.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">g_ewald</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">g_ewald</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">tol</span><span class="p">))</span> <span class="o">/</span> <span class="n">cutoff</span>
+
+    <span class="n">global_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;G_EWALD&quot;</span><span class="p">:</span> <span class="n">g_ewald</span><span class="p">,</span>
+        <span class="s2">&quot;ONE_4PI_EPS0&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">VACUUM_PERMITTIVITY</span><span class="p">)</span>
+    <span class="p">}</span> <span class="o">|</span> <span class="n">global_params</span>
+    <span class="k">if</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="s2">&quot;alpha12=alpha1*alpha2/sqrt(alpha1^2+alpha2^2);&quot;</span>
+        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+    <span class="k">elif</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;core&quot;</span><span class="p">:</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;alpha12=sqrt(</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="si">}</span><span class="s2">/(2*(a1^2+a2^2)));&quot;</span>
+        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+
+    <span class="n">pair_coul_gauss_dir</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;ONE_4PI_EPS0*q1*q2*(erf(alpha12*r)-erf(G_EWALD*r))/r;</span><span class="si">{</span><span class="n">mix</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="n">pair_coul_gauss_dir</span><span class="o">.</span><span class="n">addPerParticleParameter</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)</span>
+    <span class="n">_setup_pair</span><span class="p">(</span><span class="n">pair_coul_gauss_dir</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span> <span class="n">tab_funcs</span><span class="p">)</span>
+
+    <span class="n">pair_coul_gauss_recip</span> <span class="o">=</span> <span class="n">lj_coul</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">g_ewald</span><span class="o">=</span><span class="n">g_ewald</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">)</span>
+    <span class="n">pair_coul_gauss_recip</span><span class="o">.</span><span class="n">setIncludeDirectSpace</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pair_coul_gauss_dir</span><span class="p">,</span> <span class="n">pair_coul_gauss_recip</span></div>
+
+<div class="viewcode-block" id="gauss"><a class="viewcode-back" href="../../../api/mdhelper.openmm.pair.gauss.html#mdhelper.openmm.pair.gauss">[docs]</a><span class="k">def</span> <span class="nf">gauss</span><span class="p">(</span>
+        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
+        <span class="n">cutoff_gauss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+        <span class="n">shift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;geometric&quot;</span><span class="p">,</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the generalized intermolecular Gaussian pair potential.</span>
+
+<span class="sd">    The potential energy between two Gaussian particles is given by</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">       u_\textrm{Gauss}(r_{12})=\alpha_{12}\exp{(-\beta_{12}r_{12}^2)}</span>
+
+<span class="sd">    where :math:`\alpha_{12}` is a magnitude scaling constant in</span>
+<span class="sd">    :math:`\textrm{kJ/mol}` and :math:`\beta_{12}` is a screening length</span>
+<span class="sd">    in :math:`\textrm{nm}`.</span>
+
+<span class="sd">    :math:`\alpha_{12}` and :math:`\beta_{12}` are determined from</span>
+<span class="sd">    per-particle parameters `alpha` and `beta`, respectively, which are</span>
+<span class="sd">    set in the main script using</span>
+<span class="sd">    :meth:`openmm.openmm.NonbondedForce.addParticle`.</span>
+
+<span class="sd">    In addition to arithmetic and geometric mixing rules for</span>
+<span class="sd">    :math:`\alpha_{12}` and :math:`\beta_{12}`, an implementation of the</span>
+<span class="sd">    Gaussian core model for a melt is available:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        u_\textrm{Gauss}(r_{12})=A\left(\frac{3}{2\pi\sigma_{12}^2}</span>
+<span class="sd">        \right)^{3/2}\exp{\left(-\frac{3}{2\sigma_{12}^2}r_{12}^2\right)}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cutoff : `float` or `openmm.unit.Quantity`         </span>
+<span class="sd">        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded</span>
+<span class="sd">        interactions in the simulation sytem. Must be less than half the</span>
+<span class="sd">        periodic simulation box dimensions. </span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    cutoff_gauss : `float` or `openmm.unit.Quantity`, optional</span>
+<span class="sd">        Cutoff distance for the Gaussian potential. Must be less than</span>
+<span class="sd">        `cutoff`. If not provided, it is set to the shared cutoff</span>
+<span class="sd">        distance for the nonbonded interactions. </span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    shift : `bool`, keyword-only, default: :code:`True`</span>
+<span class="sd">        Determines whether the Gaussian potential is shifted at its</span>
+<span class="sd">        cutoff to :math:`0\;\textrm{kJ/mol}`.</span>
+<span class="sd">        </span>
+<span class="sd">    mix : `str`, keyword-only, default: :code:`&quot;geometric&quot;`</span>
+<span class="sd">        Mixing rule for :math:`\alpha_{12}` and :math:`\beta_{12}`. </span>
+<span class="sd">        </span>
+<span class="sd">        .. container::</span>
+
+<span class="sd">           **Valid values**:</span>
+
+<span class="sd">           * :code:`&quot;arithmetic&quot;`: Arithmetic combining rule.</span>
+
+<span class="sd">             .. math::</span>
+<span class="sd">               </span>
+<span class="sd">                \begin{gather*}</span>
+<span class="sd">                  \alpha_{12}=\sqrt{\alpha_1\alpha_2}\\</span>
+<span class="sd">                  \beta_{12}=\frac{2}{\beta_1^{-1}+\beta_2^{-1}}</span>
+<span class="sd">                \end{gather*}</span>
+
+<span class="sd">           * :code:`&quot;geometric&quot;`: Geometric mixing rule.</span>
+
+<span class="sd">             .. math::</span>
+<span class="sd">             </span>
+<span class="sd">                \begin{gather*}</span>
+<span class="sd">                  \alpha_{12}=\sqrt{\alpha_1\alpha_2}\\</span>
+<span class="sd">                  \beta_{12}=\sqrt{\beta_1\beta_2}</span>
+<span class="sd">                \end{gather*}</span>
+
+<span class="sd">           * :code:`&quot;core&quot;`: Gaussian core model.</span>
+
+<span class="sd">             .. math::</span>
+<span class="sd">                </span>
+<span class="sd">                \begin{gather*}</span>
+<span class="sd">                  \sigma_{12}^2=\sigma_1^2+\sigma_2^2\\</span>
+<span class="sd">                  \beta_{12}=\frac{3}{2\sigma_{12}^2}\\</span>
+<span class="sd">                  \alpha_{12}=A\left(</span>
+<span class="sd">                  \frac{\beta_{12}}{\pi}\right)^{3/2}</span>
+<span class="sd">                \end{gather*}</span>
+
+<span class="sd">           :math:`\sigma_{12}`, which has units of :math:`\textrm{nm}`,</span>
+<span class="sd">           is determined from the per-particle parameter `sigma`.</span>
+<span class="sd">           `sigma` is automatically added to `per_params` and should be</span>
+<span class="sd">           set in the main script using</span>
+<span class="sd">           :meth:`openmm.openmm.NonbondedForce.addParticle`.</span>
+<span class="sd">           The global parameter :math:`A`, which has units of</span>
+<span class="sd">           :math:`\textrm{nm}^3 \cdot \textrm{kJ/mol}`, should be</span>
+<span class="sd">           provided to this function via </span>
+<span class="sd">           :code:`global_params={&quot;A&quot;: ...}`.</span>
+
+<span class="sd">        Alternatively, a custom mixing rule can be provided as a string</span>
+<span class="sd">        with valid C++ syntax. The expression must have the form</span>
+<span class="sd">        :code:`&quot;alpha12 = ...; beta12 = ...;&quot;`. Unless custom global or</span>
+<span class="sd">        per-particle parameters are defined, the expression should</span>
+<span class="sd">        contain :code:`&quot;alpha1&quot;`, :code:`&quot;alpha2&quot;`, :code:`&quot;beta1&quot;`, and</span>
+<span class="sd">        :code:`&quot;beta2&quot;`. If a mixing rule is not provided, the default</span>
+<span class="sd">        geometric mixing rule is used.</span>
+<span class="sd">        </span>
+<span class="sd">    global_params : `dict`, keyword-only, optional</span>
+<span class="sd">        Optional global parameters for use in the definition of</span>
+<span class="sd">        :math:`\alpha_{12}` and :math:`\beta_{12}`.</span>
+<span class="sd">        </span>
+<span class="sd">    per_params : `list`, keyword-only, optional</span>
+<span class="sd">        Optional per-particle parameters for use in the definition of</span>
+<span class="sd">        :math:`\alpha_{12}` and :math:`\beta_{12}`.</span>
+
+<span class="sd">    tab_funcs : `dict`, keyword-only, optional</span>
+<span class="sd">        Optional tabulated functions for use in the definition of</span>
+<span class="sd">        :math:`\alpha_{12}` and :math:`\beta_{12}`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pair_gauss : `openmm.CustomNonbondedForce`</span>
+<span class="sd">        Gaussian pair potential.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+        <span class="n">cutoff</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+    <span class="k">if</span> <span class="n">cutoff_gauss</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cutoff_gauss</span> <span class="o">=</span> <span class="n">cutoff</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_gauss</span><span class="p">):</span>
+            <span class="n">cutoff_gauss</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+        <span class="k">if</span> <span class="n">cutoff_gauss</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
+            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the Gaussian potential &quot;</span>
+                    <span class="s2">&quot;must be less than the shared cutoff distance.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+
+    <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;step(</span><span class="si">{</span><span class="n">cutoff_gauss</span><span class="si">}</span><span class="s2">-r)*(&quot;</span> <span class="k">if</span> <span class="n">cutoff</span> <span class="o">!=</span> <span class="n">cutoff_gauss</span> <span class="k">else</span> <span class="s2">&quot;(&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="s2">&quot;alpha12*exp(-beta12*r^2)&quot;</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;-ucut);ucut=alpha12*exp(-beta12*</span><span class="si">{</span><span class="n">cutoff_gauss</span><span class="si">}</span><span class="s2">^2);&quot;</span> <span class="k">if</span> <span class="n">shift</span> <span class="k">else</span> <span class="s2">&quot;);&quot;</span>
+    <span class="k">if</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;arithmetic&quot;</span><span class="p">:</span>
+        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="s2">&quot;alpha12=sqrt(alpha1*alpha2);beta12=2/(1/beta1+1/beta2);&quot;</span>
+    <span class="k">elif</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;geometric&quot;</span><span class="p">:</span>
+        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="s2">&quot;alpha12=sqrt(alpha1*alpha2);beta12=sqrt(beta1*beta2);&quot;</span>
+    <span class="k">elif</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;core&quot;</span><span class="p">:</span>
+        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;alpha12=A*(beta12/</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="si">}</span><span class="s2">)^(3/2);beta12=3/(2*sigma12sq);&quot;</span>
+               <span class="s2">&quot;sigma12sq=sigma1^2+sigma2^2;&quot;</span><span class="p">)</span>
+
+    <span class="n">pair_gauss</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">root</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}{</span><span class="n">mix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">_setup_pair</span><span class="p">(</span><span class="n">pair_gauss</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span> <span class="n">tab_funcs</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">pair_gauss</span></div>
+
+<div class="viewcode-block" id="lj_coul"><a class="viewcode-back" href="../../../api/mdhelper.openmm.pair.lj_coul.html#mdhelper.openmm.pair.lj_coul">[docs]</a><span class="k">def</span> <span class="nf">lj_coul</span><span class="p">(</span>
+        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+        <span class="n">g_ewald</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dims</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the standard Lennard-Jones (LJ) and Coulomb pair</span>
+<span class="sd">    potentials.</span>
+
+<span class="sd">    The potential energy between two charged LJ particles is given by</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \begin{gather*}</span>
+<span class="sd">         u_\textrm{Coul}(r_{12})=\frac{q_1q_2}{4\pi\varepsilon_0r_{12}}\\</span>
+<span class="sd">         u_\textrm{LJ}(r_{12})=4\epsilon_{12}\left[\left(</span>
+<span class="sd">         \frac{\sigma_{12}}{r_{12}}\right)^{12}</span>
+<span class="sd">         -\left(\frac{\sigma_{12}}{r_{12}} \right)^6\right]</span>
+<span class="sd">       \end{gather*}</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`q_1` and :math:`q_2` are the particle charges in e,</span>
+<span class="sd">    :math:`\varepsilon_0` is the vacuum permittivity,</span>
+<span class="sd">    :math:`\sigma_{12}` is the size of the particle in</span>
+<span class="sd">    :math:`\textrm{nm}`, and :math:`\epsilon_{12}` is the dispersion</span>
+<span class="sd">    energy in :math:`\textrm{kJ/mol}`. :math:`q_1`, :math:`q_2`,</span>
+<span class="sd">    :math:`\sigma_{12}`, and :math:`\epsilon_{12}` are determined from</span>
+<span class="sd">    per-particle parameters `charge`, `sigma`, and `epsilon`,</span>
+<span class="sd">    respectively, which are set in the main script using</span>
+<span class="sd">    :meth:`openmm.openmm.NonbondedForce.addParticle`.</span>
+
+<span class="sd">    The mixing rule for :math:`\sigma_{12}` and :math:`\epsilon_{12}` is</span>
+<span class="sd">    the Lorentz–Berthelot combining rule:</span>
+
+<span class="sd">    .. math:: </span>
+
+<span class="sd">       \begin{gather*}</span>
+<span class="sd">         \sigma_{12}=\frac{\sigma_1+\sigma_2}{2}\\</span>
+<span class="sd">         \epsilon_{12}=\sqrt{\epsilon_1\epsilon_2}</span>
+<span class="sd">       \end{gather*}</span>
+<span class="sd">    </span>
+<span class="sd">    To disable the LJ potential and use a different excluded volume</span>
+<span class="sd">    interaction potential but keep the Coulomb potential, set</span>
+<span class="sd">    :math:`\sigma_{12}=0\;\textrm{nm}` and</span>
+<span class="sd">    :math:`\epsilon_{12}=0\;\textrm{kJ/mol}` for all particles.</span>
+
+<span class="sd">    To account for a solvent implicitly using its relative permittivity</span>
+<span class="sd">    :math:`\varepsilon_\textrm{r}`, scale the particle charges</span>
+<span class="sd">    :math:`q_i` by :math:`1/\sqrt{\varepsilon_\textrm{r}}`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cutoff : `float` or `openmm.unit.Quantity`         </span>
+<span class="sd">        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded</span>
+<span class="sd">        interactions in the simulation sytem. Must be less than half the</span>
+<span class="sd">        periodic simulation box dimensions. </span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    tol : `float`, default: :code:`1e-4`</span>
+<span class="sd">        Error tolerance :math:`\delta` for Ewald summation.</span>
+
+<span class="sd">    g_ewald : `float` or `openmm.unit.Quantity`, keyword-only, optional</span>
+<span class="sd">        Ewald splitting parameter :math:`g_\textrm{Ewald}`. If not</span>
+<span class="sd">        provided, `g_ewald` is computed using</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           g_\textrm{Ewald}=\frac{\sqrt{-\log(2\delta)}}{r_\textrm{cut}}</span>
+
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}^{-1}`.</span>
+<span class="sd">        </span>
+<span class="sd">    dims : `float` or `openmm.unit.Quantity`, keyword-only, optional</span>
+<span class="sd">        Simulation system dimensions. Must be provided with `g_ewald` to</span>
+<span class="sd">        calculate the number of mesh nodes :math:`n_\textrm{mesh}`.</span>
+<span class="sd">        Both `dims` and `g_ewald` must either have units or be unitless.</span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pair_lj_coul : `openmm.NonbondedForce`        </span>
+<span class="sd">        Hybrid LJ and Coulomb pair potentials.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pair_lj_coul</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">()</span>
+    <span class="n">pair_lj_coul</span><span class="o">.</span><span class="n">setCutoffDistance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
+    <span class="n">pair_lj_coul</span><span class="o">.</span><span class="n">setNonbondedMethod</span><span class="p">(</span><span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="o">.</span><span class="n">PME</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">g_ewald</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">dims</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pair_lj_coul</span><span class="o">.</span><span class="n">setEwaldErrorTolerance</span><span class="p">(</span><span class="n">tol</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">g_ewald</span> <span class="o">*</span> <span class="n">dims</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">tol</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">5</span><span class="p">)))</span>
+        <span class="n">pair_lj_coul</span><span class="o">.</span><span class="n">setPMEParameters</span><span class="p">(</span><span class="n">g_ewald</span><span class="p">,</span> <span class="o">*</span><span class="n">n_mesh</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pair_lj_coul</span></div>
+
+<div class="viewcode-block" id="ljts"><a class="viewcode-back" href="../../../api/mdhelper.openmm.pair.ljts.html#mdhelper.openmm.pair.ljts">[docs]</a><span class="k">def</span> <span class="nf">ljts</span><span class="p">(</span>
+        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
+        <span class="n">cutoff_ljts</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+        <span class="n">shift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;arithmetic&quot;</span><span class="p">,</span> <span class="n">wca</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the Lennard-Jones truncated and shifted (LJTS) pair</span>
+<span class="sd">    potential.</span>
+
+<span class="sd">    The potential energy between two LJ particles is given by</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \begin{gather*}</span>
+<span class="sd">         u_\textrm{LJTS}(r_{12})=\begin{cases}</span>
+<span class="sd">           u_\textrm{LJ}(r_{12})-u_\textrm{LJ}(r_\textrm{cut}),</span>
+<span class="sd">           &amp;\textrm{if}\,r_{12}&lt;r_\textrm{cut}\\</span>
+<span class="sd">           0,&amp;\textrm{if}\,r_{12}\geq r_\textrm{cut}</span>
+<span class="sd">        \end{cases}\\</span>
+<span class="sd">        u_\textrm{LJ}(r_{12})=4\epsilon_{12}</span>
+<span class="sd">        \left[\left(\frac{\sigma_{12}}{r_{12}}\right)^{12}</span>
+<span class="sd">        -\left(\frac{\sigma_{12}}{r_{12}}\right)^6\right]</span>
+<span class="sd">       \end{gather*}</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`\sigma_{12}` is the size of the particle in</span>
+<span class="sd">    :math:`\textrm{nm}` and :math:`\epsilon_{12}` is the dispersion</span>
+<span class="sd">    energy in :math:`\textrm{kJ/mol}`. :math:`\sigma_{12}` and</span>
+<span class="sd">    :math:`\epsilon_{12}` are determined from per-particle parameters</span>
+<span class="sd">    `sigma` and `epsilon`, respectively, which are set in the main</span>
+<span class="sd">    script using :meth:`openmm.openmm.NonbondedForce.addParticle`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cutoff : `float` or `openmm.unit.Quantity`         </span>
+<span class="sd">        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded</span>
+<span class="sd">        interactions in the simulation sytem. Must be less than half the</span>
+<span class="sd">        periodic simulation box dimensions. </span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    cutoff_ljts : `float` or `openmm.unit.Quantity`, optional</span>
+<span class="sd">        Cutoff distance for the LJTS potential. Must be less than the</span>
+<span class="sd">        shared cutoff distance. If not provided, it is set to the shared</span>
+<span class="sd">        cutoff distance for the nonbonded interactions. If the</span>
+<span class="sd">        Weeks–Chander–Andersen (WCA) potential is used, a dynamic cutoff</span>
+<span class="sd">        of :math:`2^{1/6}\sigma_{12}` is used instead. </span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    shift : `bool`, keyword-only, default: :code:`True`</span>
+<span class="sd">        Determines whether the LJTS potential is shifted at its cutoff</span>
+<span class="sd">        to :math:`0\;\textrm{kJ/mol}`. If the WCA potential is used, a</span>
+<span class="sd">        dynamic shift of :math:`\epsilon_{12}` is used instead.</span>
+
+<span class="sd">    wca : `bool`, keyword-only, default: :code:`False`</span>
+<span class="sd">        Determines whether to use the WCA potential.</span>
+
+<span class="sd">    mix : `str`, keyword-only, default: :code:`&quot;arithmetic&quot;`</span>
+<span class="sd">        Mixing rule for :math:`\sigma_{12}` and :math:`\epsilon_{12}`.</span>
+<span class="sd">        </span>
+<span class="sd">        .. container::</span>
+
+<span class="sd">           **Valid values**:</span>
+
+<span class="sd">           * :code:`&quot;arithmetic&quot;`: Lorentz-Berthelot combining rule.</span>
+
+<span class="sd">             .. math::</span>
+
+<span class="sd">                \begin{gather*}</span>
+<span class="sd">                  \sigma_{12}=\frac{\sigma_1+\sigma_2}{2}\\</span>
+<span class="sd">                  \epsilon_{12}=\sqrt{\epsilon_1\epsilon_2}</span>
+<span class="sd">                \end{gather*}</span>
+
+<span class="sd">           * :code:`&quot;geometric&quot;`: Geometric mixing rule.</span>
+
+<span class="sd">             .. math::</span>
+<span class="sd">               </span>
+<span class="sd">                \begin{gather*}</span>
+<span class="sd">                  \sigma_{12}=\sqrt{\sigma_1\sigma_2}\\</span>
+<span class="sd">                  \epsilon_{12}=\sqrt{\epsilon_1\epsilon_2}</span>
+<span class="sd">                \end{gather*}</span>
+<span class="sd">            </span>
+<span class="sd">           * :code:`&quot;sixthpower&quot;`: Sixth-power mixing rule.</span>
+<span class="sd">        </span>
+<span class="sd">             .. math::</span>
+<span class="sd">                </span>
+<span class="sd">                \begin{gather*}</span>
+<span class="sd">                  \sigma_{12}=\left(\frac{\sigma_1^6</span>
+<span class="sd">                  +\sigma_2^6}{2}\right)^{1/6}\\</span>
+<span class="sd">                  \epsilon_{12}=\frac{2\sqrt{\epsilon_1\epsilon_2}</span>
+<span class="sd">                  \sigma_1^3\sigma_2^3}{\sigma_1^6+\sigma_2^6}</span>
+<span class="sd">                \end{gather*}</span>
+
+<span class="sd">        Alternatively, a custom mixing rule can be provided as a string</span>
+<span class="sd">        with valid C++ syntax. The expression must have the form</span>
+<span class="sd">        :code:`&quot;sigma12 = ...; epsilon12 = ...;&quot;`. Unless custom global</span>
+<span class="sd">        or per-particle parameters are defined, the expression should</span>
+<span class="sd">        contain :code:`&quot;sigma1&quot;`, :code:`&quot;sigma2&quot;`, :code:`&quot;epsilon1&quot;`,</span>
+<span class="sd">        and :code:`&quot;epsilon2&quot;`. If a mixing rule is not provided, the</span>
+<span class="sd">        default arithmetic mixing rule is used.</span>
+
+<span class="sd">    global_params : `dict`, keyword-only, optional</span>
+<span class="sd">        Additional global parameters for use in the definition of</span>
+<span class="sd">        :math:`\sigma_{12}` and :math:`\epsilon_{12}`.</span>
+
+<span class="sd">    per_params : `list`, keyword-only, optional</span>
+<span class="sd">        Additional per-particle parameters for use in the definition of</span>
+<span class="sd">        :math:`\sigma_{12}` and :math:`\epsilon_{12}`.</span>
+
+<span class="sd">    tab_funcs : `dict`, keyword-only, optional</span>
+<span class="sd">        Optional tabulated functions for use in the definition of</span>
+<span class="sd">        :math:`\sigma_{12}` and :math:`\epsilon_{12}`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pair_ljts : `openmm.CustomNonbondedForce`</span>
+<span class="sd">        LJTS pair potential.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+        <span class="n">cutoff</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+    <span class="k">if</span> <span class="n">cutoff_ljts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cutoff_ljts</span> <span class="o">=</span> <span class="n">cutoff</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_ljts</span><span class="p">):</span>
+            <span class="n">cutoff_ljts</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+        <span class="k">if</span> <span class="n">cutoff_ljts</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
+            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the LJTS potential must be &quot;</span>
+                    <span class="s2">&quot;less than the shared cutoff distance.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">wca</span><span class="p">:</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;step(2^(1/6)*sigma12-r)*(&quot;</span>
+    <span class="k">elif</span> <span class="n">cutoff</span> <span class="o">!=</span> <span class="n">cutoff_ljts</span><span class="p">:</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;step(</span><span class="si">{</span><span class="n">cutoff_ljts</span><span class="si">}</span><span class="s2">-r)*(&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;(&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="s2">&quot;4*epsilon12*((sigma12/r)^12-(sigma12/r)^6)&quot;</span>
+    <span class="k">if</span> <span class="n">wca</span><span class="p">:</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;+epsilon12);&quot;</span>
+    <span class="k">elif</span> <span class="n">shift</span><span class="p">:</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-ucut);ucut=4*epsilon12*((sigma12/</span><span class="si">{</span><span class="n">cutoff_ljts</span><span class="si">}</span><span class="s2">)^12&quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;-(sigma12/</span><span class="si">{</span><span class="n">cutoff_ljts</span><span class="si">}</span><span class="s2">)^6));&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;);&quot;</span>
+    <span class="k">if</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;arithmetic&quot;</span><span class="p">:</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="s2">&quot;sigma12=(sigma1+sigma2)/2;epsilon12=sqrt(epsilon1*epsilon2);&quot;</span>
+        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;epsilon&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+    <span class="k">elif</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;geometric&quot;</span><span class="p">:</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="s2">&quot;sigma12=sqrt(sigma1*sigma2);epsilon12=sqrt(epsilon1*epsilon2);&quot;</span>
+        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;epsilon&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+    <span class="k">elif</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;sixthpower&quot;</span><span class="p">:</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;sigma12=((sigma1^6+sigma2^6)/2)^(1/6);&quot;</span>
+               <span class="s2">&quot;epsilon12=2*sqrt(epsilon1*epsilon2)*sigma1^3*sigma2^3&quot;</span>
+               <span class="s2">&quot;/(sigma1^6+sigma2^6);&quot;</span><span class="p">)</span>
+        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;epsilon&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+
+    <span class="n">pair_ljts</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">root</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}{</span><span class="n">mix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">_setup_pair</span><span class="p">(</span><span class="n">pair_ljts</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span> <span class="n">tab_funcs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pair_ljts</span></div>
+
+<div class="viewcode-block" id="solvation"><a class="viewcode-back" href="../../../api/mdhelper.openmm.pair.solvation.html#mdhelper.openmm.pair.solvation">[docs]</a><span class="k">def</span> <span class="nf">solvation</span><span class="p">(</span>
+        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
+        <span class="n">cutoff_solvation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+        <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;arithmetic&quot;</span><span class="p">,</span> <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the solvation pair potential.</span>
+
+<span class="sd">    The solvation energy between particles is given by</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       u_\textrm{solv}(r_{12})=-S_{12}\left[\left(</span>
+<span class="sd">       \frac{\sigma_{12}}{r_{12}}\right)^4</span>
+<span class="sd">       -\left(\frac{\sigma_{12}}{r_\mathrm{cut}}\right)^4\right] </span>
+
+<span class="sd">    where :math:`\sigma_{12}` is the size of the particle in</span>
+<span class="sd">    :math:`\textrm{nm}` and :math:`S_{12}` is the solvation strength</span>
+<span class="sd">    in :math:`\textrm{kJ/mol}`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cutoff : `float` or `openmm.unit.Quantity`         </span>
+<span class="sd">        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded</span>
+<span class="sd">        interactions in the simulation sytem. Must be less than half the</span>
+<span class="sd">        periodic simulation box dimensions. </span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    cutoff_solvation : `float` or `openmm.unit.Quantity`, optional</span>
+<span class="sd">        Cutoff distance for the solvation potential. Must be less than the</span>
+<span class="sd">        shared cutoff. If not provided, it is set to the shared cutoff</span>
+<span class="sd">        distance for the nonbonded interactions. </span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    mix : `str`, keyword-only, default: :code:`&quot;arithmetic&quot;` </span>
+<span class="sd">        Mixing rule for :math:`\sigma_{12}` and :math:`S_{12}`.</span>
+
+<span class="sd">        .. container::</span>
+
+<span class="sd">           **Valid values**:</span>
+
+<span class="sd">           * :code:`&quot;arithmetic&quot;`: Arithmetic mixing rule.</span>
+
+<span class="sd">             .. math::</span>
+
+<span class="sd">                \begin{gather*}</span>
+<span class="sd">                  \sigma_{12}=\frac{\sigma_1+\sigma_2}{2}\\</span>
+<span class="sd">                  S_{12}=\sqrt{S_1S_2}</span>
+<span class="sd">                \end{gather*}</span>
+
+<span class="sd">           * :code:`&quot;geometric&quot;`: Geometric mixing rule.</span>
+
+<span class="sd">             .. math::</span>
+<span class="sd">               </span>
+<span class="sd">                \begin{gather*}</span>
+<span class="sd">                  \sigma_{12}=\sqrt{\sigma_1\sigma_2}\\</span>
+<span class="sd">                  S_{12}=\sqrt{S_1S_2}</span>
+<span class="sd">                \end{gather*}</span>
+
+<span class="sd">    global_params : `dict`, keyword-only, optional</span>
+<span class="sd">        Additional global parameters for use in the definition of</span>
+<span class="sd">        :math:`\sigma_{12}` and :math:`S_{12}`.</span>
+
+<span class="sd">    per_params : `list`, keyword-only, optional</span>
+<span class="sd">        Additional per-particle parameters for use in the definition of</span>
+<span class="sd">        :math:`\sigma_{12}` and :math:`S_{12}`.</span>
+
+<span class="sd">    tab_funcs : `dict`, keyword-only, optional</span>
+<span class="sd">        Optional tabulated functions for use in the definition of</span>
+<span class="sd">        :math:`\sigma_{12}` and :math:`S_{12}`.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pair_solv : `openmm.CustomNonbondedForce`</span>
+<span class="sd">        Solvation pair potential.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+        <span class="n">cutoff</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+    <span class="k">if</span> <span class="n">cutoff_solvation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cutoff_solvation</span> <span class="o">=</span> <span class="n">cutoff</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_solvation</span><span class="p">):</span>
+            <span class="n">cutoff_solvation</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+        <span class="k">if</span> <span class="n">cutoff_solvation</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
+            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the solvation potential &quot;</span>
+                    <span class="s2">&quot;must be less than the shared cutoff distance.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+
+    <span class="n">root</span> <span class="o">=</span> <span class="s2">&quot;-S12*((sigma12/r)^4-(sigma12/cut)^4)&quot;</span>
+
+    <span class="k">if</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;arithmetic&quot;</span><span class="p">:</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="s2">&quot;sigma12=(sigma1+sigma2)/2;S12=sqrt(S1*S2);&quot;</span>
+        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+    <span class="k">elif</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;geometric&quot;</span><span class="p">:</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="s2">&quot;sigma12=sqrt(sigma1*sigma2);S12=sqrt(S1*S2);&quot;</span>
+        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+
+    <span class="n">pair_solv</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">root</span><span class="si">}{</span><span class="n">mix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">_setup_pair</span><span class="p">(</span><span class="n">pair_solv</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span> <span class="n">tab_funcs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pair_solv</span></div>
+
+<div class="viewcode-block" id="yukawa"><a class="viewcode-back" href="../../../api/mdhelper.openmm.pair.yukawa.html#mdhelper.openmm.pair.yukawa">[docs]</a><span class="k">def</span> <span class="nf">yukawa</span><span class="p">(</span>
+        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
+        <span class="n">cutoff_yukawa</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+        <span class="n">shift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;geometric&quot;</span><span class="p">,</span> <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the generalized intermolecular Yukawa pair potential.</span>
+
+<span class="sd">    The potential energy between two Yukawa particles is given by</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       u_\textrm{Yukawa}(r_{12})=\frac{\alpha_{12}</span>
+<span class="sd">       \exp(-\kappa r_{12})}{r_{12}}</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`\alpha_{12}` is a magnitude scaling constant in</span>
+<span class="sd">    :math:`\textrm{nm}\cdot\textrm{kJ/mol}` and :math:`\kappa` is a</span>
+<span class="sd">    screening length in :math:`\textrm{nm}^{-1}`. </span>
+<span class="sd">    </span>
+<span class="sd">    :math:`\kappa` is a global parameter that must be provided in</span>
+<span class="sd">    `global_params`, while :math:`\alpha_{12}` is determined from the</span>
+<span class="sd">    per-particle parameter `alpha` that must be set in the main script</span>
+<span class="sd">    using :meth:`openmm.openmm.NonbondedForce.addParticle`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cutoff : `float` or `openmm.unit.Quantity`         </span>
+<span class="sd">        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded</span>
+<span class="sd">        interactions in the simulation sytem. Must be less than half the</span>
+<span class="sd">        periodic simulation box dimensions. </span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    cutoff_yukawa : `float` or `openmm.unit.Quantity`, optional</span>
+<span class="sd">        Cutoff distance for the Yukawa potential. Must be less than the</span>
+<span class="sd">        shared cutoff. If not provided, it is set to the shared cutoff</span>
+<span class="sd">        distance for the nonbonded interactions. </span>
+<span class="sd">        </span>
+<span class="sd">        **Reference unit**: :math:`\textrm{nm}`.</span>
+
+<span class="sd">    shift : `bool`, keyword-only, default: :code:`True`</span>
+<span class="sd">        Determines whether the Yukawa potential is shifted at its</span>
+<span class="sd">        cutoff to :math:`0\;\textrm{kJ/mol}`.</span>
+
+<span class="sd">    mix : `str`, keyword-only, default: :code:`&quot;geometric&quot;` </span>
+<span class="sd">        Mixing rule for :math:`\alpha_{12}`.</span>
+
+<span class="sd">        .. container::</span>
+
+<span class="sd">           **Valid values**:</span>
+
+<span class="sd">           * :code:`&quot;geometric&quot;`: Geometric mixing rule.</span>
+
+<span class="sd">             .. math::</span>
+
+<span class="sd">                \alpha_{12}=\sqrt{\alpha_1\alpha_2}</span>
+
+<span class="sd">        Alternatively, a custom mixing rule can be provided as a string</span>
+<span class="sd">        with valid C++ syntax. The expression must have the form</span>
+<span class="sd">        :code:`&quot;alpha12 = ...;&quot;`. Unless custom global or per-particle</span>
+<span class="sd">        parameters  are defined, the expression should contain</span>
+<span class="sd">        :code:`&quot;alpha1&quot;` and :code:`&quot;alpha2&quot;`. If a mixing rule is not</span>
+<span class="sd">        provided, the default geometric mixing rule is used.</span>
+
+<span class="sd">    global_params : `dict`, keyword-only, optional</span>
+<span class="sd">        Additional global parameters for use in the definition of</span>
+<span class="sd">        :math:`\alpha_{12}`.</span>
+
+<span class="sd">    per_params : `list`, keyword-only, optional</span>
+<span class="sd">        Additional per-particle parameters for use in the definition of</span>
+<span class="sd">        :math:`\alpha_{12}`.</span>
+
+<span class="sd">    tab_funcs : `dict`, keyword-only, optional</span>
+<span class="sd">        Optional tabulated functions for use in the definition of</span>
+<span class="sd">        :math:`\alpha_{12}`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pair_yukawa : `openmm.CustomNonbondedForce`</span>
+<span class="sd">        Yukawa pair potential.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+        <span class="n">cutoff</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+    <span class="k">if</span> <span class="n">cutoff_yukawa</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cutoff_yukawa</span> <span class="o">=</span> <span class="n">cutoff</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_yukawa</span><span class="p">):</span>
+            <span class="n">cutoff_yukawa</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+        <span class="k">if</span> <span class="n">cutoff_yukawa</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
+            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the LJTS potential must be &quot;</span>
+                    <span class="s2">&quot;less than the shared cutoff distance.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+
+    <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;step(</span><span class="si">{</span><span class="n">cutoff_yukawa</span><span class="si">}</span><span class="s2">-r)*(&quot;</span> <span class="k">if</span> <span class="n">cutoff</span> <span class="o">!=</span> <span class="n">cutoff_yukawa</span> <span class="k">else</span> <span class="s2">&quot;(&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="s2">&quot;alpha12*exp(-kappa*r)/r&quot;</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;-ucut);ucut=alpha12*exp(-kappa*</span><span class="si">{</span><span class="n">cutoff_yukawa</span><span class="si">}</span><span class="s2">)/</span><span class="si">{</span><span class="n">cutoff_yukawa</span><span class="si">}</span><span class="s2">;&quot;</span> \
+             <span class="k">if</span> <span class="n">shift</span> <span class="k">else</span> <span class="s2">&quot;);&quot;</span>
+    <span class="k">if</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;geometric&quot;</span><span class="p">:</span>
+        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+        <span class="n">mix</span> <span class="o">=</span> <span class="s2">&quot;alpha12=sqrt(alpha1*alpha2);&quot;</span>
+
+    <span class="n">Yukawa</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">root</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}{</span><span class="n">mix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">_setup_pair</span><span class="p">(</span><span class="n">Yukawa</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span> <span class="n">tab_funcs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Yukawa</span></div>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Benjamin Ye
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>

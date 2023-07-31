@@ -1,0 +1,7 @@
+**/__pycache__/
+**/.pytest_cache/
+dist/
+src/mdhelper.egg-info
+tests/.coverage
+tests/data/
+tests/htmlcov/
