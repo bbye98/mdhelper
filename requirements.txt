@@ -1,4 +1,6 @@
 # PRECOMPILED CORE DEPENDENCIES
+dask
+joblib
 matplotlib
 mdanalysis
 netCDF4
@@ -8,7 +10,11 @@ sympy
 
 # SELF-COMPILED CORE DEPENDENCIES
 # constvplugin
-openmm
+# openmm
+
+# OPTIONAL CORE DEPENDENCIES
+dask
+joblib
 
 # DOCUMENTATION DEPENDENCIES
 furo

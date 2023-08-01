@@ -14,13 +14,8 @@ import warnings
 import MDAnalysis as mda
 from MDAnalysis.lib.log import ProgressBar
 import numpy as np
+from openmm import unit
 from scipy import optimize
- 
-try:
-    from openmm import unit
-    FOUND_OPENMM = True
-except:
-    FOUND_OPENMM = False
 
 from .base import SerialAnalysisBase
 from .. import ArrayLike
@@ -755,9 +750,9 @@ class Onsager(SerialAnalysisBase):
     def __init__(
             self, groups: Union[mda.AtomGroup, ArrayLike],
             groupings: Union[str, ArrayLike] = "atoms",
-            temp: Union[float, "unit.Quantity"] = 300, *, n_blocks: int = 1,
+            temp: Union[float, unit.Quantity] = 300, *, n_blocks: int = 1,
             center: bool = False, com_wrap: bool = False, 
-            dt: Union[float, "unit.Quantity"] = None, fft: bool = True, 
+            dt: Union[float, unit.Quantity] = None, fft: bool = True, 
             reduced: bool = False, unwrap: bool = False, verbose: bool = True,
             **kwargs) -> None:
         
@@ -793,26 +788,22 @@ class Onsager(SerialAnalysisBase):
             self._kBT = temp
         else:
             if isinstance(temp, (int, float)):
-                if FOUND_OPENMM:
-                    self._kBT = (unit.AVOGADRO_CONSTANT_NA 
-                                 * unit.BOLTZMANN_CONSTANT_kB
-                                 * temp * unit.kelvin 
-                                 / unit.kilojoule_per_mole)
-                else:
-                    self._kBT = 0.00831446261815324 * temp
+                self._kBT = (unit.AVOGADRO_CONSTANT_NA 
+                             * unit.BOLTZMANN_CONSTANT_kB
+                             * temp * unit.kelvin 
+                             / unit.kilojoule_per_mole)
             else:
                 self._kBT = (unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB
                              * temp / unit.kilojoule_per_mole)
-            if FOUND_OPENMM:
-                self.results.units = {"_dims": unit.angstrom,
-                                      "_kBT": unit.kilojoule_per_mole}
+            self.results.units = {"_dims": unit.angstrom,
+                                  "_kBT": unit.kilojoule_per_mole}
         
         self._n_blocks = n_blocks
         self._center = center
         self._com_wrap = com_wrap
         if dt:
             self._dt = dt
-            if type(dt).__name__ == "Quantity":
+            if isinstance(dt, unit.Quantity):
                 self._dt /= unit.picosecond
         else:
             self._dt = self._trajectory.dt
@@ -876,7 +867,7 @@ class Onsager(SerialAnalysisBase):
         )
 
         # Store reference units
-        if not self._reduced and FOUND_OPENMM:
+        if not self._reduced:
             self.results.units["results.time"] = unit.picosecond
             self.results.units["results.msd_cross"] = unit.angstrom ** 2
             self.results.units["results.msd_self"] = unit.angstrom ** 2
@@ -1056,7 +1047,7 @@ class Onsager(SerialAnalysisBase):
             )
 
         # Store reference units
-        if not self._reduced and FOUND_OPENMM:
+        if not self._reduced:
             self.results.units["results.D_i"] = (unit.angstrom ** 2 
                                                  / unit.picosecond)
             self.results.units["results.L_ii_self"] = \
@@ -1098,7 +1089,7 @@ class Onsager(SerialAnalysisBase):
             reduced=self._reduced
         )
 
-        if not self._reduced and FOUND_OPENMM:
+        if not self._reduced:
             self.results.units["results.conductivity"] = \
                 unit.coulomb ** 2 / (unit.kilojoule * unit.angstrom
                                      * unit.picosecond)
@@ -1146,7 +1137,7 @@ class Onsager(SerialAnalysisBase):
             raise ValueError("No charge number information available.")
 
         if rhos is not None:
-            if type(rhos).__name__ == "Quantity":
+            if isinstance(rhos, unit.Quantity):
                 self.results.units["_rho"] = rhos.units
                 rhos = rhos.value_in_unit(self.results.units)
             self._rhos = rhos if isinstance(rhos, np.ndarray) \
@@ -1159,7 +1150,7 @@ class Onsager(SerialAnalysisBase):
             reduced=self._reduced
         )
         
-        if not self._reduced and FOUND_OPENMM:
+        if not self._reduced:
             self.results.units["results.mobility"] = \
                 unit.angstrom ** 2 * unit.coulomb / (unit.kilojoule
                                                      * unit.picosecond)

@@ -1,0 +1,48 @@
+{% set name = "mdhelper" %}
+{% set version = "0.0.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  path: ..
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python>=3.8
+    - pip
+  run:
+    - python>=3.8
+    - matplotlib
+    - mdanalysis
+    - netCDF4
+    - numpy
+    - openmm
+    - scipy
+    - sympy
+
+test:
+  imports:
+    - mdhelper
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/bbye98/mdhelper
+  license: GPL-3.0
+  license_file: LICENSE
+  summary: Analysis modules and helper functions for MD simulations
+  doc_url: https://bbye98.github.io/mdhelper/
+  dev_url: https://github.com/bbye98/mdhelper
+
+extra:
+  recipe-maintainers:
+    - bbye98

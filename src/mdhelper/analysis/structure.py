@@ -13,14 +13,9 @@ import warnings
 import MDAnalysis as mda
 from MDAnalysis.lib import distances
 import numpy as np
+from openmm import unit
 from scipy.integrate import simpson
 from scipy.signal import argrelextrema
-
-try:
-    from openmm import unit
-    FOUND_OPENMM = True
-except:
-    FOUND_OPENMM = False
 
 from .base import SerialAnalysisBase, ParallelAnalysisBase
 from .. import ArrayLike
@@ -591,7 +586,7 @@ class RDF(SerialAnalysisBase):
         self.results.bins = (self.results.edges[:-1] 
                              + self.results.edges[1:]) / 2
         self.results.counts = np.zeros(self._n_bins, dtype=int)
-        if not self._reduced and FOUND_OPENMM:
+        if not self._reduced:
             self.results.units = {"results.bins": unit.angstrom,
                                   "results.edges": unit.angstrom}
 
@@ -693,7 +688,7 @@ class RDF(SerialAnalysisBase):
             self.results.bins, self._get_rdf(), rho, n=n, threshold=threshold
         )
 
-    def calculate_pmf(self, temp: Union[float, "unit.Quantity"]) -> None:
+    def calculate_pmf(self, temp: Union[float, unit.Quantity]) -> None:
 
         r"""
         Calculates the potential of mean force :math:`w_{ij}(r)`.
@@ -717,17 +712,13 @@ class RDF(SerialAnalysisBase):
             kBT = temp
         else:
             if isinstance(temp, (int, float)):
-                if FOUND_OPENMM:
-                    kBT = (unit.AVOGADRO_CONSTANT_NA 
-                           * unit.BOLTZMANN_CONSTANT_kB * temp * unit.kelvin
-                           / unit.kilojoule_per_mole)
-                else:
-                    kBT = 0.00831446261815324 * temp
+                kBT = (unit.AVOGADRO_CONSTANT_NA 
+                       * unit.BOLTZMANN_CONSTANT_kB * temp * unit.kelvin
+                       / unit.kilojoule_per_mole)
             else:
                 kBT = (unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB
                        * temp / unit.kilojoule_per_mole)
-            if FOUND_OPENMM:
-                self.results.units = {"results.pmf": unit.kilojoule_per_mole}
+            self.results.units = {"results.pmf": unit.kilojoule_per_mole}
 
         self.results.pmf = -kBT * np.log(self._get_rdf())
 
@@ -1000,8 +991,7 @@ class StructureFactor(SerialAnalysisBase):
         self._unwrap = unwrap
         self._verbose = verbose
 
-        if FOUND_OPENMM:
-            self.results.units = {"_dims": unit.angstrom}
+        self.results.units = {"_dims": unit.angstrom}
 
     def _prepare(self) -> None:
 
@@ -1023,8 +1013,7 @@ class StructureFactor(SerialAnalysisBase):
 
         # Determine the unique wavenumbers
         self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
-        if FOUND_OPENMM:
-            self.results.units["results.wavenumbers"] = unit.angstrom ** -1
+        self.results.units["results.wavenumbers"] = unit.angstrom ** -1
 
         # Preallocate arrays to store results
         self.results.ssf = np.zeros(len(self._wavenumbers), dtype=float)
