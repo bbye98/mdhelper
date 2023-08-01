@@ -4,6 +4,7 @@ MDHelper is a batteries-included toolkit of analysis modules and helper
 functions for molecular dynamics (MD) simulations.
 
 * **Documentation**: https://bbye98.github.io/mdhelper/
+* **Anaconda**: https://anaconda.org/bbye98/mdhelper
 * **Python Package Index (PyPI)**: https://pypi.org/project/mdhelper/
 
 Note that MDHelper is currently an *experimental* library that has 
@@ -41,6 +42,12 @@ available in PyPI. See the
 ["Compiling OpenMM from Source Code"](http://docs.openmm.org/latest/userguide/library/02_compiling.html) 
 for more section of the OpenMM User Guide for more information.
 
+If you use Anaconda or Miniconda, it is recommended that you use the 
+conda-forge channel to install dependencies. To make conda-forge the
+default channel, use
+
+    conda config --add channels conda-forge
+
 ### Virtual environment
 
 It is recommended, but not necessary, that you create a virtual 
@@ -70,15 +77,11 @@ If you are using Anaconda or Miniconda, use
 
 ### Option 2: Install using Anaconda or Miniconda
 
- 1. Add the conda-forge channel using
+ 1. Install MDHelper and its dependencies using
 
-        conda config --add channels conda-forge
+        conda install -c bbye98 mdhelper
 
- 2. Install MDHelper and its dependencies using
-
-        conda install mdhelper
-
- 3. To test that MDHelper has been installed correctly, run
+ 2. To test that MDHelper has been installed correctly, run
 
         python3 -c "import mdhelper"
 

@@ -116,9 +116,12 @@ def test_class_onsager_transport_coefficients():
 
     url = "https://raw.githubusercontent.com/kdfong/transport-coefficients-MSD/master/example-data"
 
-    if not os.path.isdir("data/onsager"):
-        os.makedirs("data/onsager")
-    os.chdir("data/onsager")
+    path = os.getcwd()
+    if "tests" not in path:
+        path += "/tests"
+    if not os.path.isdir(f"{path}/data/onsager"):
+        os.makedirs(f"{path}/data/onsager")
+    os.chdir(f"{path}/data/onsager")
 
     if not os.path.isfile("system.data"):
         with urllib.request.urlopen(f"{url}/system.data") as r:
