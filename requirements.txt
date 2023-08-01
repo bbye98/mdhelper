@@ -1,16 +1,14 @@
 # PRECOMPILED CORE DEPENDENCIES
-dask
-joblib
 matplotlib
 mdanalysis
-netCDF4
+netcdf4
 numpy
 scipy
 sympy
 
 # SELF-COMPILED CORE DEPENDENCIES
 # constvplugin
-# openmm
+openmm
 
 # OPTIONAL CORE DEPENDENCIES
 dask
@@ -23,4 +21,7 @@ sphinx
 sphinx-copybutton
 
 # TEST DEPENDENCIES
+mdanalysistests
+pytest
+ruff
 tidynamics

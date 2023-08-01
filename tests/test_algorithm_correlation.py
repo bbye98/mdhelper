@@ -18,33 +18,33 @@ vectors_random_2 = rng.random(shape)
 # Calculate reference ACF and CCF for the random time series using
 # tidynamics
 acf_scalar = tidynamics.acf(vectors_random_1[0, :, 0, 0])
-acf_multi_scalar = np.stack(tidynamics.acf(v) 
-                            for v in vectors_random_1[0, :, :, 0].T).T
-acf_block_scalar = np.stack(tidynamics.acf(v) 
-                            for v in vectors_random_1[:, :, 0, 0])
+acf_multi_scalar = np.stack([tidynamics.acf(v) 
+                            for v in vectors_random_1[0, :, :, 0].T]).T
+acf_block_scalar = np.stack([tidynamics.acf(v) 
+                             for v in vectors_random_1[:, :, 0, 0]])
 acf_vector = tidynamics.acf(vectors_random_1[0, :, 0])
-acf_multi_vector = np.stack(tidynamics.acf(v) 
-                            for v in np.swapaxes(vectors_random_1[0], 0, 1)).T
-acf_block_vector = np.stack(tidynamics.acf(v) 
-                            for v in vectors_random_1[:, :, 0])
+acf_multi_vector = np.stack([tidynamics.acf(v) 
+                             for v in np.swapaxes(vectors_random_1[0], 0, 1)]).T
+acf_block_vector = np.stack([tidynamics.acf(v) 
+                             for v in vectors_random_1[:, :, 0]])
 ccf_scalar = tidynamics.correlation(vectors_random_1[0, :, 0, 0], 
                                     vectors_random_2[0, :, 0, 0])
-ccf_multi_scalar = np.stack(tidynamics.correlation(v1, v2) 
-                            for v1, v2 in zip(vectors_random_1[0, :, :, 0].T, 
-                                              vectors_random_2[0, :, :, 0].T)).T
-ccf_block_scalar = np.stack(tidynamics.correlation(v1, v2) 
-                            for v1, v2 in zip(vectors_random_1[:, :, 0, 0],
-                                              vectors_random_2[:, :, 0, 0]))
+ccf_multi_scalar = np.stack([tidynamics.correlation(v1, v2) 
+                             for v1, v2 in zip(vectors_random_1[0, :, :, 0].T, 
+                                               vectors_random_2[0, :, :, 0].T)]).T
+ccf_block_scalar = np.stack([tidynamics.correlation(v1, v2) 
+                             for v1, v2 in zip(vectors_random_1[:, :, 0, 0],
+                                               vectors_random_2[:, :, 0, 0])])
 ccf_vector = tidynamics.correlation(vectors_random_1[0, :, 0], 
                                     vectors_random_2[0, :, 0])
-ccf_multi_vector = np.stack(
+ccf_multi_vector = np.stack([
     tidynamics.correlation(v1, v2) 
     for v1, v2 in zip(np.swapaxes(vectors_random_1[0], 0, 1),
                       np.swapaxes(vectors_random_2[0], 0, 1))
-).T
-ccf_block_vector = np.stack(tidynamics.correlation(v1, v2) 
-                            for v1, v2 in zip(vectors_random_1[:, :, 0], 
-                                              vectors_random_2[:, :, 0]))
+]).T
+ccf_block_vector = np.stack([tidynamics.correlation(v1, v2) 
+                             for v1, v2 in zip(vectors_random_1[:, :, 0], 
+                                               vectors_random_2[:, :, 0])])
 
 def test_func_correlation_fft_acf_errors():
 

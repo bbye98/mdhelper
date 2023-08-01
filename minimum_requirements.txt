@@ -1,0 +1,11 @@
+# PRECOMPILED CORE DEPENDENCIES
+matplotlib
+mdanalysis
+netcdf4
+numpy
+scipy
+sympy
+
+# OPTIONAL CORE DEPENDENCIES
+dask
+joblib
