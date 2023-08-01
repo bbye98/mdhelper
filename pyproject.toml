@@ -4,7 +4,7 @@ requires = ["setuptools"]
 
 [project]
 name = "mdhelper"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name = "Benjamin B. Ye", email = "bye@caltech.edu" }
 ]
@@ -15,19 +15,21 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3"
 ]
+dependencies = [
+  "matplotlib",
+  "mdanalysis",
+  "netCDF4",
+  "numpy",
+  "scipy",
+  "sympy"
+]
 description = """
 A batteries-included toolkit of analysis modules and helper functions 
 for molecular dynamics (MD) simulations.
 """
 license = { file = "LICENSE" }
 readme = "README.md"
-requires-python = ">=3.6"
-keywords = ["feed", "reader", "tutorial"]
-dependencies = [
-    "feedparser >= 5.2.0",
-    "html2text",
-    'tomli; python_version < "3.11"',
-]
+requires-python = ">=3.8"
 
 [project.urls]
 "Homepage" = "https://github.com/bbye98/mdhelper"

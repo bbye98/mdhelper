@@ -13,13 +13,8 @@ import warnings
 import MDAnalysis as mda
 from MDAnalysis.lib.log import ProgressBar
 import numpy as np
+from openmm import unit
 from scipy import optimize
-
-try:
-    from openmm import unit
-    FOUND_OPENMM = True
-except: # pragma: no cover
-    FOUND_OPENMM = False
 
 from .base import SerialAnalysisBase, ParallelAnalysisBase
 from .. import ArrayLike
@@ -230,8 +225,7 @@ class _PolymerAnalysisBase(SerialAnalysisBase):
         self._unwrap = unwrap
         self._verbose = verbose
 
-        if FOUND_OPENMM:
-            self.results.units = {"_dims": unit.angstrom}
+        self.results.units = {"_dims": unit.angstrom}
 
 class Gyradius(_PolymerAnalysisBase):
 
@@ -365,8 +359,7 @@ class Gyradius(_PolymerAnalysisBase):
         self.results.gyradius = np.empty(shape, dtype=float)
         
         # Store reference units
-        if FOUND_OPENMM:
-            self.results.units = {"results.gyradius": unit.angstrom}
+        self.results.units = {"results.gyradius": unit.angstrom}
 
     def _single_frame(self) -> None:
 
@@ -532,7 +525,7 @@ class Relaxation(_PolymerAnalysisBase):
             groupings: Union[str, ArrayLike] = "atoms", 
             n_chains: Union[int, ArrayLike] = None, 
             n_monomers: Union[int, ArrayLike] = None, *, n_blocks: int = 1,
-            fft: bool = True, dt: Union[float, "unit.Quantity"] = None, 
+            fft: bool = True, dt: Union[float, unit.Quantity] = None, 
             unwrap: bool = False, verbose: bool = True, **kwargs) -> None:
 
         super().__init__(groups, groupings, n_chains, n_monomers, 
@@ -727,8 +720,7 @@ class SingleChainStructureFactor(SerialAnalysisBase):
         self._unwrap = unwrap
         self._verbose = verbose
 
-        if FOUND_OPENMM:
-            self.results.units = {"_dims": unit.angstrom}
+        self.results.units = {"_dims": unit.angstrom}
 
     def _prepare(self) -> None:
 
@@ -748,8 +740,7 @@ class SingleChainStructureFactor(SerialAnalysisBase):
 
         # Determine the unique wavenumbers
         self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
-        if FOUND_OPENMM:
-            self.results.units["results.wavenumbers"] = unit.angstrom ** -1
+        self.results.units["results.wavenumbers"] = unit.angstrom ** -1
 
         # Preallocate arrays to store results
         self.results.scsf = np.zeros(len(self._wavevectors), dtype=float)

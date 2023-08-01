@@ -3,6 +3,9 @@
 MDHelper is a batteries-included toolkit of analysis modules and helper
 functions for molecular dynamics (MD) simulations.
 
+* **Documentation**: https://bbye98.github.io/mdhelper/
+* **Python Package Index (PyPI)**: https://pypi.org/project/mdhelper/
+
 Note that MDHelper is currently an *experimental* library that has 
 only been tested on Linux and may contain bugs and issues. If you come 
 across one, please 
@@ -28,23 +31,15 @@ Settings and additional functionality for Matplotlib figures.
 * [`utility`](https://github.com/bbye98/mdhelper/tree/main/src/mdhelper/utility): 
 General utility functions.
 
-**Documentation**: https://bbye98.github.io/mdhelper/
-
 ## Installation and usage
 
 ### Prerequisites
 
-If you use pip to manage your Python packages or plan on using OpenMM
-with third-party extensions, such as 
-[`constvplugin`](https://github.com/scychon/openmm_constV) for the
-method of image charges, you must compile and install OpenMM prior to
-installing MDHelper. See the 
+If you use pip to manage your Python packages, you must compile and 
+install OpenMM prior to installing MDHelper since OpenMM is not 
+available in PyPI. See the 
 ["Compiling OpenMM from Source Code"](http://docs.openmm.org/latest/userguide/library/02_compiling.html) 
-for more section of the OpenMM User Guide for more information. This 
-additional step is necessary since precompiled versions of OpenMM do not
-expose their header files, which are needed to link against custom 
-plugins. Otherwise, the lastest precompiled version of OpenMM on 
-conda-forge will be installed automatically alongside MDHelper.
+for more section of the OpenMM User Guide for more information.
 
 ### Virtual environment
 
@@ -63,13 +58,17 @@ If you are using Anaconda or Miniconda, use
     conda create --name venv
     conda activate venv
 
-### Install using pip
+### Option 1: Install using pip
 
-Install MDHelper and its dependencies using 
+ 1. Install MDHelper and its dependencies using 
 
-    pip install mdhelper
+        python3 -m pip install mdhelper
 
-### Install using Anaconda or Miniconda
+ 2. To test that MDHelper has been installed correctly, run
+
+        python3 -c "import mdhelper"
+
+### Option 2: Install using Anaconda or Miniconda
 
  1. Add the conda-forge channel using
 
@@ -79,7 +78,11 @@ Install MDHelper and its dependencies using
 
         conda install mdhelper
 
-### Build from source
+ 3. To test that MDHelper has been installed correctly, run
+
+        python3 -c "import mdhelper"
+
+### Option 3: Build from source
 
  1. Ensure that the latest version of the Python build frontend, 
     `build`, is installed:
@@ -106,14 +109,17 @@ Install MDHelper and its dependencies using
 
     where `<version>` is the version of MDHelper you are installing.
 
-### Portable package
+ 6. To test that MDHelper has been installed correctly, run
+
+        python -c "import mdhelper"
+
+### Option 4: Portable package
 
  1. Change to the directory where you want to store a copy of MDHelper using
 
         cd <directory>
 
-    where `<directory>` is the relative path to the desired directory.
-    
+    where `<directory>` is the relative path to the desired directory. 
     If you are already in the correct location, skip this step.
 
  2. Create a local copy of the MDHelper repository on your machine using
@@ -126,15 +132,20 @@ Install MDHelper and its dependencies using
 
  4. Install the dependencies using
 
-        pip install -r requirements.txt
+        python3 -m pip install -r requirements.txt
 
     or
 
         conda install --file requirements.txt
 
  5. Once done, you can use MDHelper by first adding the path to the 
-    `src` directory in your Python scripts:
+    `src` directory in your Python scripts. To test that MDHelper has 
+    been installed correctly, run
 
-        import sys
-        sys.path.insert(0, "/path/to/mdhelper/src")
-        import mdhelper
+        python3 -c "import sys; sys.path.insert(0, '/path/to/mdhelper/src'); import mdhelper"
+
+### Postrequisites
+
+To use the image of method charges 
+(`mdhelper.openmm.system.image_charges()`) in your simulations, you must
+compile and install [`constvplugin`](https://github.com/scychon/openmm_constV).

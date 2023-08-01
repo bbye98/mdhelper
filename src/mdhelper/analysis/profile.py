@@ -11,13 +11,8 @@ import warnings
 
 import MDAnalysis as mda
 import numpy as np
+from openmm import unit
 from scipy import integrate
-
-try:
-    from openmm import unit
-    FOUND_OPENMM = True
-except:
-    FOUND_OPENMM = False
 
 from .base import SerialAnalysisBase
 from .. import ArrayLike
@@ -25,12 +20,12 @@ from ..algorithm import molecule
 from ..openmm import unit as u
 
 def potential_profile(
-        bins: Union[np.ndarray, "unit.Quantity"], 
-        charge_density: Union[np.ndarray, "unit.Quantity"], 
-        L: Union[float, "unit.Quantity"], dielectric: float = 1, *,
-        sigma_e: Union[float, "unit.Quantity"] = None,
-        dV: Union[float, "unit.Quantity"] = None,
-        threshold: float = 1e-5, V0: Union[float, "unit.Quantity"] = 0,
+        bins: Union[np.ndarray, unit.Quantity], 
+        charge_density: Union[np.ndarray, unit.Quantity], 
+        L: Union[float, unit.Quantity], dielectric: float = 1, *,
+        sigma_e: Union[float, unit.Quantity] = None,
+        dV: Union[float, unit.Quantity] = None,
+        threshold: float = 1e-5, V0: Union[float, unit.Quantity] = 0,
         reduced: bool = False) -> None:
     
     r"""
@@ -111,14 +106,11 @@ def potential_profile(
     """
         
     # Check V0 for unit consistency
-    if type(V0).__name__ == "Quantity":
+    if isinstance(V0, unit.Quantity):
         if reduced:
             emsg = ("'V0' has units, while the rest of the data is "
                     "reduced.")
             raise ValueError(emsg)
-        
-        # If V0 is an openmm.unit.Quantity object, it is assumed
-        # that an OpenMM installation can be found
         V0 /= unit.volt
         if isinstance(V0, unit.Quantity):
             raise ValueError("'V0' has invalid units.")
@@ -133,14 +125,11 @@ def potential_profile(
         if dV is not None:
 
             # Check dV for unit consistency
-            if type(dV).__name__ == "Quantity":
+            if isinstance(dV, unit.Quantity):
                 if reduced:
                     emsg = ("'dV' has units, while the rest of the data is "
                             "reduced.")
                     raise ValueError(emsg)
-                
-                # If dV is an openmm.unit.Quantity object, it is 
-                # assumed that an OpenMM installation can be found
                 dV /= unit.volt
                 if isinstance(V0, unit.Quantity):
                     raise ValueError("'dV' has invalid units.")
@@ -172,14 +161,11 @@ def potential_profile(
             ].mean()
     
     # Check sigma_e for unit consistency
-    elif type(sigma_e).__name__ == "Quantity":
+    elif isinstance(sigma_e, unit.Quantity):
         if reduced:
             emsg = ("'sigma_e' has units, while the rest of the data "
                     "is reduced.")
             raise ValueError(emsg)
-        
-        # If sigma_e is an openmm.unit.Quantity object, it is 
-        # assumed that an OpenMM installation can be found
         sigma_e /= unit.elementary_charge / unit.angstrom ** 2
         if isinstance(sigma_e, unit.Quantity):
             raise ValueError("'sigma_e' has invalid units.")
@@ -434,7 +420,7 @@ class DensityProfile(SerialAnalysisBase):
             raise ValueError(emsg)
 
         self._reduced = reduced
-        if not self._reduced and FOUND_OPENMM:
+        if not self._reduced:
             self.results.units = {"_dims": unit.angstrom}
 
         if charges is None:
@@ -449,7 +435,7 @@ class DensityProfile(SerialAnalysisBase):
             emsg = ("The dimension of the array of group charges is "
                     f"incompatible with the number of {self._groupings}.")
             raise ValueError(emsg)
-        if self._charges is not None and not self._reduced and FOUND_OPENMM:
+        if self._charges is not None and not self._reduced:
             self.results.units["_charges"] = unit.elementary_charge
 
         if recenter is None:
@@ -492,7 +478,7 @@ class DensityProfile(SerialAnalysisBase):
         ]
 
         # Store reference units
-        if not self._reduced and FOUND_OPENMM:
+        if not self._reduced:
             self.results.units["results.bins"] = unit.angstrom
             self.results.units["results.number_density"] = unit.angstrom ** -3
 
@@ -502,7 +488,7 @@ class DensityProfile(SerialAnalysisBase):
             self.results.charge_density = [
                 np.zeros((self._n_groups, n), dtype=float) for n in self._n_bins
             ]
-            if not self._reduced and FOUND_OPENMM:
+            if not self._reduced:
                 self.results.units["_charge"] = unit.elementary_charge
                 self.results.units["results.charge_density"] = \
                     self.results.units["_charge"] / unit.angstrom ** 3
@@ -578,9 +564,9 @@ class DensityProfile(SerialAnalysisBase):
 
     def calculate_potential_profile(
             self, dielectric: float, axis: Union[int, str], *,
-            sigma_e: Union[float, "unit.Quantity"] = None,
-            dV: Union[float, "unit.Quantity"] = None,
-            threshold: float = 1e-5, V0: Union[float, "unit.Quantity"] = 0
+            sigma_e: Union[float, unit.Quantity] = None,
+            dV: Union[float, unit.Quantity] = None,
+            threshold: float = 1e-5, V0: Union[float, unit.Quantity] = 0
         ) -> None:
         
         r"""
@@ -649,7 +635,7 @@ class DensityProfile(SerialAnalysisBase):
             self.results.potential = {}
 
             # Store reference units
-            if not self._reduced and FOUND_OPENMM:
+            if not self._reduced:
                 self.results.units["results.potential"] = unit.volt
 
         if isinstance(axis, str):
