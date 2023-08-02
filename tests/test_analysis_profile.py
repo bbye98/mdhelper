@@ -16,7 +16,7 @@ from MDAnalysis.analysis.lineardensity import LinearDensity
 import numpy as np
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
-from mdhelper.analysis import profile
+from mdhelper.analysis import profile # noqa: E402
 
 universe = mda.Universe(waterPSF, waterDCD)
 

@@ -67,7 +67,9 @@ def fourier(
     >>> x = np.linspace(0, 5, 20)
     >>> err = (2 * rng.random(x.shape) - 1) / 10
     >>> y = 1 + 2 * np.cos(x / 2) + 3 * np.sin(x / 2) + err
-    >>> pk, _ = optimize.curve_fit(lambda x, omega, a0, a1, b1: fourier(x, omega, a0, a1, b1), x, y)
+    >>> pk, _ = optimize.curve_fit(
+            lambda x, omega, a0, a1, b1: fourier(x, omega, a0, a1, b1), x, y
+        )
     >>> pk
     array([0.51185734, 1.15090712, 1.87471839, 2.87117784])
 

@@ -584,8 +584,10 @@ class Relaxation(_PolymerAnalysisBase):
         # Preallocate arrays to store results
         self.results.time = self.step * self._dt * np.arange(self._n_frames //
                                                              self._n_blocks)
-        self.results.acf = np.empty((self._n_groups, self._n_blocks, self._n_frames_block),
-                                    dtype=float)
+        self.results.acf = np.empty(
+            (self._n_groups, self._n_blocks, self._n_frames_block),
+            dtype=float
+        )
         
     def _single_frame(self) -> None:
 

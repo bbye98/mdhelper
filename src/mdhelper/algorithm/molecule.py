@@ -255,7 +255,7 @@ def center_of_mass(
                 if dims is None:
                     try:
                         dims = group.dimensions[:3]
-                    except:
+                    except TypeError:
                         emsg = ("The number of periodic boundary "
                                 "crossings was provided, but no "
                                 "system dimensions were provided or "
@@ -292,12 +292,12 @@ def center_of_mass(
         if not isinstance(positions, np.ndarray):
             try:
                 positions = np.array(positions)
-            except:
+            except ValueError:
                 pass
         if not isinstance(masses, np.ndarray):
             try:
                 masses = np.array(masses)
-            except:
+            except ValueError:
                 pass
         if type(masses) != type(positions):
             emsg = ("The shapes of the arrays containing the particle "

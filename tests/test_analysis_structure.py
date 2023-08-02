@@ -7,7 +7,7 @@ from MDAnalysis.tests.datafiles import TPR, XTC
 import numpy as np
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
-from mdhelper.analysis import structure
+from mdhelper.analysis import structure # noqa: E402
 
 rng = np.random.default_rng()
 
@@ -15,7 +15,7 @@ def test_func_radial_histogram():
 
     L = 20
     half_L = L // 2
-    dims = np.array([L, L, L, 90, 90, 90], dtype=int)
+    dims = np.array((L, L, L, 90, 90, 90), dtype=int)
     origin = half_L * np.ones(3, dtype=float)
 
     N = 1000
@@ -61,7 +61,7 @@ def test_class_rdf_residue60_water():
     
     rdf = InterRDF(res60, water, nbins=n_bins).run()
 
-    # TEST CASE 1: Serial RDF calculation
+    # TEST CASE 1: Batched serial RDF calculation
     serial_rdf = structure.RDF(res60, water, n_bins=n_bins, n_batches=2).run()
     assert np.allclose(rdf.results.bins, serial_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)

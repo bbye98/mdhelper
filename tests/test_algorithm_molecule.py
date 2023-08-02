@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
-from mdhelper.algorithm import molecule
+from mdhelper.algorithm import molecule # noqa: E402
 
 universe = mda.Universe(PSF, DCD)
 protein = universe.select_atoms("protein")

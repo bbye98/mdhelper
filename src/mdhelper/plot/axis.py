@@ -124,7 +124,9 @@ def tabular_legend(
     iv = vpad + nrow * (bool(vlabel) - condense)
     labels[iv:iv + len(rows)] = rows
     if hlabel:
-        labels[(2 + (hla == "center") * (int(np.ceil(len(cols) / 2)) - 1)) * nrow] = hlabel
+        labels[
+            (2 + (hla == "center") * (int(np.ceil(len(cols) / 2)) - 1)) * nrow
+        ] = hlabel
     labels[hpad * nrow + bool(hlabel)::nrow] = cols
 
     return {

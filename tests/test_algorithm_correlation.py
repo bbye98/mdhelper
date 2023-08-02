@@ -6,7 +6,7 @@ import pytest
 import tidynamics
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
-from mdhelper.algorithm import correlation
+from mdhelper.algorithm import correlation  # noqa: E402
 
 # Generate random times series
 rng = np.random.default_rng()

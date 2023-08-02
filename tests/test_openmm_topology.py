@@ -6,7 +6,7 @@ from openmm import app
 import pytest
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
-from mdhelper.openmm import system as s, topology as t
+from mdhelper.openmm import system as s, topology as t # noqa: E402
 
 def test_func_subset_errors():
 
@@ -55,7 +55,8 @@ def test_func_subset_polymer():
     assert topo_sub.getNumChains() == n_chains
 
     # TEST CASE 3: Delete everything but the first 100 atoms, with types specified
-    topo_sub, pos_sub = t.subset(topology, positions, delete=np.arange(100, N), types="atom")
+    topo_sub, pos_sub = t.subset(topology, positions, delete=np.arange(100, N),
+                                 types="atom")
     assert topo_sub.getNumAtoms() == n_atoms
     assert topo_sub.getNumBonds() == n_bonds
     assert topo_sub.getNumResidues() == n_atoms

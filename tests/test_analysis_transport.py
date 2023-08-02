@@ -11,7 +11,7 @@ import numpy as np
 from scipy.stats import linregress
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
-from mdhelper.analysis import transport
+from mdhelper.analysis import transport # noqa: E402
 
 def test_class_onsager_msd():
 

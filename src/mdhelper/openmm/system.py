@@ -14,7 +14,7 @@ import warnings
 try:
     from constvplugin import ConstVLangevinIntegrator
     FOUND_CONSTVPLUGIN = True
-except:
+except ImportError:
     FOUND_CONSTVPLUGIN = False
 import numpy as np
 import openmm

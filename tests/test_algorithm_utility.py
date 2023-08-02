@@ -4,7 +4,7 @@ import sys
 import numpy as np
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
-from mdhelper.algorithm import utility
+from mdhelper.algorithm import utility # noqa: E402
 
 rng = np.random.default_rng()
 

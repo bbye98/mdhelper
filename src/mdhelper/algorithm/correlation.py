@@ -409,22 +409,22 @@ def correlation_shift(
         stop = np.r_[1:N_t + 1, N_t * np.ones(N_t - 1, dtype=int)]
         if ndim == 1:
             corr = np.fromiter(
-                (np.dot(arr1[i:j], arr2[k:l]) 
-                 for i, j, k, l in zip(start[::-1], stop[::-1], start, stop)),
+                (np.dot(arr1[i:j], arr2[k:m]) 
+                 for i, j, k, m in zip(start[::-1], stop[::-1], start, stop)),
                 count=2 * N_t - 1, dtype=float
             )
         elif axis:
             axes = f"bt...{'d' * vector}"
             corr = np.stack(
-                [np.einsum(f"{axes},{axes}->b...", arr1[:, i:j], arr2[:, k:l])
-                 for i, j, k, l in zip(start[::-1], stop[::-1], start, stop)], 
+                [np.einsum(f"{axes},{axes}->b...", arr1[:, i:j], arr2[:, k:m])
+                 for i, j, k, m in zip(start[::-1], stop[::-1], start, stop)], 
                 axis=1
             )
         else:
             axes = f"t...{'d' * vector}"
             corr = np.stack(
-                [np.einsum(f"{axes},{axes}->...", arr1[i:j], arr2[k:l]) 
-                 for i, j, k, l in zip(start[::-1], stop[::-1], start, stop)]
+                [np.einsum(f"{axes},{axes}->...", arr1[i:j], arr2[k:m]) 
+                 for i, j, k, m in zip(start[::-1], stop[::-1], start, stop)]
             )
 
     # Doubles the ACF or overlaps the CCF for negative and positive 

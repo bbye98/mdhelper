@@ -16,7 +16,7 @@ import openmm
 try:
     import netCDF4 as nc
     FOUND_NETCDF = True
-except:
+except ImportError:
     from scipy.io import netcdf_file as nc
     FOUND_NETCDF = False
 

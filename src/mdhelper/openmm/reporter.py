@@ -164,7 +164,8 @@ class NetCDFReporter():
         # simulation box
         pbv = state.getPeriodicBoxVectors()
         if pbv is not None:
-            (a, b, c, alpha, beta, gamma) = app.internal.unitcell.computeLengthsAndAngles(pbv)
+            (a, b, c, alpha, beta, gamma) = \
+                app.internal.unitcell.computeLengthsAndAngles(pbv)
             data["cell_lengths"] = 10 * np.array((a, b, c))
             data["cell_angles"] = 180 * np.array((alpha, beta, gamma)) / np.pi
 

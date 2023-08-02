@@ -77,7 +77,9 @@ def exp(x: np.ndarray, *args: float) -> np.ndarray:
     >>> x = np.linspace(-0.1, 0.1, 10)
     >>> err = (2 * rng.random(x.shape) - 1) / 10
     >>> y = np.exp(-8 * x) + np.exp(12 * x) + err
-    >>> pk, _ = optimize.curve_fit(lambda x, a1, b1, a2, b2: exp(x, a1, b1, a2, b2), x, y)
+    >>> pk, _ = optimize.curve_fit(
+            lambda x, a1, b1, a2, b2: exp(x, a1, b1, a2, b2), x, y
+        )
     >>> pk
     array([ 1.13072662, -6.90042351,  0.88706719, 12.87854508])
 

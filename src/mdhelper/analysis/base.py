@@ -18,14 +18,15 @@ import warnings
 
 try:
     import dask
+    from dask import distributed
     FOUND_DASK = True
-except:
+except ImportError:
     FOUND_DASK = False
 
 try:
     import joblib
     FOUND_JOBLIB = True
-except:
+except ImportError:
     FOUND_JOBLIB = False
 
 from MDAnalysis.analysis.base import AnalysisBase
@@ -239,12 +240,12 @@ class ParallelAnalysisBase(SerialAnalysisBase):
         if module == "dask" and FOUND_DASK:
             try:
                 config = {
-                    "scheduler": dask.distributed.worker.get_client(),
+                    "scheduler": distributed.worker.get_client(),
                     **kwargs
                 }
                 n_jobs = min(len(config["scheduler"].get_worker_logs()), 
                              n_jobs)
-            except:
+            except ValueError:
                 if method is None:
                     method = "processes"
                 elif method not in {"distributed", "processes", "threading",

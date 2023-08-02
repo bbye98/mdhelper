@@ -6,7 +6,7 @@ from openmm import app, unit
 import pytest
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
-from mdhelper.algorithm import topology
+from mdhelper.algorithm import topology # noqa: E402
 
 rng = np.random.default_rng()
 dims = np.array([10, 10, 10], dtype=float)
