@@ -77,10 +77,8 @@ def radial_histogram(
     """
 
     # Get pair separation distances of atom pairs within range
-    pairs, dist = distances.capped_distance(pos1, pos2, range[1], 
+    pairs, dist = distances.capped_distance(pos1, pos2, range[1], range[0],
                                             box=dims)
-    
-    # TODO: MAKE MEMORY SAFE
     
     # Exclude atom pairs with the same atoms or atoms from the
     # same residue
@@ -464,6 +462,19 @@ class RDF(SerialAnalysisBase):
     reduced : `bool`, keyword-only, default: :code:`False`
         Specifies whether the data is in reduced units.
 
+    n_batches : `int`, keyword-only, optional
+        Number of batches to divide the histogram calculation into.
+        This is useful for large systems that cannot be processed in a
+        single pass.
+
+        .. note::
+
+           If you use too few bins and too many batches, the histogram
+           counts may be off by a few due to the floating-point nature
+           of the cutoffs. However, when the RDF is averaged over a
+           long trajectory with many particles, the difference should
+           be negligible.
+
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
 
@@ -548,7 +559,8 @@ class RDF(SerialAnalysisBase):
             n_bins: int = 201, range: ArrayLike = (0.0, 15.0), *,
             norm: str = "rdf", exclusion: ArrayLike = None,
             groupings: Union[str, ArrayLike] = "atoms",
-            reduced: bool = False, verbose: bool = False, **kwargs) -> None:
+            reduced: bool = False, n_batches: int = None,
+            verbose: bool = False, **kwargs) -> None:
 
         self.ag1 = ag1
         self.ag2 = ag1 if ag2 is None else ag2
@@ -577,6 +589,7 @@ class RDF(SerialAnalysisBase):
         self._norm = norm
         self._exclusion = exclusion
         self._reduced = reduced
+        self._n_batches = n_batches
         self._verbose = verbose
 
     def _prepare(self) -> None:
@@ -806,11 +819,13 @@ class ParallelRDF(RDF, ParallelAnalysisBase):
             n_bins: int = 201, range: ArrayLike = (0.0, 15.0), *,
             norm: str = "rdf", exclusion: ArrayLike = None, 
             groupings: Union[str, ArrayLike] = "atoms",
-            reduced: bool = False, verbose: bool = True, **kwargs) -> None:
+            reduced: bool = False, n_batches: int = None, 
+            verbose: bool = True, **kwargs) -> None:
 
         RDF.__init__(self, ag1, ag2, n_bins, range, norm=norm,
                      exclusion=exclusion, groupings=groupings, 
-                     reduced=reduced, verbose=verbose, **kwargs)
+                     reduced=reduced, n_batches=n_batches,
+                     verbose=verbose, **kwargs)
         ParallelAnalysisBase.__init__(self, ag1.universe.trajectory,
                                       verbose=verbose, **kwargs)
 
@@ -820,18 +835,37 @@ class ParallelRDF(RDF, ParallelAnalysisBase):
         result = np.empty(1 + self._n_bins, dtype=float)
 
         # Compute radial histogram for a single frame
-        result[:self._n_bins] = radial_histogram(
-            pos1=self.ag1.positions 
-                 if self._groupings[0] == "atoms"
-                 else molecule.center_of_mass(self.ag1, self._groupings[0]),
-            pos2=self.ag2.positions 
-                 if self._groupings[1] == "atoms"
-                 else molecule.center_of_mass(self.ag2, self._groupings[1]),
-            n_bins=self._n_bins,
-            range=self._range,
-            dims=_ts.dimensions,
-            exclusion=self._exclusion
-        )
+        if self._n_batches:
+            edges = np.array_split(self.results.edges, self._n_batches)
+            ranges_indices = {
+                e: np.where((self.results.bins > e[0]) 
+                            & (self.results.bins < e[1]))[0]
+                for e in [(self._range[0], edges[0][-1]), 
+                          *((a[-1], b[-1]) 
+                            for a, b in zip(edges[:-1], edges[1:]))]
+            }
+            pos1 = self.ag1.positions if self._groupings[0] == "atoms" \
+                   else molecule.center_of_mass(self.ag1, self._groupings[0])
+            pos2 = self.ag2.positions if self._groupings[1] == "atoms" \
+                   else molecule.center_of_mass(self.ag2, self._groupings[1])
+            for r, i in ranges_indices.items():
+                result[i] = radial_histogram(pos1=pos1, pos2=pos2, 
+                                             n_bins=i.shape[0],
+                                             range=r, dims=_ts.dimensions,
+                                             exclusion=self._exclusion)
+        else:
+            result[:self._n_bins] = radial_histogram(
+                pos1=self.ag1.positions 
+                    if self._groupings[0] == "atoms"
+                    else molecule.center_of_mass(self.ag1, self._groupings[0]),
+                pos2=self.ag2.positions 
+                    if self._groupings[1] == "atoms"
+                    else molecule.center_of_mass(self.ag2, self._groupings[1]),
+                n_bins=self._n_bins,
+                range=self._range,
+                dims=_ts.dimensions,
+                exclusion=self._exclusion
+            )
 
         # Store system volume of current frame in the last slot of the
         # results array
@@ -908,6 +942,11 @@ class StructureFactor(SerialAnalysisBase):
     unwrap : `bool`, keyword-only, default: :code:`False`
         Determines whether atom positions are unwrapped.
 
+    n_batches : `int`, keyword-only, optional
+        Number of batches to divide the structure factor calculation 
+        into. This is useful for large systems that cannot be processed 
+        in a single pass.
+
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
 
@@ -939,7 +978,8 @@ class StructureFactor(SerialAnalysisBase):
     def __init__(
             self, groups: Union[mda.AtomGroup, ArrayLike],
             groupings: Union[str, ArrayLike] = "atoms", n_points: int = 32,
-            *, unwrap: bool = False, verbose: bool = True, **kwargs):
+            *, unwrap: bool = False, n_batches: int = None, 
+            verbose: bool = True, **kwargs):
 
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
@@ -989,6 +1029,7 @@ class StructureFactor(SerialAnalysisBase):
         self._wavenumbers = np.linalg.norm(self._wavevectors, axis=1)
 
         self._unwrap = unwrap
+        self._n_batches = n_batches
         self._verbose = verbose
 
         self.results.units = {"_dims": unit.angstrom}
@@ -1036,9 +1077,18 @@ class StructureFactor(SerialAnalysisBase):
 
         # Compute the static structure factor by squaring the
         # cosine and sine terms and adding them together
-        arg = np.einsum("ij,kj->ki", self._wavevectors, self._positions)
-        self.results.ssf += np.sin(arg).sum(axis=0) ** 2 \
-                            + np.cos(arg).sum(axis=0) ** 2
+        if self._n_batches:
+            start = 0
+            for w in np.array_split(self._wavevectors, self._n_batches, axis=0):
+                arg = np.einsum("ij,kj->ki", w, self._positions)
+                self.results.ssf[start:start + w.shape[0]] += \
+                    np.sin(arg).sum(axis=0) ** 2 \
+                    + np.cos(arg).sum(axis=0) ** 2
+                start += w.shape[0]
+        else:
+            arg = np.einsum("ij,kj->ki", self._wavevectors, self._positions)
+            self.results.ssf += np.sin(arg).sum(axis=0) ** 2 \
+                                + np.cos(arg).sum(axis=0) ** 2
 
     def _conclude(self) -> None:
 
@@ -1069,10 +1119,12 @@ class ParallelStructureFactor(StructureFactor, ParallelAnalysisBase):
     def __init__(
             self, groups: Union[mda.AtomGroup, ArrayLike],
             groupings: Union[str, ArrayLike] = "atoms", n_points: int = 32,
-            *, unwrap: bool = False, verbose: bool = True, **kwargs):
+            *, unwrap: bool = False, n_batches: int = None, 
+            verbose: bool = True, **kwargs):
         
         StructureFactor.__init__(self, groups, groupings, n_points, 
-                                 unwrap=unwrap, verbose=verbose, **kwargs)
+                                 unwrap=unwrap, n_batches=n_batches, 
+                                 verbose=verbose, **kwargs)
         ParallelAnalysisBase.__init__(self, self.universe.trajectory, 
                                       verbose=verbose, **kwargs)
         
@@ -1121,9 +1173,20 @@ class ParallelStructureFactor(StructureFactor, ParallelAnalysisBase):
 
         # Compute the static structure factor by squaring the
         # cosine and sine terms and adding them together
-        arg = np.einsum("ij,kj->ki", self._wavevectors, 
-                        self._positions[timestep])
-        return np.sin(arg).sum(axis=0) ** 2 + np.cos(arg).sum(axis=0) ** 2
+        if self._n_batches:
+            start = 0
+            ssf = np.zeros(len(self._wavenumbers), dtype=float)
+            for w in np.array_split(self._wavevectors, self._n_batches, axis=0):
+                arg = np.einsum("ij,kj->ki", w, self._positions[timestep])
+                ssf[start:start + w.shape[0]] += \
+                    np.sin(arg).sum(axis=0) ** 2 \
+                    + np.cos(arg).sum(axis=0) ** 2
+                start += w.shape[0]
+            return ssf
+        else:
+            arg = np.einsum("ij,kj->ki", self._wavevectors, 
+                            self._positions[timestep])
+            return np.sin(arg).sum(axis=0) ** 2 + np.cos(arg).sum(axis=0) ** 2
     
     def _conclude(self) -> None:
 
