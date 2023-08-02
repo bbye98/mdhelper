@@ -77,8 +77,10 @@ def radial_histogram(
     """
 
     # Get pair separation distances of atom pairs within range
-    pairs, dist = distances.capped_distance(pos1, pos2, range[1], range[0],
-                                            box=dims)
+    pairs, dist = distances.capped_distance(
+        pos1, pos2, range[1], range[0] - np.finfo(np.float64).eps,
+        box=dims
+    )
     
     # Exclude atom pairs with the same atoms or atoms from the
     # same residue
@@ -612,18 +614,37 @@ class RDF(SerialAnalysisBase):
     def _single_frame(self) -> None:
 
         # Tally counts in each pair separation distance bin
-        self.results.counts += radial_histogram(
-            pos1=self.ag1.positions 
-                 if self._groupings[0] == "atoms"
-                 else molecule.center_of_mass(self.ag1, self._groupings[0]),
-            pos2=self.ag2.positions 
-                 if self._groupings[1] == "atoms"
-                 else molecule.center_of_mass(self.ag2, self._groupings[1]),
-            n_bins=self._n_bins,
-            range=self._range,
-            dims=self._ts.dimensions,
-            exclusion=self._exclusion
-        )
+        if self._n_batches:
+            edges = np.array_split(self.results.edges, self._n_batches)
+            ranges_indices = {
+                e: np.where((self.results.bins > e[0]) 
+                            & (self.results.bins < e[1]))[0]
+                for e in [(self._range[0], edges[0][-1]), 
+                          *((a[-1], b[-1]) 
+                            for a, b in zip(edges[:-1], edges[1:]))]
+            }
+            pos1 = self.ag1.positions if self._groupings[0] == "atoms" \
+                   else molecule.center_of_mass(self.ag1, self._groupings[0])
+            pos2 = self.ag2.positions if self._groupings[1] == "atoms" \
+                   else molecule.center_of_mass(self.ag2, self._groupings[1])
+            for r, i in ranges_indices.items():
+                self.results.counts[i] += radial_histogram(
+                    pos1=pos1, pos2=pos2, n_bins=i.shape[0], range=r, 
+                    dims=self._ts.dimensions, exclusion=self._exclusion
+                )
+        else:
+            self.results.counts += radial_histogram(
+                pos1=self.ag1.positions 
+                     if self._groupings[0] == "atoms"
+                     else molecule.center_of_mass(self.ag1, self._groupings[0]),
+                pos2=self.ag2.positions 
+                     if self._groupings[1] == "atoms"
+                     else molecule.center_of_mass(self.ag2, self._groupings[1]),
+                n_bins=self._n_bins,
+                range=self._range,
+                dims=self._ts.dimensions,
+                exclusion=self._exclusion
+            )
         
         # Add volume analyzed
         if self._norm == "rdf":
