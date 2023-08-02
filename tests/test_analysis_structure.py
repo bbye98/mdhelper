@@ -45,6 +45,12 @@ def test_func_radial_fourier_transform():
     assert np.allclose(F, structure.radial_fourier_transform(r, f, q), 
                        atol=4e-5)
 
+"""
+The following test cases are adapted from the "Average radial 
+distribution functions" page from the MDAnalysis User Guide
+(https://userguide.mdanalysis.org/stable/examples/analysis/structure/average_rdf.html).
+"""
+
 universe = mda.Universe(TPR, XTC)
 res60 = universe.select_atoms("resid 60")
 water = universe.select_atoms("resname SOL")
@@ -52,22 +58,16 @@ thr = universe.select_atoms("resname THR")
 n_bins = 75
 
 def test_class_rdf_residue60_water():
-
-    """
-    The test cases are adapted from the "Average radial distribution 
-    functions" page from the MDAnalysis User Guide
-    (https://userguide.mdanalysis.org/stable/examples/analysis/structure/average_rdf.html).
-    """
     
     rdf = InterRDF(res60, water, nbins=n_bins).run()
 
     # TEST CASE 1: Serial RDF calculation
-    serial_rdf = structure.RDF(res60, water, n_bins=n_bins).run()
+    serial_rdf = structure.RDF(res60, water, n_bins=n_bins, n_batches=2).run()
     assert np.allclose(rdf.results.bins, serial_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
-    # TEST CASE 2: Parallel RDF calculation
-    parallel_rdf = structure.ParallelRDF(res60, water, n_bins=n_bins).run()
+    # TEST CASE 2: Batched parallel RDF calculation
+    parallel_rdf = structure.ParallelRDF(res60, water, n_bins=n_bins, n_batches=2).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)
 

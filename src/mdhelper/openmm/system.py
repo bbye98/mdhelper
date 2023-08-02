@@ -105,7 +105,8 @@ def register_particles(
 
     per_chain = chain is None
     for _ in range(N):
-        system.addParticle(mass)
+        if system:
+            system.addParticle(mass)
         if per_chain:
             chain = topology.addChain()
         residue = topology.addResidue(resname, chain)

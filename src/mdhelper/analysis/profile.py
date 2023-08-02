@@ -189,8 +189,8 @@ class DensityProfile(SerialAnalysisBase):
     along the specified axes.
 
     The microscopic number density profile of species :math:`i` in a
-    canonical :math:`NVT` ensemble is calculated by binning particle
-    positions along an axis :math:`z` using
+    constant-volume system is calculated by binning particle positions
+    along an axis :math:`z` using
 
     .. math::
 
@@ -600,7 +600,7 @@ class DensityProfile(SerialAnalysisBase):
             **Reference unit**: :math:`\mathrm{e/Å^2}`.
 
         dV : `float` or `openmm.unit.Quantity`, keyword-only, optional
-            Potential difference :math:`\Delta \Psi` across the system 
+            Potential difference :math:`\Delta \varphi` across the system 
             dimension specified in `axis`. Has no effect if `sigma_e` is
             provided since this value is used solely to calculate 
             `sigma_e`.

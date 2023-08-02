@@ -8,11 +8,13 @@ transformations, like the generation of initial particle positions and
 subsetting existing topology objects.
 """
 
+from itertools import repeat
 from typing import Any, Iterable, Union
 
 import numpy as np
 from openmm import app
 
+from .. import ArrayLike
 from ..algorithm import topology as t
 
 def create_atoms(*args, **kwargs) -> Any:
@@ -28,7 +30,7 @@ def create_atoms(*args, **kwargs) -> Any:
 
 def _get_hierarchy_indices(
         item: Union[app.Atom, app.topology.Bond, app.Residue, app.Chain],
-        index: int) -> tuple[set, set, set, set]:
+        bonds: dict[str, list]) -> tuple[set, set, set, set]:
 
     """
     Get unique indices of all topology items related to the one passed
@@ -53,9 +55,6 @@ def _get_hierarchy_indices(
     `openmm.app.Residue`, or `openmm.app.Chain`
         Topology item of interest.
 
-    index : `int`
-        Index of `item` in the topology.
-
     Returns
     -------
     atoms : `set`
@@ -72,27 +71,29 @@ def _get_hierarchy_indices(
     """
 
     if isinstance(item, app.Atom):
-        return {index}, set(), {item.residue.index}, {item.residue.chain.index}
+        return {item.index}, set(), {item.residue.index}, \
+               {item.residue.chain.index}
 
     elif isinstance(item, app.topology.Bond):
-        return {item.atom1.index, item.atom2.index}, {index}, \
+        return {item.atom1.index, item.atom2.index}, {bonds.index(item)}, \
                {item.atom1.residue.index, item.atom2.residue.index}, \
                {item.atom1.residue.chain.index, item.atom2.residue.chain.index}
 
     elif isinstance(item, app.Residue):
         return {a.index for a in item.atoms()}, \
-               {b.index for b in item.bonds()}, {index}, {item.chain.index}
+               {bonds.index(b) for b in item.bonds()}, {item.index}, \
+               {item.chain.index}
 
     elif isinstance(item, app.Chain):
-        atoms = set()
-        bonds = set()
-        residues = set()
+        atom_indices = set()
+        bond_indices = set()
+        residue_indices = set()
         for residue in item.residues():
-            a, b, r, _ = _get_hierarchy_indices(residue)
-            atoms |= a
-            bonds |= b
-            residues |= r
-        return atoms, bonds, residues, {item.index}
+            a, b, r, _ = _get_hierarchy_indices(residue, bonds)
+            atom_indices |= a
+            bond_indices |= b
+            residue_indices |= r
+        return atom_indices, bond_indices, residue_indices, {item.index}
 
 def _is_topology_object(obj: Any):
 
@@ -113,10 +114,7 @@ def _is_topology_object(obj: Any):
 
 def subset(
         topology: app.Topology, positions: np.ndarray = None, *,
-        delete: Iterable[Union[int, app.Atom, app.topology.Bond, app.Residue,
-                               app.Chain]] = None,
-        keep: Iterable[Union[int, app.Atom, app.topology.Bond, app.Residue,
-                             app.Chain]] = None,
+        delete: ArrayLike = None, keep: ArrayLike = None,
         types: Union[str, Iterable[str]] = None
     ) -> Union[app.Topology, np.ndarray]:
 
@@ -160,7 +158,8 @@ def subset(
     types : `str` or array-like, keyword-only, optional
         Object types corresponding to the indices provided in `delete` 
         or `keep`. If a `str` is provided, all items in the array are
-        assumed to have the same object type.
+        assumed to have the same object type. Must be provided if not
+        all items in `delete` or `keep` are OpenMM topology objects.
 
     Returns
     -------
@@ -175,90 +174,85 @@ def subset(
     """
 
     # Set boolean flags for subroutines below
-    fd, fk = delete is not None, keep is not None
+    found = (delete is not None, keep is not None)
 
     # Check if both delete and keep arguments were provided
-    if fd and fk:
+    if all(found):
         emsg = ("Only specify topology items to either delete or keep. "
                 "When both types are specified, the atoms, bonds, "
                 "residues, and/or chains to be removed from the topology "
                 "become ambiguous.")
         raise ValueError(emsg)
-
-    # Ensure object type(s) are provided
-    if (fd or fk) and types is None:
-        emsg = ("Object types must be provided for the specified "
-                f"topology items to be {'kept' if fk else 'deleted'}.")
+    
+    # Return original topology and positions if no items are specified
+    elif not any(found):
+        return topology, positions
+    
+    # Ensure object type(s) are provided if not all items are topology 
+    # objects
+    elif types is None \
+            and not all(_is_topology_object(i) for i in delete or keep):
+        emsg = ("Object types must be specified for the topology items "
+                f"to be {'kept' if found[0] else 'deleted'}.")
         raise ValueError(emsg)
-
-    # Create dictionary with topology subitems
-    model = {
-        "atom": list(topology.atoms()),
-        "bond": list(topology.bonds()),
-        "chain": list(topology.chains()),
-        "residue": list(topology.residues())
-    }
+    
+    # Create a generator of types if a string is provided
+    elif isinstance(types, str):
+        same = True
+        types = repeat(types)
+    elif types is not None:
+        same = all(t == "atoms" for t in types)
 
     # Create OpenMM Modeller
-    Modeller = app.Modeller(topology, positions)
+    modeller = app.Modeller(topology, positions)
 
-    # If indices and types of objects to be deleted are specified,
-    # create an iterable object of corresponding items from the
-    # dictionary
-    if fd and types is not None:
-        delete = (i if _is_topology_object(i)
-                    else model[types][i]
-                    for i in delete) if isinstance(types, str) \
-                 else (i if _is_topology_object(i) else model[t][i]
-                         for i, t in zip(delete, types))
+    if types is not None:
 
-    elif fk:
-        
-        # Preallocate sets to store indices of atoms, residues, and
-        # chains to delete
-        atoms = set()
-        bonds = set()
-        residues = set()
-        chains = set()
+        # Create dictionary with topology subitems
+        model = {
+            "atom": list(topology.atoms()),
+            "bond": list(topology.bonds()),
+            "chain": list(topology.chains()),
+            "residue": list(topology.residues())
+        }
 
-        # Remove items to be kept from the master list of topology
-        # subitems to delete
-        if isinstance(types, str):
-            for item in keep:
-                if not _is_topology_object(item):
-                    item = model[types][item]
-                index = model[types].index(item) \
-                        if isinstance(item, app.topology.Bond) else item.index
-                a, b, r, c = _get_hierarchy_indices(item, index)
-                atoms |= a
-                bonds |= b
-                residues |= r
-                chains |= c   
+        # If indices and types of objects to be deleted are specified,
+        # create an iterable object of corresponding items from the
+        # dictionary
+        if found[0]:
+            delete = (i if _is_topology_object(i) else model[t][i]
+                    for i, t in zip(delete, types))
         else:
+            
+            # Preallocate sets to store indices of atoms, residues, and
+            # chains to keep
+            atoms = set()
+            bonds = set()
+            residues = set()
+            chains = set()
+
+            # Remove items to be kept from the master list of topology
+            # subitems to delete
             for item, item_type in zip(keep, types):
                 if not _is_topology_object(item):
                     item = model[item_type][item]
-                index = model[types].index(item) \
-                        if isinstance(item, app.topology.Bond) else item.index
-                a, b, r, c = _get_hierarchy_indices(item, index)
+                a, b, r, c = _get_hierarchy_indices(item, model["bond"])
                 atoms |= a
                 bonds |= b
                 residues |= r
                 chains |= c
 
-        delete = np.hstack((
-            np.delete(model["atom"], list(atoms)),
-            np.delete(model["residue"], list(residues)),
-            np.delete(model["chain"], list(chains))
-        ))
-        delete_bonds = model["bond"]
-        for i in bonds:
-            del delete_bonds[i]
+            model["atom"] = np.delete(model["atom"], list(atoms))
+            model["residue"] = np.delete(model["residue"], list(residues))
+            model["chain"] = np.delete(model["chain"], list(chains))
+            if not bonds and same:
+                model["bond"] = []
+            else:
+                for i in sorted(bonds, reverse=True):
+                    del model["bond"][i]
+            delete = [i for t in model.values() for i in t]
 
     # Create subset by deleting objects from original topology
-    if delete.size:
-        Modeller.delete(delete)
-    if delete_bonds:
-        Modeller.delete(delete_bonds)
+    modeller.delete(delete)
 
-    return Modeller.topology, Modeller.positions
+    return modeller.topology, modeller.positions

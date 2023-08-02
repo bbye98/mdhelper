@@ -21,6 +21,7 @@ sphinx
 sphinx-copybutton
 
 # TEST DEPENDENCIES
+coverage
 mdanalysistests
 pytest
 ruff
