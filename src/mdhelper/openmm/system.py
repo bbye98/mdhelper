@@ -24,7 +24,7 @@ from .unit import VACUUM_PERMITTIVITY
 from .. import ArrayLike
 
 def register_particles(
-        system: openmm.System = None, topology: app.Topology = None,
+        system: openmm.System, topology: app.Topology,
         N: int = 0, mass: Union[float, unit.Quantity] = 0.0, *,
         chain: app.Chain = None, element: app.Element = None, name: str = "",
         resname: str = "", nbforce: openmm.NonbondedForce = None,
@@ -105,8 +105,7 @@ def register_particles(
 
     per_chain = chain is None
     for _ in range(N):
-        if system:
-            system.addParticle(mass)
+        system.addParticle(mass)
         if per_chain:
             chain = topology.addChain()
         residue = topology.addResidue(resname, chain)

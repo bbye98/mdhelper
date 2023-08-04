@@ -16,6 +16,7 @@ NetCDFFile
    .. autosummary::
       :nosignatures:
    
+      ~NetCDFFile.write_file
       ~NetCDFFile.write_model
    
    

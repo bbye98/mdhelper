@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>mdhelper.openmm.topology - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -203,7 +203,7 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.html">structure</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.coordination_number.html">coordination_number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.coordination_numbers.html">coordination_numbers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
@@ -387,11 +387,13 @@
 <span class="sd">subsetting existing topology objects.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">repeat</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">app</span>
 
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">from</span> <span class="nn">..algorithm</span> <span class="kn">import</span> <span class="n">topology</span> <span class="k">as</span> <span class="n">t</span>
 
 <div class="viewcode-block" id="create_atoms"><a class="viewcode-back" href="../../../api/mdhelper.openmm.topology.create_atoms.html#mdhelper.openmm.topology.create_atoms">[docs]</a><span class="k">def</span> <span class="nf">create_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
@@ -406,8 +408,8 @@
     <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">create_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <span class="k">def</span> <span class="nf">_get_hierarchy_indices</span><span class="p">(</span>
-        <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">app</span><span class="o">.</span><span class="n">Atom</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">Bond</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Residue</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Chain</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">set</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">set</span><span class="p">]:</span>
+        <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">app</span><span class="o">.</span><span class="n">Atom</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">Bond</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Residue</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Chain</span><span class="p">],</span>
+        <span class="n">bonds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">set</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">set</span><span class="p">]:</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get unique indices of all topology items related to the one passed</span>
@@ -448,27 +450,29 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Atom</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">index</span><span class="p">},</span> <span class="nb">set</span><span class="p">(),</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">index</span><span class="p">},</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">index</span><span class="p">},</span> <span class="nb">set</span><span class="p">(),</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">index</span><span class="p">},</span> \
+               <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
 
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">Bond</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">index</span><span class="p">},</span> <span class="p">{</span><span class="n">b</span><span class="o">.</span><span class="n">index</span><span class="p">},</span> \
+        <span class="k">return</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">index</span><span class="p">},</span> <span class="p">{</span><span class="n">bonds</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)},</span> \
                <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">index</span><span class="p">},</span> \
                <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
 
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Residue</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">atoms</span><span class="p">()},</span> \
-               <span class="p">{</span><span class="n">b</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">bonds</span><span class="p">()},</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">index</span><span class="p">},</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
+               <span class="p">{</span><span class="n">bonds</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">bonds</span><span class="p">()},</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">index</span><span class="p">},</span> \
+               <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
 
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Chain</span><span class="p">):</span>
-        <span class="n">atoms</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="n">bonds</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="n">residues</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">atom_indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">bond_indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">residue_indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">residues</span><span class="p">():</span>
-            <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_get_hierarchy_indices</span><span class="p">(</span><span class="n">residue</span><span class="p">)</span>
-            <span class="n">atoms</span> <span class="o">|=</span> <span class="n">a</span>
-            <span class="n">bonds</span> <span class="o">|=</span> <span class="n">b</span>
-            <span class="n">residues</span> <span class="o">|=</span> <span class="n">r</span>
-        <span class="k">return</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">residues</span><span class="p">,</span> <span class="p">{</span><span class="n">item</span><span class="p">}</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_get_hierarchy_indices</span><span class="p">(</span><span class="n">residue</span><span class="p">,</span> <span class="n">bonds</span><span class="p">)</span>
+            <span class="n">atom_indices</span> <span class="o">|=</span> <span class="n">a</span>
+            <span class="n">bond_indices</span> <span class="o">|=</span> <span class="n">b</span>
+            <span class="n">residue_indices</span> <span class="o">|=</span> <span class="n">r</span>
+        <span class="k">return</span> <span class="n">atom_indices</span><span class="p">,</span> <span class="n">bond_indices</span><span class="p">,</span> <span class="n">residue_indices</span><span class="p">,</span> <span class="p">{</span><span class="n">item</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">_is_topology_object</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
 
@@ -489,10 +493,7 @@
 
 <div class="viewcode-block" id="subset"><a class="viewcode-back" href="../../../api/mdhelper.openmm.topology.subset.html#mdhelper.openmm.topology.subset">[docs]</a><span class="k">def</span> <span class="nf">subset</span><span class="p">(</span>
         <span class="n">topology</span><span class="p">:</span> <span class="n">app</span><span class="o">.</span><span class="n">Topology</span><span class="p">,</span> <span class="n">positions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-        <span class="n">delete</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Atom</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">Bond</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Residue</span><span class="p">,</span>
-                               <span class="n">app</span><span class="o">.</span><span class="n">Chain</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">keep</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Atom</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">Bond</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Residue</span><span class="p">,</span>
-                             <span class="n">app</span><span class="o">.</span><span class="n">Chain</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">delete</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">types</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">app</span><span class="o">.</span><span class="n">Topology</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 
@@ -536,7 +537,8 @@
 <span class="sd">    types : `str` or array-like, keyword-only, optional</span>
 <span class="sd">        Object types corresponding to the indices provided in `delete` </span>
 <span class="sd">        or `keep`. If a `str` is provided, all items in the array are</span>
-<span class="sd">        assumed to have the same object type.</span>
+<span class="sd">        assumed to have the same object type. Must be provided if not</span>
+<span class="sd">        all items in `delete` or `keep` are OpenMM topology objects.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -551,87 +553,88 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Set boolean flags for subroutines below</span>
-    <span class="n">fd</span><span class="p">,</span> <span class="n">fk</span> <span class="o">=</span> <span class="n">delete</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">keep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">found</span> <span class="o">=</span> <span class="p">(</span><span class="n">delete</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">keep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="c1"># Check if both delete and keep arguments were provided</span>
-    <span class="k">if</span> <span class="n">fd</span> <span class="ow">and</span> <span class="n">fk</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">found</span><span class="p">):</span>
         <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Only specify topology items to either delete or keep. &quot;</span>
                 <span class="s2">&quot;When both types are specified, the atoms, bonds, &quot;</span>
                 <span class="s2">&quot;residues, and/or chains to be removed from the topology &quot;</span>
                 <span class="s2">&quot;become ambiguous.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
-
-    <span class="c1"># Ensure object type(s) are provided</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">fd</span> <span class="ow">or</span> <span class="n">fk</span><span class="p">)</span> <span class="ow">and</span> <span class="n">types</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Object types must be provided for the specified &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;topology items to be </span><span class="si">{</span><span class="s1">&#39;kept&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">fk</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;deleted&#39;</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Return original topology and positions if no items are specified</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">found</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">topology</span><span class="p">,</span> <span class="n">positions</span>
+    
+    <span class="c1"># Ensure object type(s) are provided if not all items are topology </span>
+    <span class="c1"># objects</span>
+    <span class="k">elif</span> <span class="n">types</span> <span class="ow">is</span> <span class="kc">None</span> \
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">_is_topology_object</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">delete</span> <span class="ow">or</span> <span class="n">keep</span><span class="p">):</span>
+        <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Object types must be specified for the topology items &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;to be </span><span class="si">{</span><span class="s1">&#39;kept&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">found</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;deleted&#39;</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+    
+    <span class="c1"># Create a generator of types if a string is provided</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">same</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">types</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">types</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">same</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">types</span><span class="p">)</span>
 
-    <span class="c1"># Create dictionary with topology subitems</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;atom&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">),</span>
-        <span class="s2">&quot;bond&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">bonds</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">),</span>
-        <span class="s2">&quot;chain&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">chains</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">),</span>
-        <span class="s2">&quot;residue&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">residues</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-    <span class="p">}</span>
+    <span class="c1"># Create OpenMM Modeller</span>
+    <span class="n">modeller</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">Modeller</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">positions</span><span class="p">)</span>
 
-    <span class="c1"># Create OpenMM modeller</span>
-    <span class="n">Modeller</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">Modeller</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">positions</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">types</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 
-    <span class="c1"># If indices and types of objects to be deleted are specified,</span>
-    <span class="c1"># create an iterable object of corresponding items from the</span>
-    <span class="c1"># dictionary</span>
-    <span class="k">if</span> <span class="n">fd</span> <span class="ow">and</span> <span class="n">types</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">delete</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="k">if</span> <span class="n">_is_topology_object</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                    <span class="k">else</span> <span class="n">model</span><span class="p">[</span><span class="n">types</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">delete</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> \
-                 <span class="k">else</span> <span class="p">(</span><span class="n">i</span> <span class="k">if</span> <span class="n">_is_topology_object</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">model</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-                         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">delete</span><span class="p">,</span> <span class="n">types</span><span class="p">))</span>
+        <span class="c1"># Create dictionary with topology subitems</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;atom&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()),</span>
+            <span class="s2">&quot;bond&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">bonds</span><span class="p">()),</span>
+            <span class="s2">&quot;chain&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">chains</span><span class="p">()),</span>
+            <span class="s2">&quot;residue&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">residues</span><span class="p">())</span>
+        <span class="p">}</span>
 
-    <span class="k">elif</span> <span class="n">fk</span><span class="p">:</span>
-        
-        <span class="c1"># Preallocate sets to store indices of atoms, residues, and</span>
-        <span class="c1"># chains to delete</span>
-        <span class="n">atoms</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="n">bonds</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="n">residues</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="n">chains</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-
-        <span class="c1"># Remove items to be kept from the master list of topology</span>
-        <span class="c1"># subitems to delete</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">keep</span><span class="p">:</span>
-                <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">_get_hierarchy_indices</span><span class="p">(</span>
-                    <span class="n">item</span> <span class="k">if</span> <span class="n">_is_topology_object</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-                         <span class="k">else</span> <span class="n">model</span><span class="p">[</span><span class="n">types</span><span class="p">][</span><span class="n">item</span><span class="p">]</span>
-                <span class="p">)</span>
-                <span class="n">atoms</span> <span class="o">|=</span> <span class="n">a</span>
-                <span class="n">bonds</span> <span class="o">|=</span> <span class="n">b</span>
-                <span class="n">residues</span> <span class="o">|=</span> <span class="n">r</span>
-                <span class="n">chains</span> <span class="o">|=</span> <span class="n">c</span>   
+        <span class="c1"># If indices and types of objects to be deleted are specified,</span>
+        <span class="c1"># create an iterable object of corresponding items from the</span>
+        <span class="c1"># dictionary</span>
+        <span class="k">if</span> <span class="n">found</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">delete</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="k">if</span> <span class="n">_is_topology_object</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">model</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">delete</span><span class="p">,</span> <span class="n">types</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
+            
+            <span class="c1"># Preallocate sets to store indices of atoms, residues, and</span>
+            <span class="c1"># chains to keep</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">bonds</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">residues</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">chains</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+            <span class="c1"># Remove items to be kept from the master list of topology</span>
+            <span class="c1"># subitems to delete</span>
             <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">item_type</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keep</span><span class="p">,</span> <span class="n">types</span><span class="p">):</span>
-                <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">_get_hierarchy_indices</span><span class="p">(</span>
-                    <span class="n">item</span> <span class="k">if</span> <span class="n">_is_topology_object</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-                         <span class="k">else</span> <span class="n">model</span><span class="p">[</span><span class="n">item_type</span><span class="p">][</span><span class="n">item</span><span class="p">]</span>
-                <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_topology_object</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+                    <span class="n">item</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="n">item_type</span><span class="p">][</span><span class="n">item</span><span class="p">]</span>
+                <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">_get_hierarchy_indices</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">model</span><span class="p">[</span><span class="s2">&quot;bond&quot;</span><span class="p">])</span>
                 <span class="n">atoms</span> <span class="o">|=</span> <span class="n">a</span>
                 <span class="n">bonds</span> <span class="o">|=</span> <span class="n">b</span>
                 <span class="n">residues</span> <span class="o">|=</span> <span class="n">r</span>
                 <span class="n">chains</span> <span class="o">|=</span> <span class="n">c</span>
 
-        <span class="n">delete</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;atom&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">atoms</span><span class="p">)),</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;bond&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">bonds</span><span class="p">)),</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;residue&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">residues</span><span class="p">)),</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;chain&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">chains</span><span class="p">))</span>
-        <span class="p">))</span>
+            <span class="n">model</span><span class="p">[</span><span class="s2">&quot;atom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;atom&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">atoms</span><span class="p">))</span>
+            <span class="n">model</span><span class="p">[</span><span class="s2">&quot;residue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;residue&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">residues</span><span class="p">))</span>
+            <span class="n">model</span><span class="p">[</span><span class="s2">&quot;chain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;chain&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">chains</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">bonds</span> <span class="ow">and</span> <span class="n">same</span><span class="p">:</span>
+                <span class="n">model</span><span class="p">[</span><span class="s2">&quot;bond&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">bonds</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                    <span class="k">del</span> <span class="n">model</span><span class="p">[</span><span class="s2">&quot;bond&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">delete</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
 
     <span class="c1"># Create subset by deleting objects from original topology</span>
-    <span class="k">if</span> <span class="n">delete</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">Modeller</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">delete</span><span class="p">)</span>
+    <span class="n">modeller</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">delete</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">Modeller</span><span class="o">.</span><span class="n">topology</span><span class="p">,</span> <span class="n">Modeller</span><span class="o">.</span><span class="n">positions</span></div>
+    <span class="k">return</span> <span class="n">modeller</span><span class="o">.</span><span class="n">topology</span><span class="p">,</span> <span class="n">modeller</span><span class="o">.</span><span class="n">positions</span></div>
 </pre></div>
         </article>
       </div>

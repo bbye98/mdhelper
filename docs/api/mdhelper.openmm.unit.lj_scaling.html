@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="utility" href="mdhelper.openmm.utility.html" /><link rel="prev" title="unit" href="mdhelper.openmm.unit.html" />
 
-    <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>lj_scaling - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=362ab14a" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -204,7 +204,7 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.analysis.structure.html">structure</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.coordination_number.html">coordination_number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.coordination_numbers.html">coordination_numbers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
@@ -401,8 +401,13 @@
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>bases</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Fundamental quantities: mass (<span class="math notranslate nohighlight">\(m\)</span>), length
+<dt><strong>bases</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Fundamental quantities: molar mass (<span class="math notranslate nohighlight">\(m\)</span>), length
 (<span class="math notranslate nohighlight">\(\sigma\)</span>), and energy (<span class="math notranslate nohighlight">\(\epsilon\)</span>).</p>
+<p><strong>Format</strong>: <code class="code docutils literal notranslate"><span class="pre">{&quot;mass&quot;:</span> <span class="pre">&lt;openmm.unit.Quantity&gt;,</span>
+<span class="pre">&quot;length&quot;:</span> <span class="pre">&lt;openmm.unit.Quantity&gt;,</span>
+<span class="pre">&quot;energy&quot;:</span> <span class="pre">&lt;openmm.unit.Quantity&gt;}</span></code>.</p>
+<p><strong>Reference units</strong>: <span class="math notranslate nohighlight">\(\mathrm{g/mol}\)</span>, <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>,
+and <span class="math notranslate nohighlight">\(\mathrm{kJ/mol}\)</span>.</p>
 </dd>
 </dl>
 </dd>
@@ -416,10 +421,12 @@
 <dd class="field-odd"><dl>
 <dt><strong>other</strong><span class="classifier"><cite>dict</cite>, optional</span></dt><dd><p>Other scaling factors to compute. The key should be the name of
 the scaling factor, and the value should contain <cite>tuple</cite>
-objects with the names of bases or other scaling factors and
+objects with the names of bases or default scaling factors and
 their powers.</p>
+<p><strong>Example</strong>:
+<code class="code docutils literal notranslate"><span class="pre">{&quot;diffusivity&quot;:</span> <span class="pre">((&quot;length&quot;,</span> <span class="pre">2),</span> <span class="pre">(&quot;time&quot;,</span> <span class="pre">-1))}</span></code>.</p>
 </dd>
-<dt><strong>default</strong><span class="classifier"><cite>bool</cite>, default: <cite>True</cite></span></dt><dd><p>Determines whether the default scaling factors are calculated.</p>
+<dt><strong>default</strong><span class="classifier"><cite>bool</cite>, default: <cite>True</cite></span></dt><dd><p>Determines whether the default scaling factors are included.</p>
 </dd>
 </dl>
 </dd>

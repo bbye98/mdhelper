@@ -5,7 +5,3 @@ netcdf4
 numpy
 scipy
 sympy
-
-# OPTIONAL CORE DEPENDENCIES
-dask
-joblib

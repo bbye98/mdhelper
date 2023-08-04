@@ -36,19 +36,29 @@ def lj_scaling(
     Parameters
     ----------
     bases : `dict`
-        Fundamental quantities: mass (:math:`m`), length
+        Fundamental quantities: molar mass (:math:`m`), length
         (:math:`\sigma`), and energy (:math:`\epsilon`).
+
+        **Format**: :code:`{"mass": <openmm.unit.Quantity>, 
+        "length": <openmm.unit.Quantity>, 
+        "energy": <openmm.unit.Quantity>}`.
+
+        **Reference units**: :math:`\mathrm{g/mol}`, :math:`\mathrm{nm}`,
+        and :math:`\mathrm{kJ/mol}`.
 
     Other parameters
     ----------------    
     other : `dict`, optional
         Other scaling factors to compute. The key should be the name of
         the scaling factor, and the value should contain `tuple`
-        objects with the names of bases or other scaling factors and
+        objects with the names of bases or default scaling factors and
         their powers.
 
+        **Example**: 
+        :code:`{"diffusivity": (("length", 2), ("time", -1))}`.
+
     default : `bool`, default: `True`
-        Determines whether the default scaling factors are calculated.
+        Determines whether the default scaling factors are included.
 
     Returns
     -------
@@ -56,28 +66,34 @@ def lj_scaling(
         Scaling factors.
     """
 
+    # Define the default scaling factors
+    bases["molar_energy"] = bases["energy"] * unit.AVOGADRO_CONSTANT_NA
+    bases["time"] = (
+        bases["mass"] * bases["length"] ** 2 / bases["molar_energy"]
+    ).sqrt().in_units_of(unit.picosecond)
+    bases["velocity"] = bases["length"] / bases["time"]
+    bases["force"] = bases["molar_energy"] / bases["length"]
+    bases["temperature"] = bases["energy"] / unit.BOLTZMANN_CONSTANT_kB
+    bases["pressure"] = bases["energy"] / bases["length"] ** 3
+    bases["dynamic_viscosity"] = bases["pressure"] * bases["time"]
+    bases["charge"] = (
+        4 * np.pi * VACUUM_PERMITTIVITY * bases["length"] * bases["energy"]
+    ).sqrt().in_units_of(unit.elementary_charge)
+    bases["dipole"] = bases["length"] * bases["charge"]
+    bases["electric_field"] = bases["force"] / bases["charge"]
+    bases["mass_density"] = bases["mass"] / (bases["length"] ** 3 
+                                                * unit.AVOGADRO_CONSTANT_NA)
+    
+    # Add default scaling factors to the returned dictionary
+    scales = {}
     if default:
-        bases["molar_energy"] = bases["energy"] * unit.AVOGADRO_CONSTANT_NA
-        bases["time"] = (
-            bases["mass"] * bases["length"] ** 2 / bases["molar_energy"]
-        ).sqrt().in_units_of(unit.picosecond)
-        bases["velocity"] = bases["length"] / bases["time"]
-        bases["force"] = bases["molar_energy"] / bases["length"]
-        bases["temperature"] = bases["energy"] / unit.BOLTZMANN_CONSTANT_kB
-        bases["pressure"] = bases["energy"] / bases["length"] ** 3
-        bases["dynamic_viscosity"] = bases["pressure"] * bases["time"]
-        bases["charge"] = (
-            4 * np.pi * VACUUM_PERMITTIVITY * bases["length"] * bases["energy"]
-        ).sqrt().in_units_of(unit.elementary_charge)
-        bases["dipole"] = bases["length"] * bases["charge"]
-        bases["electric_field"] = bases["force"] / bases["charge"]
-        bases["mass_density"] = bases["mass"] / (bases["length"] ** 3 
-                                                 * unit.AVOGADRO_CONSTANT_NA)
+        scales |= bases
 
+    # Evaluate the custom scaling factors
     for name, params in other.items():
         factor = 1
         for base, power in params:
             factor *= bases[base] ** power
-        bases[name] = factor
+        scales[name] = factor
 
-    return bases
+    return scales

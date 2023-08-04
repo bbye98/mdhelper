@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>mdhelper.openmm.reporter - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -203,7 +203,7 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.html">structure</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.coordination_number.html">coordination_number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.coordination_numbers.html">coordination_numbers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
@@ -443,10 +443,10 @@
             <span class="n">forces</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">subset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Topology</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;.nc&quot;</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.nc&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.nc&quot;</span><span class="p">):</span>
             <span class="n">file</span> <span class="o">+=</span> <span class="s2">&quot;.nc&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_out</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span> <span class="k">if</span> <span class="n">append</span> <span class="k">else</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">FOUND_NETCDF</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">FOUND_NETCDF</span><span class="p">:</span> <span class="c1"># pragma: no cover</span>
             <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The netCDF4 package was not found, so the NetCDF &quot;</span>
                     <span class="s2">&quot;reporter is falling back on scipy.io.netcdf_file. &quot;</span>
                     <span class="s2">&quot;netCDF4 writes NetCDF files significantly faster than &quot;</span>
@@ -506,29 +506,38 @@
 <span class="sd">            OpenMM simulation to generate a report for.</span>
 
 <span class="sd">        state : `openmm.State`</span>
-<span class="sd">            Current state of the simulation.</span>
+<span class="sd">            Current OpenMM simulation state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Get all requested state data from OpenMM State</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getPositions</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> \
-                                  <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span> \
+                <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getPositions</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span><span class="p">:</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getVelocities</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> \
-                                     <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">]</span> \
+                    <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getVelocities</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span>
+                        <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span>
+                    <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span><span class="p">:</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getForces</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> \
-                                 <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kilocalorie_per_mole</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getForces</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span>
+                    <span class="n">unit</span><span class="o">.</span><span class="n">kilocalorie_per_mole</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getPositions</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">]</span> \
-                                  <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span> \
+                <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getPositions</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">]</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span>
+                    <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
+                <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span><span class="p">:</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getVelocities</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">]</span> \
-                                     <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">]</span> \
+                    <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getVelocities</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">]</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span>
+                        <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span>
+                    <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span><span class="p">:</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getForces</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">]</span> \
-                                 <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kilocalorie_per_mole</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">]</span> \
+                    <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getForces</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">_subset</span><span class="p">]</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span>
+                        <span class="n">unit</span><span class="o">.</span><span class="n">kilocalorie_per_mole</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
+                    <span class="p">)</span>
 
         <span class="c1"># Initialize NetCDF file headers, if not done already</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_out</span><span class="o">.</span><span class="n">_nc</span><span class="p">,</span> <span class="s2">&quot;Conventions&quot;</span><span class="p">):</span>
@@ -543,12 +552,14 @@
         <span class="c1"># simulation box</span>
         <span class="n">pbv</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getPeriodicBoxVectors</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">pbv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">internal</span><span class="o">.</span><span class="n">unitcell</span><span class="o">.</span><span class="n">computeLengthsAndAngles</span><span class="p">(</span><span class="n">pbv</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span> <span class="o">=</span> \
+                <span class="n">app</span><span class="o">.</span><span class="n">internal</span><span class="o">.</span><span class="n">unitcell</span><span class="o">.</span><span class="n">computeLengthsAndAngles</span><span class="p">(</span><span class="n">pbv</span><span class="p">)</span>
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;cell_lengths&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
             <span class="n">data</span><span class="p">[</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
         <span class="c1"># Write current frame</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_out</span><span class="o">.</span><span class="n">write_model</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">getTime</span><span class="p">()</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_out</span><span class="o">.</span><span class="n">write_model</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">getTime</span><span class="p">()</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span><span class="p">),</span> 
+                              <span class="o">**</span><span class="n">data</span><span class="p">)</span></div></div>
 </pre></div>
         </article>
       </div>

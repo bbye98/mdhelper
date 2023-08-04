@@ -90,7 +90,7 @@ def radial_histogram(
     
     return np.histogram(dist, bins=n_bins, range=range)[0]
 
-def coordination_number(
+def coordination_numbers(
         bins: np.ndarray, rdf: np.ndarray, rho: float, *, 
         n: int = 2, threshold: float = 0.1) -> np.ndarray:
 
@@ -692,7 +692,7 @@ class RDF(SerialAnalysisBase):
                 * np.diff(self.results.edges ** 3)
             )
 
-    def calculate_coordination_number(
+    def calculate_coordination_numbers(
             self, rho: float, *, n: int = 2, threshold: float = 0.1) -> None:
 
         r"""
@@ -718,7 +718,7 @@ class RDF(SerialAnalysisBase):
             considered the boundary of a radial shell.
         """
 
-        self.results.coordination_numbers = coordination_number(
+        self.results.coordination_numbers = coordination_numbers(
             self.results.bins, self._get_rdf(), rho, n=n, threshold=threshold
         )
 

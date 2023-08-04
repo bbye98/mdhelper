@@ -110,12 +110,12 @@ class SerialAnalysisBase(AnalysisBase):
             extension will be appended automatically if not already
             present.
         
-        archive : `bool`, default: `True`
+        archive : `bool`, default: :code:`True`
             Determines whether the results are saved to a single archive
             file. If `True`, the data is stored in a :code:`.npz` file.
             Otherwise, the data is saved to multiple :code:`.npy` files.
 
-        compress : `bool`, default: `True`
+        compress : `bool`, default: :code:`True`
             Determines whether the :code:`.npz` file is compressed. Has
             no effect when :code:`archive=False`.
 

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="fit" href="mdhelper.fit.html" /><link rel="prev" title="transference_number" href="mdhelper.analysis.transport.transference_number.html" />
 
-    <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>Onsager - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=362ab14a" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -204,7 +204,7 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.analysis.structure.html">structure</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.coordination_number.html">coordination_number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.coordination_numbers.html">coordination_numbers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
@@ -842,11 +842,11 @@ If <cite>file</cite> is a <cite>str</cite>, the <code class="code docutils liter
 extension will be appended automatically if not already
 present.</p>
 </dd>
-<dt><strong>archive</strong><span class="classifier"><cite>bool</cite>, default: <cite>True</cite></span></dt><dd><p>Determines whether the results are saved to a single archive
+<dt><strong>archive</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the results are saved to a single archive
 file. If <cite>True</cite>, the data is stored in a <code class="code docutils literal notranslate"><span class="pre">.npz</span></code> file.
 Otherwise, the data is saved to multiple <code class="code docutils literal notranslate"><span class="pre">.npy</span></code> files.</p>
 </dd>
-<dt><strong>compress</strong><span class="classifier"><cite>bool</cite>, default: <cite>True</cite></span></dt><dd><p>Determines whether the <code class="code docutils literal notranslate"><span class="pre">.npz</span></code> file is compressed. Has
+<dt><strong>compress</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the <code class="code docutils literal notranslate"><span class="pre">.npz</span></code> file is compressed. Has
 no effect when <code class="code docutils literal notranslate"><span class="pre">archive=False</span></code>.</p>
 </dd>
 <dt><strong>**kwargs</strong></dt><dd><p>Additional keyword arguments to pass to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.save.html#numpy.save" title="(in NumPy v1.25)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.save()</span></code></a>,

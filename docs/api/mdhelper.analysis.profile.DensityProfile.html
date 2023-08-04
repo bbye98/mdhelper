@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="structure" href="mdhelper.analysis.structure.html" /><link rel="prev" title="potential_profile" href="mdhelper.analysis.profile.potential_profile.html" />
 
-    <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>DensityProfile - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=362ab14a" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -204,7 +204,7 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.analysis.structure.html">structure</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.coordination_number.html">coordination_number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.coordination_numbers.html">coordination_numbers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
@@ -388,8 +388,8 @@
 profiles <span class="math notranslate nohighlight">\(\phi_i(z)\)</span> and <span class="math notranslate nohighlight">\(\phi_e(z)\)</span> of a system
 along the specified axes.</p>
 <p>The microscopic number density profile of species <span class="math notranslate nohighlight">\(i\)</span> in a
-canonical <span class="math notranslate nohighlight">\(NVT\)</span> ensemble is calculated by binning particle
-positions along an axis <span class="math notranslate nohighlight">\(z\)</span> using</p>
+constant-volume system is calculated by binning particle positions
+along an axis <span class="math notranslate nohighlight">\(z\)</span> using</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\rho_i(z)=\frac{V}{N_\mathrm{bin}}\left\langle
@@ -562,7 +562,7 @@ the charge density profile, or the average value in the
 center of the integrated charge density profile.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{e/Å^2}\)</span>.</p>
 </dd>
-<dt><strong>dV</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite>, keyword-only, optional</span></dt><dd><p>Potential difference <span class="math notranslate nohighlight">\(\Delta \Psi\)</span> across the system
+<dt><strong>dV</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite>, keyword-only, optional</span></dt><dd><p>Potential difference <span class="math notranslate nohighlight">\(\Delta \varphi\)</span> across the system
 dimension specified in <cite>axis</cite>. Has no effect if <cite>sigma_e</cite> is
 provided since this value is used solely to calculate
 <cite>sigma_e</cite>.</p>
@@ -630,11 +630,11 @@ If <cite>file</cite> is a <cite>str</cite>, the <code class="code docutils liter
 extension will be appended automatically if not already
 present.</p>
 </dd>
-<dt><strong>archive</strong><span class="classifier"><cite>bool</cite>, default: <cite>True</cite></span></dt><dd><p>Determines whether the results are saved to a single archive
+<dt><strong>archive</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the results are saved to a single archive
 file. If <cite>True</cite>, the data is stored in a <code class="code docutils literal notranslate"><span class="pre">.npz</span></code> file.
 Otherwise, the data is saved to multiple <code class="code docutils literal notranslate"><span class="pre">.npy</span></code> files.</p>
 </dd>
-<dt><strong>compress</strong><span class="classifier"><cite>bool</cite>, default: <cite>True</cite></span></dt><dd><p>Determines whether the <code class="code docutils literal notranslate"><span class="pre">.npz</span></code> file is compressed. Has
+<dt><strong>compress</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the <code class="code docutils literal notranslate"><span class="pre">.npz</span></code> file is compressed. Has
 no effect when <code class="code docutils literal notranslate"><span class="pre">archive=False</span></code>.</p>
 </dd>
 <dt><strong>**kwargs</strong></dt><dd><p>Additional keyword arguments to pass to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.save.html#numpy.save" title="(in NumPy v1.25)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.save()</span></code></a>,

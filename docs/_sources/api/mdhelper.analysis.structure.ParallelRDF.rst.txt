@@ -16,7 +16,7 @@ ParallelRDF
    .. autosummary::
       :nosignatures:
    
-      ~ParallelRDF.calculate_coordination_number
+      ~ParallelRDF.calculate_coordination_numbers
       ~ParallelRDF.calculate_pmf
       ~ParallelRDF.calculate_structure_factor
       ~ParallelRDF.run

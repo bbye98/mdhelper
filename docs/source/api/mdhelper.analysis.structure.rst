@@ -15,7 +15,7 @@ structure
       :toctree:
       :nosignatures:
    
-      coordination_number
+      coordination_numbers
       radial_fourier_transform
       radial_histogram
       structure_factor

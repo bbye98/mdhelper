@@ -64,10 +64,10 @@ class NetCDFReporter():
             forces: bool = False,
             subset: Union[slice, np.ndarray, app.Topology] = None) -> None:
 
-        if not ".nc".endswith(".nc"):
+        if not file.endswith(".nc"):
             file += ".nc"
         self._out = NetCDFFile(file, "a" if append else "w")
-        if not FOUND_NETCDF:
+        if not FOUND_NETCDF: # pragma: no cover
             wmsg = ("The netCDF4 package was not found, so the NetCDF "
                     "reporter is falling back on scipy.io.netcdf_file. "
                     "netCDF4 writes NetCDF files significantly faster than "
@@ -127,29 +127,38 @@ class NetCDFReporter():
             OpenMM simulation to generate a report for.
 
         state : `openmm.State`
-            Current state of the simulation.
+            Current OpenMM simulation state.
         """
 
         # Get all requested state data from OpenMM State
         data = {}
         if self._subset is None:
-            data["coordinates"] = state.getPositions(asNumpy=True) \
-                                  / unit.angstrom
+            data["coordinates"] \
+                = state.getPositions(asNumpy=True).value_in_unit(unit.angstrom)
             if self._velocities:
-                data["velocities"] = state.getVelocities(asNumpy=True) \
-                                     / (unit.angstrom / unit.picosecond)
+                data["velocities"] \
+                    = state.getVelocities(asNumpy=True).value_in_unit(
+                        unit.angstrom / unit.picosecond
+                    )
             if self._forces:
-                data["forces"] = state.getForces(asNumpy=True) \
-                                 / (unit.kilocalorie_per_mole / unit.angstrom)
+                data["forces"] = state.getForces(asNumpy=True).value_in_unit(
+                    unit.kilocalorie_per_mole / unit.angstrom
+                )
         else:
-            data["coordinates"] = state.getPositions(asNumpy=True)[self._subset] \
-                                  / unit.angstrom
+            data["coordinates"] \
+                = state.getPositions(asNumpy=True)[self._subset].value_in_unit(
+                    unit.angstrom
+                )
             if self._velocities:
-                data["velocities"] = state.getVelocities(asNumpy=True)[self._subset] \
-                                     / (unit.angstrom / unit.picosecond)
+                data["velocities"] \
+                    = state.getVelocities(asNumpy=True)[self._subset].value_in_unit(
+                        unit.angstrom / unit.picosecond
+                    )
             if self._forces:
-                data["forces"] = state.getForces(asNumpy=True)[self._subset] \
-                                 / (unit.kilocalorie_per_mole / unit.angstrom)
+                data["forces"] \
+                    = state.getForces(asNumpy=True)[self._subset].value_in_unit(
+                        unit.kilocalorie_per_mole / unit.angstrom
+                    )
 
         # Initialize NetCDF file headers, if not done already
         if not hasattr(self._out._nc, "Conventions"):
@@ -170,4 +179,5 @@ class NetCDFReporter():
             data["cell_angles"] = 180 * np.array((alpha, beta, gamma)) / np.pi
 
         # Write current frame
-        self._out.write_model(state.getTime() / unit.picosecond, **data)
+        self._out.write_model(state.getTime().value_in_unit(unit.picosecond), 
+                              **data)

@@ -8,15 +8,16 @@ writers for OpenMM.
 """
 
 import platform
-from typing import Iterable, Union
+from typing import Any, Union
 
 import numpy as np
 import openmm
+from openmm import app, unit
 
 try:
     import netCDF4 as nc
     FOUND_NETCDF = True
-except ImportError:
+except ImportError: # pragma: no cover
     from scipy.io import netcdf_file as nc
     FOUND_NETCDF = False
 
@@ -44,13 +45,20 @@ class NetCDFFile():
         :code:`scipy.io.netcdf_file()`.
     """
 
-    def __init__(self, file: str, mode: str, restart: bool = False, **kwargs):
+    def __init__(
+            self, file: Union[str, nc.Dataset], mode: str, 
+            restart: bool = False, **kwargs):
 
-        if FOUND_NETCDF:
-            self._nc = nc.Dataset(file, mode=mode, format="NETCDF3_64BIT_OFFSET",
-                                  **kwargs)
+        if isinstance(file, str):
+            if not file.endswith(".nc"):
+                file += ".nc"
+            if FOUND_NETCDF:
+                self._nc = nc.Dataset(file, mode=mode, format="NETCDF3_64BIT_OFFSET",
+                                    **kwargs)
+            else: # pragma: no cover
+                self._nc = nc(file, mode=mode, version=2, **kwargs)
         else:
-            self._nc = nc(file, mode=mode, version=2, **kwargs)
+            self._nc = file
         
         self._frame = 0 if mode == "w" else self._nc["time"].shape[0]
         self._restart = restart
@@ -131,7 +139,7 @@ class NetCDFFile():
         self._nc.title = (f"OpenMM {openmm.Platform.getOpenMMVersion()} / "
                           f"{platform.node()}")
 
-        if remd == "multi":
+        if remd == "multi": # pragma: no cover
             self._nc.createDimension("remd_dimension", len(remd_dimtype))
         self._nc.createDimension("spatial", 3)
         self._nc.createDimension("atom", N)
@@ -190,7 +198,7 @@ class NetCDFFile():
                                         ("frame", "atom", "spatial"))
             self._nc.variables["forces"].units = "kilocalorie/mole/angstrom"
         
-        if remd is not None:
+        if remd is not None: # pragma: no cover
             if remd == "temp":
                 self._nc.createVariable("temp0", "d", ("frame",))
                 if self._restart:
@@ -237,6 +245,65 @@ class NetCDFFile():
                                             ("frame", "remd_dimension"))
                     self._nc.createVariable("remd_values", "d", 
                                             ("frame", "remd_dimension"))
+
+    def write_file(self: Any, state: openmm.State) -> None:
+        
+        """
+        Write the simulation state to a restart NetCDF file.
+
+        Parameters
+        ----------
+        self : `str`, `netcdf4.Dataset`, `scipy.io.netcdf_file`, \
+        or `mdhelper.openmm.file.NetCDFFile`
+            If :meth:`write_file` is called as a static method, you must 
+            provide a filename or a NetCDF file object. Otherwise, the
+            NetCDF file embedded in the current instance is used.
+
+        state : `openmm.State`
+            OpenMM simulation state from which to retrieve cell 
+            dimensions and particle positions, velocities, and forces.
+        """
+
+        # Collect all available data in the state
+        data = {}
+        pbv = state.getPeriodicBoxVectors()
+        if pbv is not None:
+            (a, b, c, alpha, beta, gamma) = \
+                app.internal.unitcell.computeLengthsAndAngles(pbv)
+            data["cell_lengths"] = 10 * np.array((a, b, c))
+            data["cell_angles"] = 180 * np.array((alpha, beta, gamma)) / np.pi
+        data["coordinates"] = state.getPositions(asNumpy=True).value_in_unit(
+            unit.angstrom
+        )
+        try:
+            data["velocities"] \
+                = state.getVelocities(asNumpy=True).value_in_unit(
+                    unit.angstrom / unit.picosecond
+                )
+        except openmm.OpenMMException: # pragma: no cover
+            pass
+        try:
+            data["forces"] \
+                = state.getForces(asNumpy=True).value_in_unit(
+                    unit.kilocalorie_per_mole / unit.angstrom
+                )
+        except openmm.OpenMMException: # pragma: no cover
+            pass
+
+        # Create NetCDF file if it doesn't already exist
+        if not isinstance(self, NetCDFFile):
+            self = NetCDFFile(self, "w", restart=True)
+        if not hasattr(self._nc, "Conventions"):
+            self._initialize(data["coordinates"].shape[0], 
+                             "cell_lengths" in data or "cell_angles" in data,
+                             "velocities" in data, "forces" in data)
+        elif self._nc.Conventions != "AMBERRESTART":
+            raise ValueError("The NetCDF file must be a restart file.")
+            
+        # Write data to NetCDF file
+        for k, v in data.items():
+            self._nc.variables[k][:] = v
+        self._nc.sync()
 
     def write_model(
             self, time: Union[float, np.ndarray], coordinates: np.ndarray,
@@ -304,7 +371,8 @@ class NetCDFFile():
             NetCDF restart file.
         """
 
-        n_frames = len(time) if isinstance(time, Iterable) else 1
+        n_frames = len(time) if isinstance(time, (tuple, list, np.ndarray)) \
+                   else 1
         frames = slice(self._frame, self._frame + n_frames)
 
         self._nc.variables["time"][frames] = time

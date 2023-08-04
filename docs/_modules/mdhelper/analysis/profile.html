@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>mdhelper.analysis.profile - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -203,7 +203,7 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.html">structure</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.coordination_number.html">coordination_number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.coordination_numbers.html">coordination_numbers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
@@ -568,8 +568,8 @@
 <span class="sd">    along the specified axes.</span>
 
 <span class="sd">    The microscopic number density profile of species :math:`i` in a</span>
-<span class="sd">    canonical :math:`NVT` ensemble is calculated by binning particle</span>
-<span class="sd">    positions along an axis :math:`z` using</span>
+<span class="sd">    constant-volume system is calculated by binning particle positions</span>
+<span class="sd">    along an axis :math:`z` using</span>
 
 <span class="sd">    .. math::</span>
 
@@ -979,7 +979,7 @@
 <span class="sd">            **Reference unit**: :math:`\mathrm{e/Å^2}`.</span>
 
 <span class="sd">        dV : `float` or `openmm.unit.Quantity`, keyword-only, optional</span>
-<span class="sd">            Potential difference :math:`\Delta \Psi` across the system </span>
+<span class="sd">            Potential difference :math:`\Delta \varphi` across the system </span>
 <span class="sd">            dimension specified in `axis`. Has no effect if `sigma_e` is</span>
 <span class="sd">            provided since this value is used solely to calculate </span>
 <span class="sd">            `sigma_e`.</span>

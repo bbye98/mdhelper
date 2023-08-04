@@ -16,7 +16,7 @@ RDF
    .. autosummary::
       :nosignatures:
    
-      ~RDF.calculate_coordination_number
+      ~RDF.calculate_coordination_numbers
       ~RDF.calculate_pmf
       ~RDF.calculate_structure_factor
       ~RDF.run

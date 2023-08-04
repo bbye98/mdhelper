@@ -2,6 +2,7 @@ import pathlib
 import sys
 
 import numpy as np
+import openmm
 from openmm import app
 import pytest
 
@@ -28,10 +29,11 @@ def test_func_subset_polymer():
     N = M * N_p
     dims = np.array([10, 10, 10], dtype=float)
     positions = t.create_atoms(dims, M * N_p, N_p)
+    system = openmm.System()
     topology = app.Topology()
     for _ in range(M):
         chain = topology.addChain()
-        s.register_particles(topology=topology, N=N_p, chain=chain)
+        s.register_particles(system, topology, N=N_p, chain=chain)
     atoms = list(topology.atoms())
     for m in range(M):
         for n in range(N_p - 1):
@@ -93,5 +95,3 @@ def test_func_subset_polymer():
     assert topo_sub.getNumBonds() == n_bonds
     assert topo_sub.getNumResidues() == n_atoms
     assert topo_sub.getNumChains() == n_chains
-
-test_func_subset_polymer()
