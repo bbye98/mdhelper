@@ -6,21 +6,19 @@ MDHelper is a batteries-included toolkit of analysis modules and helper
 functions for molecular dynamics (MD) simulations.
 
 * **Documentation**: https://bbye98.github.io/mdhelper/
-* **Anaconda**: https://anaconda.org/bbye98/mdhelper
+* **Conda**: https://anaconda.org/bbye98/mdhelper
 * **Python Package Index (PyPI)**: https://pypi.org/project/mdhelper/
 
 Note that MDHelper is currently an *experimental* library that has 
 only been tested on Linux and may contain bugs and issues. If you come 
-across one, please 
-[submit a new issue](https://github.com/bbye98/mdhelper/issues/new). If 
-you would like to contribute to MDHelper, please 
-[submit a pull request](https://github.com/bbye98/mdhelper/compare).
+across one or would like to request new features, please 
+[submit a new issue](https://github.com/bbye98/mdhelper/issues/new).
 
 ## Features
 
 * [`algorithm`](https://github.com/bbye98/mdhelper/tree/main/src/mdhelper/algorithm): 
-Efficient NumPy algorithms for data wrangling and evaluating structural 
-and dynamical properties.
+Efficient NumPy and SciPy algorithms for data wrangling and evaluating 
+structural and dynamical properties.
 * [`analysis`](https://github.com/bbye98/mdhelper/tree/main/src/mdhelper/analysis): 
 Serial and parallel data analysis tools built on top of the MDAnalysis 
 framework.
@@ -42,11 +40,11 @@ If you use pip to manage your Python packages, you must compile and
 install OpenMM prior to installing MDHelper since OpenMM is not 
 available in PyPI. See the 
 ["Compiling OpenMM from Source Code"](http://docs.openmm.org/latest/userguide/library/02_compiling.html) 
-for more section of the OpenMM User Guide for more information.
+section of the OpenMM User Guide for more information.
 
-If you use Anaconda or Miniconda, it is recommended that you use the 
-conda-forge channel to install dependencies. To make conda-forge the
-default channel, use
+If you use Conda, it is recommended that you use the conda-forge 
+channel to install dependencies. To make conda-forge the default 
+channel, use
 
     conda config --add channels conda-forge
 
@@ -55,44 +53,85 @@ default channel, use
 It is recommended, but not necessary, that you create a virtual 
 environment to prevent dependency conflicts.
 
-If you are using pip to manage Python packages, use
+#### pip: `venv` or `virtualenv`
 
-    virtualenv venv
-    source venv/bin/activate
+If you use pip as your Python package manager, you can create a virtual 
+environment using either the built-in `venv` or the (better) `virtualenv`
+packages. With `venv`, run
 
-where `venv` is the name of the new environment.
+    python -m venv <venv_path>
 
-If you are using Anaconda or Miniconda, use
+to initialize the new virtual environment, where `<venv_path>` is the 
+path to the directory to be created, and one of the following commands 
+to activate the environment, depending on your operating system (OS) and 
+shell:
 
-    conda create --name venv
-    conda activate venv
+* POSIX: bash/zsh
+
+      source <venv_path>/bin/activate
+
+* POSIX/Windows: PowerShell
+
+      <venv_path>\Scripts\Activate.ps1
+
+* Windows: cmd.exe
+
+      <venv_path>\Scripts\activate.bat
+
+With `virtualenv`, you can create a virtual environment using
+
+    virtualenv <venv_name>
+
+where `<venv_name>` is the name of the new environment, and activate it 
+using
+
+* Linux or macOS:
+
+      source <venv_name>/bin/activate
+
+* Windows: 
+
+      .\<venv_name>\Scripts\activate
+
+#### Conda: `conda` or `mamba`
+
+If you use Conda as your Python package manager, you can create and 
+activate a virtual environment named `<venv_name>` using
+
+    conda create --name <venv_name>
+    conda activate <venv_name>
+
+(For Mamba users, replace `conda` with `mamba` above.)
 
 ### Option 1: Install using pip
 
- 1. Install MDHelper and its dependencies using 
+ 1. Install MDHelper and its dependencies through pip using 
 
-        python3 -m pip install mdhelper
+        python -m pip install mdhelper
 
- 2. To test that MDHelper has been installed correctly, run
+ 2. To verify that MDHelper has been installed correctly, execute
 
-        python3 -c "import mdhelper"
+        python -c "import mdhelper"
 
-### Option 2: Install using Anaconda or Miniconda
+### Option 2: Install using Conda
 
- 1. Install MDHelper and its dependencies using
+ 1. Install MDHelper and its dependencies through Conda using
 
         conda install -c bbye98 mdhelper
 
- 2. To test that MDHelper has been installed correctly, run
+ 2. To verify that MDHelper has been installed correctly, execute
 
-        python3 -c "import mdhelper"
+        python -c "import mdhelper"
 
-### Option 3: Build from source
+### Option 3: Install from source
 
- 1. Ensure that the latest version of the Python build frontend, 
-    `build`, is installed:
+ 1. Change to the directory where you want to store a copy of MDHelper 
+    using
 
-        python3 -m pip install --upgrade build
+        cd <install_path>
+
+    where `<install_path>` is the path to the desired directory. If you
+    are already in the correct location, skip this step.
 
  2. Create a local copy of the MDHelper repository on your machine using
 
@@ -102,30 +141,23 @@ If you are using Anaconda or Miniconda, use
 
         cd mdhelper
 
- 4. Build the MDHelper wheel using
+ 4. Install MDHelper and its dependencies through pip using
 
-        python3 -m build
+        python -m pip install -e .
 
-    The Python wheel will be placed in the `dist` directory.
-
- 5. Install MDHelper using
-
-        python3 -m pip install dist/mdhelper-<version>-py3-none-any.whl
-
-    where `<version>` is the version of MDHelper you are installing.
-
- 6. To test that MDHelper has been installed correctly, run
+ 5. To verify that MDHelper has been installed correctly, execute
 
         python -c "import mdhelper"
 
 ### Option 4: Portable package
 
- 1. Change to the directory where you want to store a copy of MDHelper using
+ 1. Change to the directory where you want to store a copy of MDHelper 
+    using
 
-        cd <directory>
+        cd <install_path>
 
-    where `<directory>` is the relative path to the desired directory. 
-    If you are already in the correct location, skip this step.
+    where `<install_path>` is the path to the desired directory. If you
+    are already in the correct location, skip this step.
 
  2. Create a local copy of the MDHelper repository on your machine using
 
@@ -135,19 +167,22 @@ If you are using Anaconda or Miniconda, use
 
         cd mdhelper
 
- 4. Install the dependencies using
+ 4. Install the required dependencies using
 
-        python3 -m pip install -r requirements.txt
+        python -m pip install -r minimum_requirements.txt
 
     or
 
-        conda install --file requirements.txt
+        conda install --file minimum_requirements.txt
 
- 5. Once done, you can use MDHelper by first adding the path to the 
-    `src` directory in your Python scripts. To test that MDHelper has 
-    been installed correctly, run
+    If you would like to install the optional dependencies as well,
+    remove the `minimum` prefix from the filename above.
 
-        python3 -c "import sys; sys.path.insert(0, '/path/to/mdhelper/src'); import mdhelper"
+ 5. Now, you can use MDHelper by first adding the path to the `src` 
+    directory in your Python scripts. To verify that MDHelper has been 
+    installed correctly, execute
+
+        python -c "import sys; sys.path.insert(0, '<install_path>/mdhelper/src'); import mdhelper"
 
 ### Postrequisites
 
