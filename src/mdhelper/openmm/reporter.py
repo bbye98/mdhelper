@@ -64,8 +64,6 @@ class NetCDFReporter():
             forces: bool = False,
             subset: Union[slice, np.ndarray, app.Topology] = None) -> None:
 
-        if not file.endswith(".nc"):
-            file += ".nc"
         self._out = NetCDFFile(file, "a" if append else "w")
         if not FOUND_NETCDF: # pragma: no cover
             wmsg = ("The netCDF4 package was not found, so the NetCDF "

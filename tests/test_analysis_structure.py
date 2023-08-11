@@ -71,8 +71,6 @@ def test_class_rdf_residue60_water():
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)
 
-test_class_rdf_residue60_water()
-
 def test_class_rdf_residue60_exclusion_self():
 
     exclusion = (1, 1)

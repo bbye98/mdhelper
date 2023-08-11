@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>mdhelper.analysis.polymer - MDHelper documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -207,6 +207,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
@@ -530,8 +532,7 @@
 <span class="sd">    results.units : `dict`</span>
 <span class="sd">        Reference units for the results. For example, to get the </span>
 <span class="sd">        reference units for :code:`results.time`, call </span>
-<span class="sd">        :code:`results.units[&quot;results.time&quot;]`. Only available if OpenMM</span>
-<span class="sd">        is installed.</span>
+<span class="sd">        :code:`results.units[&quot;results.time&quot;]`.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -678,8 +679,7 @@
 <span class="sd">    results.units : `dict`</span>
 <span class="sd">        Reference units for the results. For example, to get the </span>
 <span class="sd">        reference units for :code:`results.time`, call </span>
-<span class="sd">        :code:`results.units[&quot;results.time&quot;]`. Only available if OpenMM</span>
-<span class="sd">        is installed.</span>
+<span class="sd">        :code:`results.units[&quot;results.time&quot;]`.</span>
 
 <span class="sd">    results.gyradius : `numpy.ndarray`</span>
 <span class="sd">        Radii of gyration for the :math:`N_\textrm{g}` groups over </span>
@@ -866,8 +866,7 @@
 <span class="sd">    results.units : `dict`</span>
 <span class="sd">        Reference units for the results. For example, to get the </span>
 <span class="sd">        reference units for :code:`results.time`, call </span>
-<span class="sd">        :code:`results.units[&quot;results.time&quot;]`. Only available if OpenMM</span>
-<span class="sd">        is installed.</span>
+<span class="sd">        :code:`results.units[&quot;results.time&quot;]`.</span>
 
 <span class="sd">    results.time : `numpy.ndarray`</span>
 <span class="sd">        Changes in time :math:`t-t_0`.</span>
@@ -1233,12 +1232,12 @@
         <span class="c1"># Determine the unique wavenumbers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">11</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timestep</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 
         <span class="c1"># Compute the single-chain structure factor by squaring the</span>
         <span class="c1"># cosine and sine terms and adding them together</span>
         <span class="n">scsf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">timestep</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
             <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,kj-&gt;ki&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="n">chain</span><span class="p">)</span>
             <span class="n">scsf</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
         

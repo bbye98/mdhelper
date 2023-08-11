@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>mdhelper.analysis.structure - MDHelper documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -207,6 +207,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
@@ -386,6 +388,7 @@
 <span class="sd">electrolyte systems.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations_with_replacement</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
@@ -398,7 +401,7 @@
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">SerialAnalysisBase</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
-<span class="kn">from</span> <span class="nn">..algorithm</span> <span class="kn">import</span> <span class="n">molecule</span>
+<span class="kn">from</span> <span class="nn">..algorithm</span> <span class="kn">import</span> <span class="n">correlation</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">utility</span>
 
 <div class="viewcode-block" id="radial_histogram"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.radial_histogram.html#mdhelper.analysis.structure.radial_histogram">[docs]</a><span class="k">def</span> <span class="nf">radial_histogram</span><span class="p">(</span>
         <span class="n">pos1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">pos2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">range</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
@@ -872,8 +875,7 @@
 <span class="sd">    results.units : `dict`</span>
 <span class="sd">        Reference units for the results. For example, to get the </span>
 <span class="sd">        reference units for :code:`results.bins`, call </span>
-<span class="sd">        :code:`results.units[&quot;results.bins&quot;]`. Only available if OpenMM</span>
-<span class="sd">        is installed.</span>
+<span class="sd">        :code:`results.units[&quot;results.bins&quot;]`.</span>
 
 <span class="sd">    results.edges : `numpy.ndarray`</span>
 <span class="sd">        Edges of the histogram bins.</span>
@@ -933,8 +935,6 @@
 <span class="sd">        **Shape**: Same as `results.wavenumbers`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_GROUPINGS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">,</span> <span class="s2">&quot;segments&quot;</span><span class="p">}</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">ag1</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ag2</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">201</span><span class="p">,</span> <span class="nb">range</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span> <span class="o">*</span><span class="p">,</span>
@@ -952,14 +952,14 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groupings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">groupings</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GROUPINGS</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">groupings</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">,</span> <span class="s2">&quot;segments&quot;</span><span class="p">}:</span>
                 <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">groupings</span><span class="si">}</span><span class="s2">&#39;. The options are &quot;</span>
                         <span class="s2">&quot;&#39;atoms&#39;, &#39;residues&#39;, and &#39;segments&#39;.&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">[</span><span class="n">groupings</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groupings</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">g</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GROUPINGS</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">g</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">,</span> <span class="s2">&quot;segments&quot;</span><span class="p">}:</span>
                     <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&#39;. The options are &quot;</span>
                             <span class="s2">&quot;&#39;atoms&#39;, &#39;residues&#39;, and &#39;segments&#39;.&quot;</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
@@ -1229,7 +1229,7 @@
         <span class="n">ParallelAnalysisBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag1</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span>
                                       <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timestep</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 
         <span class="n">_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_bins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -1300,7 +1300,8 @@
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The static structure factor :math:`S(q)` is a measure of how a</span>
-<span class="sd">    material scatters incident radiation. It is defined as</span>
+<span class="sd">    material scatters incident radiation. It can be computed directly</span>
+<span class="sd">    from a molecular dynamics trajectory using</span>
 
 <span class="sd">    .. math::</span>
 
@@ -1312,13 +1313,29 @@
 
 <span class="sd">    where :math:`N` is the number of particles, :math:`\mathbf{q}` is</span>
 <span class="sd">    the scattering wavevector, and :math:`\mathbf{r}_i` is the position </span>
-<span class="sd">    of the :math:`i`-th monomer.</span>
+<span class="sd">    of the :math:`i`-th particle.</span>
+
+<span class="sd">    For multicomponent systems, the equation above can be generalized to</span>
+<span class="sd">    get the partial structure factor</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       S_{\alpha\beta}(\mathbf{q})=\frac{1}{\sqrt{N_\alpha N_\beta}}</span>
+<span class="sd">       \left\langle\sum_{j=1}^{N_\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}</span>
+<span class="sd">       \sum_{k=1}^{N_\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}</span>
+<span class="sd">       +\sum_{j=1}^{N_\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}</span>
+<span class="sd">       \sum_{k=1}^{N_\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}\right\rangle</span>
+
+<span class="sd">    where :math:`N_\alpha` and :math:`N_\beta` are the numbers of</span>
+<span class="sd">    particles for species :math:`\alpha` and :math:`\beta`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    groups : `MDAnalysis.AtomGroup` or array-like</span>
-<span class="sd">        Group(s) of atoms that share the same grouping type. All atoms</span>
-<span class="sd">        in the universe must be assigned to a group.</span>
+<span class="sd">        Group(s) of atoms that share the same grouping type. If `mode`</span>
+<span class="sd">        is not specified, all atoms in the universe must be assigned to</span>
+<span class="sd">        a group. If :code:`mode=&quot;pair&quot;`, there must be exactly one or </span>
+<span class="sd">        two groups.</span>
 
 <span class="sd">    groupings : `str` or array-like, default: :code:`&quot;atoms&quot;`</span>
 <span class="sd">        Determines whether the centers of mass are used in lieu of</span>
@@ -1337,10 +1354,38 @@
 <span class="sd">             atomistic polymer simulations).</span>
 
 <span class="sd">    n_points : `int`, default: :code:`32`</span>
-<span class="sd">        Number of points in the scattering wavevector grid.</span>
+<span class="sd">        Number of points in the scattering wavevector grid. Additional</span>
+<span class="sd">        wavevectors can be introduced via `n_surfaces` and </span>
+<span class="sd">        `n_surface_points` for more accurate structure factor values.</span>
+<span class="sd">        Alternatively, the desired wavevectors can be specified directly</span>
+<span class="sd">        in `wavevectors`.</span>
 
-<span class="sd">    unwrap : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether atom positions are unwrapped.</span>
+<span class="sd">    mode : `str`, optional</span>
+<span class="sd">        Evaluation mode.</span>
+
+<span class="sd">        .. container::</span>
+
+<span class="sd">           **Valid values**:</span>
+
+<span class="sd">           * :code:`None`: The overall structure factor is computed.</span>
+<span class="sd">           * :code:`&quot;pair&quot;`: The partial structure factor is computed</span>
+<span class="sd">             between the group(s) in `groups`.</span>
+<span class="sd">           * :code:`&quot;partial&quot;`: The partial structure factors for all </span>
+<span class="sd">             unique pairs from `groups` is computed.</span>
+
+<span class="sd">    n_surfaces : `int`, keyword-only, optional</span>
+<span class="sd">        Number of spherical surfaces in the first octant that intersect </span>
+<span class="sd">        with the grid wavevectors along the three coordinate axes for</span>
+<span class="sd">        which to introduce extra wavevectors for more accurate structure</span>
+<span class="sd">        factor values. Only available if the system is perfectly cubic.</span>
+
+<span class="sd">    n_surface_points : `int`, keyword-only, default: :code:`8`</span>
+<span class="sd">        Number of extra wavevectors to introduce per spherical surface. </span>
+<span class="sd">        Has no effect if `n_surfaces` is not specified.</span>
+
+<span class="sd">    wavevectors : `numpy.ndarray`, keyword-only, optional</span>
+<span class="sd">        Scattering wavevectors for which to compute the structure factor.</span>
+<span class="sd">        Has precedence over `n_points` if specified.</span>
 
 <span class="sd">    n_batches : `int`, keyword-only, optional</span>
 <span class="sd">        Number of batches to divide the structure factor calculation </span>
@@ -1363,14 +1408,460 @@
 <span class="sd">    results.units : `dict`</span>
 <span class="sd">        Reference units for the results. For example, to get the </span>
 <span class="sd">        reference units for :code:`results.wavenumbers`, call </span>
-<span class="sd">        :code:`results.units[&quot;results.wavenumbers&quot;]`. Only available if</span>
-<span class="sd">        OpenMM is installed.</span>
+<span class="sd">        :code:`results.units[&quot;results.wavenumbers&quot;]`.</span>
+
+<span class="sd">    results.pairs : `tuple`</span>
+<span class="sd">        All unique pairs of indices of the groups of atoms in `groups`.</span>
+<span class="sd">        The ordering coincides with the column indices in</span>
+<span class="sd">        `results.ssf`.</span>
+
+<span class="sd">    results.wavenumbers : `numpy.ndarray`</span>
+<span class="sd">        :math:`N_\mathrm{w}` unique scattering wavenumbers :math:`q`.</span>
+
+<span class="sd">        **Shape**: :math:`(N_\mathrm{w},)`.</span>
+
+<span class="sd">    results.ssf : `numpy.ndarray`</span>
+<span class="sd">        Static structure factor :math:`S(q)` or partial structure</span>
+<span class="sd">        factor(s) :math:`S_{\alpha\beta}(q)`.</span>
+
+<span class="sd">        **Shape**: :math:`(N_\mathrm{w},)`, :math:`(1,\,N_\mathrm{w})`,</span>
+<span class="sd">        or :math:`(C(N_\mathrm{g}+1,\,2),\,N_\mathrm{w})`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">],</span>
+            <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="n">n_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_surfaces</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="n">n_surface_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">wavevectors</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">)</span> <span class="k">else</span> <span class="n">groups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">==</span> <span class="s2">&quot;pair&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">emsg</span> <span class="o">=</span> <span class="s2">&quot;There must be exactly one or two groups when mode=&#39;pair&#39;.&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The provided atom groups do not contain all atoms &quot;</span>
+                        <span class="s2">&quot;in the universe.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+        
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groupings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">groupings</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">}:</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">groupings</span><span class="si">}</span><span class="s2">&#39;. The options are &quot;</span>
+                        <span class="s2">&quot;&#39;atoms&#39; and &#39;residues&#39;.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">*</span> <span class="p">[</span><span class="n">groupings</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">groupings</span><span class="p">):</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The number of grouping values is not equal to the &quot;</span>
+                        <span class="s2">&quot;number of groups.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groupings</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">g</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">}:</span>
+                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&#39;. The options are &quot;</span>
+                            <span class="s2">&quot;&#39;atoms&#39; and &#39;residues&#39;.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span> <span class="o">=</span> <span class="n">groupings</span>
+
+        <span class="c1"># Determine the number of particles in each group and their</span>
+        <span class="c1"># corresponding indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;n_</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                         <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="n">N</span><span class="p">))</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="n">N</span>
+
+        <span class="c1"># Determine the wavevectors and their corresponding magnitudes</span>
+        <span class="k">if</span> <span class="n">wavevectors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span> <span class="o">=</span> <span class="n">wavevectors</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dims</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">grid</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_points</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">grid</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">n_surfaces</span><span class="p">:</span>
+                <span class="n">n_theta</span><span class="p">,</span> <span class="n">n_phi</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">closest_factors</span><span class="p">(</span><span class="n">n_surface_points</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_theta</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span> 
+                                    <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_theta</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span> 
+                                    <span class="n">n_theta</span><span class="p">)</span>
+                <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_phi</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span> 
+                                  <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_phi</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span> 
+                                  <span class="n">n_phi</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
+                        <span class="s2">&quot;o,tpd-&gt;otpd&quot;</span><span class="p">,</span> 
+                        <span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n_surfaces</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> 
+                        <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">],</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">],</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="p">(</span><span class="n">n_phi</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                        <span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n_surfaces</span> <span class="o">*</span> <span class="n">n_surface_points</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+                <span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
+                    <span class="o">*</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_points</span><span class="p">)</span> <span class="o">/</span> <span class="n">L</span>
+                      <span class="k">for</span> <span class="n">L</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span><span class="p">]</span>
+                <span class="p">),</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span> <span class="o">=</span> <span class="n">n_batches</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># Determine the unique wavenumbers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">11</span><span class="p">))</span>
+
+        <span class="c1"># Preallocate arrays to store results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="n">combinations_with_replacement</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">==</span> <span class="s2">&quot;partial&quot;</span> <span class="k">else</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)),</span> 
+                <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Create dictionary to hold reference units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_dims&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span>
+                              <span class="s2">&quot;results.wavenumbers&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
+            
+            <span class="c1"># Store atom or center-of-mass positions in the current frame</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> \
+                                 <span class="k">else</span> <span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
+
+        <span class="c1"># Compute the structure factor by multiplying the cosine and</span>
+        <span class="c1"># sine terms and adding them together</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">,</span> 
+                                        <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                    <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> \
+                        <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> \
+                        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                    <span class="n">start</span> <span class="o">+=</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> 
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> \
+                                    <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">:</span>
+                    <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">,</span> 
+                                            <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                        <span class="n">arg_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> 
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span>
+                        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> \
+                                <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> \
+                                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">arg_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> 
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">k</span><span class="p">]])</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="p">(</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+                                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_k</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+                                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_k</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="p">)</span>
+                        <span class="n">start</span> <span class="o">+=</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">arg_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> 
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span>
+                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> \
+                                               <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">arg_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> 
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">k</span><span class="p">]])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+                            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_k</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+                            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_k</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># Normalize the static structure factor by the number of </span>
+        <span class="c1"># particles and timesteps, and flatten the array by combining</span>
+        <span class="c1"># values sharing the same wavevector magnitude</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> 
+                 <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> 
+                <span class="n">count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">/=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">*</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">),</span>
+                            <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> 
+                            <span class="n">count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">))[:,</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)]</span>
+                 <span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+                 <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">]</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ParallelStructureFactor"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html#mdhelper.analysis.structure.ParallelStructureFactor">[docs]</a><span class="k">class</span> <span class="nc">ParallelStructureFactor</span><span class="p">(</span><span class="n">StructureFactor</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A multithreaded implementation to calculate the static structure </span>
+<span class="sd">    factor :math:`S(q)` or partial structure factor </span>
+<span class="sd">    :math:`S_{\alpha\beta}(q)`.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">       For a theoretical background and a complete list of parameters,</span>
+<span class="sd">       attributes, and available methods, see :class:`StructureFactor`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">],</span>
+            <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="n">n_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_surfaces</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="n">n_surface_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">wavevectors</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        
+        <span class="n">StructureFactor</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">groupings</span><span class="p">,</span> <span class="n">n_points</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span>
+                                 <span class="n">n_surfaces</span><span class="o">=</span><span class="n">n_surfaces</span><span class="p">,</span>
+                                 <span class="n">n_surface_points</span><span class="o">=</span><span class="n">n_surface_points</span><span class="p">,</span> 
+                                 <span class="n">wavevectors</span><span class="o">=</span><span class="n">wavevectors</span><span class="p">,</span> <span class="n">n_batches</span><span class="o">=</span><span class="n">n_batches</span><span class="p">,</span>
+                                 <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ParallelAnalysisBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> 
+                                      <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+               
+        <span class="c1"># Determine pairs</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="n">combinations_with_replacement</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">==</span> <span class="s2">&quot;partial&quot;</span> <span class="k">else</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),)</span>
+
+        <span class="c1"># Determine the unique wavenumbers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">11</span><span class="p">))</span>
+
+        <span class="c1"># Create dictionary to hold reference units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_dims&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span>
+                              <span class="s2">&quot;results.wavenumbers&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
+        <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
+            
+            <span class="c1"># Store atom or center-of-mass positions in the current frame</span>
+            <span class="n">positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> \
+                           <span class="k">else</span> <span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
+
+        <span class="c1"># Compute the structure factor by multiplying the cosine and</span>
+        <span class="c1"># sine terms and adding them together</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">,</span> 
+                                        <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                    <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">positions</span><span class="p">)</span>
+                    <span class="n">ssf</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> \
+                        <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> \
+                        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                    <span class="n">start</span> <span class="o">+=</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">ssf</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="n">positions</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> \
+                       <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">),</span> 
+                            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">:</span>
+                    <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">,</span> 
+                                            <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                        <span class="n">arg_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
+                            <span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
+                            <span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> \
+                                <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> \
+                                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">arg_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
+                                <span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span>
+                            <span class="p">)</span>
+                            <span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+                                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_k</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+                                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_k</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="p">)</span>
+                        <span class="n">start</span> <span class="o">+=</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">arg_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> 
+                                      <span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span>
+                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
+                        <span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> \
+                                 <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">arg_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> 
+                                          <span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">k</span><span class="p">]])</span>
+                        <span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+                            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg_k</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_j</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+                            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg_k</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="p">)</span>
+            <span class="k">return</span> <span class="n">ssf</span>
+    
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># Normalize the static structure factor by the number of </span>
+        <span class="c1"># particles and timesteps, and flatten the array by combining</span>
+        <span class="c1"># values sharing the same wavevector magnitude</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> \
+                               <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> 
+                 <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> 
+                <span class="n">count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">*</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">),</span>
+                            <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> 
+                            <span class="n">count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">))[:,</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)]</span>
+                 <span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+                 <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">]</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="IncoherentIntermediateScatteringFunction"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction">[docs]</a><span class="k">class</span> <span class="nc">IncoherentIntermediateScatteringFunction</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The incoherent (or self) intermediate scattering function </span>
+<span class="sd">    :math:`F_\mathrm{s}(q,t)` characterizes the mean relaxation time of </span>
+<span class="sd">    a system, and its spatial fluctuations provide information about </span>
+<span class="sd">    dynamic heterogeneities. It is defined as</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        F_\mathrm{s}(\mathbf{q},t)=\frac{1}{N}\left\langle\sum_{j=1}^N</span>
+<span class="sd">        \exp\left[i\mathbf{q}\cdot\left(\mathbf{r}_j(t_0+t)</span>
+<span class="sd">        -\mathbf{r}_j(t_0)\right)\right]\right\rangle</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    groups : `MDAnalysis.AtomGroup` or array-like</span>
+<span class="sd">        Group(s) of atoms that share the same grouping type. All atoms </span>
+<span class="sd">        in the universe must be assigned to a group.</span>
+
+<span class="sd">    groupings : `str` or array-like, default: :code:`&quot;atoms&quot;`</span>
+<span class="sd">        Determines whether the centers of mass are used in lieu of</span>
+<span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
+<span class="sd">        value is used for all `groups`.</span>
+
+<span class="sd">        .. container::</span>
+
+<span class="sd">           **Valid values**:</span>
+
+<span class="sd">           * :code:`&quot;atoms&quot;`: Atom positions (generally for </span>
+<span class="sd">             coarse-grained simulations).</span>
+<span class="sd">           * :code:`&quot;residues&quot;`: Residues&#39; centers of mass (for </span>
+<span class="sd">             atomistic simulations).</span>
+<span class="sd">           * :code:`&quot;segments&quot;`: Segments&#39; centers of mass (for </span>
+<span class="sd">             atomistic polymer simulations).</span>
+
+<span class="sd">    n_points : `int`, default: :code:`32`</span>
+<span class="sd">        Number of points in the scattering wavevector grid. Additional</span>
+<span class="sd">        wavevectors can be introduced via `n_surfaces` and </span>
+<span class="sd">        `n_surface_points` for more accurate structure factor values.</span>
+<span class="sd">        Alternatively, the desired wavevectors can be specified directly</span>
+<span class="sd">        in `wavevectors`.</span>
+
+<span class="sd">    n_surfaces : `int`, keyword-only, optional</span>
+<span class="sd">        Number of spherical surfaces in the first octant that intersect </span>
+<span class="sd">        with the grid wavevectors along the three coordinate axes for</span>
+<span class="sd">        which to introduce extra wavevectors for more accurate incoherent </span>
+<span class="sd">        scattering function values. Only available if the system is </span>
+<span class="sd">        perfectly cubic.</span>
+
+<span class="sd">    n_surface_points : `int`, keyword-only, default: :code:`8`</span>
+<span class="sd">        Number of extra wavevectors to introduce per spherical surface. </span>
+<span class="sd">        Has no effect if `n_surfaces` is not specified.</span>
+
+<span class="sd">    wavevectors : `numpy.ndarray`, keyword-only, optional</span>
+<span class="sd">        Scattering wavevectors for which to compute the incoherent </span>
+<span class="sd">        scattering function. Has precedence over `n_points` if </span>
+<span class="sd">        specified.</span>
+
+<span class="sd">    n_batches : `int`, keyword-only, optional</span>
+<span class="sd">        Number of batches to divide the incoherent scattering function </span>
+<span class="sd">        calculation into. This is useful for large systems that cannot </span>
+<span class="sd">        be processed in a single pass.</span>
+
+<span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
+<span class="sd">        Determines whether detailed progress is shown.</span>
+
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments to pass to</span>
+<span class="sd">        :class:`MDAnalysis.analysis.base.AnalysisBase`.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : `MDAnalysis.Universe`</span>
+<span class="sd">        :class:`MDAnalysis.core.universe.Universe` object containing all</span>
+<span class="sd">        information describing the system.</span>
+
+<span class="sd">    results.units : `dict`</span>
+<span class="sd">        Reference units for the results. For example, to get the </span>
+<span class="sd">        reference units for :code:`results.wavenumbers`, call </span>
+<span class="sd">        :code:`results.units[&quot;results.wavenumbers&quot;]`.</span>
 
 <span class="sd">    results.wavenumbers : `numpy.ndarray`</span>
 <span class="sd">        Scattering wavenumbers :math:`q`.</span>
 
-<span class="sd">    results.ssf : `numpy.ndarray`</span>
-<span class="sd">        Static structure factor :math:`S(q)`.</span>
+<span class="sd">    results.isf : `numpy.ndarray`</span>
+<span class="sd">        Incoherent (self) intermediate scattering function</span>
+<span class="sd">        :math:`F_\mathrm{s}(q,\,t)`.</span>
 
 <span class="sd">        **Shape**: Same as `results.wavenumbers`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1378,9 +1869,10 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">],</span>
             <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="n">n_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span> <span class="n">unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-
+            <span class="o">*</span><span class="p">,</span> <span class="n">n_surfaces</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_surface_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> 
+            <span class="n">wavevectors</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="n">fft</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">)</span> <span class="k">else</span> <span class="n">groups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
         <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
@@ -1419,46 +1911,61 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="n">N</span><span class="p">))</span>
             <span class="n">index</span> <span class="o">+=</span> <span class="n">N</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n_points</span> <span class="o">=</span> <span class="n">n_points</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
-                <span class="o">*</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_points</span><span class="p">)</span> <span class="o">/</span> <span class="n">L</span>
-                 <span class="k">for</span> <span class="n">L</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span><span class="p">]</span>
-            <span class="p">),</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">wavevectors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span> <span class="o">=</span> <span class="n">wavevectors</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dims</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">grid</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_points</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">grid</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">n_surfaces</span><span class="p">:</span>
+                <span class="n">n_theta</span><span class="p">,</span> <span class="n">n_phi</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">closest_factors</span><span class="p">(</span><span class="n">n_surface_points</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> 
+                                                         <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_theta</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span> 
+                                    <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_theta</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span> 
+                                    <span class="n">n_theta</span><span class="p">)</span>
+                <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_phi</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span> 
+                                  <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_phi</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span> 
+                                  <span class="n">n_phi</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
+                        <span class="s2">&quot;o,tpd-&gt;otpd&quot;</span><span class="p">,</span> 
+                        <span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n_surfaces</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> 
+                        <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">],</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">],</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="p">(</span><span class="n">n_phi</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                        <span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n_surfaces</span> <span class="o">*</span> <span class="n">n_surface_points</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+                <span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
+                    <span class="o">*</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_points</span><span class="p">)</span> <span class="o">/</span> <span class="n">L</span>
+                      <span class="k">for</span> <span class="n">L</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span><span class="p">]</span>
+                <span class="p">),</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span> <span class="o">=</span> <span class="n">unwrap</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span> <span class="o">=</span> <span class="n">n_batches</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fft</span> <span class="o">=</span> <span class="n">fft</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_dims&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Unwrap particle positions if necessary</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">)</span> 
-                <span class="k">else</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> \
-                    <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> \
-                    <span class="k">else</span> <span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span> <span class="o">/</span> <span class="mi">2</span>
-
         <span class="c1"># Determine the unique wavenumbers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">11</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.wavenumbers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
 
         <span class="c1"># Preallocate arrays to store results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="c1"># Create dictionary to hold reference units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_dims&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span>
+                              <span class="s2">&quot;results.wavenumbers&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
@@ -1467,141 +1974,129 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> \
                                  <span class="k">else</span> <span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
 
-            <span class="c1"># Unwrap particle positions if necessary</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
-                <span class="n">dpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
-                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dpos</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threshold</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">mask</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">dpos</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span>
-
-        <span class="c1"># Compute the static structure factor by squaring the</span>
-        <span class="c1"># cosine and sine terms and adding them together</span>
+        <span class="c1"># Compute the sum of cosines and sines of the dot product of the</span>
+        <span class="c1"># wavevectors and positions</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">:</span>
             <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-                <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,kj-&gt;ki&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> \
-                    <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> \
-                    <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-                <span class="n">start</span> <span class="o">+=</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> \
+                    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> \
+                    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,kj-&gt;ki&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> \
-                                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Normalize the static structure factor by the number of </span>
-        <span class="c1"># particles and timesteps</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
+        <span class="c1"># Tally intermediate scattering function for each wavevector </span>
+        <span class="c1"># over all frames and normalize by the number of particles and </span>
+        <span class="c1"># timesteps</span>
+        <span class="n">corr</span> <span class="o">=</span> <span class="n">correlation</span><span class="o">.</span><span class="n">correlation_fft</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fft</span> \
+               <span class="k">else</span> <span class="n">correlation</span><span class="o">.</span><span class="n">correlation_shift</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">isf</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">corr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">corr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span>
         
         <span class="c1"># Flatten the array by combining values sharing the same</span>
         <span class="c1"># wavevector magnitude</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> 
-             <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">),</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> 
-            <span class="n">count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">isf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">isf</span><span class="p">[</span>
+                    <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)</span>
+                <span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span>
+            <span class="p">]</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ParallelStructureFactor"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html#mdhelper.analysis.structure.ParallelStructureFactor">[docs]</a><span class="k">class</span> <span class="nc">ParallelStructureFactor</span><span class="p">(</span><span class="n">StructureFactor</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">):</span>
+<div class="viewcode-block" id="ParallelIncoherentIntermediateScatteringFunction"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction">[docs]</a><span class="k">class</span> <span class="nc">ParallelIncoherentIntermediateScatteringFunction</span><span class="p">(</span>
+        <span class="n">IncoherentIntermediateScatteringFunction</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span>
+    <span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A multithreaded implementation to calculate the static structure </span>
-<span class="sd">    factor :math:`S(q)`.</span>
+<span class="sd">    A multithreaded implementation to calculate the incoherent (self)</span>
+<span class="sd">    intermediate scattering function :math:`F(q,\,t)`.</span>
 <span class="sd">    </span>
 <span class="sd">    .. note::</span>
 <span class="sd">       For a theoretical background and a complete list of parameters,</span>
-<span class="sd">       attributes, and available methods, see :class:`StructureFactor`.</span>
+<span class="sd">       attributes, and available methods, see </span>
+<span class="sd">       :class:`IncoherentIntermediateScatteringFunction`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">],</span>
             <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="n">n_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">,</span> <span class="n">unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="o">*</span><span class="p">,</span> <span class="n">n_surfaces</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_surface_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> 
+            <span class="n">wavevectors</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="n">fft</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         
-        <span class="n">StructureFactor</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">groupings</span><span class="p">,</span> <span class="n">n_points</span><span class="p">,</span> 
-                                 <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">n_batches</span><span class="o">=</span><span class="n">n_batches</span><span class="p">,</span> 
-                                 <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">IncoherentIntermediateScatteringFunction</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">groupings</span><span class="p">,</span> <span class="n">n_points</span><span class="p">,</span> <span class="n">n_surfaces</span><span class="o">=</span><span class="n">n_surfaces</span><span class="p">,</span>
+            <span class="n">n_surface_points</span><span class="o">=</span><span class="n">n_surface_points</span><span class="p">,</span> <span class="n">wavevectors</span><span class="o">=</span><span class="n">wavevectors</span><span class="p">,</span> 
+            <span class="n">n_batches</span><span class="o">=</span><span class="n">n_batches</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="n">fft</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">ParallelAnalysisBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> 
                                       <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Unwrap particle positions if necessary</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">)</span> 
-                <span class="k">else</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="p">]</span>
-            <span class="n">positions_old</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
-                <span class="n">positions_old</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> \
-                                   <span class="k">else</span> <span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
-            <span class="n">images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">positions_old</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-            <span class="n">threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span> <span class="o">/</span> <span class="mi">2</span>
-
-        <span class="c1"># Store particle positions in a shared memory array</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span>
-                <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span> 
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">)</span>
-                <span class="k">else</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
-            <span class="p">]):</span>
-
-            <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
-
-                <span class="c1"># Store atom or center-of-mass positions in the current frame</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> \
-                                        <span class="k">else</span> <span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
-                
-                <span class="c1"># Unwrap particle positions if necessary</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
-                    <span class="n">dpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="n">positions_old</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
-                    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dpos</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">threshold</span>
-                    <span class="n">images</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">mask</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">dpos</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-                    <span class="n">positions_old</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">+=</span> <span class="n">images</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span>
-
         <span class="c1"># Determine the unique wavenumbers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">11</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timestep</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="c1"># Create dictionary to hold reference units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_dims&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span>
+                              <span class="s2">&quot;results.wavenumbers&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
 
-        <span class="c1"># Compute the static structure factor by squaring the</span>
-        <span class="c1"># cosine and sine terms and adding them together</span>
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
+            
+            <span class="c1"># Store atom or center-of-mass positions in the current frame</span>
+            <span class="n">positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> \
+                           <span class="k">else</span> <span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
+
+        <span class="c1"># Compute the sum of cosines and sines of the dot product of the</span>
+        <span class="c1"># wavevectors and positions</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">:</span>
             <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-                <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,kj-&gt;ki&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">timestep</span><span class="p">])</span>
-                <span class="n">ssf</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> \
-                    <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> \
-                    <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-                <span class="n">start</span> <span class="o">+=</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">ssf</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">positions</span><span class="p">)</span>
+                <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,kj-&gt;ki&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> 
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">timestep</span><span class="p">])</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;wd,pd-&gt;pw&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="n">positions</span><span class="p">)</span>
+            <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span>
     
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Tally static structure factor for each wavevector over all</span>
-        <span class="c1"># frames and normalize by the number of particles and timesteps</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> \
-                           <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
+        <span class="n">trig_sums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span>
+
+        <span class="c1"># Tally intermediate scattering function for each wavevector </span>
+        <span class="c1"># over all frames and normalize by the number of particles and </span>
+        <span class="c1"># timesteps</span>
+        <span class="n">corr</span> <span class="o">=</span> <span class="n">correlation</span><span class="o">.</span><span class="n">correlation_fft</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fft</span> \
+               <span class="k">else</span> <span class="n">correlation</span><span class="o">.</span><span class="n">correlation_shift</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">isf</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">corr</span><span class="p">(</span><span class="n">trig_sums</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">corr</span><span class="p">(</span><span class="n">trig_sums</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span>
         
         <span class="c1"># Flatten the array by combining values sharing the same</span>
         <span class="c1"># wavevector magnitude</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> 
-             <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">),</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> 
-            <span class="n">count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">isf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">isf</span><span class="p">[</span>
+                    <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)</span>
+                <span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span>
+            <span class="p">]</span>
         <span class="p">)</span></div>
 </pre></div>
         </article>

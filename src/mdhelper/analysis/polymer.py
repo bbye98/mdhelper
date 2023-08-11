@@ -151,8 +151,7 @@ class _PolymerAnalysisBase(SerialAnalysisBase):
     results.units : `dict`
         Reference units for the results. For example, to get the 
         reference units for :code:`results.time`, call 
-        :code:`results.units["results.time"]`. Only available if OpenMM
-        is installed.
+        :code:`results.units["results.time"]`.
 
     Notes
     -----
@@ -299,8 +298,7 @@ class Gyradius(_PolymerAnalysisBase):
     results.units : `dict`
         Reference units for the results. For example, to get the 
         reference units for :code:`results.time`, call 
-        :code:`results.units["results.time"]`. Only available if OpenMM
-        is installed.
+        :code:`results.units["results.time"]`.
 
     results.gyradius : `numpy.ndarray`
         Radii of gyration for the :math:`N_\textrm{g}` groups over 
@@ -487,8 +485,7 @@ class Relaxation(_PolymerAnalysisBase):
     results.units : `dict`
         Reference units for the results. For example, to get the 
         reference units for :code:`results.time`, call 
-        :code:`results.units["results.time"]`. Only available if OpenMM
-        is installed.
+        :code:`results.units["results.time"]`.
 
     results.time : `numpy.ndarray`
         Changes in time :math:`t-t_0`.
@@ -854,12 +851,12 @@ class ParallelSingleChainStructureFactor(
         # Determine the unique wavenumbers
         self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
 
-    def _single_frame(self, frame: int, timestep: int) -> np.ndarray:
+    def _single_frame(self, frame: int, index: int) -> np.ndarray:
 
         # Compute the single-chain structure factor by squaring the
         # cosine and sine terms and adding them together
         scsf = np.zeros(len(self._wavevectors), dtype=float)
-        for chain in self._positions[timestep].reshape((self._n_chains, -1, 3)):
+        for chain in self._positions[index].reshape((self._n_chains, -1, 3)):
             arg = np.einsum("ij,kj->ki", self._wavevectors, chain)
             scsf += np.sin(arg).sum(axis=0) ** 2 + np.cos(arg).sum(axis=0) ** 2
         

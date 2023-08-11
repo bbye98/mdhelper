@@ -518,9 +518,9 @@ def msd_fft(
             
           L_{ij}=\frac{1}{6k_\mathrm{B}T}\lim_{t\rightarrow\infty}
           \frac{d}{dt}\left\langle\sum_{\alpha=1}^{N_i}
-          [\mathrm{r}_\alpha(t)-\mathrm{r}_\alpha(0)]\cdot
-          \sum_{\beta=1}^{N_j}[\mathrm{r}_\beta(t)-\mathrm{r}_\beta(0)]
-          \right\rangle
+          [\mathrm{r}_\alpha(t_0+t)-\mathrm{r}_\alpha(t_0)]\cdot
+          \sum_{\beta=1}^{N_j}[\mathrm{r}_\beta(t_0+t)
+          -\mathrm{r}_\beta(t_0)]\right\rangle
 
        `pos1` and `pos2` should be summed over all atoms before being
        passed to this function.
@@ -709,9 +709,9 @@ def msd_shift(
         
           L_{ij}=\frac{1}{6k_\mathrm{B}T}\lim_{t\rightarrow\infty}
           \frac{d}{dt}\left\langle\sum_{\alpha=1}^{N_i}
-          [\mathrm{r}_\alpha(t)-\mathrm{r}_\alpha(0)]\cdot
-          \sum_{\beta=1}^{N_j}[\mathrm{r}_\beta(t)-\mathrm{r}_\beta(0)]
-          \right\rangle
+          [\mathrm{r}_\alpha(t_0+t)-\mathrm{r}_\alpha(t_0)]\cdot
+          \sum_{\beta=1}^{N_j}[\mathrm{r}_\beta(t_0+t)
+          -\mathrm{r}_\beta(t_0)]\right\rangle
 
        `pos1` and `pos2` should be summed over all atoms before being
        passed to this function.

@@ -7,7 +7,7 @@
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>StructureFactor - MDHelper documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=362ab14a" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -208,6 +208,8 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
@@ -382,10 +384,11 @@
 <h1>StructureFactor<a class="headerlink" href="#structurefactor" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="mdhelper.analysis.structure.StructureFactor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mdhelper.analysis.structure.</span></span><span class="sig-name descname"><span class="pre">StructureFactor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v2.5.0)"><span class="pre">AtomGroup</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ArrayLike</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'atoms'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_batches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mdhelper/analysis/structure.html#StructureFactor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.analysis.structure.StructureFactor" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mdhelper.analysis.structure.</span></span><span class="sig-name descname"><span class="pre">StructureFactor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v2.5.0)"><span class="pre">AtomGroup</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ArrayLike</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'atoms'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_surfaces</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_surface_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavevectors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_batches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mdhelper/analysis/structure.html#StructureFactor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.analysis.structure.StructureFactor" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.base.SerialAnalysisBase" title="mdhelper.analysis.base.SerialAnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SerialAnalysisBase</span></code></a></p>
 <p>The static structure factor <span class="math notranslate nohighlight">\(S(q)\)</span> is a measure of how a
-material scatters incident radiation. It is defined as</p>
+material scatters incident radiation. It can be computed directly
+from a molecular dynamics trajectory using</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\begin{split}S(\mathbf{q})&amp;=\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N
@@ -396,12 +399,26 @@ material scatters incident radiation. It is defined as</p>
 </div>
 <p>where <span class="math notranslate nohighlight">\(N\)</span> is the number of particles, <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> is
 the scattering wavevector, and <span class="math notranslate nohighlight">\(\mathbf{r}_i\)</span> is the position
-of the <span class="math notranslate nohighlight">\(i\)</span>-th monomer.</p>
+of the <span class="math notranslate nohighlight">\(i\)</span>-th particle.</p>
+<p>For multicomponent systems, the equation above can be generalized to
+get the partial structure factor</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[S_{\alpha\beta}(\mathbf{q})=\frac{1}{\sqrt{N_\alpha N_\beta}}
+\left\langle\sum_{j=1}^{N_\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
+\sum_{k=1}^{N_\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}
++\sum_{j=1}^{N_\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}
+\sum_{k=1}^{N_\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}\right\rangle\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(N_\alpha\)</span> and <span class="math notranslate nohighlight">\(N_\beta\)</span> are the numbers of
+particles for species <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>groups</strong><span class="classifier"><cite>MDAnalysis.AtomGroup</cite> or array-like</span></dt><dd><p>Group(s) of atoms that share the same grouping type. All atoms
-in the universe must be assigned to a group.</p>
+<dt><strong>groups</strong><span class="classifier"><cite>MDAnalysis.AtomGroup</cite> or array-like</span></dt><dd><p>Group(s) of atoms that share the same grouping type. If <cite>mode</cite>
+is not specified, all atoms in the universe must be assigned to
+a group. If <code class="code docutils literal notranslate"><span class="pre">mode=&quot;pair&quot;</span></code>, there must be exactly one or
+two groups.</p>
 </dd>
 <dt><strong>groupings</strong><span class="classifier"><cite>str</cite> or array-like, default: <code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code></span></dt><dd><p>Determines whether the centers of mass are used in lieu of
 individual atom positions. If <cite>groupings</cite> is a <cite>str</cite>, the same
@@ -418,9 +435,34 @@ atomistic polymer simulations).</p></li>
 </ul>
 </div>
 </dd>
-<dt><strong>n_points</strong><span class="classifier"><cite>int</cite>, default: <code class="code docutils literal notranslate"><span class="pre">32</span></code></span></dt><dd><p>Number of points in the scattering wavevector grid.</p>
+<dt><strong>n_points</strong><span class="classifier"><cite>int</cite>, default: <code class="code docutils literal notranslate"><span class="pre">32</span></code></span></dt><dd><p>Number of points in the scattering wavevector grid. Additional
+wavevectors can be introduced via <cite>n_surfaces</cite> and
+<cite>n_surface_points</cite> for more accurate structure factor values.
+Alternatively, the desired wavevectors can be specified directly
+in <cite>wavevectors</cite>.</p>
 </dd>
-<dt><strong>unwrap</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Determines whether atom positions are unwrapped.</p>
+<dt><strong>mode</strong><span class="classifier"><cite>str</cite>, optional</span></dt><dd><p>Evaluation mode.</p>
+<div class="docutils container">
+<p><strong>Valid values</strong>:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">None</span></code>: The overall structure factor is computed.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;pair&quot;</span></code>: The partial structure factor is computed
+between the group(s) in <cite>groups</cite>.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;partial&quot;</span></code>: The partial structure factors for all
+unique pairs from <cite>groups</cite> is computed.</p></li>
+</ul>
+</div>
+</dd>
+<dt><strong>n_surfaces</strong><span class="classifier"><cite>int</cite>, keyword-only, optional</span></dt><dd><p>Number of spherical surfaces in the first octant that intersect
+with the grid wavevectors along the three coordinate axes for
+which to introduce extra wavevectors for more accurate structure
+factor values. Only available if the system is perfectly cubic.</p>
+</dd>
+<dt><strong>n_surface_points</strong><span class="classifier"><cite>int</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">8</span></code></span></dt><dd><p>Number of extra wavevectors to introduce per spherical surface.
+Has no effect if <cite>n_surfaces</cite> is not specified.</p>
+</dd>
+<dt><strong>wavevectors</strong><span class="classifier"><cite>numpy.ndarray</cite>, keyword-only, optional</span></dt><dd><p>Scattering wavevectors for which to compute the structure factor.
+Has precedence over <cite>n_points</cite> if specified.</p>
 </dd>
 <dt><strong>n_batches</strong><span class="classifier"><cite>int</cite>, keyword-only, optional</span></dt><dd><p>Number of batches to divide the structure factor calculation
 into. This is useful for large systems that cannot be processed
@@ -440,13 +482,19 @@ information describing the system.</p>
 </dd>
 <dt><strong>results.units</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Reference units for the results. For example, to get the
 reference units for <code class="code docutils literal notranslate"><span class="pre">results.wavenumbers</span></code>, call
-<code class="code docutils literal notranslate"><span class="pre">results.units[&quot;results.wavenumbers&quot;]</span></code>. Only available if
-OpenMM is installed.</p>
+<code class="code docutils literal notranslate"><span class="pre">results.units[&quot;results.wavenumbers&quot;]</span></code>.</p>
 </dd>
-<dt><strong>results.wavenumbers</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Scattering wavenumbers <span class="math notranslate nohighlight">\(q\)</span>.</p>
+<dt><strong>results.pairs</strong><span class="classifier"><cite>tuple</cite></span></dt><dd><p>All unique pairs of indices of the groups of atoms in <cite>groups</cite>.
+The ordering coincides with the column indices in
+<cite>results.ssf</cite>.</p>
 </dd>
-<dt><strong>results.ssf</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Static structure factor <span class="math notranslate nohighlight">\(S(q)\)</span>.</p>
-<p><strong>Shape</strong>: Same as <cite>results.wavenumbers</cite>.</p>
+<dt><strong>results.wavenumbers</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p><span class="math notranslate nohighlight">\(N_\mathrm{w}\)</span> unique scattering wavenumbers <span class="math notranslate nohighlight">\(q\)</span>.</p>
+<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_\mathrm{w},)\)</span>.</p>
+</dd>
+<dt><strong>results.ssf</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Static structure factor <span class="math notranslate nohighlight">\(S(q)\)</span> or partial structure
+factor(s) <span class="math notranslate nohighlight">\(S_{\alpha\beta}(q)\)</span>.</p>
+<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_\mathrm{w},)\)</span>, <span class="math notranslate nohighlight">\((1,\,N_\mathrm{w})\)</span>,
+or <span class="math notranslate nohighlight">\((C(N_\mathrm{g}+1,\,2),\,N_\mathrm{w})\)</span>.</p>
 </dd>
 </dl>
 </dd>

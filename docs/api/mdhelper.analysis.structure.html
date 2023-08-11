@@ -7,7 +7,7 @@
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>structure - MDHelper documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=362ab14a" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -208,6 +208,8 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
@@ -408,11 +410,17 @@ electrolyte systems.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction" title="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IncoherentIntermediateScatteringFunction</span></code></a></p></td>
+<td><p>The incoherent (or self) intermediate scattering function <span class="math notranslate nohighlight">\(F_\mathrm{s}(q,t)\)</span> characterizes the mean relaxation time of a system, and its spatial fluctuations provide information about dynamic heterogeneities.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction" title="mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelIncoherentIntermediateScatteringFunction</span></code></a></p></td>
+<td><p>A multithreaded implementation to calculate the incoherent (self) intermediate scattering function <span class="math notranslate nohighlight">\(F(q,\,t)\)</span>.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html#mdhelper.analysis.structure.ParallelRDF" title="mdhelper.analysis.structure.ParallelRDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelRDF</span></code></a></p></td>
 <td><p>A multithreaded implementation to calculate the radial distribution function <span class="math notranslate nohighlight">\(g_{ij}(r)\)</span> and its related properties.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html#mdhelper.analysis.structure.ParallelStructureFactor" title="mdhelper.analysis.structure.ParallelStructureFactor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelStructureFactor</span></code></a></p></td>
-<td><p>A multithreaded implementation to calculate the static structure factor <span class="math notranslate nohighlight">\(S(q)\)</span>.</p></td>
+<td><p>A multithreaded implementation to calculate the static structure factor <span class="math notranslate nohighlight">\(S(q)\)</span> or partial structure factor <span class="math notranslate nohighlight">\(S_{lphaeta}(q)\)</span>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF" title="mdhelper.analysis.structure.RDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RDF</span></code></a></p></td>
 <td><p>A serial implementation to calculate the radial distribution function (RDF) <span class="math notranslate nohighlight">\(g_{ij}(r)\)</span> between types <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>.</p></td>

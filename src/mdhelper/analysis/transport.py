@@ -78,8 +78,8 @@ def coefficients(
         :math:`N_\mathrm{b}` blocks of :math:`N_t` trajectory frames 
         each. Includes the dimensionality scaling factor. 
         
-        **Shape**: :math:`(_{N_\mathrm{g}+1}\mathrm{C}_{2},\,N_t)` or
-        :math:`(_{N_\mathrm{g}+1}\mathrm{C}_{2},\,N_\mathrm{b},\,N_t)`.
+        **Shape**: :math:`(C(N_\mathrm{g}+1,\,2),\,N_t)` or
+        :math:`(C(N_\mathrm{g}+1,\,2),\,N_\mathrm{b},\,N_t)`.
 
         **Reference unit**: :math:`\mathrm{Å}^2`.
 

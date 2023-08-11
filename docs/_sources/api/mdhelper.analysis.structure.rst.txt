@@ -1,4 +1,4 @@
-structure
+﻿structure
 =========
 
 .. automodule:: mdhelper.analysis.structure
@@ -31,6 +31,8 @@ structure
       :template: autosummary/class.rst
       :nosignatures:
    
+      IncoherentIntermediateScatteringFunction
+      ParallelIncoherentIntermediateScatteringFunction
       ParallelRDF
       ParallelStructureFactor
       RDF

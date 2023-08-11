@@ -101,7 +101,7 @@ activate a virtual environment named `<venv_name>` using
     conda create --name <venv_name>
     conda activate <venv_name>
 
-(For Mamba users, replace `conda` with `mamba` above.)
+(For Mamba users, replace `conda` with `mamba`.)
 
 ### Option 1: Install using pip
 
@@ -176,7 +176,7 @@ activate a virtual environment named `<venv_name>` using
         conda install --file minimum_requirements.txt
 
     If you would like to install the optional dependencies as well,
-    remove the `minimum` prefix from the filename above.
+    remove the `minimum_` prefix from the filenames above.
 
  5. Now, you can use MDHelper by first adding the path to the `src` 
     directory in your Python scripts. To verify that MDHelper has been 

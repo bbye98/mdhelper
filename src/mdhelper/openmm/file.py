@@ -50,11 +50,11 @@ class NetCDFFile():
             restart: bool = False, **kwargs):
 
         if isinstance(file, str):
-            if not file.endswith(".nc"):
+            if not file.endswith(".nc") or not file.endswith(".ncdf"):
                 file += ".nc"
             if FOUND_NETCDF:
-                self._nc = nc.Dataset(file, mode=mode, format="NETCDF3_64BIT_OFFSET",
-                                    **kwargs)
+                self._nc = nc.Dataset(file, mode=mode, 
+                                      format="NETCDF3_64BIT_OFFSET", **kwargs)
             else: # pragma: no cover
                 self._nc = nc(file, mode=mode, version=2, **kwargs)
         else:

@@ -7,7 +7,7 @@
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>coefficients - MDHelper documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=362ab14a" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -208,6 +208,8 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
@@ -397,8 +399,8 @@ and <span class="math notranslate nohighlight">\(L_{ii}^\mathrm{self}\)</span>.<
 <dt><strong>msd_cross</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>MSDs/CDs for the <span class="math notranslate nohighlight">\(N_\mathrm{g}\)</span> groups over
 <span class="math notranslate nohighlight">\(N_\mathrm{b}\)</span> blocks of <span class="math notranslate nohighlight">\(N_t\)</span> trajectory frames
 each. Includes the dimensionality scaling factor.</p>
-<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((_{N_\mathrm{g}+1}\mathrm{C}_{2},\,N_t)\)</span> or
-<span class="math notranslate nohighlight">\((_{N_\mathrm{g}+1}\mathrm{C}_{2},\,N_\mathrm{b},\,N_t)\)</span>.</p>
+<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((C(N_\mathrm{g}+1,\,2),\,N_t)\)</span> or
+<span class="math notranslate nohighlight">\((C(N_\mathrm{g}+1,\,2),\,N_\mathrm{b},\,N_t)\)</span>.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å}^2\)</span>.</p>
 </dd>
 <dt><strong>msd_self</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Self MSDs for the <span class="math notranslate nohighlight">\(N_\mathrm{g}\)</span> groups over

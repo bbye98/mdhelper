@@ -312,6 +312,11 @@ class DensityProfile(SerialAnalysisBase):
         :class:`MDAnalysis.core.universe.Universe` object containing all
         information describing the simulation system.
 
+    results.units : `dict`
+        Reference units for the results. For example, to get the 
+        reference units for :code:`results.bins`, call 
+        :code:`results.units["results.bins"]`.
+
     results.bins : `list`
         Bin centers corresponding to the density profiles in each 
         dimension.

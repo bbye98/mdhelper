@@ -21,6 +21,21 @@ def _setup_bond(
         global_params: dict[str, Union[float, unit.Quantity]],
         per_params: Iterable[Any]) -> None:
 
+    """
+    Sets up a :class:`openmm.CustomBondForce` object.
+
+    Parameters
+    ----------
+    cbforce : `openmm.CustomBondForce`
+        Custom bond force object.
+
+    global_params : `dict`, optional
+        Global parameters.
+
+    per_params : `list`, optional
+        Per-particle parameters.
+    """
+
     for param in global_params.items():
         cbforce.addGlobalParameter(*param)
     for param in per_params:
@@ -33,7 +48,9 @@ def fene(
 
     r"""
     Implements the finite extensible nonlinear elastic (FENE) potential
-    used for bead-spring polymer models:
+    used for bead-spring polymer models.
+
+    The potential energy between two bonded particles is given by
 
     .. math::
 

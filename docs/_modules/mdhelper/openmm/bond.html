@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>mdhelper.openmm.bond - MDHelper documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -207,6 +207,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
@@ -400,6 +402,21 @@
         <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]],</span>
         <span class="n">per_params</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets up a :class:`openmm.CustomBondForce` object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cbforce : `openmm.CustomBondForce`</span>
+<span class="sd">        Custom bond force object.</span>
+
+<span class="sd">    global_params : `dict`, optional</span>
+<span class="sd">        Global parameters.</span>
+
+<span class="sd">    per_params : `list`, optional</span>
+<span class="sd">        Per-particle parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">global_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">cbforce</span><span class="o">.</span><span class="n">addGlobalParameter</span><span class="p">(</span><span class="o">*</span><span class="n">param</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">per_params</span><span class="p">:</span>
@@ -412,7 +429,9 @@
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implements the finite extensible nonlinear elastic (FENE) potential</span>
-<span class="sd">    used for bead-spring polymer models:</span>
+<span class="sd">    used for bead-spring polymer models.</span>
+
+<span class="sd">    The potential energy between two bonded particles is given by</span>
 
 <span class="sd">    .. math::</span>
 

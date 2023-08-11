@@ -155,11 +155,12 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             self, trajectory: ReaderBase, verbose: bool = False, **kwargs):
         super().__init__(trajectory, verbose, **kwargs)
 
-    def _dask_job_block(self, frames, timesteps):
-        return [self._single_frame(f, t) for f, t in zip(frames, timesteps)]
+    def _dask_job_block(
+            self, frames: Union[slice, np.ndarray], indices: np.ndarray) -> list:
+        return [self._single_frame(f, i) for f, i in zip(frames, indices)]
 
     @abstractmethod
-    def _single_frame(self, frame: int, timestep: int):
+    def _single_frame(self, frame: int, index: int):
         pass
 
     def run(
@@ -233,9 +234,9 @@ class ParallelAnalysisBase(SerialAnalysisBase):
 
         n_jobs = min(n_jobs or np.inf, self.n_frames, 
                      len(os.sched_getaffinity(0)))
-        frame_indices = frames if frames \
-                        else np.arange(self.start, self.stop, self.step)
-        timestep_indices = np.arange(len(frame_indices))
+        frames = frames if frames \
+                 else np.arange(self.start, self.stop, self.step)
+        indices = np.arange(len(frames))
 
         if module == "dask" and FOUND_DASK:
             try:
@@ -277,14 +278,14 @@ class ParallelAnalysisBase(SerialAnalysisBase):
 
             jobs = []
             if block:
-                for frame, timestep in zip(
-                        np.array_split(frame_indices, n_jobs), 
-                        np.array_split(timestep_indices, n_jobs)
+                for frame, index in zip(
+                        np.array_split(frames, n_jobs), 
+                        np.array_split(indices, n_jobs)
                     ):
-                    jobs.append(dask.delayed(self._dask_job_block)(frame, timestep))
+                    jobs.append(dask.delayed(self._dask_job_block)(frame, index))
             else:
-                for frame, timestep in zip(frame_indices, timestep_indices):
-                    jobs.append(dask.delayed(self._single_frame)(frame, timestep))
+                for frame, index in zip(frames, indices):
+                    jobs.append(dask.delayed(self._single_frame)(frame, index))
 
             if verbose:
                 time_start = datetime.now()
@@ -306,17 +307,17 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             if block:
                 self._results = joblib.Parallel(n_jobs=n_jobs, prefer=method, 
                                                 **kwargs)(
-                    joblib.delayed(self._single_frame)(frame, timestep)
-                    for frames, timesteps in zip(
-                        np.array_split(frame_indices, n_jobs),
-                        np.array_split(timestep_indices, n_jobs)
-                    ) for frame, timestep in zip(frames, timesteps)
+                    joblib.delayed(self._single_frame)(f, i)
+                    for frames_, indices_ in zip(
+                        np.array_split(frames, n_jobs),
+                        np.array_split(indices, n_jobs)
+                    ) for f, i in zip(frames_, indices_)
                 )
             else:
                 self._results = joblib.Parallel(n_jobs=n_jobs, prefer=method, 
                                                 **kwargs)(
-                    joblib.delayed(self._single_frame)(frame, timestep) 
-                    for frame, timestep in zip(frame_indices, timestep_indices)
+                    joblib.delayed(self._single_frame)(f, i) 
+                    for f, i in zip(frames, indices)
                 )
 
         else:
@@ -337,7 +338,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
 
             with multiprocessing.get_context(method).Pool(n_jobs, **kwargs) as p:
                 self._results = p.starmap(self._single_frame, 
-                                          zip(frame_indices, timestep_indices))
+                                          zip(frames, indices))
         if verbose:
             log(f"Finished! Time elapsed: {datetime.now() - time_start}.")
 

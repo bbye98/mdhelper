@@ -7,6 +7,7 @@ This module contains classes to analyze the structure of bulk fluid and
 electrolyte systems.
 """
 
+from itertools import combinations_with_replacement
 from typing import Union
 import warnings
 
@@ -19,7 +20,7 @@ from scipy.signal import argrelextrema
 
 from .base import SerialAnalysisBase, ParallelAnalysisBase
 from .. import ArrayLike
-from ..algorithm import molecule
+from ..algorithm import correlation, molecule, utility
 
 def radial_histogram(
         pos1: np.ndarray, pos2: np.ndarray, n_bins: int, range: ArrayLike,
@@ -493,8 +494,7 @@ class RDF(SerialAnalysisBase):
     results.units : `dict`
         Reference units for the results. For example, to get the 
         reference units for :code:`results.bins`, call 
-        :code:`results.units["results.bins"]`. Only available if OpenMM
-        is installed.
+        :code:`results.units["results.bins"]`.
 
     results.edges : `numpy.ndarray`
         Edges of the histogram bins.
@@ -554,8 +554,6 @@ class RDF(SerialAnalysisBase):
         **Shape**: Same as `results.wavenumbers`.
     """
 
-    _GROUPINGS = {"atoms", "residues", "segments"}
-
     def __init__(
             self, ag1: mda.AtomGroup, ag2: mda.AtomGroup = None,
             n_bins: int = 201, range: ArrayLike = (0.0, 15.0), *,
@@ -573,14 +571,14 @@ class RDF(SerialAnalysisBase):
         super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
 
         if isinstance(groupings, str):
-            if groupings not in self._GROUPINGS:
+            if groupings not in {"atoms", "residues", "segments"}:
                 emsg = (f"Invalid grouping '{groupings}'. The options are "
                         "'atoms', 'residues', and 'segments'.")
                 raise ValueError(emsg)
             self._groupings = 2 * [groupings]
         else:
             for g in groupings:
-                if g not in self._GROUPINGS:
+                if g not in {"atoms", "residues", "segments"}:
                     emsg = (f"Invalid grouping '{g}'. The options are "
                             "'atoms', 'residues', and 'segments'.")
                     raise ValueError(emsg)
@@ -850,7 +848,7 @@ class ParallelRDF(RDF, ParallelAnalysisBase):
         ParallelAnalysisBase.__init__(self, ag1.universe.trajectory,
                                       verbose=verbose, **kwargs)
 
-    def _single_frame(self, frame: int, timestep: int) -> np.ndarray:
+    def _single_frame(self, frame: int, index: int) -> np.ndarray:
 
         _ts = self._trajectory[frame]
         result = np.empty(1 + self._n_bins, dtype=float)
@@ -921,7 +919,8 @@ class StructureFactor(SerialAnalysisBase):
 
     r"""
     The static structure factor :math:`S(q)` is a measure of how a
-    material scatters incident radiation. It is defined as
+    material scatters incident radiation. It can be computed directly
+    from a molecular dynamics trajectory using
 
     .. math::
 
@@ -933,13 +932,29 @@ class StructureFactor(SerialAnalysisBase):
 
     where :math:`N` is the number of particles, :math:`\mathbf{q}` is
     the scattering wavevector, and :math:`\mathbf{r}_i` is the position 
-    of the :math:`i`-th monomer.
+    of the :math:`i`-th particle.
+
+    For multicomponent systems, the equation above can be generalized to
+    get the partial structure factor
+
+    .. math::
+
+       S_{\alpha\beta}(\mathbf{q})=\frac{1}{\sqrt{N_\alpha N_\beta}}
+       \left\langle\sum_{j=1}^{N_\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
+       \sum_{k=1}^{N_\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}
+       +\sum_{j=1}^{N_\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}
+       \sum_{k=1}^{N_\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}\right\rangle
+
+    where :math:`N_\alpha` and :math:`N_\beta` are the numbers of
+    particles for species :math:`\alpha` and :math:`\beta`.
 
     Parameters
     ----------
     groups : `MDAnalysis.AtomGroup` or array-like
-        Group(s) of atoms that share the same grouping type. All atoms
-        in the universe must be assigned to a group.
+        Group(s) of atoms that share the same grouping type. If `mode`
+        is not specified, all atoms in the universe must be assigned to
+        a group. If :code:`mode="pair"`, there must be exactly one or 
+        two groups.
 
     groupings : `str` or array-like, default: :code:`"atoms"`
         Determines whether the centers of mass are used in lieu of
@@ -958,10 +973,38 @@ class StructureFactor(SerialAnalysisBase):
              atomistic polymer simulations).
 
     n_points : `int`, default: :code:`32`
-        Number of points in the scattering wavevector grid.
+        Number of points in the scattering wavevector grid. Additional
+        wavevectors can be introduced via `n_surfaces` and 
+        `n_surface_points` for more accurate structure factor values.
+        Alternatively, the desired wavevectors can be specified directly
+        in `wavevectors`.
 
-    unwrap : `bool`, keyword-only, default: :code:`False`
-        Determines whether atom positions are unwrapped.
+    mode : `str`, optional
+        Evaluation mode.
+
+        .. container::
+
+           **Valid values**:
+
+           * :code:`None`: The overall structure factor is computed.
+           * :code:`"pair"`: The partial structure factor is computed
+             between the group(s) in `groups`.
+           * :code:`"partial"`: The partial structure factors for all 
+             unique pairs from `groups` is computed.
+
+    n_surfaces : `int`, keyword-only, optional
+        Number of spherical surfaces in the first octant that intersect 
+        with the grid wavevectors along the three coordinate axes for
+        which to introduce extra wavevectors for more accurate structure
+        factor values. Only available if the system is perfectly cubic.
+
+    n_surface_points : `int`, keyword-only, default: :code:`8`
+        Number of extra wavevectors to introduce per spherical surface. 
+        Has no effect if `n_surfaces` is not specified.
+
+    wavevectors : `numpy.ndarray`, keyword-only, optional
+        Scattering wavevectors for which to compute the structure factor.
+        Has precedence over `n_points` if specified.
 
     n_batches : `int`, keyword-only, optional
         Number of batches to divide the structure factor calculation 
@@ -984,14 +1027,460 @@ class StructureFactor(SerialAnalysisBase):
     results.units : `dict`
         Reference units for the results. For example, to get the 
         reference units for :code:`results.wavenumbers`, call 
-        :code:`results.units["results.wavenumbers"]`. Only available if
-        OpenMM is installed.
+        :code:`results.units["results.wavenumbers"]`.
+
+    results.pairs : `tuple`
+        All unique pairs of indices of the groups of atoms in `groups`.
+        The ordering coincides with the column indices in
+        `results.ssf`.
+
+    results.wavenumbers : `numpy.ndarray`
+        :math:`N_\mathrm{w}` unique scattering wavenumbers :math:`q`.
+
+        **Shape**: :math:`(N_\mathrm{w},)`.
+
+    results.ssf : `numpy.ndarray`
+        Static structure factor :math:`S(q)` or partial structure
+        factor(s) :math:`S_{\alpha\beta}(q)`.
+
+        **Shape**: :math:`(N_\mathrm{w},)`, :math:`(1,\,N_\mathrm{w})`,
+        or :math:`(C(N_\mathrm{g}+1,\,2),\,N_\mathrm{w})`.
+    """
+
+    def __init__(
+            self, groups: Union[mda.AtomGroup, ArrayLike],
+            groupings: Union[str, ArrayLike] = "atoms", n_points: int = 32,
+            mode: str = None, *, n_surfaces: int = None, 
+            n_surface_points: int = 8, wavevectors: np.ndarray = None, 
+            n_batches: int = None, verbose: bool = True, **kwargs):
+
+        self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
+        self.universe = self._groups[0].universe
+
+        self._mode = mode
+        if self._mode == "pair" and not 1 <= len(self._groups) <= 2:
+            emsg = "There must be exactly one or two groups when mode='pair'."
+            raise ValueError(emsg)
+        elif self._mode is None:
+            if sum(g.n_atoms for g in self._groups) != self.universe.atoms.n_atoms:
+                emsg = ("The provided atom groups do not contain all atoms "
+                        "in the universe.")
+                raise ValueError(emsg)
+        
+        super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
+        self._dims = self.universe.dimensions[:3].copy()
+
+        self._n_groups = len(self._groups)
+        if isinstance(groupings, str):
+            if groupings not in {"atoms", "residues"}:
+                emsg = (f"Invalid grouping '{groupings}'. The options are "
+                        "'atoms' and 'residues'.")
+                raise ValueError(emsg)
+            self._groupings = self._n_groups * [groupings]
+        else:
+            if self._n_groups != len(groupings):
+                emsg = ("The number of grouping values is not equal to the "
+                        "number of groups.")
+                raise ValueError(emsg)
+            for g in groupings:
+                if g not in {"atoms", "residues"}:
+                    emsg = (f"Invalid grouping '{g}'. The options are "
+                            "'atoms' and 'residues'.")
+                    raise ValueError(emsg)
+            self._groupings = groupings
+
+        # Determine the number of particles in each group and their
+        # corresponding indices
+        self._Ns = tuple(getattr(a, f"n_{g}")
+                         for (a, g) in zip(self._groups, self._groupings))
+        self._N = sum(self._Ns)
+        self._slices = []
+        index = 0
+        for N in self._Ns:
+            self._slices.append(slice(index, index + N))
+            index += N
+
+        # Determine the wavevectors and their corresponding magnitudes
+        if wavevectors is not None:
+            self._wavevectors = wavevectors
+        elif np.allclose(self._dims, self._dims[0]):
+            grid = 2 * np.pi * np.arange(n_points) / self._dims[0]
+            self._wavevectors = np.stack(
+                np.meshgrid(grid, grid, grid), -1
+            ).reshape(-1, 3)
+            if n_surfaces:
+                n_theta, n_phi = utility.closest_factors(n_surface_points, 2, reverse=True)
+                theta = np.linspace(np.pi / (2 * n_theta + 4), 
+                                    np.pi / 2 - np.pi / (2 * n_theta + 4), 
+                                    n_theta)
+                phi = np.linspace(np.pi / (2 * n_phi + 4), 
+                                  np.pi / 2 - np.pi / (2 * n_phi + 4), 
+                                  n_phi)
+                self._wavevectors = np.vstack((
+                    self._wavevectors,
+                    np.einsum(
+                        "o,tpd->otpd", 
+                        grid[1:n_surfaces + 1], 
+                        np.stack((
+                            np.sin(theta) * np.cos(phi)[:, None],
+                            np.sin(theta) * np.sin(phi)[:, None],
+                            np.tile(np.cos(theta)[None, :], (n_phi, 1))
+                        ), axis=-1)
+                    ).reshape((n_surfaces * n_surface_points, 3))
+                ))
+        else:
+            self._wavevectors = np.stack(
+                np.meshgrid(
+                    *[2 * np.pi * np.arange(n_points) / L
+                      for L in self._dims]
+                ), -1
+            ).reshape(-1, 3)
+        self._wavenumbers = np.linalg.norm(self._wavevectors, axis=1)
+
+        self._n_batches = n_batches
+        self._verbose = verbose
+
+    def _prepare(self) -> None:
+
+        # Determine the unique wavenumbers
+        self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
+
+        # Preallocate arrays to store results
+        self._positions = np.empty((self._N, 3), dtype=float)
+        if self._mode is None:
+            self.results.ssf = np.zeros(len(self._wavenumbers), dtype=float)
+        else:
+            self.results.pairs = tuple(
+                combinations_with_replacement(range(self._n_groups), 2)
+            ) if self._mode == "partial" else ((0, self._n_groups - 1),)
+            self.results.ssf = np.zeros(
+                (len(self.results.pairs), len(self._wavenumbers)), 
+                dtype=float
+            )
+
+        # Create dictionary to hold reference units
+        self.results.units = {"_dims": unit.angstrom,
+                              "results.wavenumbers": unit.angstrom ** -1}
+        
+    def _single_frame(self) -> None:
+
+        for g, gr, s in zip(self._groups, self._groupings, self._slices):
+            
+            # Store atom or center-of-mass positions in the current frame
+            self._positions[s] = g.positions if gr == "atoms" \
+                                 else molecule.center_of_mass(g, gr)
+
+        # Compute the structure factor by multiplying the cosine and
+        # sine terms and adding them together
+        if self._mode is None:
+            if self._n_batches:
+                start = 0
+                for w in np.array_split(self._wavevectors, self._n_batches, 
+                                        axis=0):
+                    arg = np.einsum("wd,pd->pw", w, self._positions)
+                    self.results.ssf[start:start + w.shape[0]] += \
+                        np.sin(arg).sum(axis=0) ** 2 \
+                        + np.cos(arg).sum(axis=0) ** 2
+                    start += w.shape[0]
+            else:
+                arg = np.einsum("wd,pd->pw", 
+                                self._wavevectors, self._positions)
+                self.results.ssf += np.sin(arg).sum(axis=0) ** 2 \
+                                    + np.cos(arg).sum(axis=0) ** 2
+        else:
+            for i, (j, k) in enumerate(self.results.pairs):
+                if self._n_batches:
+                    start = 0
+                    for w in np.array_split(self._wavevectors, self._n_batches, 
+                                            axis=0):
+                        arg_j = np.einsum("wd,pd->pw", w, 
+                                          self._positions[self._slices[j]])
+                        if j == k:
+                            self.results.ssf[i, start:start + w.shape[0]] += \
+                                np.sin(arg_j).sum(axis=0) ** 2 \
+                                + np.cos(arg_j).sum(axis=0) ** 2
+                        else:
+                            arg_k = np.einsum("wd,pd->pw", w, 
+                                              self._positions[self._slices[k]])
+                            self.results.ssf[i, start:start + w.shape[0]] += (
+                                np.sin(arg_j).sum(axis=0) 
+                                * np.sin(arg_k).sum(axis=0)
+                                + np.cos(arg_j).sum(axis=0) 
+                                * np.cos(arg_k).sum(axis=0)
+                            )
+                        start += w.shape[0]
+                else:
+                    arg_j = np.einsum("wd,pd->pw", self._wavevectors, 
+                                      self._positions[self._slices[j]])
+                    if j == k:
+                        self.results.ssf[i] += np.sin(arg_j).sum(axis=0) ** 2 \
+                                               + np.cos(arg_j).sum(axis=0) ** 2
+                    else:
+                        arg_k = np.einsum("wd,pd->pw", self._wavevectors, 
+                                        self._positions[self._slices[k]])
+                        self.results.ssf[i] += (
+                            np.sin(arg_j).sum(axis=0) 
+                            * np.sin(arg_k).sum(axis=0)
+                            + np.cos(arg_j).sum(axis=0) 
+                            * np.cos(arg_k).sum(axis=0)
+                        )
+
+    def _conclude(self) -> None:
+
+        # Normalize the static structure factor by the number of 
+        # particles and timesteps, and flatten the array by combining
+        # values sharing the same wavevector magnitude
+        if self._mode is None:
+            self.results.ssf /= self.n_frames * self._N
+            self.results.ssf = np.fromiter(
+                (self.results.ssf[np.isclose(q, self._wavenumbers)].mean() 
+                 for q in self.results.wavenumbers),
+                dtype=float, 
+                count=len(self.results.wavenumbers)
+            )
+        else:
+            self.results.ssf /= (
+                self.n_frames *
+                np.fromiter((np.sqrt(self._Ns[i] * self._Ns[j])
+                             for i, j in self.results.pairs),
+                            dtype=float, 
+                            count=len(self.results.pairs))[:, None]
+            )
+            self.results.ssf = np.hstack(
+                [self.results.ssf[:, np.isclose(q, self._wavenumbers)]
+                 .mean(axis=1, keepdims=True) 
+                 for q in self.results.wavenumbers]
+            )
+
+class ParallelStructureFactor(StructureFactor, ParallelAnalysisBase):
+
+    """
+    A multithreaded implementation to calculate the static structure 
+    factor :math:`S(q)` or partial structure factor 
+    :math:`S_{\alpha\beta}(q)`.
+    
+    .. note::
+       For a theoretical background and a complete list of parameters,
+       attributes, and available methods, see :class:`StructureFactor`.
+    """
+
+    def __init__(
+            self, groups: Union[mda.AtomGroup, ArrayLike],
+            groupings: Union[str, ArrayLike] = "atoms", n_points: int = 32,
+            mode: str = None, *, n_surfaces: int = None, 
+            n_surface_points: int = 8, wavevectors: np.ndarray = None, 
+            n_batches: int = None, verbose: bool = True, **kwargs):
+        
+        StructureFactor.__init__(self, groups, groupings, n_points, mode,
+                                 n_surfaces=n_surfaces,
+                                 n_surface_points=n_surface_points, 
+                                 wavevectors=wavevectors, n_batches=n_batches,
+                                 verbose=verbose, **kwargs)
+        ParallelAnalysisBase.__init__(self, self.universe.trajectory, 
+                                      verbose=verbose, **kwargs)
+        
+    def _prepare(self) -> None:
+               
+        # Determine pairs
+        if self._mode is not None:
+            self.results.pairs = tuple(
+                combinations_with_replacement(range(self._n_groups), 2)
+            ) if self._mode == "partial" else ((0, self._n_groups - 1),)
+
+        # Determine the unique wavenumbers
+        self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
+
+        # Create dictionary to hold reference units
+        self.results.units = {"_dims": unit.angstrom,
+                              "results.wavenumbers": unit.angstrom ** -1}
+
+    def _single_frame(self, frame: int, index: int) -> np.ndarray:
+
+        self._trajectory[frame]
+        positions = np.empty((self._N, 3), dtype=float)
+        for g, gr, s in zip(self._groups, self._groupings, self._slices):
+            
+            # Store atom or center-of-mass positions in the current frame
+            positions[s] = g.positions if gr == "atoms" \
+                           else molecule.center_of_mass(g, gr)
+
+        # Compute the structure factor by multiplying the cosine and
+        # sine terms and adding them together
+        if self._mode is None:
+            if self._n_batches:
+                start = 0
+                ssf = np.empty(len(self._wavenumbers), dtype=float)
+                for w in np.array_split(self._wavevectors, self._n_batches, 
+                                        axis=0):
+                    arg = np.einsum("wd,pd->pw", w, positions)
+                    ssf[start:start + w.shape[0]] = \
+                        np.sin(arg).sum(axis=0) ** 2 \
+                        + np.cos(arg).sum(axis=0) ** 2
+                    start += w.shape[0]
+                return ssf
+            else:
+                arg = np.einsum("wd,pd->pw", self._wavevectors, positions)
+                return np.sin(arg).sum(axis=0) ** 2 \
+                       + np.cos(arg).sum(axis=0) ** 2
+        else:
+            ssf = np.empty((len(self.results.pairs), 
+                            len(self._wavenumbers)), dtype=float)
+            for i, (j, k) in enumerate(self.results.pairs):
+                if self._n_batches:
+                    start = 0
+                    for w in np.array_split(self._wavevectors, self._n_batches, 
+                                            axis=0):
+                        arg_j = np.einsum(
+                            "wd,pd->pw", w, positions[self._slices[j]]
+                        )
+                        if j == k:
+                            ssf[i, start:start + w.shape[0]] = \
+                                np.sin(arg_j).sum(axis=0) ** 2 \
+                                + np.cos(arg_j).sum(axis=0) ** 2
+                        else:
+                            arg_k = np.einsum(
+                                "wd,pd->pw", w, positions[self._slices[k]]
+                            )
+                            ssf[i, start:start + w.shape[0]] = (
+                                np.sin(arg_j).sum(axis=0) 
+                                * np.sin(arg_k).sum(axis=0)
+                                + np.cos(arg_j).sum(axis=0) 
+                                * np.cos(arg_k).sum(axis=0)
+                            )
+                        start += w.shape[0]
+                else:
+                    arg_j = np.einsum("wd,pd->pw", self._wavevectors, 
+                                      positions[self._slices[j]])
+                    if j == k:
+                        ssf[i] = np.sin(arg_j).sum(axis=0) ** 2 \
+                                 + np.cos(arg_j).sum(axis=0) ** 2
+                    else:
+                        arg_k = np.einsum("wd,pd->pw", self._wavevectors, 
+                                          positions[self._slices[k]])
+                        ssf[i] = (
+                            np.sin(arg_j).sum(axis=0) 
+                            * np.sin(arg_k).sum(axis=0)
+                            + np.cos(arg_j).sum(axis=0) 
+                            * np.cos(arg_k).sum(axis=0)
+                        )
+            return ssf
+    
+    def _conclude(self) -> None:
+
+        # Normalize the static structure factor by the number of 
+        # particles and timesteps, and flatten the array by combining
+        # values sharing the same wavevector magnitude
+        if self._mode is None:
+            self.results.ssf = np.vstack(self._results).sum(axis=0) \
+                               / (self.n_frames * self._N)
+            self.results.ssf = np.fromiter(
+                (self.results.ssf[np.isclose(q, self._wavenumbers)].mean() 
+                 for q in self.results.wavenumbers),
+                dtype=float, 
+                count=len(self.results.wavenumbers)
+            )
+        else:    
+            self.results.ssf = np.stack(self._results).sum(axis=0) / (
+                self.n_frames *
+                np.fromiter((np.sqrt(self._Ns[i] * self._Ns[j])
+                             for i, j in self.results.pairs),
+                            dtype=float, 
+                            count=len(self.results.pairs))[:, None]
+            )
+            self.results.ssf = np.hstack(
+                [self.results.ssf[:, np.isclose(q, self._wavenumbers)]
+                 .mean(axis=1, keepdims=True) 
+                 for q in self.results.wavenumbers]
+            )
+
+class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
+
+    r"""
+    The incoherent (or self) intermediate scattering function 
+    :math:`F_\mathrm{s}(q,t)` characterizes the mean relaxation time of 
+    a system, and its spatial fluctuations provide information about 
+    dynamic heterogeneities. It is defined as
+
+    .. math::
+
+        F_\mathrm{s}(\mathbf{q},t)=\frac{1}{N}\left\langle\sum_{j=1}^N
+        \exp\left[i\mathbf{q}\cdot\left(\mathbf{r}_j(t_0+t)
+        -\mathbf{r}_j(t_0)\right)\right]\right\rangle
+    
+    Parameters
+    ----------
+    groups : `MDAnalysis.AtomGroup` or array-like
+        Group(s) of atoms that share the same grouping type. All atoms 
+        in the universe must be assigned to a group.
+
+    groupings : `str` or array-like, default: :code:`"atoms"`
+        Determines whether the centers of mass are used in lieu of
+        individual atom positions. If `groupings` is a `str`, the same
+        value is used for all `groups`.
+
+        .. container::
+
+           **Valid values**:
+
+           * :code:`"atoms"`: Atom positions (generally for 
+             coarse-grained simulations).
+           * :code:`"residues"`: Residues' centers of mass (for 
+             atomistic simulations).
+           * :code:`"segments"`: Segments' centers of mass (for 
+             atomistic polymer simulations).
+
+    n_points : `int`, default: :code:`32`
+        Number of points in the scattering wavevector grid. Additional
+        wavevectors can be introduced via `n_surfaces` and 
+        `n_surface_points` for more accurate structure factor values.
+        Alternatively, the desired wavevectors can be specified directly
+        in `wavevectors`.
+
+    n_surfaces : `int`, keyword-only, optional
+        Number of spherical surfaces in the first octant that intersect 
+        with the grid wavevectors along the three coordinate axes for
+        which to introduce extra wavevectors for more accurate incoherent 
+        scattering function values. Only available if the system is 
+        perfectly cubic.
+
+    n_surface_points : `int`, keyword-only, default: :code:`8`
+        Number of extra wavevectors to introduce per spherical surface. 
+        Has no effect if `n_surfaces` is not specified.
+
+    wavevectors : `numpy.ndarray`, keyword-only, optional
+        Scattering wavevectors for which to compute the incoherent 
+        scattering function. Has precedence over `n_points` if 
+        specified.
+
+    n_batches : `int`, keyword-only, optional
+        Number of batches to divide the incoherent scattering function 
+        calculation into. This is useful for large systems that cannot 
+        be processed in a single pass.
+
+    verbose : `bool`, keyword-only, default: :code:`True`
+        Determines whether detailed progress is shown.
+
+    **kwargs
+        Additional keyword arguments to pass to
+        :class:`MDAnalysis.analysis.base.AnalysisBase`.
+
+    Attributes
+    ----------
+    universe : `MDAnalysis.Universe`
+        :class:`MDAnalysis.core.universe.Universe` object containing all
+        information describing the system.
+
+    results.units : `dict`
+        Reference units for the results. For example, to get the 
+        reference units for :code:`results.wavenumbers`, call 
+        :code:`results.units["results.wavenumbers"]`.
 
     results.wavenumbers : `numpy.ndarray`
         Scattering wavenumbers :math:`q`.
 
-    results.ssf : `numpy.ndarray`
-        Static structure factor :math:`S(q)`.
+    results.isf : `numpy.ndarray`
+        Incoherent (self) intermediate scattering function
+        :math:`F_\mathrm{s}(q,\,t)`.
 
         **Shape**: Same as `results.wavenumbers`.
     """
@@ -999,9 +1488,10 @@ class StructureFactor(SerialAnalysisBase):
     def __init__(
             self, groups: Union[mda.AtomGroup, ArrayLike],
             groupings: Union[str, ArrayLike] = "atoms", n_points: int = 32,
-            *, unwrap: bool = False, n_batches: int = None, 
-            verbose: bool = True, **kwargs):
-
+            *, n_surfaces: int = None, n_surface_points: int = 8, 
+            wavevectors: np.ndarray = None, n_batches: int = None, 
+            fft: bool = True, verbose: bool = True, **kwargs):
+        
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
         if sum(g.n_atoms for g in self._groups) != self.universe.atoms.n_atoms:
@@ -1040,46 +1530,61 @@ class StructureFactor(SerialAnalysisBase):
             self._slices.append(slice(index, index + N))
             index += N
 
-        self._n_points = n_points
-        self._wavevectors = np.stack(
-            np.meshgrid(
-                *[2 * np.pi * np.arange(self._n_points) / L
-                 for L in self._dims]
-            ), -1
-        ).reshape(-1, 3)
+        if wavevectors is not None:
+            self._wavevectors = wavevectors
+        elif np.allclose(self._dims, self._dims[0]):
+            grid = 2 * np.pi * np.arange(n_points) / self._dims[0]
+            self._wavevectors = np.stack(
+                np.meshgrid(grid, grid, grid), -1
+            ).reshape(-1, 3)
+            if n_surfaces:
+                n_theta, n_phi = utility.closest_factors(n_surface_points, 2, 
+                                                         reverse=True)
+                theta = np.linspace(np.pi / (2 * n_theta + 4), 
+                                    np.pi / 2 - np.pi / (2 * n_theta + 4), 
+                                    n_theta)
+                phi = np.linspace(np.pi / (2 * n_phi + 4), 
+                                  np.pi / 2 - np.pi / (2 * n_phi + 4), 
+                                  n_phi)
+                self._wavevectors = np.vstack((
+                    self._wavevectors,
+                    np.einsum(
+                        "o,tpd->otpd", 
+                        grid[1:n_surfaces + 1], 
+                        np.stack((
+                            np.sin(theta) * np.cos(phi)[:, None],
+                            np.sin(theta) * np.sin(phi)[:, None],
+                            np.tile(np.cos(theta)[None, :], (n_phi, 1))
+                        ), axis=-1)
+                    ).reshape((n_surfaces * n_surface_points, 3))
+                ))
+        else:
+            self._wavevectors = np.stack(
+                np.meshgrid(
+                    *[2 * np.pi * np.arange(n_points) / L
+                      for L in self._dims]
+                ), -1
+            ).reshape(-1, 3)
         self._wavenumbers = np.linalg.norm(self._wavevectors, axis=1)
 
-        self._unwrap = unwrap
         self._n_batches = n_batches
+        self._fft = fft
         self._verbose = verbose
-
-        self.results.units = {"_dims": unit.angstrom}
 
     def _prepare(self) -> None:
 
-        # Unwrap particle positions if necessary
-        self._positions = np.empty((self._N, 3), dtype=float)
-        if self._unwrap:
-            self.universe.trajectory[
-                self._sliced_trajectory.frames[0] 
-                if hasattr(self._sliced_trajectory, "frames") 
-                else (self.start or 0)
-            ]
-            self._positions_old = np.empty(self._positions.shape, dtype=float)
-            for g, gr, s in zip(self._groups, self._groupings, self._slices):
-                self._positions_old[s] = \
-                    g.positions if gr == "atoms" \
-                    else molecule.center_of_mass(g, gr)
-            self._images = np.zeros(self._positions_old.shape, dtype=int)
-            self._threshold = self._dims / 2
-
         # Determine the unique wavenumbers
         self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
-        self.results.units["results.wavenumbers"] = unit.angstrom ** -1
 
         # Preallocate arrays to store results
-        self.results.ssf = np.zeros(len(self._wavenumbers), dtype=float)
-        
+        self._positions = np.empty((self._N, 3), dtype=float)
+        self._cos_sum = np.zeros((self.n_frames, len(self._wavenumbers)), dtype=float)
+        self._sin_sum = np.zeros((self.n_frames, len(self._wavenumbers)), dtype=float)
+
+        # Create dictionary to hold reference units
+        self.results.units = {"_dims": unit.angstrom,
+                              "results.wavenumbers": unit.angstrom ** -1}
+
     def _single_frame(self) -> None:
 
         for g, gr, s in zip(self._groups, self._groupings, self._slices):
@@ -1088,139 +1593,127 @@ class StructureFactor(SerialAnalysisBase):
             self._positions[s] = g.positions if gr == "atoms" \
                                  else molecule.center_of_mass(g, gr)
 
-            # Unwrap particle positions if necessary
-            if self._unwrap:
-                dpos = self._positions[s] - self._positions_old[s]
-                mask = np.abs(dpos) >= self._threshold
-                self._images[s][mask] -= np.sign(dpos[mask]).astype(int)
-                self._positions_old[s] = self._positions[s].copy()
-                self._positions[s] += self._images[s] * self._dims
-
-        # Compute the static structure factor by squaring the
-        # cosine and sine terms and adding them together
+        # Compute the sum of cosines and sines of the dot product of the
+        # wavevectors and positions
         if self._n_batches:
             start = 0
             for w in np.array_split(self._wavevectors, self._n_batches, axis=0):
-                arg = np.einsum("ij,kj->ki", w, self._positions)
-                self.results.ssf[start:start + w.shape[0]] += \
-                    np.sin(arg).sum(axis=0) ** 2 \
-                    + np.cos(arg).sum(axis=0) ** 2
-                start += w.shape[0]
+                arg = np.einsum("wd,pd->pw", w, self._positions)
+                self._cos_sum[self._frame_index, start:start + w.shape[0]] \
+                    = np.cos(arg).sum(axis=0)
+                self._sin_sum[self._frame_index, start:start + w.shape[0]] \
+                    = np.sin(arg).sum(axis=0)
         else:
-            arg = np.einsum("ij,kj->ki", self._wavevectors, self._positions)
-            self.results.ssf += np.sin(arg).sum(axis=0) ** 2 \
-                                + np.cos(arg).sum(axis=0) ** 2
-
+            arg = np.einsum("wd,pd->pw", self._wavevectors, self._positions)
+            self._cos_sum[self._frame_index] = np.cos(arg).sum(axis=0)
+            self._sin_sum[self._frame_index] = np.sin(arg).sum(axis=0)
+    
     def _conclude(self) -> None:
 
-        # Normalize the static structure factor by the number of 
-        # particles and timesteps
-        self.results.ssf /= self._N * self.n_frames
+        # Tally intermediate scattering function for each wavevector 
+        # over all frames and normalize by the number of particles and 
+        # timesteps
+        corr = correlation.correlation_fft if self._fft \
+               else correlation.correlation_shift
+        self.results.isf = (
+            corr(self._cos_sum, axis=0) + corr(self._sin_sum, axis=0)
+        ) / self._N
         
         # Flatten the array by combining values sharing the same
         # wavevector magnitude
-        self.results.ssf = np.fromiter(
-            (self.results.ssf[np.isclose(q, self._wavenumbers)].mean() 
-             for q in self.results.wavenumbers),
-            dtype=float, 
-            count=len(self.results.wavenumbers)
+        self.results.isf = np.hstack(
+            [
+                self.results.isf[
+                    :, np.isclose(q, self._wavenumbers)
+                ].mean(axis=1, keepdims=True)
+                for q in self.results.wavenumbers
+            ]
         )
 
-class ParallelStructureFactor(StructureFactor, ParallelAnalysisBase):
+class ParallelIncoherentIntermediateScatteringFunction(
+        IncoherentIntermediateScatteringFunction, ParallelAnalysisBase
+    ):
 
     """
-    A multithreaded implementation to calculate the static structure 
-    factor :math:`S(q)`.
+    A multithreaded implementation to calculate the incoherent (self)
+    intermediate scattering function :math:`F(q,\,t)`.
     
     .. note::
        For a theoretical background and a complete list of parameters,
-       attributes, and available methods, see :class:`StructureFactor`.
+       attributes, and available methods, see 
+       :class:`IncoherentIntermediateScatteringFunction`.
     """
 
     def __init__(
             self, groups: Union[mda.AtomGroup, ArrayLike],
             groupings: Union[str, ArrayLike] = "atoms", n_points: int = 32,
-            *, unwrap: bool = False, n_batches: int = None, 
-            verbose: bool = True, **kwargs):
+            *, n_surfaces: int = None, n_surface_points: int = 8, 
+            wavevectors: np.ndarray = None, n_batches: int = None, 
+            fft: bool = True, verbose: bool = True, **kwargs):
         
-        StructureFactor.__init__(self, groups, groupings, n_points, 
-                                 unwrap=unwrap, n_batches=n_batches, 
-                                 verbose=verbose, **kwargs)
+        IncoherentIntermediateScatteringFunction.__init__(
+            self, groups, groupings, n_points, n_surfaces=n_surfaces,
+            n_surface_points=n_surface_points, wavevectors=wavevectors, 
+            n_batches=n_batches, fft=fft, verbose=verbose, **kwargs)
         ParallelAnalysisBase.__init__(self, self.universe.trajectory, 
                                       verbose=verbose, **kwargs)
         
     def _prepare(self) -> None:
 
-        # Unwrap particle positions if necessary
-        self._positions = np.empty((self.n_frames, self._N, 3), dtype=float)
-        if self._unwrap:
-            self.universe.trajectory[
-                self._sliced_trajectory.frames[0] 
-                if hasattr(self._sliced_trajectory, "frames") 
-                else (self.start or 0)
-            ]
-            positions_old = np.empty((self._N, 3), dtype=float)
-            for g, gr, s in zip(self._groups, self._groupings, self._slices):
-                positions_old[s] = g.positions if gr == "atoms" \
-                                   else molecule.center_of_mass(g, gr)
-            images = np.zeros(positions_old.shape, dtype=int)
-            threshold = self._dims / 2
-
-        # Store particle positions in a shared memory array
-        for i, _ in enumerate(self.universe.trajectory[
-                list(self._sliced_trajectory.frames) 
-                if hasattr(self._sliced_trajectory, "frames")
-                else slice(self.start, self.stop, self.step)
-            ]):
-
-            for g, gr, s in zip(self._groups, self._groupings, self._slices):
-
-                # Store atom or center-of-mass positions in the current frame
-                self._positions[i, s] = g.positions if gr == "atoms" \
-                                        else molecule.center_of_mass(g, gr)
-                
-                # Unwrap particle positions if necessary
-                if self._unwrap:
-                    dpos = self._positions[i, s] - positions_old[s]
-                    mask = np.abs(dpos) >= threshold
-                    images[s][mask] -= np.sign(dpos[mask]).astype(int)
-                    positions_old[s] = self._positions[i, s].copy()
-                    self._positions[i, s] += images[s] * self._dims
-
         # Determine the unique wavenumbers
         self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
 
-    def _single_frame(self, frame: int, timestep: int) -> np.ndarray:
+        # Create dictionary to hold reference units
+        self.results.units = {"_dims": unit.angstrom,
+                              "results.wavenumbers": unit.angstrom ** -1}
 
-        # Compute the static structure factor by squaring the
-        # cosine and sine terms and adding them together
+    def _single_frame(self, frame: int, index: int) -> None:
+
+        self._trajectory[frame]
+        results = np.zeros((2, len(self._wavenumbers)), dtype=float)
+
+        positions = np.empty((self._N, 3), dtype=float)
+        for g, gr, s in zip(self._groups, self._groupings, self._slices):
+            
+            # Store atom or center-of-mass positions in the current frame
+            positions[s] = g.positions if gr == "atoms" \
+                           else molecule.center_of_mass(g, gr)
+
+        # Compute the sum of cosines and sines of the dot product of the
+        # wavevectors and positions
         if self._n_batches:
             start = 0
-            ssf = np.zeros(len(self._wavenumbers), dtype=float)
             for w in np.array_split(self._wavevectors, self._n_batches, axis=0):
-                arg = np.einsum("ij,kj->ki", w, self._positions[timestep])
-                ssf[start:start + w.shape[0]] += \
-                    np.sin(arg).sum(axis=0) ** 2 \
-                    + np.cos(arg).sum(axis=0) ** 2
-                start += w.shape[0]
-            return ssf
+                arg = np.einsum("wd,pd->pw", w, positions)
+                results[0, start:start + w.shape[0]] = np.cos(arg).sum(axis=0)
+                results[1, start:start + w.shape[0]] = np.sin(arg).sum(axis=0)
         else:
-            arg = np.einsum("ij,kj->ki", self._wavevectors, 
-                            self._positions[timestep])
-            return np.sin(arg).sum(axis=0) ** 2 + np.cos(arg).sum(axis=0) ** 2
+            arg = np.einsum("wd,pd->pw", self._wavevectors, positions)
+            results[0] = np.cos(arg).sum(axis=0)
+            results[1] = np.sin(arg).sum(axis=0)
+
+        return results
     
     def _conclude(self) -> None:
 
-        # Tally static structure factor for each wavevector over all
-        # frames and normalize by the number of particles and timesteps
-        self.results.ssf = np.vstack(self._results).sum(axis=0) \
-                           / (self._N * self.n_frames)
+        trig_sums = np.stack(self._results)
+
+        # Tally intermediate scattering function for each wavevector 
+        # over all frames and normalize by the number of particles and 
+        # timesteps
+        corr = correlation.correlation_fft if self._fft \
+               else correlation.correlation_shift
+        self.results.isf = (
+            corr(trig_sums[0], axis=0) + corr(trig_sums[1], axis=0)
+        ) / self._N
         
         # Flatten the array by combining values sharing the same
         # wavevector magnitude
-        self.results.ssf = np.fromiter(
-            (self.results.ssf[np.isclose(q, self._wavenumbers)].mean() 
-             for q in self.results.wavenumbers),
-            dtype=float, 
-            count=len(self.results.wavenumbers)
+        self.results.isf = np.hstack(
+            [
+                self.results.isf[
+                    :, np.isclose(q, self._wavenumbers)
+                ].mean(axis=1, keepdims=True)
+                for q in self.results.wavenumbers
+            ]
         )

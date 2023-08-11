@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>mdhelper.openmm.reporter - MDHelper documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -207,6 +207,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
@@ -443,8 +445,6 @@
             <span class="n">forces</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">subset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Topology</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.nc&quot;</span><span class="p">):</span>
-            <span class="n">file</span> <span class="o">+=</span> <span class="s2">&quot;.nc&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_out</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span> <span class="k">if</span> <span class="n">append</span> <span class="k">else</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">FOUND_NETCDF</span><span class="p">:</span> <span class="c1"># pragma: no cover</span>
             <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The netCDF4 package was not found, so the NetCDF &quot;</span>

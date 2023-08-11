@@ -53,7 +53,8 @@ def test_class_netcdfreporter():
 
     # TEST CASE 1: Correct headers and data for restart file 
     # (static method, filename)
-    state = simulation.context.getState(getPositions=True, getVelocities=True, getForces=True)
+    state = simulation.context.getState(getPositions=True, getVelocities=True, 
+                                        getForces=True)
 
     file.NetCDFFile.write_file("restart", state)
     ncdf = nc.Dataset("restart.nc", "r")
@@ -102,11 +103,12 @@ def test_class_netcdfreporter():
     )
 
     # TEST CASE 6: Correct headers and data for subset trajectory file
-    s.register_particles(system, topology, 1, mass, nbforce=pair_lj, sigma=size,
-                         epsilon=21.285 * unit.kilojoule_per_mole)
+    s.register_particles(system, topology, 1, mass, nbforce=pair_lj, 
+                         sigma=size, epsilon=21.285 * unit.kilojoule_per_mole)
     integrator = openmm.LangevinMiddleIntegrator(temp, 1e-3 / dt, dt)
     simulation = app.Simulation(topology, system, integrator, plat)
-    simulation.context.setPositions(np.vstack((dims / 4, 3 * dims / 4)) * unit.angstrom)
+    simulation.context.setPositions(np.vstack((dims / 4, 3 * dims / 4)) 
+                                    * unit.angstrom)
     simulation.reporters.append(
         reporter.NetCDFReporter("traj_subset", 1, periodic=True, velocities=True, 
                                 forces=True, subset=[0])
