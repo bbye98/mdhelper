@@ -378,13 +378,15 @@ class Gyradius(_PolymerAnalysisBase):
                 positions += self._images[i] * self._dims
 
             # Calculate radius of gyration
-            self.results.gyradius[i, self._frame_index] = \
-                molecule.radius_of_gyration(
+            gyradius = molecule.radius_of_gyration(
                     grouping="segments",
                     positions=positions.reshape((M, N_p, 3)),
                     masses=g.masses.reshape((M, N_p)),
                     components=self._components
                 )
+            if not self._components:
+                gyradius = gyradius.mean()
+            self.results.gyradius[i, self._frame_index] = gyradius
 
 class Relaxation(_PolymerAnalysisBase):
 

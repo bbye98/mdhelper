@@ -1494,10 +1494,6 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
         
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
-        if sum(g.n_atoms for g in self._groups) != self.universe.atoms.n_atoms:
-            emsg = ("The provided atom groups do not contain all atoms "
-                    "in the universe.")
-            raise ValueError(emsg)
         
         super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
         self._dims = self.universe.dimensions[:3].copy()
@@ -1603,6 +1599,7 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
                     = np.cos(arg).sum(axis=0)
                 self._sin_sum[self._frame_index, start:start + w.shape[0]] \
                     = np.sin(arg).sum(axis=0)
+                start += w.shape[0]
         else:
             arg = np.einsum("wd,pd->pw", self._wavevectors, self._positions)
             self._cos_sum[self._frame_index] = np.cos(arg).sum(axis=0)
@@ -1687,6 +1684,7 @@ class ParallelIncoherentIntermediateScatteringFunction(
                 arg = np.einsum("wd,pd->pw", w, positions)
                 results[0, start:start + w.shape[0]] = np.cos(arg).sum(axis=0)
                 results[1, start:start + w.shape[0]] = np.sin(arg).sum(axis=0)
+                start += w.shape[0]
         else:
             arg = np.einsum("wd,pd->pw", self._wavevectors, positions)
             results[0] = np.cos(arg).sum(axis=0)
@@ -1704,7 +1702,7 @@ class ParallelIncoherentIntermediateScatteringFunction(
         corr = correlation.correlation_fft if self._fft \
                else correlation.correlation_shift
         self.results.isf = (
-            corr(trig_sums[0], axis=0) + corr(trig_sums[1], axis=0)
+            corr(trig_sums[:, 0], axis=0) + corr(trig_sums[:, 1], axis=0)
         ) / self._N
         
         # Flatten the array by combining values sharing the same
