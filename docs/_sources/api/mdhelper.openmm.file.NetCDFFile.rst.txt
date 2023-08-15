@@ -1,4 +1,4 @@
-NetCDFFile
+﻿NetCDFFile
 ==========
 
 .. currentmodule:: mdhelper.openmm.file
@@ -16,6 +16,10 @@ NetCDFFile
    .. autosummary::
       :nosignatures:
    
+      ~NetCDFFile.get_forces
+      ~NetCDFFile.get_num_frames
+      ~NetCDFFile.get_positions
+      ~NetCDFFile.get_velocities
       ~NetCDFFile.write_file
       ~NetCDFFile.write_model
    

@@ -702,3 +702,140 @@ def electric_field(
             efield.addParticle(i, (q,))
     
     system.addForce(efield)
+
+def estimate_pressure_tensor(
+        context: openmm.Context, dh: float = 1e-5, *, diag: bool = False
+    ) -> np.ndarray:
+    
+    r"""
+    Computes the estimated pressure tensor using a central finite
+    difference for the virial contribution.
+
+    The pressure tensor is given by
+
+    .. math::
+
+       \mathbf{p}=\frac{1}{V}\left(
+       \sum_{i=1}^N m_i\mathbf{v}_i^\mathsf{T}\mathbf{v}_i
+       +\mathbf{h}^\mathsf{T}\frac{dU}{d\mathbf{h}}\right)
+
+    where :math:`V` is the volume, :math:`m_i` and :math:`\mathbf{v}_i`
+    are the mass and velocity vector of particle :math:`i`,
+    :math:`\mathbf{h}` is a :math:`3\times 3` matrix where the rows 
+    contain the box vectors, and :math:`U` is the total pairwise 
+    potential energy.
+
+    To evaluate :math:`dU/d\mathbf{h}`, the box vectors are perturbed by
+    `dh` in each of the six "directions" and the positions are updated 
+    accordingly. Then, OpenMM reevaluates the potential 
+    energy based on the new periodic box vectors and particle positions,
+    and the difference in potential energy is used in the central finite
+    difference formula to estimate the derivative.
+    
+    Parameters
+    ----------
+    context : `openmm.Context`
+        Simulation context.
+
+    dh : `float`, optional, default: :code:`1e-5`
+        Finite difference step size.
+
+    diag : `bool`, optional, default: :code:`False`
+        Determines whether only the values in the main diagonal of the
+        pressure tensor (i.e., the values that, when summed, gives the
+        system pressure) are calculated.
+
+    Returns
+    -------
+    pres : `numpy.ndarray`
+        Estimated pressure tensor (or diagonal components).
+
+        **Shape**: :math:`(3,)` or :math:`(3,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{atm}`.
+    """
+
+    try:
+        state = context.getState(getPositions=True, getVelocities=True, getEnergy=True)
+        box = state.getPeriodicBoxVectors(asNumpy=True)
+        positions = state.getPositions(asNumpy=True)
+        velocities = state.getVelocities(asNumpy=True)
+        volume = box[0, 0] * box[1, 1] * box[2, 2]
+    except:
+        emsg = ("The simulation context must have information about "
+                "the particle positions and velocities.")
+        raise ValueError(emsg)
+
+    system = context.getSystem()
+    masses = np.fromiter(
+        (system.getParticleMass(i).value_in_unit(unit.dalton) 
+         for i in range(system.getNumParticles())), 
+        dtype=float
+    ) * unit.dalton
+
+    if diag:
+
+        # Compute the ideal contribution
+        p_kinetic = (masses * velocities ** 2).sum(axis=0)
+
+        # Estimate the virial contribution with a central finite difference
+        p_virial = np.zeros(3, dtype=float) * unit.kilojoule_per_mole
+        for i in range(3):
+            box_ = box.copy()
+            box_[i, i] += dh
+            context.setPeriodicBoxVectors(*box_)
+            context.setPositions(
+                np.dot(positions, 
+                       np.divide(box_, box, out=np.zeros_like(box), 
+                                 where=box.value_in_unit(unit.nanometer) != 0))
+            )
+            U_plus = context.getState(getEnergy=True).getPotentialEnergy()
+            box_ = box.copy()
+            box_[i, i] -= dh
+            context.setPeriodicBoxVectors(*box_)
+            context.setPositions(
+                np.dot(positions, 
+                       np.divide(box_, box, out=np.zeros_like(box), 
+                                 where=box.value_in_unit(unit.nanometer) != 0))
+            )
+            U_minus = context.getState(getEnergy=True).getPotentialEnergy()
+            p_virial[i] = U_plus - U_minus
+        p_virial = (p_virial / (2 * dh)).in_units_of(p_kinetic.unit)
+
+    else:
+
+        # Compute the ideal contribution
+        p_kinetic = (masses * velocities * velocities[:, :, None]).sum(axis=0)
+
+        # Estimate the virial contribution with a central finite difference
+        p_virial = np.zeros((3, 3), dtype=float) * unit.kilojoule_per_mole
+        for i in range(3):
+            for j in range(i + 1):
+                box_ = box.copy()
+                box_[i, j] += dh
+                context.setPeriodicBoxVectors(*box_)
+                context.setPositions(
+                    np.dot(positions, 
+                           np.divide(box_, box, out=np.zeros_like(box), 
+                                     where=box.value_in_unit(unit.nanometer) != 0))
+                )
+                U_plus = context.getState(getEnergy=True).getPotentialEnergy()
+                box_ = box.copy()
+                box_[i, j] -= dh
+                context.setPeriodicBoxVectors(*box_)
+                context.setPositions(
+                    np.dot(positions, 
+                           np.divide(box_, box, out=np.zeros_like(box), 
+                                     where=box.value_in_unit(unit.nanometer) != 0))
+                )
+                U_minus = context.getState(getEnergy=True).getPotentialEnergy()
+                p_virial[i, j] = U_plus - U_minus
+        p_virial = (p_virial / (2 * dh)).in_units_of(p_kinetic.unit)
+        p_virial = (
+            p_virial._value + np.tril(p_virial).T 
+            - np.diag(np.diag(p_virial))
+        ) * p_virial.unit
+    
+    return (
+        (p_kinetic + p_virial) / (unit.AVOGADRO_CONSTANT_NA * volume)
+    ).in_units_of(unit.atmosphere)

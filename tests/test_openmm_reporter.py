@@ -30,7 +30,7 @@ def test_class_netcdfreporter():
         "mass": mass
     })
 
-    dims = 2.5 * size * np.ones(3, dtype=float)
+    dims = 10 * size * np.ones(3, dtype=float)
     dims_nd = [L / unit.nanometer for L in dims]
     system = openmm.System()
     system.setDefaultPeriodicBoxVectors(
@@ -40,7 +40,7 @@ def test_class_netcdfreporter():
     )
     topology = app.Topology()
     topology.setUnitCellDimensions(dims)
-    pair_lj = pair.lj_coul(dims[0] / 2)
+    pair_lj = pair.lj_coul(2.5 * size)
     s.register_particles(system, topology, 1, mass, nbforce=pair_lj, sigma=size,
                          epsilon=21.285 * unit.kilojoule_per_mole)
     system.addForce(pair_lj)
@@ -90,7 +90,7 @@ def test_class_netcdfreporter():
         reporter.NetCDFReporter("traj", 1, periodic=True, velocities=True, 
                                 forces=True)
     )
-    simulation.step(1)
+    simulation.step(5)
 
     ncdf = nc.Dataset("traj.nc", "r")
     assert ncdf.program == "MDHelper"

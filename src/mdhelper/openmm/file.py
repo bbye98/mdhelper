@@ -26,12 +26,13 @@ from .. import VERSION, ArrayLike
 class NetCDFFile():
 
     """
-    Interface for writing AMBER NetCDF trajectory and restart files.
+    Interface for reading and writing AMBER NetCDF trajectory and 
+    restart files.
 
     Parameters
     ----------
     file : `str`
-        Filename of NetCDF file to write to. If `file` does not have the
+        Filename of the NetCDF file. If `file` does not have the
         :code:`.nc` extension, it will automatically be appended.
     
     mode : `str`
@@ -50,7 +51,7 @@ class NetCDFFile():
             restart: bool = False, **kwargs):
 
         if isinstance(file, str):
-            if not file.endswith(".nc") or not file.endswith(".ncdf"):
+            if not file.endswith(".nc") and not file.endswith(".ncdf"):
                 file += ".nc"
             if FOUND_NETCDF:
                 self._nc = nc.Dataset(file, mode=mode, 
@@ -246,10 +247,119 @@ class NetCDFFile():
                     self._nc.createVariable("remd_values", "d", 
                                             ("frame", "remd_dimension"))
 
+    def get_num_frames(self) -> int:
+
+        """
+        Get the number of frames.
+
+        Return
+        ------
+        num_frames : `int`
+            Number of frames.
+        """
+
+        return self._nc.variables["time"].shape[0]
+
+    def get_positions(
+            self, frame: int = None, units: bool = True) -> np.ndarray:
+        
+        """
+        Get particle positions.
+
+        Parameters
+        ----------
+        frame : `int`, optional
+            Frame index. If `None`, the positions across all frames are 
+            returned.
+
+        units : `bool`, default: :code:`True`
+            Determines whether the positions are returned with units.
+
+        Returns
+        -------
+        positions : `numpy.ndarray`
+            Particle positions.
+        """
+
+        positions = (self._nc.variables["coordinates"][:] if frame is None 
+                     else self._nc.variables["coordinates"][frame]).data
+        if units:
+            positions *= getattr(unit, self._nc.variables["coordinates"].units)
+        return positions
+    
+    def get_velocities(
+            self, frame: int = None, units: bool = True) -> np.ndarray:
+        
+        """
+        Get particle velocities.
+
+        Parameters
+        ----------
+        frame : `int`, optional
+            Frame index. If `None`, the velocities across all frames are 
+            returned.
+
+        units : `bool`, default: :code:`True`
+            Determines whether the velocities are returned with units.
+
+        Returns
+        -------
+        velocities : `numpy.ndarray`
+            Particle velocities.
+        """
+        
+        if not "velocities" in self._nc.variables:
+            emsg = ("The NetCDF file does not contain information about "
+                    "the particle velocities.")
+            raise KeyError(emsg)
+
+        velocities = (self._nc.variables["velocities"][:] if frame is None 
+                      else self._nc.variables["velocities"][frame]).data
+        if units:
+            velocities *= getattr(unit, self._nc.variables["velocities"].units)
+        return velocities
+
+    def get_forces(
+            self, frame: int = None, units: bool = True) -> np.ndarray:
+        
+        """
+        Get forces acting on the particles.
+
+        Parameters
+        ----------
+        frame : `int`, optional
+            Frame index. If `None`, the forces across all frames are 
+            returned.
+
+        units : `bool`, default: :code:`True`
+            Determines whether the forces are returned with units.
+
+        Returns
+        -------
+        forces : `numpy.ndarray`
+            Forces acting on the particles.
+        """
+        
+        if not "forces" in self._nc.variables:
+            emsg = ("The NetCDF file does not contain information about "
+                    "the forces acting on the particles.")
+            raise KeyError(emsg)
+
+        forces = (self._nc.variables["forces"][:] if frame is None 
+                  else self._nc.variables["forces"][frame]).data
+        if units:
+            forces *= getattr(unit, self._nc.variables["forces"].units)
+        return forces
+
     def write_file(self: Any, state: openmm.State) -> None:
         
         """
         Write the simulation state to a restart NetCDF file.
+
+        .. note::
+
+           This function can be used as either a static or instance 
+           method.
 
         Parameters
         ----------

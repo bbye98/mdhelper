@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>mdhelper.openmm.system - MDHelper documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -207,6 +207,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
@@ -306,6 +308,7 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.system.html">system</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle navigation of system</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.electric_field.html">electric_field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.estimate_pressure_tensor.html">estimate_pressure_tensor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.image_charges.html">image_charges</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.register_particles.html">register_particles</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.slab_correction.html">slab_correction</a></li>
@@ -1081,6 +1084,143 @@
             <span class="n">efield</span><span class="o">.</span><span class="n">addParticle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">q</span><span class="p">,))</span>
     
     <span class="n">system</span><span class="o">.</span><span class="n">addForce</span><span class="p">(</span><span class="n">efield</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="estimate_pressure_tensor"><a class="viewcode-back" href="../../../api/mdhelper.openmm.system.estimate_pressure_tensor.html#mdhelper.openmm.system.estimate_pressure_tensor">[docs]</a><span class="k">def</span> <span class="nf">estimate_pressure_tensor</span><span class="p">(</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span> <span class="n">dh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">diag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the estimated pressure tensor using a central finite</span>
+<span class="sd">    difference for the virial contribution.</span>
+
+<span class="sd">    The pressure tensor is given by</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \mathbf{p}=\frac{1}{V}\left(</span>
+<span class="sd">       \sum_{i=1}^N m_i\mathbf{v}_i^\mathsf{T}\mathbf{v}_i</span>
+<span class="sd">       +\mathbf{h}^\mathsf{T}\frac{dU}{d\mathbf{h}}\right)</span>
+
+<span class="sd">    where :math:`V` is the volume, :math:`m_i` and :math:`\mathbf{v}_i`</span>
+<span class="sd">    are the mass and velocity vector of particle :math:`i`,</span>
+<span class="sd">    :math:`\mathbf{h}` is a :math:`3\times 3` matrix where the rows </span>
+<span class="sd">    contain the box vectors, and :math:`U` is the total pairwise </span>
+<span class="sd">    potential energy.</span>
+
+<span class="sd">    To evaluate :math:`dU/d\mathbf{h}`, the box vectors are perturbed by</span>
+<span class="sd">    `dh` in each of the six &quot;directions&quot; and the positions are updated </span>
+<span class="sd">    accordingly. Then, OpenMM reevaluates the potential </span>
+<span class="sd">    energy based on the new periodic box vectors and particle positions,</span>
+<span class="sd">    and the difference in potential energy is used in the central finite</span>
+<span class="sd">    difference formula to estimate the derivative.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    context : `openmm.Context`</span>
+<span class="sd">        Simulation context.</span>
+
+<span class="sd">    dh : `float`, optional, default: :code:`1e-5`</span>
+<span class="sd">        Finite difference step size.</span>
+
+<span class="sd">    diag : `bool`, optional, default: :code:`False`</span>
+<span class="sd">        Determines whether only the values in the main diagonal of the</span>
+<span class="sd">        pressure tensor (i.e., the values that, when summed, gives the</span>
+<span class="sd">        system pressure) are calculated.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pres : `numpy.ndarray`</span>
+<span class="sd">        Estimated pressure tensor (or diagonal components).</span>
+
+<span class="sd">        **Shape**: :math:`(3,)` or :math:`(3,\,3)`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{atm}`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span><span class="n">getPositions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">getVelocities</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">getEnergy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getPeriodicBoxVectors</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">positions</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getPositions</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">velocities</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">getVelocities</span><span class="p">(</span><span class="n">asNumpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">volume</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">box</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">box</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The simulation context must have information about &quot;</span>
+                <span class="s2">&quot;the particle positions and velocities.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+
+    <span class="n">system</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getSystem</span><span class="p">()</span>
+    <span class="n">masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">getParticleMass</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">dalton</span><span class="p">)</span> 
+         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">getNumParticles</span><span class="p">())),</span> 
+        <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+    <span class="p">)</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">dalton</span>
+
+    <span class="k">if</span> <span class="n">diag</span><span class="p">:</span>
+
+        <span class="c1"># Compute the ideal contribution</span>
+        <span class="n">p_kinetic</span> <span class="o">=</span> <span class="p">(</span><span class="n">masses</span> <span class="o">*</span> <span class="n">velocities</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Estimate the virial contribution with a central finite difference</span>
+        <span class="n">p_virial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">box_</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">box_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dh</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">setPeriodicBoxVectors</span><span class="p">(</span><span class="o">*</span><span class="n">box_</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> 
+                       <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">box_</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">box</span><span class="p">),</span> 
+                                 <span class="n">where</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">U_plus</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span><span class="n">getEnergy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">getPotentialEnergy</span><span class="p">()</span>
+            <span class="n">box_</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">box_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">dh</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">setPeriodicBoxVectors</span><span class="p">(</span><span class="o">*</span><span class="n">box_</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> 
+                       <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">box_</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">box</span><span class="p">),</span> 
+                                 <span class="n">where</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">U_minus</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span><span class="n">getEnergy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">getPotentialEnergy</span><span class="p">()</span>
+            <span class="n">p_virial</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">U_plus</span> <span class="o">-</span> <span class="n">U_minus</span>
+        <span class="n">p_virial</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_virial</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dh</span><span class="p">))</span><span class="o">.</span><span class="n">in_units_of</span><span class="p">(</span><span class="n">p_kinetic</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="c1"># Compute the ideal contribution</span>
+        <span class="n">p_kinetic</span> <span class="o">=</span> <span class="p">(</span><span class="n">masses</span> <span class="o">*</span> <span class="n">velocities</span> <span class="o">*</span> <span class="n">velocities</span><span class="p">[:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Estimate the virial contribution with a central finite difference</span>
+        <span class="n">p_virial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">box_</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">box_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dh</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">setPeriodicBoxVectors</span><span class="p">(</span><span class="o">*</span><span class="n">box_</span><span class="p">)</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> 
+                           <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">box_</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">box</span><span class="p">),</span> 
+                                     <span class="n">where</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="p">)</span>
+                <span class="n">U_plus</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span><span class="n">getEnergy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">getPotentialEnergy</span><span class="p">()</span>
+                <span class="n">box_</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">box_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">-=</span> <span class="n">dh</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">setPeriodicBoxVectors</span><span class="p">(</span><span class="o">*</span><span class="n">box_</span><span class="p">)</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">setPositions</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> 
+                           <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">box_</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">box</span><span class="p">),</span> 
+                                     <span class="n">where</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="p">)</span>
+                <span class="n">U_minus</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span><span class="n">getEnergy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">getPotentialEnergy</span><span class="p">()</span>
+                <span class="n">p_virial</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">U_plus</span> <span class="o">-</span> <span class="n">U_minus</span>
+        <span class="n">p_virial</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_virial</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dh</span><span class="p">))</span><span class="o">.</span><span class="n">in_units_of</span><span class="p">(</span><span class="n">p_kinetic</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">p_virial</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">p_virial</span><span class="o">.</span><span class="n">_value</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">p_virial</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> 
+            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">p_virial</span><span class="p">))</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="n">p_virial</span><span class="o">.</span><span class="n">unit</span>
+    
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">p_kinetic</span> <span class="o">+</span> <span class="n">p_virial</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span> <span class="o">*</span> <span class="n">volume</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">in_units_of</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">)</span></div>
 </pre></div>
         </article>
       </div>

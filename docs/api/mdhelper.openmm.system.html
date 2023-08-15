@@ -7,7 +7,7 @@
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
         <title>system - MDHelper documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=362ab14a" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -208,6 +208,8 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
@@ -307,6 +309,7 @@
 </li>
 <li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">system</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle navigation of system</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.system.electric_field.html">electric_field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.system.estimate_pressure_tensor.html">estimate_pressure_tensor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.system.image_charges.html">image_charges</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.system.register_particles.html">register_particles</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.system.slab_correction.html">slab_correction</a></li>
@@ -393,13 +396,16 @@ image charges, and adding an external electric field.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.openmm.system.electric_field.html#mdhelper.openmm.system.electric_field" title="mdhelper.openmm.system.electric_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">electric_field</span></code></a></p></td>
 <td><p>Adds an electric field to all charged particles by adding a force <span class="math notranslate nohighlight">\(f_i=q_iE\)</span> in the axis specified in <cite>axis</cite>, where <span class="math notranslate nohighlight">\(q_i\)</span> is the per-particle charge and <span class="math notranslate nohighlight">\(E\)</span> is the electric field.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.openmm.system.image_charges.html#mdhelper.openmm.system.image_charges" title="mdhelper.openmm.system.image_charges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_charges</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.openmm.system.estimate_pressure_tensor.html#mdhelper.openmm.system.estimate_pressure_tensor" title="mdhelper.openmm.system.estimate_pressure_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_pressure_tensor</span></code></a></p></td>
+<td><p>Computes the estimated pressure tensor using a central finite difference for the virial contribution.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.openmm.system.image_charges.html#mdhelper.openmm.system.image_charges" title="mdhelper.openmm.system.image_charges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_charges</span></code></a></p></td>
 <td><p>Implements the method of image charges for perfectly conducting boundaries (with a relative permittivity of <span class="math notranslate nohighlight">\(\varepsilon_\mathrm{r}=\infty\)</span>).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.openmm.system.register_particles.html#mdhelper.openmm.system.register_particles" title="mdhelper.openmm.system.register_particles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_particles</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.openmm.system.register_particles.html#mdhelper.openmm.system.register_particles" title="mdhelper.openmm.system.register_particles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_particles</span></code></a></p></td>
 <td><p>Sequentially register particles of the same type to the simulation system, topology, and nonbonded pair potentials.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.openmm.system.slab_correction.html#mdhelper.openmm.system.slab_correction" title="mdhelper.openmm.system.slab_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slab_correction</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.openmm.system.slab_correction.html#mdhelper.openmm.system.slab_correction" title="mdhelper.openmm.system.slab_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slab_correction</span></code></a></p></td>
 <td><p>Implements a slab correction so that efficient three-dimensional Ewald methods can continue to be used to evaluate the electrostatics for systems that are periodic in the <span class="math notranslate nohighlight">\(x\)</span>- and <span class="math notranslate nohighlight">\(y\)</span>-directions but not the <span class="math notranslate nohighlight">\(z\)</span>-direction.</p></td>
 </tr>
 </tbody>

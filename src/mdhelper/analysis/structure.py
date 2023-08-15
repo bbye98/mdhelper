@@ -1254,7 +1254,7 @@ class StructureFactor(SerialAnalysisBase):
 
 class ParallelStructureFactor(StructureFactor, ParallelAnalysisBase):
 
-    """
+    r"""
     A multithreaded implementation to calculate the static structure 
     factor :math:`S(q)` or partial structure factor 
     :math:`S_{\alpha\beta}(q)`.

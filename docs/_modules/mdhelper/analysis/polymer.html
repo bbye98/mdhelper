@@ -308,6 +308,7 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.system.html">system</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle navigation of system</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.electric_field.html">electric_field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.estimate_pressure_tensor.html">estimate_pressure_tensor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.image_charges.html">image_charges</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.register_particles.html">register_particles</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.slab_correction.html">slab_correction</a></li>
@@ -759,13 +760,15 @@
                 <span class="n">positions</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span>
 
             <span class="c1"># Calculate radius of gyration</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">gyradius</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> \
-                <span class="n">molecule</span><span class="o">.</span><span class="n">radius_of_gyration</span><span class="p">(</span>
+            <span class="n">gyradius</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">radius_of_gyration</span><span class="p">(</span>
                     <span class="n">grouping</span><span class="o">=</span><span class="s2">&quot;segments&quot;</span><span class="p">,</span>
                     <span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
                     <span class="n">masses</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">)),</span>
                     <span class="n">components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span>
-                <span class="p">)</span></div>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">:</span>
+                <span class="n">gyradius</span> <span class="o">=</span> <span class="n">gyradius</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">gyradius</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">gyradius</span></div>
 
 <div class="viewcode-block" id="Relaxation"><a class="viewcode-back" href="../../../api/mdhelper.analysis.polymer.Relaxation.html#mdhelper.analysis.polymer.Relaxation">[docs]</a><span class="k">class</span> <span class="nc">Relaxation</span><span class="p">(</span><span class="n">_PolymerAnalysisBase</span><span class="p">):</span>
 

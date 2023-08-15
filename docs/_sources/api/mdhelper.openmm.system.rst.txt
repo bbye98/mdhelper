@@ -1,4 +1,4 @@
-system
+﻿system
 ======
 
 .. automodule:: mdhelper.openmm.system
@@ -16,6 +16,7 @@ system
       :nosignatures:
    
       electric_field
+      estimate_pressure_tensor
       image_charges
       register_particles
       slab_correction
