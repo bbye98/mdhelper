@@ -381,8 +381,8 @@
         <article role="main">
           <h1>Source code for mdhelper.openmm.system</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">OpenMM system transformations</span>
-<span class="sd">=============================</span>
+<span class="sd">OpenMM system extensions and tools</span>
+<span class="sd">==================================</span>
 <span class="sd">.. moduleauthor:: Benjamin B. Ye &lt;bye@caltech.edu&gt;</span>
 
 <span class="sd">This module contains implementations of common OpenMM topology </span>
@@ -784,7 +784,8 @@
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implements the method of image charges for perfectly conducting</span>
 <span class="sd">    boundaries (with a relative permittivity of</span>
-<span class="sd">    :math:`\varepsilon_\mathrm{r}=\infty`).</span>
+<span class="sd">    :math:`\varepsilon_\mathrm{r}=\infty`). For more information about</span>
+<span class="sd">    the method, see Refs. [1]_, [2]_, and [3]_.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -797,7 +798,7 @@
 <span class="sd">    positions : `numpy.ndarray`</span>
 <span class="sd">        Positions of the :math:`N` particles in the real system. </span>
 
-<span class="sd">        **Shape**: :math:`(N,/,3)`.</span>
+<span class="sd">        **Shape**: :math:`(N,\,,3)`.</span>
 <span class="sd">        </span>
 <span class="sd">        **Reference unit**: :math:`\mathrm{nm}`.</span>
 
@@ -915,6 +916,23 @@
 <span class="sd">           PairWCA: None,</span>
 <span class="sd">           PairCoulRecip: {&quot;charge&quot;: 0, &quot;zero&quot;: 1}</span>
 <span class="sd">       }</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Hautman, J.; Halley, J. W.; Rhee, Y. ‐J. Molecular Dynamics </span>
+<span class="sd">       Simulation of Water Beween Two Ideal Classical Metal Walls. </span>
+<span class="sd">       *J. Chem. Phys.* **1989**, *91* (1), 467–472. </span>
+<span class="sd">       https://doi.org/10.1063/1.457481.</span>
+
+<span class="sd">    .. [2] Dwelle, K. A.; Willard, A. P. Constant Potential, </span>
+<span class="sd">       Electrochemically Active Boundary Conditions for Electrochemical</span>
+<span class="sd">       Simulation. *J. Phys. Chem. C* **2019**, *123* (39), 24095–24103. </span>
+<span class="sd">       https://doi.org/10.1021/acs.jpcc.9b06635.</span>
+
+<span class="sd">    .. [3] Son, C. Y.; Wang, Z.-G. Image-Charge Effects on Ion</span>
+<span class="sd">       Adsorption near Aqueous Interfaces. *Proc. Natl. Acad. Sci.</span>
+<span class="sd">       U.S.A.* **2021**, *118* (19), e2020615118.</span>
+<span class="sd">       https://doi.org/10.1073/pnas.2020615118.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">FOUND_CONSTVPLUGIN</span><span class="p">:</span>
@@ -1119,10 +1137,10 @@
 <span class="sd">    context : `openmm.Context`</span>
 <span class="sd">        Simulation context.</span>
 
-<span class="sd">    dh : `float`, optional, default: :code:`1e-5`</span>
+<span class="sd">    dh : `float`, default: :code:`1e-5`</span>
 <span class="sd">        Finite difference step size.</span>
 
-<span class="sd">    diag : `bool`, optional, default: :code:`False`</span>
+<span class="sd">    diag : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Determines whether only the values in the main diagonal of the</span>
 <span class="sd">        pressure tensor (i.e., the values that, when summed, gives the</span>
 <span class="sd">        system pressure) are calculated.</span>

@@ -1,6 +1,6 @@
 """
-OpenMM system transformations
-=============================
+OpenMM system extensions and tools
+==================================
 .. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
 
 This module contains implementations of common OpenMM topology 
@@ -402,7 +402,8 @@ def image_charges(
     r"""
     Implements the method of image charges for perfectly conducting
     boundaries (with a relative permittivity of
-    :math:`\varepsilon_\mathrm{r}=\infty`).
+    :math:`\varepsilon_\mathrm{r}=\infty`). For more information about
+    the method, see Refs. [1]_, [2]_, and [3]_.
 
     Parameters
     ----------
@@ -415,7 +416,7 @@ def image_charges(
     positions : `numpy.ndarray`
         Positions of the :math:`N` particles in the real system. 
 
-        **Shape**: :math:`(N,/,3)`.
+        **Shape**: :math:`(N,\,,3)`.
         
         **Reference unit**: :math:`\mathrm{nm}`.
 
@@ -533,6 +534,23 @@ def image_charges(
            PairWCA: None,
            PairCoulRecip: {"charge": 0, "zero": 1}
        }
+
+    References
+    ----------
+    .. [1] Hautman, J.; Halley, J. W.; Rhee, Y. ‐J. Molecular Dynamics 
+       Simulation of Water Beween Two Ideal Classical Metal Walls. 
+       *J. Chem. Phys.* **1989**, *91* (1), 467–472. 
+       https://doi.org/10.1063/1.457481.
+
+    .. [2] Dwelle, K. A.; Willard, A. P. Constant Potential, 
+       Electrochemically Active Boundary Conditions for Electrochemical
+       Simulation. *J. Phys. Chem. C* **2019**, *123* (39), 24095–24103. 
+       https://doi.org/10.1021/acs.jpcc.9b06635.
+
+    .. [3] Son, C. Y.; Wang, Z.-G. Image-Charge Effects on Ion
+       Adsorption near Aqueous Interfaces. *Proc. Natl. Acad. Sci.
+       U.S.A.* **2021**, *118* (19), e2020615118.
+       https://doi.org/10.1073/pnas.2020615118.
     """
 
     if not FOUND_CONSTVPLUGIN:
@@ -737,10 +755,10 @@ def estimate_pressure_tensor(
     context : `openmm.Context`
         Simulation context.
 
-    dh : `float`, optional, default: :code:`1e-5`
+    dh : `float`, default: :code:`1e-5`
         Finite difference step size.
 
-    diag : `bool`, optional, default: :code:`False`
+    diag : `bool`, keyword-only, default: :code:`False`
         Determines whether only the values in the main diagonal of the
         pressure tensor (i.e., the values that, when summed, gives the
         system pressure) are calculated.
