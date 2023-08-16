@@ -779,7 +779,7 @@ def estimate_pressure_tensor(
         positions = state.getPositions(asNumpy=True)
         velocities = state.getVelocities(asNumpy=True)
         volume = box[0, 0] * box[1, 1] * box[2, 2]
-    except:
+    except openmm.OpenMMException:
         emsg = ("The simulation context must have information about "
                 "the particle positions and velocities.")
         raise ValueError(emsg)

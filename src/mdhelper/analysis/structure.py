@@ -1109,7 +1109,8 @@ class StructureFactor(SerialAnalysisBase):
                 np.meshgrid(grid, grid, grid), -1
             ).reshape(-1, 3)
             if n_surfaces:
-                n_theta, n_phi = utility.closest_factors(n_surface_points, 2, reverse=True)
+                n_theta, n_phi = utility.closest_factors(n_surface_points, 2, 
+                                                         reverse=True)
                 theta = np.linspace(np.pi / (2 * n_theta + 4), 
                                     np.pi / 2 - np.pi / (2 * n_theta + 4), 
                                     n_theta)

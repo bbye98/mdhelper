@@ -9,6 +9,7 @@ writers for OpenMM.
 
 import platform
 from typing import Any, Union
+import warnings
 
 import numpy as np
 import openmm
@@ -61,39 +62,252 @@ class NetCDFFile():
         else:
             self._nc = file
         
-        self._frame = 0 if mode == "w" else self._nc["time"].shape[0]
+        self._frame = 0 if "w" in mode else self._nc["time"].shape[0]
         self._restart = restart
 
-    def _initialize(
-            self, N: int, cell: bool, velocities: bool, forces: bool,
-            remd: str = None, temp0: float = None,
-            remd_dimtype: ArrayLike = None,
-            remd_indices: ArrayLike = None,
-            remd_repidx: int = -1, remd_crdidx: int = -1,
-            remd_values: ArrayLike = None) -> None:
-
+    def get_dimensions(
+            self, frames: Union[int, list, slice] = None, units: bool = True
+        ) -> Union[tuple[np.ndarray, np.ndarray], 
+                   tuple[unit.Quantity, unit.Quantity]]:
+        
         """
-        Initialize the NetCDF file according to AMBER NetCDF
-        Trajectory/Restart Convention Version 1.0, Revision C
-        (https://ambermd.org/netcdf/nctraj.xhtml).
+        Get the simulation box dimensions.
 
         Parameters
         ----------
+        frames : `int`, `list`, or `slice`, optional
+            Frame indices. If :code:`None`, the dimensions across all 
+            frames are returned.
+
+        units : `bool`, default: :code:`True`
+            Determines whether the dimensions are returned with units.
+
+        Returns
+        -------
+        cell_lengths : `numpy.ndarray`, optional
+            Simulation box dimensions.
+
+            **Reference unit**: :math:`\\mathrm{Å}`.
+
+        cell_angles : `numpy.ndarray`, optional
+            Angles that define the shape of the simulation box.
+
+            **Reference unit**: :math:`^\\circ`.
+        """
+
+        cell_lengths = (self._nc.variables["cell_lengths"][:] if frames is None \
+                        else self._nc.variables["cell_lengths"][frames]).data
+        cell_angles = (self._nc.variables["cell_angles"][:] if frames is None \
+                       else self._nc.variables["cell_angles"][frames]).data
+        if units:
+            cell_lengths *= unit.angstrom
+            cell_angles *= unit.degree
+        return cell_lengths, cell_angles
+    
+    def get_num_frames(self) -> int:
+
+        """
+        Get the number of frames.
+
+        Returns
+        -------
+        num_frames : `int`
+            Number of frames.
+        """
+
+        return self._nc.dimensions["frame"].size
+
+    def get_num_atoms(self) -> int:
+
+        """
+        Get the number of atoms.
+
+        Returns
+        -------
+        num_atoms : `int`
+            Number of atoms.
+        """
+
+        return self._nc.dimensions["atom"].size
+
+    def get_times(
+            self, frames: Union[int, list, slice] = None, units: bool = True
+        ) -> Union[np.ndarray, unit.Quantity]:
+
+        r"""
+        Get simulation times.
+
+        Parameters
+        ----------
+        frames : `int`, `list`, or `slice`, optional
+            Frame indices. If :code:`None`, the times across all 
+            frames are returned.
+
+        units : `bool`, default: :code:`True`
+            Determines whether the times are returned with units.
+
+        Returns
+        -------
+        times : `numpy.ndarray` or `openmm.unit.Quantity`
+            Simulation times.
+
+            **Reference unit**: :math:`\mathrm{ps}`.
+        """
+
+        times = (self._nc.variables["time"][:] if frames is None 
+                 else self._nc.variables["time"][frames]).data
+        if units:
+            times *= unit.picosecond
+        return times
+
+    def get_positions(
+            self, frames: Union[int, list, slice] = None, units: bool = True
+        ) -> Union[np.ndarray, unit.Quantity]:
+        
+        r"""
+        Get the atom positions.
+
+        Parameters
+        ----------
+        frames : `int`, `list`, or `slice`, optional
+            Frame indices. If :code:`None`, the positions across all 
+            frames are returned.
+
+        units : `bool`, default: :code:`True`
+            Determines whether the positions are returned with units.
+
+        Returns
+        -------
+        positions : `numpy.ndarray` or `openmm.unit.Quantity`
+            Atom positions.
+
+            **Reference unit**: :math:`\mathrm{Å}`.
+        """
+
+        positions = (self._nc.variables["coordinates"][:] if frames is None 
+                     else self._nc.variables["coordinates"][frames]).data
+        if units:
+            positions *= unit.angstrom
+        return positions
+    
+    def get_velocities(
+            self, frames: Union[int, list, slice] = None, units: bool = True
+        ) -> Union[np.ndarray, unit.Quantity]:
+        
+        r"""
+        Get atom velocities.
+
+        Parameters
+        ----------
+        frames : `int`, `list`, or `slice`, optional
+            Frame indices. If :code:`None`, the velocities across all 
+            frames are returned.
+
+        units : `bool`, default: :code:`True`
+            Determines whether the velocities are returned with units.
+
+        Returns
+        -------
+        velocities : `numpy.ndarray` or `openmm.unit.Quantity`
+            Atom velocities. If the NetCDF file does not contain
+            this information, :code:`None` is returned.
+
+            **Reference unit**: :math:`\mathrm{Å/ps}`.
+        """
+        
+        if "velocities" not in self._nc.variables:
+            wmsg = ("The NetCDF file does not contain information about "
+                    "the atom velocities.")
+            warnings.warn(wmsg)
+            return None
+
+        velocities = (self._nc.variables["velocities"][:] if frames is None 
+                      else self._nc.variables["velocities"][frames]).data
+        if units:
+            velocities *= unit.angstrom / unit.picosecond
+        return velocities
+
+    def get_forces(
+            self, frames: Union[int, list, slice] = None, units: bool = True
+        ) -> Union[np.ndarray, unit.Quantity]:
+        
+        r"""
+        Get the forces acting on the atoms.
+
+        Parameters
+        ----------
+        frames : `int`, `list`, or `slice`, optional
+            Frame indices. If :code:`None`, the forces across all frames 
+            are returned.
+    
+        units : `bool`, default: :code:`True`
+            Determines whether the forces are returned with units.
+
+        Returns
+        -------
+        forces : `numpy.ndarray` or `openmm.unit.Quantity`
+            Forces acting on the atoms. If the NetCDF file does not
+            contain this information, :code:`None` is returned.
+
+            **Reference unit**: :math:`\mathrm{Å/ps}`.
+        """
+        
+        if "forces" not in self._nc.variables:
+            wmsg = ("The NetCDF file does not contain information about "
+                    "the forces acting on the atoms.")
+            warnings.warn(wmsg)
+            return None
+
+        forces = (self._nc.variables["forces"][:] if frames is None 
+                  else self._nc.variables["forces"][frames]).data
+        if units:
+            forces *= unit.kilocalorie_per_mole / unit.angstrom
+        return forces
+
+    def write_header(
+            self: Any, N: int, cell: bool, velocities: bool, forces: bool,
+            restart: bool = False, *, remd: str = None, temp0: float = None,
+            remd_dimtype: ArrayLike = None, remd_indices: ArrayLike = None,
+            remd_repidx: int = -1, remd_crdidx: int = -1,
+            remd_values: ArrayLike = None) -> "NetCDFFile":
+
+        """
+        Initialize a NetCDF file according to `AMBER NetCDF
+        Trajectory/Restart Convention Version 1.0, Revision C
+        <https://ambermd.org/netcdf/nctraj.xhtml>`_.
+
+        .. note::
+
+           This function can be used as either a static or instance 
+           method. 
+
+        Parameters
+        ----------
+        self : `str`, `netcdf4.Dataset`, `scipy.io.netcdf_file`, \
+        or `mdhelper.openmm.file.NetCDFFile`
+            If :meth:`write_header` is called as a static method, you 
+            must provide a filename or a NetCDF file object. Otherwise,
+            the NetCDF file embedded in the current instance is used.
+
         N : `int`
-            Number of particles.
+            Number of atoms.
         
         cell : `bool`
             Specifies whether simulation box length and angle
             information is available.
         
         velocities : `bool`
-            Specifies whether particle velocities should be written.
+            Specifies whether atom velocities should be written.
 
         forces : `bool`
-            Specifies whether forces exerted on particles should be
+            Specifies whether forces exerted on atoms should be
             written.
         
-        remd : `str`, :code:`{"temp", "multi"}`, optional
+        restart : `bool`, default: `False`
+            Specifies whether the NetCDF file is a trajectory or restart
+            file.
+            
+        remd : `str`, keyword-only, optional
             Specifies whether information about a replica exchange
             molecular dynamics (REMD) simulation is written. 
             
@@ -104,32 +318,37 @@ class NetCDFFile():
                * :code:`"temp"` for regular REMD.
                * :code:`"multi"` for multi-dimensional REMD.
         
-        temp0 : `float`, optional
+        temp0 : `float`, keyword-only, optional
             Temperature that the thermostat is set to maintain for a
             REMD restart file only. 
             
-            **Reference unit**: :math:`\mathrm{K}`.
+            **Reference unit**: :math:`\\mathrm{K}`.
 
-        remd_dimtype : array-like, optional
+        remd_dimtype : array-like, keyword-only, optional
             Array specifying the exchange type(s) for the REMD
             dimension(s). Required for a multi-dimensional REMD restart
             file.
 
-        remd_indices : array-like, optional
+        remd_indices : array-like, keyword-only, optional
             Array specifying the position in all dimensions that each
             frame is in. Required for a multi-dimensional REMD restart
             file.
         
-        remd_repidx : `int`, optional
+        remd_repidx : `int`, keyword-only, optional
             Overall index of the frame in replica space.
         
-        remd_crdidx : `int`, optional
+        remd_crdidx : `int`, keyword-only, optional
             Overall index of the frame in coordinate space.
         
-        remd_values : array-like, optional
+        remd_values : array-like, keyword-only, optional
             Replica value the specified replica dimension has for that
-            given frame. Required for a multi-dimensional REMD restart file.
+            given frame. Required for a multi-dimensional REMD restart 
+            file.
         """
+
+        # Create NetCDF object if it doesn't already exist
+        if not isinstance(self, NetCDFFile):
+            self = NetCDFFile(self, "ws", restart=restart)
 
         self._nc.Conventions = "AMBER"
         if self._restart:
@@ -246,115 +465,13 @@ class NetCDFFile():
                                             ("frame", "remd_dimension"))
                     self._nc.createVariable("remd_values", "d", 
                                             ("frame", "remd_dimension"))
+        
+        return self
 
-    def get_num_frames(self) -> int:
-
-        """
-        Get the number of frames.
-
-        Return
-        ------
-        num_frames : `int`
-            Number of frames.
-        """
-
-        return self._nc.variables["time"].shape[0]
-
-    def get_positions(
-            self, frame: int = None, units: bool = True) -> np.ndarray:
+    def write_file(self: Any, state: openmm.State) -> "NetCDFFile":
         
         """
-        Get particle positions.
-
-        Parameters
-        ----------
-        frame : `int`, optional
-            Frame index. If `None`, the positions across all frames are 
-            returned.
-
-        units : `bool`, default: :code:`True`
-            Determines whether the positions are returned with units.
-
-        Returns
-        -------
-        positions : `numpy.ndarray`
-            Particle positions.
-        """
-
-        positions = (self._nc.variables["coordinates"][:] if frame is None 
-                     else self._nc.variables["coordinates"][frame]).data
-        if units:
-            positions *= getattr(unit, self._nc.variables["coordinates"].units)
-        return positions
-    
-    def get_velocities(
-            self, frame: int = None, units: bool = True) -> np.ndarray:
-        
-        """
-        Get particle velocities.
-
-        Parameters
-        ----------
-        frame : `int`, optional
-            Frame index. If `None`, the velocities across all frames are 
-            returned.
-
-        units : `bool`, default: :code:`True`
-            Determines whether the velocities are returned with units.
-
-        Returns
-        -------
-        velocities : `numpy.ndarray`
-            Particle velocities.
-        """
-        
-        if not "velocities" in self._nc.variables:
-            emsg = ("The NetCDF file does not contain information about "
-                    "the particle velocities.")
-            raise KeyError(emsg)
-
-        velocities = (self._nc.variables["velocities"][:] if frame is None 
-                      else self._nc.variables["velocities"][frame]).data
-        if units:
-            velocities *= getattr(unit, self._nc.variables["velocities"].units)
-        return velocities
-
-    def get_forces(
-            self, frame: int = None, units: bool = True) -> np.ndarray:
-        
-        """
-        Get forces acting on the particles.
-
-        Parameters
-        ----------
-        frame : `int`, optional
-            Frame index. If `None`, the forces across all frames are 
-            returned.
-
-        units : `bool`, default: :code:`True`
-            Determines whether the forces are returned with units.
-
-        Returns
-        -------
-        forces : `numpy.ndarray`
-            Forces acting on the particles.
-        """
-        
-        if not "forces" in self._nc.variables:
-            emsg = ("The NetCDF file does not contain information about "
-                    "the forces acting on the particles.")
-            raise KeyError(emsg)
-
-        forces = (self._nc.variables["forces"][:] if frame is None 
-                  else self._nc.variables["forces"][frame]).data
-        if units:
-            forces *= getattr(unit, self._nc.variables["forces"].units)
-        return forces
-
-    def write_file(self: Any, state: openmm.State) -> None:
-        
-        """
-        Write the simulation state to a restart NetCDF file.
+        Write a single simulation state to a restart NetCDF file.
 
         .. note::
 
@@ -371,7 +488,7 @@ class NetCDFFile():
 
         state : `openmm.State`
             OpenMM simulation state from which to retrieve cell 
-            dimensions and particle positions, velocities, and forces.
+            dimensions and atom positions, velocities, and forces.
         """
 
         # Collect all available data in the state
@@ -400,13 +517,13 @@ class NetCDFFile():
         except openmm.OpenMMException: # pragma: no cover
             pass
 
-        # Create NetCDF file if it doesn't already exist
+        # Create NetCDF file or object if it doesn't already exist
         if not isinstance(self, NetCDFFile):
-            self = NetCDFFile(self, "w", restart=True)
+            self = NetCDFFile(self, "ws", restart=True)
         if not hasattr(self._nc, "Conventions"):
-            self._initialize(data["coordinates"].shape[0], 
-                             "cell_lengths" in data or "cell_angles" in data,
-                             "velocities" in data, "forces" in data)
+            self.write_header(data["coordinates"].shape[0], 
+                              "cell_lengths" in data or "cell_angles" in data,
+                              "velocities" in data, "forces" in data)
         elif self._nc.Conventions != "AMBERRESTART":
             raise ValueError("The NetCDF file must be a restart file.")
             
@@ -415,76 +532,97 @@ class NetCDFFile():
             self._nc.variables[k][:] = v
         self._nc.sync()
 
+        return self
+
     def write_model(
-            self, time: Union[float, np.ndarray], coordinates: np.ndarray,
+            self: Any, time: Union[float, np.ndarray], coordinates: np.ndarray,
             velocities: np.ndarray = None, forces: np.ndarray = None,
             cell_lengths: np.ndarray = None, cell_angles: np.ndarray = None, *,
-            restart: bool = False) -> None:
+            restart: bool = False) -> "NetCDFFile":
 
         """
-        Write the simulation state(s) to the NetCDF file.
+        Write simulation state(s) to a NetCDF file.
+
+        .. note::
+
+           This function can be used as either a static or instance 
+           method.
 
         Parameters
         ----------
+        self : `str`, `netcdf4.Dataset`, `scipy.io.netcdf_file`, \
+        or `mdhelper.openmm.file.NetCDFFile`
+            If :meth:`write_model` is called as a static method, you must 
+            provide a filename or a NetCDF file object. Otherwise, the
+            NetCDF file embedded in the current instance is used.
+
         time : `float` or `numpy.ndarray`
             Time(s). The dimensionality determines whether a single or
             multiple frames are written. 
             
-            **Reference unit**: :math:`\mathrm{ps}`.
+            **Reference unit**: :math:`\\mathrm{ps}`.
         
         coordinates : `numpy.ndarray`
-            Particle coordinates of :math:`N` particles over :math:`N_t`
+            atom coordinates of :math:`N` atoms over :math:`N_t`
             frames. The dimensionality depends on whether a single or 
             multiple frames are to be written and must be compatible 
             with that for `time`.
 
-            **Shape**: :math:`(N,\,3)` or :math:`(N_t,\,N,\,3)`.
+            **Shape**: :math:`(N,\\,3)` or :math:`(N_t,\\,N,\\,3)`.
 
-            **Reference unit**: :math:`\mathrm{Å}`.
+            **Reference unit**: :math:`\\mathrm{Å}`.
 
         velocities : `numpy.ndarray`, optional
-            Particle velocities of :math:`N` particles over :math:`N_t` 
+            atom velocities of :math:`N` atoms over :math:`N_t` 
             frames. The dimensionality depends on whether a single or 
             multiple frames are to be written and must be compatible 
             with that for `time`.
 
-            **Shape**: :math:`(N,\,3)` or :math:`(N_t,\,N,\,3)`.
+            **Shape**: :math:`(N,\\,3)` or :math:`(N_t,\\,N,\\,3)`.
 
-            **Reference unit**: :math:`\mathrm{Å/ps}`.
+            **Reference unit**: :math:`\\mathrm{Å/ps}`.
 
         forces : `numpy.ndarray`, optional
-            Forces exerted on :math:`N` particles over :math:`N_t` 
+            Forces exerted on :math:`N` atoms over :math:`N_t` 
             frames. The dimensionality depends on whether a single or 
             multiple frames are to be written and must be compatible 
             with that for `time`.
 
-            **Shape**: :math:`(N,\,3)` or :math:`(N_t,\,N,\,3)`.
+            **Shape**: :math:`(N,\\,3)` or :math:`(N_t,\\,N,\\,3)`.
 
-            **Reference unit**: :math:`\mathrm{Å/ps}`.
+            **Reference unit**: :math:`\\mathrm{Å/ps}`.
 
         cell_lengths : `numpy.ndarray`, optional
             Simulation box dimensions.
 
             **Shape**: :math:`(3,)`.
 
-            **Reference unit**: :math:`\mathrm{Å}`.
+            **Reference unit**: :math:`\\mathrm{Å}`.
 
         cell_angles : `numpy.ndarray`, optional
             Angles that define the shape of the simulation box.
 
             **Shape**: :math:`(3,)`.
 
-            **Reference unit**: :math:`^\circ`.
+            **Reference unit**: :math:`^\\circ`.
 
         restart : `bool`, keyword-only, default: `False`
             Prevents the frame index from being incremented if writing a
             NetCDF restart file.
         """
 
+        # Create NetCDF file or object if it doesn't already exist
+        if not isinstance(self, NetCDFFile):
+            self = NetCDFFile(self, "ws", restart=restart)
+        if not hasattr(self._nc, "Conventions"):
+            self.write_header(coordinates.shape[0], 
+                              cell_lengths is not None or cell_angles is not None,
+                              velocities is not None, forces is not None)
+
+        # Write model to NetCDF file
         n_frames = len(time) if isinstance(time, (tuple, list, np.ndarray)) \
                    else 1
         frames = slice(self._frame, self._frame + n_frames)
-
         self._nc.variables["time"][frames] = time
         self._nc.variables["coordinates"][frames] = coordinates
         if velocities is not None:
@@ -498,3 +636,5 @@ class NetCDFFile():
         self._nc.sync()
         if not restart:
             self._frame += n_frames
+
+        return self

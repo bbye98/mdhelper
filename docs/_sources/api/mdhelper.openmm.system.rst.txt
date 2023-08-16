@@ -1,4 +1,4 @@
-﻿system
+system
 ======
 
 .. automodule:: mdhelper.openmm.system

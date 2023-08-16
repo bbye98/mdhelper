@@ -409,36 +409,75 @@ restart files.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_forces" title="mdhelper.openmm.file.NetCDFFile.get_forces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_forces</span></code></a></p></td>
-<td><p>Get forces acting on the particles.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_dimensions" title="mdhelper.openmm.file.NetCDFFile.get_dimensions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dimensions</span></code></a></p></td>
+<td><p>Get the simulation box dimensions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_forces" title="mdhelper.openmm.file.NetCDFFile.get_forces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_forces</span></code></a></p></td>
+<td><p>Get the forces acting on the atoms.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_num_atoms" title="mdhelper.openmm.file.NetCDFFile.get_num_atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_num_atoms</span></code></a></p></td>
+<td><p>Get the number of atoms.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_num_frames" title="mdhelper.openmm.file.NetCDFFile.get_num_frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_num_frames</span></code></a></p></td>
 <td><p>Get the number of frames.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_positions" title="mdhelper.openmm.file.NetCDFFile.get_positions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_positions</span></code></a></p></td>
-<td><p>Get particle positions.</p></td>
+<td><p>Get the atom positions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_velocities" title="mdhelper.openmm.file.NetCDFFile.get_velocities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_velocities</span></code></a></p></td>
-<td><p>Get particle velocities.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_times" title="mdhelper.openmm.file.NetCDFFile.get_times"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_times</span></code></a></p></td>
+<td><p>Get simulation times.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.write_file" title="mdhelper.openmm.file.NetCDFFile.write_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_file</span></code></a></p></td>
-<td><p>Write the simulation state to a restart NetCDF file.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_velocities" title="mdhelper.openmm.file.NetCDFFile.get_velocities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_velocities</span></code></a></p></td>
+<td><p>Get atom velocities.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.write_file" title="mdhelper.openmm.file.NetCDFFile.write_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_file</span></code></a></p></td>
+<td><p>Write a single simulation state to a restart NetCDF file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.write_header" title="mdhelper.openmm.file.NetCDFFile.write_header"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_header</span></code></a></p></td>
+<td><p>Initialize a NetCDF file according to <a class="reference external" href="https://ambermd.org/netcdf/nctraj.xhtml">AMBER NetCDF Trajectory/Restart Convention Version 1.0, Revision C</a>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.write_model" title="mdhelper.openmm.file.NetCDFFile.write_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_model</span></code></a></p></td>
-<td><p>Write the simulation state(s) to the NetCDF file.</p></td>
+<td><p>Write simulation state(s) to a NetCDF file.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="mdhelper.openmm.file.NetCDFFile.get_forces">
-<span class="sig-name descname"><span class="pre">get_forces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.get_forces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.get_forces" title="Permalink to this definition">#</a></dt>
-<dd><p>Get forces acting on the particles.</p>
+<dt class="sig sig-object py" id="mdhelper.openmm.file.NetCDFFile.get_dimensions">
+<span class="sig-name descname"><span class="pre">get_dimensions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.11)"><span class="pre">slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">openmm.unit.quantity.Quantity</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">openmm.unit.quantity.Quantity</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.get_dimensions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.get_dimensions" title="Permalink to this definition">#</a></dt>
+<dd><p>Get the simulation box dimensions.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>frame</strong><span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Frame index. If <cite>None</cite>, the forces across all frames are
-returned.</p>
+<dt><strong>frames</strong><span class="classifier"><cite>int</cite>, <cite>list</cite>, or <cite>slice</cite>, optional</span></dt><dd><p>Frame indices. If <code class="code docutils literal notranslate"><span class="pre">None</span></code>, the dimensions across all
+frames are returned.</p>
+</dd>
+<dt><strong>units</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the dimensions are returned with units.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>cell_lengths</strong><span class="classifier"><cite>numpy.ndarray</cite>, optional</span></dt><dd><p>Simulation box dimensions.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å}\)</span>.</p>
+</dd>
+<dt><strong>cell_angles</strong><span class="classifier"><cite>numpy.ndarray</cite>, optional</span></dt><dd><p>Angles that define the shape of the simulation box.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(^\circ\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdhelper.openmm.file.NetCDFFile.get_forces">
+<span class="sig-name descname"><span class="pre">get_forces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.11)"><span class="pre">slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.get_forces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.get_forces" title="Permalink to this definition">#</a></dt>
+<dd><p>Get the forces acting on the atoms.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>frames</strong><span class="classifier"><cite>int</cite>, <cite>list</cite>, or <cite>slice</cite>, optional</span></dt><dd><p>Frame indices. If <code class="code docutils literal notranslate"><span class="pre">None</span></code>, the forces across all frames
+are returned.</p>
 </dd>
 <dt><strong>units</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the forces are returned with units.</p>
 </dd>
@@ -446,7 +485,23 @@ returned.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>forces</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Forces acting on the particles.</p>
+<dt><strong>forces</strong><span class="classifier"><cite>numpy.ndarray</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Forces acting on the atoms. If the NetCDF file does not
+contain this information, <code class="code docutils literal notranslate"><span class="pre">None</span></code> is returned.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å/ps}\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdhelper.openmm.file.NetCDFFile.get_num_atoms">
+<span class="sig-name descname"><span class="pre">get_num_atoms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.get_num_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.get_num_atoms" title="Permalink to this definition">#</a></dt>
+<dd><p>Get the number of atoms.</p>
+<dl class="field-list">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>num_atoms</strong><span class="classifier"><cite>int</cite></span></dt><dd><p>Number of atoms.</p>
 </dd>
 </dl>
 </dd>
@@ -457,17 +512,25 @@ returned.</p>
 <dt class="sig sig-object py" id="mdhelper.openmm.file.NetCDFFile.get_num_frames">
 <span class="sig-name descname"><span class="pre">get_num_frames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.get_num_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.get_num_frames" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the number of frames.</p>
+<dl class="field-list">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>num_frames</strong><span class="classifier"><cite>int</cite></span></dt><dd><p>Number of frames.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdhelper.openmm.file.NetCDFFile.get_positions">
-<span class="sig-name descname"><span class="pre">get_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.get_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.get_positions" title="Permalink to this definition">#</a></dt>
-<dd><p>Get particle positions.</p>
+<span class="sig-name descname"><span class="pre">get_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.11)"><span class="pre">slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.get_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.get_positions" title="Permalink to this definition">#</a></dt>
+<dd><p>Get the atom positions.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>frame</strong><span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Frame index. If <cite>None</cite>, the positions across all frames are
-returned.</p>
+<dt><strong>frames</strong><span class="classifier"><cite>int</cite>, <cite>list</cite>, or <cite>slice</cite>, optional</span></dt><dd><p>Frame indices. If <code class="code docutils literal notranslate"><span class="pre">None</span></code>, the positions across all
+frames are returned.</p>
 </dd>
 <dt><strong>units</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the positions are returned with units.</p>
 </dd>
@@ -475,7 +538,32 @@ returned.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>positions</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Particle positions.</p>
+<dt><strong>positions</strong><span class="classifier"><cite>numpy.ndarray</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Atom positions.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å}\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdhelper.openmm.file.NetCDFFile.get_times">
+<span class="sig-name descname"><span class="pre">get_times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.11)"><span class="pre">slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.get_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.get_times" title="Permalink to this definition">#</a></dt>
+<dd><p>Get simulation times.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>frames</strong><span class="classifier"><cite>int</cite>, <cite>list</cite>, or <cite>slice</cite>, optional</span></dt><dd><p>Frame indices. If <code class="code docutils literal notranslate"><span class="pre">None</span></code>, the times across all
+frames are returned.</p>
+</dd>
+<dt><strong>units</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the times are returned with units.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>times</strong><span class="classifier"><cite>numpy.ndarray</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Simulation times.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{ps}\)</span>.</p>
 </dd>
 </dl>
 </dd>
@@ -484,13 +572,13 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdhelper.openmm.file.NetCDFFile.get_velocities">
-<span class="sig-name descname"><span class="pre">get_velocities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.get_velocities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.get_velocities" title="Permalink to this definition">#</a></dt>
-<dd><p>Get particle velocities.</p>
+<span class="sig-name descname"><span class="pre">get_velocities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.11)"><span class="pre">slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.get_velocities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.get_velocities" title="Permalink to this definition">#</a></dt>
+<dd><p>Get atom velocities.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>frame</strong><span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Frame index. If <cite>None</cite>, the velocities across all frames are
-returned.</p>
+<dt><strong>frames</strong><span class="classifier"><cite>int</cite>, <cite>list</cite>, or <cite>slice</cite>, optional</span></dt><dd><p>Frame indices. If <code class="code docutils literal notranslate"><span class="pre">None</span></code>, the velocities across all
+frames are returned.</p>
 </dd>
 <dt><strong>units</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the velocities are returned with units.</p>
 </dd>
@@ -498,7 +586,9 @@ returned.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>velocities</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Particle velocities.</p>
+<dt><strong>velocities</strong><span class="classifier"><cite>numpy.ndarray</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Atom velocities. If the NetCDF file does not contain
+this information, <code class="code docutils literal notranslate"><span class="pre">None</span></code> is returned.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å/ps}\)</span>.</p>
 </dd>
 </dl>
 </dd>
@@ -507,8 +597,8 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdhelper.openmm.file.NetCDFFile.write_file">
-<span class="sig-name descname"><span class="pre">write_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.State.html#openmm.openmm.State" title="(in OpenMM Python API v8.0.0)"><span class="pre">State</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.write_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.write_file" title="Permalink to this definition">#</a></dt>
-<dd><p>Write the simulation state to a restart NetCDF file.</p>
+<span class="sig-name descname"><span class="pre">write_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.State.html#openmm.openmm.State" title="(in OpenMM Python API v8.0.0)"><span class="pre">State</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile" title="mdhelper.openmm.file.NetCDFFile"><span class="pre">NetCDFFile</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.write_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.write_file" title="Permalink to this definition">#</a></dt>
+<dd><p>Write a single simulation state to a restart NetCDF file.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This function can be used as either a static or instance
@@ -522,7 +612,72 @@ provide a filename or a NetCDF file object. Otherwise, the
 NetCDF file embedded in the current instance is used.</p>
 </dd>
 <dt><strong>state</strong><span class="classifier"><cite>openmm.State</cite></span></dt><dd><p>OpenMM simulation state from which to retrieve cell
-dimensions and particle positions, velocities, and forces.</p>
+dimensions and atom positions, velocities, and forces.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mdhelper.openmm.file.NetCDFFile.write_header">
+<span class="sig-name descname"><span class="pre">write_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remd_dimtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArrayLike</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remd_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArrayLike</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remd_repidx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remd_crdidx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remd_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArrayLike</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile" title="mdhelper.openmm.file.NetCDFFile"><span class="pre">NetCDFFile</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.write_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.write_header" title="Permalink to this definition">#</a></dt>
+<dd><p>Initialize a NetCDF file according to <a class="reference external" href="https://ambermd.org/netcdf/nctraj.xhtml">AMBER NetCDF
+Trajectory/Restart Convention Version 1.0, Revision C</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function can be used as either a static or instance
+method.</p>
+</div>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>self</strong><span class="classifier"><cite>str</cite>, <cite>netcdf4.Dataset</cite>, <cite>scipy.io.netcdf_file</cite>,         or <cite>mdhelper.openmm.file.NetCDFFile</cite></span></dt><dd><p>If <a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.write_header" title="mdhelper.openmm.file.NetCDFFile.write_header"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write_header()</span></code></a> is called as a static method, you
+must provide a filename or a NetCDF file object. Otherwise,
+the NetCDF file embedded in the current instance is used.</p>
+</dd>
+<dt><strong>N</strong><span class="classifier"><cite>int</cite></span></dt><dd><p>Number of atoms.</p>
+</dd>
+<dt><strong>cell</strong><span class="classifier"><cite>bool</cite></span></dt><dd><p>Specifies whether simulation box length and angle
+information is available.</p>
+</dd>
+<dt><strong>velocities</strong><span class="classifier"><cite>bool</cite></span></dt><dd><p>Specifies whether atom velocities should be written.</p>
+</dd>
+<dt><strong>forces</strong><span class="classifier"><cite>bool</cite></span></dt><dd><p>Specifies whether forces exerted on atoms should be
+written.</p>
+</dd>
+<dt><strong>restart</strong><span class="classifier"><cite>bool</cite>, default: <cite>False</cite></span></dt><dd><p>Specifies whether the NetCDF file is a trajectory or restart
+file.</p>
+</dd>
+<dt><strong>remd</strong><span class="classifier"><cite>str</cite>, keyword-only, optional</span></dt><dd><p>Specifies whether information about a replica exchange
+molecular dynamics (REMD) simulation is written.</p>
+<div class="docutils container">
+<p><strong>Valid values</strong>:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;temp&quot;</span></code> for regular REMD.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;multi&quot;</span></code> for multi-dimensional REMD.</p></li>
+</ul>
+</div>
+</dd>
+<dt><strong>temp0</strong><span class="classifier"><cite>float</cite>, keyword-only, optional</span></dt><dd><p>Temperature that the thermostat is set to maintain for a
+REMD restart file only.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{K}\)</span>.</p>
+</dd>
+<dt><strong>remd_dimtype</strong><span class="classifier">array-like, keyword-only, optional</span></dt><dd><p>Array specifying the exchange type(s) for the REMD
+dimension(s). Required for a multi-dimensional REMD restart
+file.</p>
+</dd>
+<dt><strong>remd_indices</strong><span class="classifier">array-like, keyword-only, optional</span></dt><dd><p>Array specifying the position in all dimensions that each
+frame is in. Required for a multi-dimensional REMD restart
+file.</p>
+</dd>
+<dt><strong>remd_repidx</strong><span class="classifier"><cite>int</cite>, keyword-only, optional</span></dt><dd><p>Overall index of the frame in replica space.</p>
+</dd>
+<dt><strong>remd_crdidx</strong><span class="classifier"><cite>int</cite>, keyword-only, optional</span></dt><dd><p>Overall index of the frame in coordinate space.</p>
+</dd>
+<dt><strong>remd_values</strong><span class="classifier">array-like, keyword-only, optional</span></dt><dd><p>Replica value the specified replica dimension has for that
+given frame. Required for a multi-dimensional REMD restart
+file.</p>
 </dd>
 </dl>
 </dd>
@@ -531,30 +686,39 @@ dimensions and particle positions, velocities, and forces.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mdhelper.openmm.file.NetCDFFile.write_model">
-<span class="sig-name descname"><span class="pre">write_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_lengths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.write_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.write_model" title="Permalink to this definition">#</a></dt>
-<dd><p>Write the simulation state(s) to the NetCDF file.</p>
+<span class="sig-name descname"><span class="pre">write_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_lengths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile" title="mdhelper.openmm.file.NetCDFFile"><span class="pre">NetCDFFile</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/file.html#NetCDFFile.write_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.file.NetCDFFile.write_model" title="Permalink to this definition">#</a></dt>
+<dd><p>Write simulation state(s) to a NetCDF file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function can be used as either a static or instance
+method.</p>
+</div>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
+<dt><strong>self</strong><span class="classifier"><cite>str</cite>, <cite>netcdf4.Dataset</cite>, <cite>scipy.io.netcdf_file</cite>,         or <cite>mdhelper.openmm.file.NetCDFFile</cite></span></dt><dd><p>If <a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.write_model" title="mdhelper.openmm.file.NetCDFFile.write_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write_model()</span></code></a> is called as a static method, you must
+provide a filename or a NetCDF file object. Otherwise, the
+NetCDF file embedded in the current instance is used.</p>
+</dd>
 <dt><strong>time</strong><span class="classifier"><cite>float</cite> or <cite>numpy.ndarray</cite></span></dt><dd><p>Time(s). The dimensionality determines whether a single or
 multiple frames are written.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{ps}\)</span>.</p>
 </dd>
-<dt><strong>coordinates</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Particle coordinates of <span class="math notranslate nohighlight">\(N\)</span> particles over <span class="math notranslate nohighlight">\(N_t\)</span>
+<dt><strong>coordinates</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>atom coordinates of <span class="math notranslate nohighlight">\(N\)</span> atoms over <span class="math notranslate nohighlight">\(N_t\)</span>
 frames. The dimensionality depends on whether a single or
 multiple frames are to be written and must be compatible
 with that for <cite>time</cite>.</p>
 <p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N,\,3)\)</span> or <span class="math notranslate nohighlight">\((N_t,\,N,\,3)\)</span>.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å}\)</span>.</p>
 </dd>
-<dt><strong>velocities</strong><span class="classifier"><cite>numpy.ndarray</cite>, optional</span></dt><dd><p>Particle velocities of <span class="math notranslate nohighlight">\(N\)</span> particles over <span class="math notranslate nohighlight">\(N_t\)</span>
+<dt><strong>velocities</strong><span class="classifier"><cite>numpy.ndarray</cite>, optional</span></dt><dd><p>atom velocities of <span class="math notranslate nohighlight">\(N\)</span> atoms over <span class="math notranslate nohighlight">\(N_t\)</span>
 frames. The dimensionality depends on whether a single or
 multiple frames are to be written and must be compatible
 with that for <cite>time</cite>.</p>
 <p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N,\,3)\)</span> or <span class="math notranslate nohighlight">\((N_t,\,N,\,3)\)</span>.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å/ps}\)</span>.</p>
 </dd>
-<dt><strong>forces</strong><span class="classifier"><cite>numpy.ndarray</cite>, optional</span></dt><dd><p>Forces exerted on <span class="math notranslate nohighlight">\(N\)</span> particles over <span class="math notranslate nohighlight">\(N_t\)</span>
+<dt><strong>forces</strong><span class="classifier"><cite>numpy.ndarray</cite>, optional</span></dt><dd><p>Forces exerted on <span class="math notranslate nohighlight">\(N\)</span> atoms over <span class="math notranslate nohighlight">\(N_t\)</span>
 frames. The dimensionality depends on whether a single or
 multiple frames are to be written and must be compatible
 with that for <cite>time</cite>.</p>
@@ -638,11 +802,15 @@ NetCDF restart file.</p>
             <ul>
 <li><a class="reference internal" href="#">NetCDFFile</a><ul>
 <li><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile"><code class="docutils literal notranslate"><span class="pre">NetCDFFile</span></code></a><ul>
+<li><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_dimensions"><code class="docutils literal notranslate"><span class="pre">get_dimensions()</span></code></a></li>
 <li><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_forces"><code class="docutils literal notranslate"><span class="pre">get_forces()</span></code></a></li>
+<li><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_num_atoms"><code class="docutils literal notranslate"><span class="pre">get_num_atoms()</span></code></a></li>
 <li><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_num_frames"><code class="docutils literal notranslate"><span class="pre">get_num_frames()</span></code></a></li>
 <li><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_positions"><code class="docutils literal notranslate"><span class="pre">get_positions()</span></code></a></li>
+<li><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_times"><code class="docutils literal notranslate"><span class="pre">get_times()</span></code></a></li>
 <li><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.get_velocities"><code class="docutils literal notranslate"><span class="pre">get_velocities()</span></code></a></li>
 <li><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.write_file"><code class="docutils literal notranslate"><span class="pre">write_file()</span></code></a></li>
+<li><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.write_header"><code class="docutils literal notranslate"><span class="pre">write_header()</span></code></a></li>
 <li><a class="reference internal" href="#mdhelper.openmm.file.NetCDFFile.write_model"><code class="docutils literal notranslate"><span class="pre">write_model()</span></code></a></li>
 </ul>
 </li>

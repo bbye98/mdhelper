@@ -391,6 +391,7 @@
 
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">openmm</span>
@@ -443,39 +444,252 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span> <span class="o">=</span> <span class="n">file</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;w&quot;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="s2">&quot;w&quot;</span> <span class="ow">in</span> <span class="n">mode</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span> <span class="o">=</span> <span class="n">restart</span>
 
-    <span class="k">def</span> <span class="nf">_initialize</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">velocities</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">forces</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-            <span class="n">remd</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">temp0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">remd_dimtype</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">remd_indices</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">remd_repidx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">remd_crdidx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">remd_values</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-
+<div class="viewcode-block" id="NetCDFFile.get_dimensions"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">get_dimensions</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> 
+                   <span class="nb">tuple</span><span class="p">[</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]:</span>
+<span class="w">        </span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize the NetCDF file according to AMBER NetCDF</span>
-<span class="sd">        Trajectory/Restart Convention Version 1.0, Revision C</span>
-<span class="sd">        (https://ambermd.org/netcdf/nctraj.xhtml).</span>
+<span class="sd">        Get the simulation box dimensions.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        frames : `int`, `list`, or `slice`, optional</span>
+<span class="sd">            Frame indices. If :code:`None`, the dimensions across all </span>
+<span class="sd">            frames are returned.</span>
+
+<span class="sd">        units : `bool`, default: :code:`True`</span>
+<span class="sd">            Determines whether the dimensions are returned with units.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cell_lengths : `numpy.ndarray`, optional</span>
+<span class="sd">            Simulation box dimensions.</span>
+
+<span class="sd">            **Reference unit**: :math:`\\mathrm{Å}`.</span>
+
+<span class="sd">        cell_angles : `numpy.ndarray`, optional</span>
+<span class="sd">            Angles that define the shape of the simulation box.</span>
+
+<span class="sd">            **Reference unit**: :math:`^\\circ`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">cell_lengths</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_lengths&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> \
+                        <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_lengths&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">cell_angles</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> \
+                       <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
+            <span class="n">cell_lengths</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
+            <span class="n">cell_angles</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">degree</span>
+        <span class="k">return</span> <span class="n">cell_lengths</span><span class="p">,</span> <span class="n">cell_angles</span></div>
+    
+<div class="viewcode-block" id="NetCDFFile.get_num_frames"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_num_frames">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the number of frames.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        num_frames : `int`</span>
+<span class="sd">            Number of frames.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span></div>
+
+<div class="viewcode-block" id="NetCDFFile.get_num_atoms"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_num_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the number of atoms.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        num_atoms : `int`</span>
+<span class="sd">            Number of atoms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s2">&quot;atom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span></div>
+
+<div class="viewcode-block" id="NetCDFFile.get_times"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_times">[docs]</a>    <span class="k">def</span> <span class="nf">get_times</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
+
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get simulation times.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frames : `int`, `list`, or `slice`, optional</span>
+<span class="sd">            Frame indices. If :code:`None`, the times across all </span>
+<span class="sd">            frames are returned.</span>
+
+<span class="sd">        units : `bool`, default: :code:`True`</span>
+<span class="sd">            Determines whether the times are returned with units.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        times : `numpy.ndarray` or `openmm.unit.Quantity`</span>
+<span class="sd">            Simulation times.</span>
+
+<span class="sd">            **Reference unit**: :math:`\mathrm{ps}`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">times</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
+                 <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
+            <span class="n">times</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span>
+        <span class="k">return</span> <span class="n">times</span></div>
+
+<div class="viewcode-block" id="NetCDFFile.get_positions"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_positions">[docs]</a>    <span class="k">def</span> <span class="nf">get_positions</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the atom positions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frames : `int`, `list`, or `slice`, optional</span>
+<span class="sd">            Frame indices. If :code:`None`, the positions across all </span>
+<span class="sd">            frames are returned.</span>
+
+<span class="sd">        units : `bool`, default: :code:`True`</span>
+<span class="sd">            Determines whether the positions are returned with units.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        positions : `numpy.ndarray` or `openmm.unit.Quantity`</span>
+<span class="sd">            Atom positions.</span>
+
+<span class="sd">            **Reference unit**: :math:`\mathrm{Å}`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
+                     <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
+            <span class="n">positions</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
+        <span class="k">return</span> <span class="n">positions</span></div>
+    
+<div class="viewcode-block" id="NetCDFFile.get_velocities"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">get_velocities</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get atom velocities.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frames : `int`, `list`, or `slice`, optional</span>
+<span class="sd">            Frame indices. If :code:`None`, the velocities across all </span>
+<span class="sd">            frames are returned.</span>
+
+<span class="sd">        units : `bool`, default: :code:`True`</span>
+<span class="sd">            Determines whether the velocities are returned with units.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        velocities : `numpy.ndarray` or `openmm.unit.Quantity`</span>
+<span class="sd">            Atom velocities. If the NetCDF file does not contain</span>
+<span class="sd">            this information, :code:`None` is returned.</span>
+
+<span class="sd">            **Reference unit**: :math:`\mathrm{Å/ps}`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;velocities&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The NetCDF file does not contain information about &quot;</span>
+                    <span class="s2">&quot;the atom velocities.&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">velocities</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
+                      <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
+            <span class="n">velocities</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span>
+        <span class="k">return</span> <span class="n">velocities</span></div>
+
+<div class="viewcode-block" id="NetCDFFile.get_forces"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_forces">[docs]</a>    <span class="k">def</span> <span class="nf">get_forces</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the forces acting on the atoms.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frames : `int`, `list`, or `slice`, optional</span>
+<span class="sd">            Frame indices. If :code:`None`, the forces across all frames </span>
+<span class="sd">            are returned.</span>
+<span class="sd">    </span>
+<span class="sd">        units : `bool`, default: :code:`True`</span>
+<span class="sd">            Determines whether the forces are returned with units.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        forces : `numpy.ndarray` or `openmm.unit.Quantity`</span>
+<span class="sd">            Forces acting on the atoms. If the NetCDF file does not</span>
+<span class="sd">            contain this information, :code:`None` is returned.</span>
+
+<span class="sd">            **Reference unit**: :math:`\mathrm{Å/ps}`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;forces&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The NetCDF file does not contain information about &quot;</span>
+                    <span class="s2">&quot;the forces acting on the atoms.&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">forces</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
+                  <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
+            <span class="n">forces</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">kilocalorie_per_mole</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
+        <span class="k">return</span> <span class="n">forces</span></div>
+
+<div class="viewcode-block" id="NetCDFFile.write_header"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.write_header">[docs]</a>    <span class="k">def</span> <span class="nf">write_header</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">velocities</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">forces</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+            <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">remd</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">temp0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">remd_dimtype</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">remd_indices</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">remd_repidx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">remd_crdidx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">remd_values</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NetCDFFile&quot;</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a NetCDF file according to `AMBER NetCDF</span>
+<span class="sd">        Trajectory/Restart Convention Version 1.0, Revision C</span>
+<span class="sd">        &lt;https://ambermd.org/netcdf/nctraj.xhtml&gt;`_.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           This function can be used as either a static or instance </span>
+<span class="sd">           method. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self : `str`, `netcdf4.Dataset`, `scipy.io.netcdf_file`, \</span>
+<span class="sd">        or `mdhelper.openmm.file.NetCDFFile`</span>
+<span class="sd">            If :meth:`write_header` is called as a static method, you </span>
+<span class="sd">            must provide a filename or a NetCDF file object. Otherwise,</span>
+<span class="sd">            the NetCDF file embedded in the current instance is used.</span>
+
 <span class="sd">        N : `int`</span>
-<span class="sd">            Number of particles.</span>
+<span class="sd">            Number of atoms.</span>
 <span class="sd">        </span>
 <span class="sd">        cell : `bool`</span>
 <span class="sd">            Specifies whether simulation box length and angle</span>
 <span class="sd">            information is available.</span>
 <span class="sd">        </span>
 <span class="sd">        velocities : `bool`</span>
-<span class="sd">            Specifies whether particle velocities should be written.</span>
+<span class="sd">            Specifies whether atom velocities should be written.</span>
 
 <span class="sd">        forces : `bool`</span>
-<span class="sd">            Specifies whether forces exerted on particles should be</span>
+<span class="sd">            Specifies whether forces exerted on atoms should be</span>
 <span class="sd">            written.</span>
 <span class="sd">        </span>
-<span class="sd">        remd : `str`, :code:`{&quot;temp&quot;, &quot;multi&quot;}`, optional</span>
+<span class="sd">        restart : `bool`, default: `False`</span>
+<span class="sd">            Specifies whether the NetCDF file is a trajectory or restart</span>
+<span class="sd">            file.</span>
+<span class="sd">            </span>
+<span class="sd">        remd : `str`, keyword-only, optional</span>
 <span class="sd">            Specifies whether information about a replica exchange</span>
 <span class="sd">            molecular dynamics (REMD) simulation is written. </span>
 <span class="sd">            </span>
@@ -486,32 +700,37 @@
 <span class="sd">               * :code:`&quot;temp&quot;` for regular REMD.</span>
 <span class="sd">               * :code:`&quot;multi&quot;` for multi-dimensional REMD.</span>
 <span class="sd">        </span>
-<span class="sd">        temp0 : `float`, optional</span>
+<span class="sd">        temp0 : `float`, keyword-only, optional</span>
 <span class="sd">            Temperature that the thermostat is set to maintain for a</span>
 <span class="sd">            REMD restart file only. </span>
 <span class="sd">            </span>
-<span class="sd">            **Reference unit**: :math:`\mathrm{K}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{K}`.</span>
 
-<span class="sd">        remd_dimtype : array-like, optional</span>
+<span class="sd">        remd_dimtype : array-like, keyword-only, optional</span>
 <span class="sd">            Array specifying the exchange type(s) for the REMD</span>
 <span class="sd">            dimension(s). Required for a multi-dimensional REMD restart</span>
 <span class="sd">            file.</span>
 
-<span class="sd">        remd_indices : array-like, optional</span>
+<span class="sd">        remd_indices : array-like, keyword-only, optional</span>
 <span class="sd">            Array specifying the position in all dimensions that each</span>
 <span class="sd">            frame is in. Required for a multi-dimensional REMD restart</span>
 <span class="sd">            file.</span>
 <span class="sd">        </span>
-<span class="sd">        remd_repidx : `int`, optional</span>
+<span class="sd">        remd_repidx : `int`, keyword-only, optional</span>
 <span class="sd">            Overall index of the frame in replica space.</span>
 <span class="sd">        </span>
-<span class="sd">        remd_crdidx : `int`, optional</span>
+<span class="sd">        remd_crdidx : `int`, keyword-only, optional</span>
 <span class="sd">            Overall index of the frame in coordinate space.</span>
 <span class="sd">        </span>
-<span class="sd">        remd_values : array-like, optional</span>
+<span class="sd">        remd_values : array-like, keyword-only, optional</span>
 <span class="sd">            Replica value the specified replica dimension has for that</span>
-<span class="sd">            given frame. Required for a multi-dimensional REMD restart file.</span>
+<span class="sd">            given frame. Required for a multi-dimensional REMD restart </span>
+<span class="sd">            file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Create NetCDF object if it doesn&#39;t already exist</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NetCDFFile</span><span class="p">):</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ws&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">Conventions</span> <span class="o">=</span> <span class="s2">&quot;AMBER&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">:</span>
@@ -628,115 +847,13 @@
                                             <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;remd_dimension&quot;</span><span class="p">))</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_values&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> 
                                             <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;remd_dimension&quot;</span><span class="p">))</span>
-
-<div class="viewcode-block" id="NetCDFFile.get_num_frames"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_num_frames">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the number of frames.</span>
-
-<span class="sd">        Return</span>
-<span class="sd">        ------</span>
-<span class="sd">        num_frames : `int`</span>
-<span class="sd">            Number of frames.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="NetCDFFile.get_positions"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_positions">[docs]</a>    <span class="k">def</span> <span class="nf">get_positions</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get particle positions.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        frame : `int`, optional</span>
-<span class="sd">            Frame index. If `None`, the positions across all frames are </span>
-<span class="sd">            returned.</span>
-
-<span class="sd">        units : `bool`, default: :code:`True`</span>
-<span class="sd">            Determines whether the positions are returned with units.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        positions : `numpy.ndarray`</span>
-<span class="sd">            Particle positions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span> 
-                     <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="n">frame</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
-        <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
-            <span class="n">positions</span> <span class="o">*=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">positions</span></div>
-    
-<div class="viewcode-block" id="NetCDFFile.get_velocities"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">get_velocities</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get particle velocities.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        frame : `int`, optional</span>
-<span class="sd">            Frame index. If `None`, the velocities across all frames are </span>
-<span class="sd">            returned.</span>
-
-<span class="sd">        units : `bool`, default: :code:`True`</span>
-<span class="sd">            Determines whether the velocities are returned with units.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        velocities : `numpy.ndarray`</span>
-<span class="sd">            Particle velocities.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         
-        <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;velocities&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The NetCDF file does not contain information about &quot;</span>
-                    <span class="s2">&quot;the particle velocities.&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
-        <span class="n">velocities</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span> 
-                      <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">][</span><span class="n">frame</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
-        <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
-            <span class="n">velocities</span> <span class="o">*=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">velocities</span></div>
-
-<div class="viewcode-block" id="NetCDFFile.get_forces"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_forces">[docs]</a>    <span class="k">def</span> <span class="nf">get_forces</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="NetCDFFile.write_file"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.write_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NetCDFFile&quot;</span><span class="p">:</span>
 <span class="w">        </span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get forces acting on the particles.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        frame : `int`, optional</span>
-<span class="sd">            Frame index. If `None`, the forces across all frames are </span>
-<span class="sd">            returned.</span>
-
-<span class="sd">        units : `bool`, default: :code:`True`</span>
-<span class="sd">            Determines whether the forces are returned with units.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        forces : `numpy.ndarray`</span>
-<span class="sd">            Forces acting on the particles.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;forces&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The NetCDF file does not contain information about &quot;</span>
-                    <span class="s2">&quot;the forces acting on the particles.&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
-
-        <span class="n">forces</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span> 
-                  <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">][</span><span class="n">frame</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
-        <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
-            <span class="n">forces</span> <span class="o">*=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">forces</span></div>
-
-<div class="viewcode-block" id="NetCDFFile.write_file"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.write_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Write the simulation state to a restart NetCDF file.</span>
+<span class="sd">        Write a single simulation state to a restart NetCDF file.</span>
 
 <span class="sd">        .. note::</span>
 
@@ -753,7 +870,7 @@
 
 <span class="sd">        state : `openmm.State`</span>
 <span class="sd">            OpenMM simulation state from which to retrieve cell </span>
-<span class="sd">            dimensions and particle positions, velocities, and forces.</span>
+<span class="sd">            dimensions and atom positions, velocities, and forces.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Collect all available data in the state</span>
@@ -782,91 +899,112 @@
         <span class="k">except</span> <span class="n">openmm</span><span class="o">.</span><span class="n">OpenMMException</span><span class="p">:</span> <span class="c1"># pragma: no cover</span>
             <span class="k">pass</span>
 
-        <span class="c1"># Create NetCDF file if it doesn&#39;t already exist</span>
+        <span class="c1"># Create NetCDF file or object if it doesn&#39;t already exist</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NetCDFFile</span><span class="p">):</span>
-            <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ws&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="p">,</span> <span class="s2">&quot;Conventions&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
-                             <span class="s2">&quot;cell_lengths&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">or</span> <span class="s2">&quot;cell_angles&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span>
-                             <span class="s2">&quot;velocities&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span> <span class="s2">&quot;forces&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+                              <span class="s2">&quot;cell_lengths&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">or</span> <span class="s2">&quot;cell_angles&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span>
+                              <span class="s2">&quot;velocities&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span> <span class="s2">&quot;forces&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">Conventions</span> <span class="o">!=</span> <span class="s2">&quot;AMBERRESTART&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The NetCDF file must be a restart file.&quot;</span><span class="p">)</span>
             
         <span class="c1"># Write data to NetCDF file</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">k</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="NetCDFFile.write_model"><a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.write_model">[docs]</a>    <span class="k">def</span> <span class="nf">write_model</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+            <span class="bp">self</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
             <span class="n">velocities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">forces</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">cell_lengths</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cell_angles</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-            <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NetCDFFile&quot;</span><span class="p">:</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Write the simulation state(s) to the NetCDF file.</span>
+<span class="sd">        Write simulation state(s) to a NetCDF file.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           This function can be used as either a static or instance </span>
+<span class="sd">           method.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        self : `str`, `netcdf4.Dataset`, `scipy.io.netcdf_file`, \</span>
+<span class="sd">        or `mdhelper.openmm.file.NetCDFFile`</span>
+<span class="sd">            If :meth:`write_model` is called as a static method, you must </span>
+<span class="sd">            provide a filename or a NetCDF file object. Otherwise, the</span>
+<span class="sd">            NetCDF file embedded in the current instance is used.</span>
+
 <span class="sd">        time : `float` or `numpy.ndarray`</span>
 <span class="sd">            Time(s). The dimensionality determines whether a single or</span>
 <span class="sd">            multiple frames are written. </span>
 <span class="sd">            </span>
-<span class="sd">            **Reference unit**: :math:`\mathrm{ps}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{ps}`.</span>
 <span class="sd">        </span>
 <span class="sd">        coordinates : `numpy.ndarray`</span>
-<span class="sd">            Particle coordinates of :math:`N` particles over :math:`N_t`</span>
+<span class="sd">            atom coordinates of :math:`N` atoms over :math:`N_t`</span>
 <span class="sd">            frames. The dimensionality depends on whether a single or </span>
 <span class="sd">            multiple frames are to be written and must be compatible </span>
 <span class="sd">            with that for `time`.</span>
 
-<span class="sd">            **Shape**: :math:`(N,\,3)` or :math:`(N_t,\,N,\,3)`.</span>
+<span class="sd">            **Shape**: :math:`(N,\\,3)` or :math:`(N_t,\\,N,\\,3)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{Å}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{Å}`.</span>
 
 <span class="sd">        velocities : `numpy.ndarray`, optional</span>
-<span class="sd">            Particle velocities of :math:`N` particles over :math:`N_t` </span>
+<span class="sd">            atom velocities of :math:`N` atoms over :math:`N_t` </span>
 <span class="sd">            frames. The dimensionality depends on whether a single or </span>
 <span class="sd">            multiple frames are to be written and must be compatible </span>
 <span class="sd">            with that for `time`.</span>
 
-<span class="sd">            **Shape**: :math:`(N,\,3)` or :math:`(N_t,\,N,\,3)`.</span>
+<span class="sd">            **Shape**: :math:`(N,\\,3)` or :math:`(N_t,\\,N,\\,3)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{Å/ps}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{Å/ps}`.</span>
 
 <span class="sd">        forces : `numpy.ndarray`, optional</span>
-<span class="sd">            Forces exerted on :math:`N` particles over :math:`N_t` </span>
+<span class="sd">            Forces exerted on :math:`N` atoms over :math:`N_t` </span>
 <span class="sd">            frames. The dimensionality depends on whether a single or </span>
 <span class="sd">            multiple frames are to be written and must be compatible </span>
 <span class="sd">            with that for `time`.</span>
 
-<span class="sd">            **Shape**: :math:`(N,\,3)` or :math:`(N_t,\,N,\,3)`.</span>
+<span class="sd">            **Shape**: :math:`(N,\\,3)` or :math:`(N_t,\\,N,\\,3)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{Å/ps}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{Å/ps}`.</span>
 
 <span class="sd">        cell_lengths : `numpy.ndarray`, optional</span>
 <span class="sd">            Simulation box dimensions.</span>
 
 <span class="sd">            **Shape**: :math:`(3,)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{Å}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{Å}`.</span>
 
 <span class="sd">        cell_angles : `numpy.ndarray`, optional</span>
 <span class="sd">            Angles that define the shape of the simulation box.</span>
 
 <span class="sd">            **Shape**: :math:`(3,)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`^\circ`.</span>
+<span class="sd">            **Reference unit**: :math:`^\\circ`.</span>
 
 <span class="sd">        restart : `bool`, keyword-only, default: `False`</span>
 <span class="sd">            Prevents the frame index from being incremented if writing a</span>
 <span class="sd">            NetCDF restart file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="c1"># Create NetCDF file or object if it doesn&#39;t already exist</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NetCDFFile</span><span class="p">):</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ws&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="p">,</span> <span class="s2">&quot;Conventions&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+                              <span class="n">cell_lengths</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cell_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">velocities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">forces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Write model to NetCDF file</span>
         <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> \
                    <span class="k">else</span> <span class="mi">1</span>
         <span class="n">frames</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+</span> <span class="n">n_frames</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">]</span> <span class="o">=</span> <span class="n">coordinates</span>
         <span class="k">if</span> <span class="n">velocities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -879,7 +1017,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell_angles</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">restart</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+=</span> <span class="n">n_frames</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+=</span> <span class="n">n_frames</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>
         </article>
       </div>

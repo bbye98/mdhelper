@@ -11,7 +11,7 @@ import pytest
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
 from mdhelper.openmm import file, pair, reporter, system as s, unit as u # noqa: E402
 
-def test_class_netcdfreporter():
+def test_classes_netcdffile_netcdfreporter():
 
     path = os.getcwd()
     if "tests" not in path:
@@ -40,7 +40,7 @@ def test_class_netcdfreporter():
     )
     topology = app.Topology()
     topology.setUnitCellDimensions(dims)
-    pair_lj = pair.lj_coul(2.5 * size)
+    pair_lj = pair.lj_coul(dims[0] / 4)
     s.register_particles(system, topology, 1, mass, nbforce=pair_lj, sigma=size,
                          epsilon=21.285 * unit.kilojoule_per_mole)
     system.addForce(pair_lj)
@@ -57,52 +57,55 @@ def test_class_netcdfreporter():
                                         getForces=True)
 
     file.NetCDFFile.write_file("restart", state)
-    ncdf = nc.Dataset("restart.nc", "r")
-    assert ncdf.Conventions == "AMBERRESTART"
-    assert ncdf.dimensions["frame"].size == 1
-    assert np.allclose(ncdf.variables["coordinates"][:], dims / 2)
+    ncdf = file.NetCDFFile("restart", "r")
+    assert ncdf._nc.Conventions == "AMBERRESTART"
+    assert ncdf.get_num_frames() == 1
+    assert np.allclose(ncdf.get_positions(), dims / 2)
 
     # TEST CASE 2: Not a restart file
-    f = file.NetCDFFile("restart.nc", "w")
-    f._initialize(1, True, True, True)
+    ncdf = file.NetCDFFile.write_header("restart.nc", 1, True, True, True)
     with pytest.raises(ValueError):
-        f.write_file(state)
+        ncdf.write_file(state)
 
     # TEST CASE 3: Correct headers and data for restart file (instance method)
-    f = file.NetCDFFile("restart.nc", "w", restart=True)
-    f.write_file(state)
-    ncdf = nc.Dataset("restart.nc", "r")
-    assert ncdf.Conventions == "AMBERRESTART"
-    assert ncdf.dimensions["frame"].size == 1
-    assert np.allclose(ncdf.variables["coordinates"][:], dims / 2)
+    ncdf = file.NetCDFFile("restart.nc", "ws", restart=True)
+    ncdf.write_file(state)
+    ncdf = file.NetCDFFile("restart.nc", "r")
+    assert ncdf._nc.Conventions == "AMBERRESTART"
+    assert ncdf.get_num_frames() == 1
+    assert np.allclose(ncdf.get_positions(), dims / 2)
 
     # TEST CASE 4: Correct headers and data for restart file 
     # (static method, NetCDF file)
-    f = nc.Dataset("restart.nc", "w")
-    file.NetCDFFile.write_file(f, state)
-    ncdf = nc.Dataset("restart.nc", "r")
-    assert ncdf.Conventions == "AMBERRESTART"
-    assert ncdf.dimensions["frame"].size == 1
-    assert np.allclose(ncdf.variables["coordinates"][:], dims / 2)
+    file.NetCDFFile.write_file(nc.Dataset("restart.nc", "ws"), state)
+    ncdf = file.NetCDFFile("restart.nc", "r")
+    assert ncdf._nc.Conventions == "AMBERRESTART"
+    assert ncdf.get_num_frames() == 1
+    assert np.allclose(ncdf.get_positions(), dims / 2)
 
     # TEST CASE 5: Correct headers and data for trajectory file
     simulation.reporters.append(
-        reporter.NetCDFReporter("traj", 1, periodic=True, velocities=True, 
+        reporter.NetCDFReporter("traj.nc", 1, periodic=True, velocities=True, 
                                 forces=True)
     )
     simulation.step(5)
 
-    ncdf = nc.Dataset("traj.nc", "r")
-    assert ncdf.program == "MDHelper"
-    assert np.allclose(ncdf.variables["cell_lengths"][0], dims)
+    ncdf = file.NetCDFFile("traj.nc", "r")
+    cell_lengths, cell_angles = ncdf.get_dimensions(0)
+    assert ncdf._nc.program == "MDHelper"
+    assert np.allclose(cell_lengths, dims)
+    assert np.allclose(cell_angles, 90 * np.ones(3, dtype=float))
     assert np.allclose(
-        ncdf.variables["coordinates"][0, 0] 
-        - ncdf.variables["time"][0] * ncdf.variables["velocities"][0, 0], 
+        ncdf.get_positions(0) - ncdf.get_times(0) * ncdf.get_velocities(0), 
         dims / 2, 
         atol=1e-3
     )
+    assert ncdf.get_num_frames() == 5
+    assert ncdf.get_velocities().shape == (5, 1, 3)
+    assert ncdf.get_forces().shape == (5, 1, 3)
 
-    # TEST CASE 6: Correct headers and data for subset trajectory file
+    # TEST CASE 6: Correct number of atoms and lack of velocities and 
+    # forces for subset trajectory file
     s.register_particles(system, topology, 1, mass, nbforce=pair_lj, 
                          sigma=size, epsilon=21.285 * unit.kilojoule_per_mole)
     integrator = openmm.LangevinMiddleIntegrator(temp, 1e-3 / dt, dt)
@@ -110,10 +113,23 @@ def test_class_netcdfreporter():
     simulation.context.setPositions(np.vstack((dims / 4, 3 * dims / 4)) 
                                     * unit.angstrom)
     simulation.reporters.append(
-        reporter.NetCDFReporter("traj_subset", 1, periodic=True, velocities=True, 
-                                forces=True, subset=[0])
+        reporter.NetCDFReporter("traj_subset.nc", 1, periodic=True, subset=[0])
     )
     simulation.step(1)
 
-    ncdf = nc.Dataset("traj_subset.nc", "r")
-    assert ncdf.dimensions["atom"].size == 1
+    ncdf = file.NetCDFFile("traj_subset.nc", "r")
+    assert ncdf.get_num_atoms() == 1
+    with pytest.warns(UserWarning):
+        assert ncdf.get_velocities() is None
+    with pytest.warns(UserWarning):
+        assert ncdf.get_forces() is None
+
+    # TEST CASE 7: Correct number of atoms for full trajectory file
+    state = simulation.context.getState(getPositions=True)
+    file.NetCDFFile.write_model(
+        "traj_two.nc", 
+        state.getTime().value_in_unit(unit.picosecond), 
+        state.getPositions(asNumpy=True).value_in_unit(unit.angstrom)
+    )
+    ncdf = file.NetCDFFile("traj_two.nc", "r")
+    assert ncdf.get_num_atoms() == 2

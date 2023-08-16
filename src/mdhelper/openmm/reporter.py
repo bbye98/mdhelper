@@ -160,7 +160,7 @@ class NetCDFReporter():
 
         # Initialize NetCDF file headers, if not done already
         if not hasattr(self._out._nc, "Conventions"):
-            self._out._initialize(
+            self._out.write_header(
                 simulation.topology.getNumAtoms() if self._subset is None \
                     else len(self._subset),
                 simulation.topology.getPeriodicBoxVectors() is not None,
