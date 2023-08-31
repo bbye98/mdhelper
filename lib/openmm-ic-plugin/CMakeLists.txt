@@ -11,8 +11,8 @@
 #-------------------------------------------------------------------------------
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.6)
-
 PROJECT(OpenMMICPlugin)
+CMAKE_POLICY(SET CMP0146 OLD)
 
 # We need to know where OpenMM is installed so we can access the headers and libraries.
 
@@ -91,9 +91,9 @@ INSTALL_TARGETS(/lib RUNTIME_DIRECTORY /lib ${SHARED_IC_TARGET})
 # Install headers.
 
 FILE(GLOB API_ONLY_INCLUDE_FILES "openmmapi/include/*.h")
-INSTALL (FILES ${API_ONLY_INCLUDE_FILES} DESTINATION include)
+INSTALL(FILES ${API_ONLY_INCLUDE_FILES} DESTINATION include)
 FILE(GLOB API_ONLY_INCLUDE_FILES_INTERNAL "openmmapi/include/internal/*.h")
-INSTALL (FILES ${API_ONLY_INCLUDE_FILES_INTERNAL} DESTINATION include/internal)
+INSTALL(FILES ${API_ONLY_INCLUDE_FILES_INTERNAL} DESTINATION include/internal)
 
 # Enable testing.
 
