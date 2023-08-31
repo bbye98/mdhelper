@@ -18,7 +18,7 @@ jobs:
           python-version: "3.9"
       - name: Install dependencies
         run: |
-          python3 -m pip install -r minimum_requirements.txt
+          python3 -m pip install -r requirements_minimal.txt
           conda install openmm
       - name: Lint with ruff
         run: |
