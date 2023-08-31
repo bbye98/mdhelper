@@ -9,6 +9,6 @@ import numpy as np
 ArrayLike = TypeVar("ArrayLike", list, np.ndarray, tuple)
 
 VERSION = "0.0.2"
-__all__ = ["algorithm", "analysis", "fit", "openmm", "plot", "utility"]
+__all__ = ["algorithm", "analysis", "fit", "openmm", "plot"]
 
-from . import algorithm, analysis, fit, openmm, plot, utility # noqa: E402
+from . import algorithm, analysis, fit, openmm, plot # noqa: E402

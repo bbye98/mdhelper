@@ -14,7 +14,7 @@ import MDAnalysis as mda
 from MDAnalysis.lib.log import ProgressBar
 import numpy as np
 from openmm import unit
-from scipy import optimize
+from scipy import optimize, special
 
 from .base import SerialAnalysisBase, ParallelAnalysisBase
 from .. import ArrayLike
@@ -59,14 +59,14 @@ def relaxation_time(time: np.ndarray, acf: np.ndarray) -> float:
 
     .. math::
 
-       C_\mathrm{ee}=\exp{\left[-(t/\tau_\mathrm{r})^\beta\right]}
+       C_\mathrm{ee}=\exp{\left[-(t/\tau)^\beta\right]}
     
     is fitted to the end-to-end vector autocorrelation function (ACF) vs.
-    time relationship and evaluating
+    time relationship, and the relaxation time is estimated using
 
     .. math::
 
-       \tau=\int_0^\infty C_\mathrm{ee}\,dt=\tau_\mathrm{r}
+       \tau_\mathrm{r}=\int_0^\infty C_\mathrm{ee}\,dt=\tau\Gamma(1/\beta)
 
     Parameters
     ----------
@@ -95,7 +95,7 @@ def relaxation_time(time: np.ndarray, acf: np.ndarray) -> float:
 
     tau_r, beta = optimize.curve_fit(stretched_exp, time / time[1], acf,
                                      bounds=(0, np.inf))[0]
-    return tau_r * time[1] * np.math.gamma(1 + beta ** -1)
+    return tau_r * time[1] * special.gamma(1 + beta ** -1)
 
 class _PolymerAnalysisBase(SerialAnalysisBase):
 

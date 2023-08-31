@@ -1,10 +1,10 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19 -->
         <title>mdhelper.analysis.structure - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -340,10 +340,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/mdhelper.utility.log.html">log</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -404,7 +400,9 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">from</span> <span class="nn">..algorithm</span> <span class="kn">import</span> <span class="n">correlation</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">utility</span>
 
-<div class="viewcode-block" id="radial_histogram"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.radial_histogram.html#mdhelper.analysis.structure.radial_histogram">[docs]</a><span class="k">def</span> <span class="nf">radial_histogram</span><span class="p">(</span>
+<div class="viewcode-block" id="radial_histogram">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.radial_histogram.html#mdhelper.analysis.structure.radial_histogram">[docs]</a>
+<span class="k">def</span> <span class="nf">radial_histogram</span><span class="p">(</span>
         <span class="n">pos1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">pos2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">range</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
         <span class="n">dims</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">exclusion</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span>
@@ -473,7 +471,10 @@
     
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="nb">range</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="coordination_numbers"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.coordination_numbers.html#mdhelper.analysis.structure.coordination_numbers">[docs]</a><span class="k">def</span> <span class="nf">coordination_numbers</span><span class="p">(</span>
+
+<div class="viewcode-block" id="coordination_numbers">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.coordination_numbers.html#mdhelper.analysis.structure.coordination_numbers">[docs]</a>
+<span class="k">def</span> <span class="nf">coordination_numbers</span><span class="p">(</span>
         <span class="n">bins</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">rdf</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> 
         <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 
@@ -552,7 +553,10 @@
 
     <span class="k">return</span> <span class="n">coord_nums</span></div>
 
-<div class="viewcode-block" id="radial_fourier_transform"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html#mdhelper.analysis.structure.radial_fourier_transform">[docs]</a><span class="k">def</span> <span class="nf">radial_fourier_transform</span><span class="p">(</span>
+
+<div class="viewcode-block" id="radial_fourier_transform">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html#mdhelper.analysis.structure.radial_fourier_transform">[docs]</a>
+<span class="k">def</span> <span class="nf">radial_fourier_transform</span><span class="p">(</span>
         <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -593,7 +597,10 @@
         <span class="n">rft</span><span class="p">[</span><span class="n">q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">simpson</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">r</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">rft</span></div>
 
-<div class="viewcode-block" id="structure_factor"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.structure_factor.html#mdhelper.analysis.structure.structure_factor">[docs]</a><span class="k">def</span> <span class="nf">structure_factor</span><span class="p">(</span>
+
+<div class="viewcode-block" id="structure_factor">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.structure_factor.html#mdhelper.analysis.structure.structure_factor">[docs]</a>
+<span class="k">def</span> <span class="nf">structure_factor</span><span class="p">(</span>
         <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">equal</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">x_i</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_j</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> 
         <span class="n">q_lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">q_upper</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_q</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
@@ -728,12 +735,15 @@
             <span class="k">return</span> <span class="n">q</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">x_i</span> <span class="o">*</span> <span class="n">x_j</span> <span class="o">*</span> <span class="n">rho_sft</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid formalism.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RDF"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF">[docs]</a><span class="k">class</span> <span class="nc">RDF</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="RDF">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF">[docs]</a>
+<span class="k">class</span> <span class="nc">RDF</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A serial implementation to calculate the radial distribution </span>
 <span class="sd">    function (RDF) :math:`g_{ij}(r)` between types :math:`i` and </span>
-<span class="sd">    :math:`j`.</span>
+<span class="sd">    :math:`j` and its related properties.</span>
 
 <span class="sd">    It is given by</span>
 
@@ -942,7 +952,7 @@
             <span class="n">norm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rdf&quot;</span><span class="p">,</span> <span class="n">exclusion</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span>
             <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span> <span class="o">=</span> <span class="n">ag1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span> <span class="o">=</span> <span class="n">ag1</span> <span class="k">if</span> <span class="n">ag2</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ag2</span>
@@ -1072,7 +1082,9 @@
                 <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="RDF.calculate_coordination_numbers"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF.calculate_coordination_numbers">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_coordination_numbers</span><span class="p">(</span>
+<div class="viewcode-block" id="RDF.calculate_coordination_numbers">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF.calculate_coordination_numbers">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_coordination_numbers</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1102,7 +1114,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_rdf</span><span class="p">(),</span> <span class="n">rho</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="RDF.calculate_pmf"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF.calculate_pmf">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pmf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="RDF.calculate_pmf">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF.calculate_pmf">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_pmf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the potential of mean force :math:`w_{ij}(r)`.</span>
@@ -1136,7 +1151,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pmf</span> <span class="o">=</span> <span class="o">-</span><span class="n">kBT</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_rdf</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="RDF.calculate_structure_factor"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF.calculate_structure_factor">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_structure_factor</span><span class="p">(</span>
+
+<div class="viewcode-block" id="RDF.calculate_structure_factor">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF.calculate_structure_factor">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_structure_factor</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x_i</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">x_j</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
             <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">q_lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
             <span class="n">q_upper</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_q</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">formalism</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FZ&quot;</span>
@@ -1202,13 +1220,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_rdf</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="p">,</span> 
             <span class="n">rho</span><span class="p">,</span> <span class="n">x_i</span><span class="p">,</span> <span class="n">x_j</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">q_lower</span><span class="o">=</span><span class="n">q_lower</span><span class="p">,</span> <span class="n">q_upper</span><span class="o">=</span><span class="n">q_upper</span><span class="p">,</span> 
             <span class="n">n_q</span><span class="o">=</span><span class="n">n_q</span><span class="p">,</span> <span class="n">formalism</span><span class="o">=</span><span class="n">formalism</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span></div>
+</div>
 
-<div class="viewcode-block" id="ParallelRDF"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html#mdhelper.analysis.structure.ParallelRDF">[docs]</a><span class="k">class</span> <span class="nc">ParallelRDF</span><span class="p">(</span><span class="n">RDF</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ParallelRDF">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html#mdhelper.analysis.structure.ParallelRDF">[docs]</a>
+<span class="k">class</span> <span class="nc">ParallelRDF</span><span class="p">(</span><span class="n">RDF</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A multithreaded implementation to calculate the radial distribution</span>
-<span class="sd">    function :math:`g_{ij}(r)` and its related properties.</span>
+<span class="sd">    A multithreaded implementation to calculate the radial distribution </span>
+<span class="sd">    function (RDF) :math:`g_{ij}(r)` between types :math:`i` and </span>
+<span class="sd">    :math:`j` and its related properties.</span>
 <span class="sd">    </span>
 <span class="sd">    .. note::</span>
 <span class="sd">       For a theoretical background and a complete list of</span>
@@ -1296,13 +1319,20 @@
         <span class="c1"># Compute and store the radial distribution function, the single</span>
         <span class="c1"># particle density, or the raw radial pair counts</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">counts</span> <span class="o">/</span> <span class="n">norm</span></div>
+
         
-<div class="viewcode-block" id="StructureFactor"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.StructureFactor.html#mdhelper.analysis.structure.StructureFactor">[docs]</a><span class="k">class</span> <span class="nc">StructureFactor</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
+<div class="viewcode-block" id="StructureFactor">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.StructureFactor.html#mdhelper.analysis.structure.StructureFactor">[docs]</a>
+<span class="k">class</span> <span class="nc">StructureFactor</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The static structure factor :math:`S(q)` is a measure of how a</span>
-<span class="sd">    material scatters incident radiation. It can be computed directly</span>
-<span class="sd">    from a molecular dynamics trajectory using</span>
+<span class="sd">    A serial implementation to calculate the static structure factor</span>
+<span class="sd">    :math:`S(q)` or partial structure factor :math:`S_{\alpha\beta}(q)`</span>
+<span class="sd">    for species :math:`\alpha` and :math:`\beta`.</span>
+
+<span class="sd">    The static structure factor is a measure of how a material scatters</span>
+<span class="sd">    incident radiation, and can be computed directly from a molecular </span>
+<span class="sd">    dynamics trajectory using</span>
 
 <span class="sd">    .. math::</span>
 
@@ -1635,12 +1665,16 @@
                  <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">]</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ParallelStructureFactor"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html#mdhelper.analysis.structure.ParallelStructureFactor">[docs]</a><span class="k">class</span> <span class="nc">ParallelStructureFactor</span><span class="p">(</span><span class="n">StructureFactor</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ParallelStructureFactor">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html#mdhelper.analysis.structure.ParallelStructureFactor">[docs]</a>
+<span class="k">class</span> <span class="nc">ParallelStructureFactor</span><span class="p">(</span><span class="n">StructureFactor</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A multithreaded implementation to calculate the static structure </span>
 <span class="sd">    factor :math:`S(q)` or partial structure factor </span>
-<span class="sd">    :math:`S_{\alpha\beta}(q)`.</span>
+<span class="sd">    :math:`S_{\alpha\beta}(q)` for species :math:`\alpha` and </span>
+<span class="sd">    :math:`\beta`.</span>
 <span class="sd">    </span>
 <span class="sd">    .. note::</span>
 <span class="sd">       For a theoretical background and a complete list of parameters,</span>
@@ -1776,13 +1810,18 @@
                  <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">]</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="IncoherentIntermediateScatteringFunction"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction">[docs]</a><span class="k">class</span> <span class="nc">IncoherentIntermediateScatteringFunction</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="IncoherentIntermediateScatteringFunction">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction">[docs]</a>
+<span class="k">class</span> <span class="nc">IncoherentIntermediateScatteringFunction</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The incoherent (or self) intermediate scattering function </span>
-<span class="sd">    :math:`F_\mathrm{s}(q,t)` characterizes the mean relaxation time of </span>
-<span class="sd">    a system, and its spatial fluctuations provide information about </span>
-<span class="sd">    dynamic heterogeneities. It is defined as</span>
+<span class="sd">    A serial implementation to calculate the incoherent (or self)</span>
+<span class="sd">    intermediate scattering function :math:`F_\mathrm{s}(q,\,t)`.</span>
+
+<span class="sd">    The incoherent intermediate scattering function characterizes the </span>
+<span class="sd">    mean relaxation time of a system, and its spatial fluctuations </span>
+<span class="sd">    provide information about dynamic heterogeneities. It is defined as</span>
 
 <span class="sd">    .. math::</span>
 
@@ -1790,6 +1829,18 @@
 <span class="sd">        \exp\left[i\mathbf{q}\cdot\left(\mathbf{r}_j(t_0+t)</span>
 <span class="sd">        -\mathbf{r}_j(t_0)\right)\right]\right\rangle</span>
 <span class="sd">    </span>
+<span class="sd">    where :math:`N` is the number of particles, :math:`\mathbf{q}` is</span>
+<span class="sd">    the wavevector, :math:`t_0` and :math:`t` are the initial and lag </span>
+<span class="sd">    times, and :math:`\mathbf{r}_j` is the position of particle </span>
+<span class="sd">    :math:`j`.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">       The simulation must have been run with a constant timestep</span>
+<span class="sd">       :math:`\Delta t` and the frames to be analyzed must be evenly</span>
+<span class="sd">       spaced and proceed forward in time for this analysis module to</span>
+<span class="sd">       function correctly.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    groups : `MDAnalysis.AtomGroup` or array-like</span>
@@ -1839,6 +1890,10 @@
 <span class="sd">        Number of batches to divide the incoherent scattering function </span>
 <span class="sd">        calculation into. This is useful for large systems that cannot </span>
 <span class="sd">        be processed in a single pass.</span>
+
+<span class="sd">    fft : `bool`, keyword-only, default: :code:`True`</span>
+<span class="sd">        Determines whether fast Fourier transforms (FFT) are used to </span>
+<span class="sd">        evaluate the auto- and cross-correlations.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -1952,8 +2007,20 @@
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Determine the unique wavenumbers</span>
+        <span class="c1"># Ensure frames are evenly spaced and proceed forward in time</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The selected frames must be evenly spaced and &quot;</span>
+                        <span class="s2">&quot;proceed forward in time.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">step</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The analysis must proceed forward in time.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Determine the unique wavenumbers and store the lag times</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">11</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
 
         <span class="c1"># Preallocate arrays to store results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -1962,6 +2029,7 @@
 
         <span class="c1"># Create dictionary to hold reference units</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_dims&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span>
+                              <span class="s2">&quot;results.time&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span><span class="p">,</span>
                               <span class="s2">&quot;results.wavenumbers&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -2010,13 +2078,16 @@
             <span class="p">]</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ParallelIncoherentIntermediateScatteringFunction"><a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction">[docs]</a><span class="k">class</span> <span class="nc">ParallelIncoherentIntermediateScatteringFunction</span><span class="p">(</span>
+
+<div class="viewcode-block" id="ParallelIncoherentIntermediateScatteringFunction">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction">[docs]</a>
+<span class="k">class</span> <span class="nc">ParallelIncoherentIntermediateScatteringFunction</span><span class="p">(</span>
         <span class="n">IncoherentIntermediateScatteringFunction</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span>
     <span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A multithreaded implementation to calculate the incoherent (self)</span>
-<span class="sd">    intermediate scattering function :math:`F(q,\,t)`.</span>
+<span class="sd">    intermediate scattering function :math:`F_\mathrm{s}(q,\,t)`.</span>
 <span class="sd">    </span>
 <span class="sd">    .. note::</span>
 <span class="sd">       For a theoretical background and a complete list of parameters,</span>
@@ -2040,11 +2111,24 @@
         
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Determine the unique wavenumbers</span>
+        <span class="c1"># Ensure frames are evenly spaced and proceed forward in time</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The selected frames must be evenly spaced and &quot;</span>
+                        <span class="s2">&quot;proceed forward in time.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">step</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The analysis must proceed forward in time.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Determine the unique wavenumbers and store the lag times</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">11</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
 
         <span class="c1"># Create dictionary to hold reference units</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_dims&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span>
+                              <span class="s2">&quot;results.time&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span><span class="p">,</span>
                               <span class="s2">&quot;results.wavenumbers&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -2098,6 +2182,7 @@
                 <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span>
             <span class="p">]</span>
         <span class="p">)</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -2130,9 +2215,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
+</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>

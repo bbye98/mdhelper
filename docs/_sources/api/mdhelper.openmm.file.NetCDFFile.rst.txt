@@ -1,4 +1,4 @@
-﻿NetCDFFile
+NetCDFFile
 ==========
 
 .. currentmodule:: mdhelper.openmm.file

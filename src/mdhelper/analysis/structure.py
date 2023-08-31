@@ -351,7 +351,7 @@ class RDF(SerialAnalysisBase):
     r"""
     A serial implementation to calculate the radial distribution 
     function (RDF) :math:`g_{ij}(r)` between types :math:`i` and 
-    :math:`j`.
+    :math:`j` and its related properties.
 
     It is given by
 
@@ -560,7 +560,7 @@ class RDF(SerialAnalysisBase):
             norm: str = "rdf", exclusion: ArrayLike = None,
             groupings: Union[str, ArrayLike] = "atoms",
             reduced: bool = False, n_batches: int = None,
-            verbose: bool = False, **kwargs) -> None:
+            verbose: bool = True, **kwargs) -> None:
 
         self.ag1 = ag1
         self.ag2 = ag1 if ag2 is None else ag2
@@ -825,8 +825,9 @@ class RDF(SerialAnalysisBase):
 class ParallelRDF(RDF, ParallelAnalysisBase):
 
     """
-    A multithreaded implementation to calculate the radial distribution
-    function :math:`g_{ij}(r)` and its related properties.
+    A multithreaded implementation to calculate the radial distribution 
+    function (RDF) :math:`g_{ij}(r)` between types :math:`i` and 
+    :math:`j` and its related properties.
     
     .. note::
        For a theoretical background and a complete list of
@@ -918,9 +919,13 @@ class ParallelRDF(RDF, ParallelAnalysisBase):
 class StructureFactor(SerialAnalysisBase):
 
     r"""
-    The static structure factor :math:`S(q)` is a measure of how a
-    material scatters incident radiation. It can be computed directly
-    from a molecular dynamics trajectory using
+    A serial implementation to calculate the static structure factor
+    :math:`S(q)` or partial structure factor :math:`S_{\alpha\beta}(q)`
+    for species :math:`\alpha` and :math:`\beta`.
+
+    The static structure factor is a measure of how a material scatters
+    incident radiation, and can be computed directly from a molecular 
+    dynamics trajectory using
 
     .. math::
 
@@ -1258,7 +1263,8 @@ class ParallelStructureFactor(StructureFactor, ParallelAnalysisBase):
     r"""
     A multithreaded implementation to calculate the static structure 
     factor :math:`S(q)` or partial structure factor 
-    :math:`S_{\alpha\beta}(q)`.
+    :math:`S_{\alpha\beta}(q)` for species :math:`\alpha` and 
+    :math:`\beta`.
     
     .. note::
        For a theoretical background and a complete list of parameters,
@@ -1397,10 +1403,12 @@ class ParallelStructureFactor(StructureFactor, ParallelAnalysisBase):
 class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
 
     r"""
-    The incoherent (or self) intermediate scattering function 
-    :math:`F_\mathrm{s}(q,t)` characterizes the mean relaxation time of 
-    a system, and its spatial fluctuations provide information about 
-    dynamic heterogeneities. It is defined as
+    A serial implementation to calculate the incoherent (or self)
+    intermediate scattering function :math:`F_\mathrm{s}(q,\,t)`.
+
+    The incoherent intermediate scattering function characterizes the 
+    mean relaxation time of a system, and its spatial fluctuations 
+    provide information about dynamic heterogeneities. It is defined as
 
     .. math::
 
@@ -1408,6 +1416,18 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
         \exp\left[i\mathbf{q}\cdot\left(\mathbf{r}_j(t_0+t)
         -\mathbf{r}_j(t_0)\right)\right]\right\rangle
     
+    where :math:`N` is the number of particles, :math:`\mathbf{q}` is
+    the wavevector, :math:`t_0` and :math:`t` are the initial and lag 
+    times, and :math:`\mathbf{r}_j` is the position of particle 
+    :math:`j`.
+
+    .. note::
+
+       The simulation must have been run with a constant timestep
+       :math:`\Delta t` and the frames to be analyzed must be evenly
+       spaced and proceed forward in time for this analysis module to
+       function correctly.
+
     Parameters
     ----------
     groups : `MDAnalysis.AtomGroup` or array-like
@@ -1457,6 +1477,10 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
         Number of batches to divide the incoherent scattering function 
         calculation into. This is useful for large systems that cannot 
         be processed in a single pass.
+
+    fft : `bool`, keyword-only, default: :code:`True`
+        Determines whether fast Fourier transforms (FFT) are used to 
+        evaluate the auto- and cross-correlations.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -1570,8 +1594,20 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
 
     def _prepare(self) -> None:
 
-        # Determine the unique wavenumbers
+        # Ensure frames are evenly spaced and proceed forward in time
+        if hasattr(self._sliced_trajectory, "frames"):
+            df = np.diff(self._sliced_trajectory.frames)
+            if df[0] <= 0 or not np.allclose(df, df[0]):
+                emsg = ("The selected frames must be evenly spaced and "
+                        "proceed forward in time.")
+                raise ValueError(emsg)
+        elif hasattr(self._sliced_trajectory, "step") \
+                and self._sliced_trajectory.step <= 0:
+            raise ValueError("The analysis must proceed forward in time.")
+
+        # Determine the unique wavenumbers and store the lag times
         self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
+        self.results.time = self._trajectory.dt * np.arange(self.n_frames)
 
         # Preallocate arrays to store results
         self._positions = np.empty((self._N, 3), dtype=float)
@@ -1580,6 +1616,7 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
 
         # Create dictionary to hold reference units
         self.results.units = {"_dims": unit.angstrom,
+                              "results.time": unit.picosecond,
                               "results.wavenumbers": unit.angstrom ** -1}
 
     def _single_frame(self) -> None:
@@ -1632,9 +1669,9 @@ class ParallelIncoherentIntermediateScatteringFunction(
         IncoherentIntermediateScatteringFunction, ParallelAnalysisBase
     ):
 
-    """
+    r"""
     A multithreaded implementation to calculate the incoherent (self)
-    intermediate scattering function :math:`F(q,\,t)`.
+    intermediate scattering function :math:`F_\mathrm{s}(q,\,t)`.
     
     .. note::
        For a theoretical background and a complete list of parameters,
@@ -1658,11 +1695,24 @@ class ParallelIncoherentIntermediateScatteringFunction(
         
     def _prepare(self) -> None:
 
-        # Determine the unique wavenumbers
+        # Ensure frames are evenly spaced and proceed forward in time
+        if hasattr(self._sliced_trajectory, "frames"):
+            df = np.diff(self._sliced_trajectory.frames)
+            if df[0] <= 0 or not np.allclose(df, df[0]):
+                emsg = ("The selected frames must be evenly spaced and "
+                        "proceed forward in time.")
+                raise ValueError(emsg)
+        elif hasattr(self._sliced_trajectory, "step") \
+                and self._sliced_trajectory.step <= 0:
+            raise ValueError("The analysis must proceed forward in time.")
+
+        # Determine the unique wavenumbers and store the lag times
         self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
+        self.results.time = self._trajectory.dt * np.arange(self.n_frames)
 
         # Create dictionary to hold reference units
         self.results.units = {"_dims": unit.angstrom,
+                              "results.time": unit.picosecond,
                               "results.wavenumbers": unit.angstrom ** -1}
 
     def _single_frame(self, frame: int, index: int) -> None:

@@ -1,10 +1,10 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19 -->
         <title>mdhelper.openmm.utility - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -340,10 +340,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/mdhelper.utility.log.html">log</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -390,13 +386,12 @@
 
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">openmm</span>
 <span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">unit</span>
-
-<span class="kn">from</span> <span class="nn">..utility</span> <span class="kn">import</span> <span class="n">log</span>
 
 <span class="k">def</span> <span class="nf">_create_context</span><span class="p">(</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">integrator</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Integrator</span><span class="p">,</span>
@@ -459,7 +454,9 @@
     <span class="n">context</span><span class="o">.</span><span class="n">getIntegrator</span><span class="p">()</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
 
-<div class="viewcode-block" id="optimize_pme"><a class="viewcode-back" href="../../../api/mdhelper.openmm.utility.optimize_pme.html#mdhelper.openmm.utility.optimize_pme">[docs]</a><span class="k">def</span> <span class="nf">optimize_pme</span><span class="p">(</span>
+<div class="viewcode-block" id="optimize_pme">
+<a class="viewcode-back" href="../../../api/mdhelper.openmm.utility.optimize_pme.html#mdhelper.openmm.utility.optimize_pme">[docs]</a>
+<span class="k">def</span> <span class="nf">optimize_pme</span><span class="p">(</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">integrator</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Integrator</span><span class="p">,</span>
         <span class="n">positions</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
         <span class="n">platform</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Platform</span><span class="p">,</span> <span class="n">properties</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
@@ -559,6 +556,11 @@
 <span class="sd">        calculations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="c1"># Set up logger</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{asctime}</span><span class="s2"> | </span><span class="si">{levelname:^8s}</span><span class="s2"> | </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">,</span> 
+                        <span class="n">style</span><span class="o">=</span><span class="s2">&quot;{&quot;</span><span class="p">,</span> 
+                        <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span> <span class="k">if</span> <span class="n">verbose</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+
     <span class="c1"># Get information about the pair potential of interest</span>
     <span class="k">if</span> <span class="n">pmeforce</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">force</span> <span class="ow">in</span> <span class="n">system</span><span class="o">.</span><span class="n">getForces</span><span class="p">():</span>
@@ -575,8 +577,7 @@
     <span class="n">tol</span> <span class="o">=</span> <span class="n">pmeforce</span><span class="o">.</span><span class="n">getEwaldErrorTolerance</span><span class="p">()</span>
 
     <span class="c1"># Determine the number of timesteps to run for each cutoff distance</span>
-    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Finding reasonable number of timesteps for PME optimizer...&quot;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Determining a reasonable number of timesteps for PME optimizer...&quot;</span><span class="p">)</span>
     <span class="n">pmeforce</span><span class="o">.</span><span class="n">setCutoffDistance</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">min_cutoff</span> <span class="o">*</span> <span class="n">max_cutoff</span><span class="p">))</span>
     <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;UseCpuPme&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
     <span class="n">Context</span> <span class="o">=</span> <span class="n">_create_context</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span>
@@ -588,9 +589,8 @@
     <span class="n">steps</span><span class="p">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">_time_integrator</span><span class="p">(</span><span class="n">Context</span><span class="p">,</span> <span class="n">steps</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">GPU: </span><span class="si">{</span><span class="n">steps</span><span class="si">:</span><span class="s2">14,</span><span class="si">}</span><span class="s2"> ts &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;===&gt; </span><span class="si">{</span><span class="n">time</span><span class="si">:{</span><span class="n">time_width</span><span class="si">}</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> s elapsed&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  GPU: </span><span class="si">{</span><span class="n">steps</span><span class="si">:</span><span class="s2">14,</span><span class="si">}</span><span class="s2"> ts &quot;</span>
+                     <span class="sa">f</span><span class="s2">&quot;===&gt; </span><span class="si">{</span><span class="n">time</span><span class="si">:{</span><span class="n">time_width</span><span class="si">}</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> s elapsed&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lb</span> <span class="o">&lt;</span> <span class="n">time</span> <span class="o">&lt;</span> <span class="n">ub</span><span class="p">:</span>
             <span class="k">break</span>
         <span class="n">steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span> <span class="o">*</span> <span class="n">steps</span> <span class="o">/</span> <span class="n">time</span><span class="p">)</span>
@@ -601,15 +601,14 @@
         <span class="n">steps_cpu</span><span class="p">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">time</span> <span class="o">=</span> <span class="n">_time_integrator</span><span class="p">(</span><span class="n">Context</span><span class="p">,</span> <span class="n">steps_cpu</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">CPU: </span><span class="si">{</span><span class="n">steps_cpu</span><span class="si">:</span><span class="s2">14,</span><span class="si">}</span><span class="s2"> ts &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;===&gt; </span><span class="si">{</span><span class="n">time</span><span class="si">:{</span><span class="n">time_width</span><span class="si">}</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> s elapsed&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  CPU: </span><span class="si">{</span><span class="n">steps_cpu</span><span class="si">:</span><span class="s2">14,</span><span class="si">}</span><span class="s2"> ts &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;===&gt; </span><span class="si">{</span><span class="n">time</span><span class="si">:{</span><span class="n">time_width</span><span class="si">}</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> s elapsed&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">lb</span> <span class="o">&lt;</span> <span class="n">time</span> <span class="o">&lt;</span> <span class="n">ub</span><span class="p">:</span>
                 <span class="k">break</span>
             <span class="n">steps_cpu</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span> <span class="o">*</span> <span class="n">steps_cpu</span> <span class="o">/</span> <span class="n">time</span><span class="p">)</span>
         <span class="n">steps</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">steps_cpu</span><span class="p">)</span>
     <span class="n">steps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">steps</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
-    <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting PME optimizer (using </span><span class="si">{</span><span class="n">steps</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> timesteps)...&quot;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting PME optimizer (using </span><span class="si">{</span><span class="n">steps</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> timesteps)...&quot;</span><span class="p">)</span>
 
     <span class="c1"># Build list of cutoff distances to test</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
@@ -661,9 +660,8 @@
             <span class="n">Context</span> <span class="o">=</span> <span class="n">_create_context</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">integrator</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span>
                                       <span class="n">properties</span><span class="p">)</span>
             <span class="n">times</span><span class="p">[</span><span class="n">arch</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_time_integrator</span><span class="p">(</span><span class="n">Context</span><span class="p">,</span> <span class="n">steps</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="n">arch</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">cutoff</span><span class="si">:{</span><span class="n">cutoff_width</span><span class="si">}</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> nm cutoff &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;===&gt; </span><span class="si">{</span><span class="n">times</span><span class="p">[</span><span class="n">arch</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="si">:{</span><span class="n">time_width</span><span class="si">}</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> s elapsed&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">arch</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">cutoff</span><span class="si">:{</span><span class="n">cutoff_width</span><span class="si">}</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> nm cutoff &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;===&gt; </span><span class="si">{</span><span class="n">times</span><span class="p">[</span><span class="n">arch</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="si">:{</span><span class="n">time_width</span><span class="si">}</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> s elapsed&quot;</span><span class="p">)</span>
 
             <span class="c1"># Stop iteration if simulation is continuously getting slower</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="n">arch</span><span class="p">][</span><span class="n">i</span> <span class="o">-</span> <span class="n">window</span><span class="p">:</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> 
@@ -688,18 +686,18 @@
     <span class="c1"># Display fastest configurations and timings</span>
     <span class="n">time_width</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">time_width</span> <span class="o">-</span> <span class="mi">8</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="n">cutoff_width</span> <span class="o">=</span> <span class="mi">11</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cutoff_width</span> <span class="o">-</span> <span class="mi">11</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PME optimization completed.</span><span class="se">\n\t</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot; Rank | </span><span class="si">{</span><span class="s1">&#39;Time (s)&#39;</span><span class="si">:</span><span class="s2">^</span><span class="si">{</span><span class="n">time_width</span><span class="si">}}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;| </span><span class="si">{</span><span class="s1">&#39;Cutoff (nm)&#39;</span><span class="si">:</span><span class="s2">^</span><span class="si">{</span><span class="n">cutoff_width</span><span class="si">}}</span><span class="s2"> | CPU PME</span><span class="se">\n\t</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;------|</span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">time_width</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;|</span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">cutoff_width</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">|---------</span><span class="se">\n\t</span><span class="s2">&quot;</span> <span class="o">+</span>
-            <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">:</span><span class="s2">&gt;4</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">time</span><span class="si">:{</span><span class="n">time_width</span><span class="si">}</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> |&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">cutoff</span><span class="si">:{</span><span class="n">cutoff_width</span><span class="si">}</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">arch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;cpu&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">arch</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">best</span><span class="p">)))</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PME optimization completed.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot;   Rank | </span><span class="si">{</span><span class="s1">&#39;Time (s)&#39;</span><span class="si">:</span><span class="s2">^</span><span class="si">{</span><span class="n">time_width</span><span class="si">}}</span><span class="s2"> &quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot;| </span><span class="si">{</span><span class="s1">&#39;Cutoff (nm)&#39;</span><span class="si">:</span><span class="s2">^</span><span class="si">{</span><span class="n">cutoff_width</span><span class="si">}}</span><span class="s2"> | CPU PME</span><span class="se">\n</span><span class="s2">&quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot;  ------|</span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">time_width</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot;|</span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">cutoff_width</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">|---------</span><span class="se">\n</span><span class="s2">  &quot;</span> <span class="o">+</span>
+                 <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">:</span><span class="s2">&gt;4</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">time</span><span class="si">:{</span><span class="n">time_width</span><span class="si">}</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> |&quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">cutoff</span><span class="si">:{</span><span class="n">cutoff_width</span><span class="si">}</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">arch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;cpu&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+                             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">arch</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">best</span><span class="p">)))</span>
 
     <span class="c1"># Return optimized configuration</span>
     <span class="k">return</span> <span class="n">best</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">,</span> <span class="n">arch</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -732,9 +730,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
+</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>

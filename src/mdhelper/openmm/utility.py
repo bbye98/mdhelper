@@ -8,13 +8,12 @@ This module contains OpenMM-related utility functions.
 
 from datetime import datetime
 import itertools
+import logging
 from typing import Union
 
 import numpy as np
 import openmm
 from openmm import unit
-
-from ..utility import log
 
 def _create_context(
         system: openmm.System, integrator: openmm.Integrator,
@@ -177,6 +176,11 @@ def optimize_pme(
         calculations.
     """
 
+    # Set up logger
+    logging.basicConfig(format="{asctime} | {levelname:^8s} | {message}", 
+                        style="{", 
+                        level=logging.INFO if verbose else logging.WARNING)
+
     # Get information about the pair potential of interest
     if pmeforce is None:
         for force in system.getForces():
@@ -193,8 +197,7 @@ def optimize_pme(
     tol = pmeforce.getEwaldErrorTolerance()
 
     # Determine the number of timesteps to run for each cutoff distance
-    if verbose:
-        log("Finding reasonable number of timesteps for PME optimizer...")
+    logging.info("Determining a reasonable number of timesteps for PME optimizer...")
     pmeforce.setCutoffDistance(np.sqrt(min_cutoff * max_cutoff))
     properties["UseCpuPme"] = "false"
     Context = _create_context(system, integrator, positions, platform,
@@ -206,9 +209,8 @@ def optimize_pme(
     steps, time = 20, 0
     while True:
         time = _time_integrator(Context, steps)
-        if verbose:
-            log(f"\tGPU: {steps:14,} ts "
-                f"===> {time:{time_width}.5f} s elapsed")
+        logging.info(f"  GPU: {steps:14,} ts "
+                     f"===> {time:{time_width}.5f} s elapsed")
         if lb < time < ub:
             break
         steps = int(target * steps / time)
@@ -219,15 +221,14 @@ def optimize_pme(
         steps_cpu, time = 20, 0
         while True:
             time = _time_integrator(Context, steps_cpu)
-            if verbose:
-                log.log(f"\tCPU: {steps_cpu:14,} ts "
-                        f"===> {time:{time_width}.5f} s elapsed")
+            logging.info(f"  CPU: {steps_cpu:14,} ts "
+                         f"===> {time:{time_width}.5f} s elapsed")
             if lb < time < ub:
                 break
             steps_cpu = int(target * steps_cpu / time)
         steps = min(steps, steps_cpu)
     steps = np.round(steps, 2 - np.ceil(np.log10(steps)).astype(int))
-    log(f"Starting PME optimizer (using {steps:,} timesteps)...")
+    logging.info(f"Starting PME optimizer (using {steps:,} timesteps)...")
 
     # Build list of cutoff distances to test
     if isinstance(min_cutoff, unit.Quantity):
@@ -279,9 +280,8 @@ def optimize_pme(
             Context = _create_context(system, integrator, positions, platform,
                                       properties)
             times[arch][i] = _time_integrator(Context, steps)
-            if verbose:
-                log(f"\t{arch.upper()}: {cutoff:{cutoff_width}.4f} nm cutoff "
-                    f"===> {times[arch][i]:{time_width}.5f} s elapsed")
+            logging.info(f"  {arch.upper()}: {cutoff:{cutoff_width}.4f} nm cutoff "
+                         f"===> {times[arch][i]:{time_width}.5f} s elapsed")
 
             # Stop iteration if simulation is continuously getting slower
             if i > 3 and np.all(times[arch][i - window:i] > 
@@ -306,15 +306,14 @@ def optimize_pme(
     # Display fastest configurations and timings
     time_width = 8 + 2 * np.ceil(max(0, time_width - 8) // 2).astype(int)
     cutoff_width = 11 + 2 * np.ceil(max(0, cutoff_width - 11) // 2).astype(int)
-    if verbose:
-        log(f"PME optimization completed.\n\t"
-            f" Rank | {'Time (s)':^{time_width}} "
-            f"| {'Cutoff (nm)':^{cutoff_width}} | CPU PME\n\t"
-            f"------|{'-' * (time_width + 2)}"
-            f"|{'-' * (cutoff_width + 2)}|---------\n\t" +
-            "\n\t".join(f" {i + 1:>4} | {time:{time_width}.5f} |"
-                        f" {cutoff:{cutoff_width}.4f} | {arch == 'cpu'}"
-                        for i, (time, cutoff, arch) in enumerate(best)))
+    logging.info(f"PME optimization completed.\n"
+                 f"   Rank | {'Time (s)':^{time_width}} "
+                 f"| {'Cutoff (nm)':^{cutoff_width}} | CPU PME\n"
+                 f"  ------|{'-' * (time_width + 2)}"
+                 f"|{'-' * (cutoff_width + 2)}|---------\n  " +
+                 "\n  ".join(f" {i + 1:>4} | {time:{time_width}.5f} |"
+                             f" {cutoff:{cutoff_width}.4f} | {arch == 'cpu'}"
+                             for i, (time, cutoff, arch) in enumerate(best)))
 
     # Return optimized configuration
     return best[0][1] * unit.nanometer, arch == "cpu"

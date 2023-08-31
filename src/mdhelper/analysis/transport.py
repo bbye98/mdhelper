@@ -432,6 +432,13 @@ class Onsager(SerialAnalysisBase):
     A serial implementation to calculate the Onsager transport 
     coefficients and its related properties.
 
+    .. note::
+
+       The simulation must have been run with a constant timestep
+       :math:`\Delta t` and the frames to be analyzed must be evenly
+       spaced and proceed forward in time for this analysis module to
+       function correctly.
+
     The Onsager transport framework [1]_ can be used to analyze 
     transport properties in bulk constant-volume fluids and 
     electrolytic systems, such as those in the canonical 
@@ -822,6 +829,17 @@ class Onsager(SerialAnalysisBase):
         self._rhos = None
     
     def _prepare(self) -> None:
+
+        # Ensure frames are evenly spaced and proceed forward in time
+        if hasattr(self._sliced_trajectory, "frames"):
+            df = np.diff(self._sliced_trajectory.frames)
+            if df[0] <= 0 or not np.allclose(df, df[0]):
+                emsg = ("The selected frames must be evenly spaced and "
+                        "proceed forward in time.")
+                raise ValueError(emsg)
+        elif hasattr(self._sliced_trajectory, "step") \
+                and self._sliced_trajectory.step <= 0:
+            raise ValueError("The analysis must proceed forward in time.")
 
         # Find all unique AtomGroup combinations
         self.results.pairs = tuple(

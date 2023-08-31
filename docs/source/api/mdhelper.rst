@@ -31,5 +31,4 @@
    mdhelper.fit
    mdhelper.openmm
    mdhelper.plot
-   mdhelper.utility
 

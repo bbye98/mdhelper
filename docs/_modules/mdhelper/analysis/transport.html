@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.2.2 and Furo 2023.07.26 -->
         <title>mdhelper.analysis.transport - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -404,7 +404,9 @@
 <span class="kn">from</span> <span class="nn">..algorithm</span> <span class="kn">import</span> <span class="n">correlation</span><span class="p">,</span> <span class="n">molecule</span>
 <span class="kn">from</span> <span class="nn">..fit.polynomial</span> <span class="kn">import</span> <span class="n">poly1</span>
 
-<div class="viewcode-block" id="msd_fft"><a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.msd_fft.html#mdhelper.analysis.transport.msd_fft">[docs]</a><span class="k">def</span> <span class="nf">msd_fft</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="msd_fft">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.msd_fft.html#mdhelper.analysis.transport.msd_fft">[docs]</a>
+<span class="k">def</span> <span class="nf">msd_fft</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the mean squared displacement (MSD) or the analogous </span>
@@ -418,7 +420,10 @@
 
     <span class="k">return</span> <span class="n">correlation</span><span class="o">.</span><span class="n">msd_fft</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="msd_shift"><a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.msd_shift.html#mdhelper.analysis.transport.msd_shift">[docs]</a><span class="k">def</span> <span class="nf">msd_shift</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+<div class="viewcode-block" id="msd_shift">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.msd_shift.html#mdhelper.analysis.transport.msd_shift">[docs]</a>
+<span class="k">def</span> <span class="nf">msd_shift</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the mean squared displacement (MSD) or the analogous </span>
@@ -432,7 +437,10 @@
     
     <span class="k">return</span> <span class="n">correlation</span><span class="o">.</span><span class="n">msd_shift</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="coefficients"><a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.coefficients.html#mdhelper.analysis.transport.coefficients">[docs]</a><span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span>
+
+<div class="viewcode-block" id="coefficients">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.coefficients.html#mdhelper.analysis.transport.coefficients">[docs]</a>
+<span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span>
         <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">msd_cross</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">msd_self</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> 
         <span class="n">Ns</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dims</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">kBT</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> 
         <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start_self</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
@@ -660,7 +668,10 @@
 
         <span class="k">return</span> <span class="n">L_ij</span><span class="p">,</span> <span class="n">Ns</span> <span class="o">*</span> <span class="n">D_i</span> <span class="o">/</span> <span class="n">denom</span><span class="p">,</span> <span class="n">D_i</span></div>
 
-<div class="viewcode-block" id="conductivity"><a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.conductivity.html#mdhelper.analysis.transport.conductivity">[docs]</a><span class="k">def</span> <span class="nf">conductivity</span><span class="p">(</span>
+
+<div class="viewcode-block" id="conductivity">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.conductivity.html#mdhelper.analysis.transport.conductivity">[docs]</a>
+<span class="k">def</span> <span class="nf">conductivity</span><span class="p">(</span>
         <span class="n">L_ij</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">z</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
@@ -711,7 +722,10 @@
                          <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">coulomb</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">conductivity</span></div>
 
-<div class="viewcode-block" id="electrophoretic_mobility"><a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.electrophoretic_mobility.html#mdhelper.analysis.transport.electrophoretic_mobility">[docs]</a><span class="k">def</span> <span class="nf">electrophoretic_mobility</span><span class="p">(</span>
+
+<div class="viewcode-block" id="electrophoretic_mobility">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.electrophoretic_mobility.html#mdhelper.analysis.transport.electrophoretic_mobility">[docs]</a>
+<span class="k">def</span> <span class="nf">electrophoretic_mobility</span><span class="p">(</span>
         <span class="n">L_ij</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">z</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
         <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
@@ -770,7 +784,10 @@
                      <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">mole</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">coulomb</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mobility</span></div>
 
-<div class="viewcode-block" id="transference_number"><a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.transference_number.html#mdhelper.analysis.transport.transference_number">[docs]</a><span class="k">def</span> <span class="nf">transference_number</span><span class="p">(</span>
+
+<div class="viewcode-block" id="transference_number">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.transference_number.html#mdhelper.analysis.transport.transference_number">[docs]</a>
+<span class="k">def</span> <span class="nf">transference_number</span><span class="p">(</span>
         <span class="n">L_ij</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">z</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -808,11 +825,21 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="p">(</span><span class="n">L_ij</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span>
             <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij, ij&quot;</span><span class="p">,</span> <span class="n">L_ij</span><span class="p">,</span> <span class="n">z</span> <span class="o">*</span> <span class="n">z</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]))</span></div>
 
-<div class="viewcode-block" id="Onsager"><a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.Onsager.html#mdhelper.analysis.transport.Onsager">[docs]</a><span class="k">class</span> <span class="nc">Onsager</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Onsager">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.Onsager.html#mdhelper.analysis.transport.Onsager">[docs]</a>
+<span class="k">class</span> <span class="nc">Onsager</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A serial implementation to calculate the Onsager transport </span>
 <span class="sd">    coefficients and its related properties.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">       The simulation must have been run with a constant timestep</span>
+<span class="sd">       :math:`\Delta t` and the frames to be analyzed must be evenly</span>
+<span class="sd">       spaced and proceed forward in time for this analysis module to</span>
+<span class="sd">       function correctly.</span>
 
 <span class="sd">    The Onsager transport framework [1]_ can be used to analyze </span>
 <span class="sd">    transport properties in bulk constant-volume fluids and </span>
@@ -1205,6 +1232,17 @@
     
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
+        <span class="c1"># Ensure frames are evenly spaced and proceed forward in time</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The selected frames must be evenly spaced and &quot;</span>
+                        <span class="s2">&quot;proceed forward in time.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">step</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The analysis must proceed forward in time.&quot;</span><span class="p">)</span>
+
         <span class="c1"># Find all unique AtomGroup combinations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
             <span class="n">itertools</span><span class="o">.</span><span class="n">combinations_with_replacement</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
@@ -1345,7 +1383,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msd_cross</span> <span class="o">/=</span> <span class="n">d</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msd_self</span> <span class="o">/=</span> <span class="n">d</span>
 
-<div class="viewcode-block" id="Onsager.calculate_coefficients"><a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.Onsager.html#mdhelper.analysis.transport.Onsager.calculate_coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_coefficients</span><span class="p">(</span>
+<div class="viewcode-block" id="Onsager.calculate_coefficients">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.Onsager.html#mdhelper.analysis.transport.Onsager.calculate_coefficients">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_coefficients</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
             <span class="n">start_self</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop_self</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">scale_self</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">enforce_linear</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1436,7 +1476,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.L_ij&quot;</span><span class="p">]</span> <span class="o">=</span> \
                 <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Onsager.calculate_conductivity"><a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.Onsager.html#mdhelper.analysis.transport.Onsager.calculate_conductivity">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_conductivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">charges</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Onsager.calculate_conductivity">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.Onsager.html#mdhelper.analysis.transport.Onsager.calculate_conductivity">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_conductivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">charges</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the ionic conductivity :math:`\kappa` using the</span>
@@ -1476,7 +1519,10 @@
                 <span class="n">unit</span><span class="o">.</span><span class="n">coulomb</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
                                      <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Onsager.calculate_electrophoretic_mobility"><a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.Onsager.html#mdhelper.analysis.transport.Onsager.calculate_electrophoretic_mobility">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_electrophoretic_mobility</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Onsager.calculate_electrophoretic_mobility">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.Onsager.html#mdhelper.analysis.transport.Onsager.calculate_electrophoretic_mobility">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_electrophoretic_mobility</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">charges</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rhos</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -1537,7 +1583,10 @@
                 <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">coulomb</span> <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kilojoule</span>
                                                      <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Onsager.calculate_transference_number"><a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.Onsager.html#mdhelper.analysis.transport.Onsager.calculate_transference_number">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_transference_number</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Onsager.calculate_transference_number">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.transport.Onsager.html#mdhelper.analysis.transport.Onsager.calculate_transference_number">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_transference_number</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">charges</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1570,7 +1619,9 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">transference_number</span> <span class="o">=</span> <span class="n">transference_number</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">L_ij</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_charges</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span></div>
+</div>
+
 </pre></div>
         </article>
       </div>
@@ -1603,9 +1654,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
+</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>

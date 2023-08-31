@@ -32,9 +32,6 @@ extensions = [
 exclude_patterns = ["_build"]
 templates_path = ["_templates"]
 
-# add_module_names = False
-toc_object_entries_show_parents = "hide"
-
 autosummary_generate = True
 intersphinx_mapping = {
     "dask": ("https://docs.dask.org/en/stable/", None),
@@ -47,6 +44,7 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None)
 }
 numpydoc_show_class_members = False
+toc_object_entries_show_parents = "hide"
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

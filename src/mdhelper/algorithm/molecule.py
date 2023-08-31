@@ -44,12 +44,15 @@ def center_of_mass(
        heirarchy, you can specify the desired grouping and the 
        appropriate center(s) of mass will be calculated. Otherwise, if
        and only if the :code:`AtomGroup` contains equisized or identical
-       groups corresponding to the desired grouping, you can provide the 
+       groups corresponding to the desired grouping (i.e., the 
+       :code:`AtomGroup` has particles that are or can be treated as 
+       nonbonded entities or topological groups with the same number of
+       but not necessarily identical constituents), you can provide the 
        total number of groups and the particle masses and positions will
        be distributed accordingly. If the :code:`AtomGroup` does not 
        have the correct structural information and the residues or 
-       segments do not contain the same number of atoms, see the final
-       paragraph.
+       segments do not contain the same number of atoms, see the 
+       second-to-last paragraph.
 
        If the trajectory is not unwrapped, the number of periodic 
        boundary crossings (and optionally, the system dimensions if they
@@ -61,12 +64,12 @@ def center_of_mass(
        holding the masses should be one-dimensional, while that 
        containing the positions should be two-dimensional. To calculate
        center(s) of mass for group(s), the array-like object holding the
-       masses should be two-dimensional (indexing: group, particle 
-       mass), while that containing the positions should be 
-       three-dimensional (indexing: group, particle position, 
-       dimension). When a list or tuple is used, the inner arrays do not
-       have to be homogeneously shaped, thus allowing you to calculate 
-       the centers of mass for different residues or segments.
+       masses should be two-dimensional (order: group, particle mass), 
+       while that containing the positions should be three-dimensional
+       (order: group, particle position, axis). When a list or tuple is 
+       used, the inner arrays do not have to be homogeneously shaped, 
+       thus allowing you to calculate the centers of mass for residues
+       or segments with different numbers of atoms.
 
        You may also provide only one of the particle masses or 
        positions, in which case the missing information will be
@@ -369,12 +372,15 @@ def radius_of_gyration(
        heirarchy, you can specify the desired grouping and the 
        appropriate radii of gyration will be calculated. Otherwise, if
        and only if the :code:`AtomGroup` contains equisized or identical
-       groups corresponding to the desired grouping, you can provide the 
+       groups corresponding to the desired grouping (i.e., the 
+       :code:`AtomGroup` has particles that are or can be treated as 
+       nonbonded entities or topological groups with the same number of
+       but not necessarily identical constituents), you can provide the 
        total number of groups and the particle masses and positions will
        be distributed accordingly. If the :code:`AtomGroup` does not 
        have the correct structural information and the residues or 
-       segments do not contain the same number of atoms, see the final
-       paragraph.
+       segments do not contain the same number of atoms, see the 
+       second-to-last paragraph.
 
        If the trajectory is not unwrapped, the number of periodic 
        boundary crossings (and optionally, the system dimensions if they
@@ -382,16 +388,16 @@ def radius_of_gyration(
 
        Alternatively, the *unwrapped* particle masses and positions can 
        be provided directly as a :class:`numpy.ndarray`, list, or tuple.
-       To calculate the overall radius of gyration, the array-like object
-       holding the masses should be one-dimensional, while that 
+       To calculate the overall radius of gyration, the array-like 
+       object holding the masses should be one-dimensional, while that 
        containing the positions should be two-dimensional. To calculate
        radii of gyration for group(s), the array-like object holding the
-       masses should be two-dimensional (indexing: group, particle 
-       mass), while that containing the positions should be 
-       three-dimensional (indexing: group, particle position, 
-       dimension). When a list or tuple is used, the inner arrays do not
-       have to be homogeneously shaped, thus allowing you to calculate 
-       the radii of gyration for different residues or segments.
+       masses should be two-dimensional (order: group, particle mass), 
+       while that containing the positions should be three-dimensional
+       (order: group, particle position, axis). When a list or tuple is 
+       used, the inner arrays do not have to be homogeneously shaped, 
+       thus allowing you to calculate the radii of gyration for residues
+       or segments with different numbers of atoms.
 
        You may also provide only one of the particle masses or 
        positions, in which case the missing information will be

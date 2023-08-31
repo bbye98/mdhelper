@@ -1,10 +1,10 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19 -->
         <title>mdhelper.algorithm.molecule - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -396,7 +396,9 @@
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
 
-<div class="viewcode-block" id="center_of_mass"><a class="viewcode-back" href="../../../api/mdhelper.algorithm.molecule.center_of_mass.html#mdhelper.algorithm.molecule.center_of_mass">[docs]</a><span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span>
+<div class="viewcode-block" id="center_of_mass">
+<a class="viewcode-back" href="../../../api/mdhelper.algorithm.molecule.center_of_mass.html#mdhelper.algorithm.molecule.center_of_mass">[docs]</a>
+<span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span>
         <span class="n">group</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">grouping</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
         <span class="n">masses</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">positions</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">images</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dims</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -426,12 +428,15 @@
 <span class="sd">       heirarchy, you can specify the desired grouping and the </span>
 <span class="sd">       appropriate center(s) of mass will be calculated. Otherwise, if</span>
 <span class="sd">       and only if the :code:`AtomGroup` contains equisized or identical</span>
-<span class="sd">       groups corresponding to the desired grouping, you can provide the </span>
+<span class="sd">       groups corresponding to the desired grouping (i.e., the </span>
+<span class="sd">       :code:`AtomGroup` has particles that are or can be treated as </span>
+<span class="sd">       nonbonded entities or topological groups with the same number of</span>
+<span class="sd">       but not necessarily identical constituents), you can provide the </span>
 <span class="sd">       total number of groups and the particle masses and positions will</span>
 <span class="sd">       be distributed accordingly. If the :code:`AtomGroup` does not </span>
 <span class="sd">       have the correct structural information and the residues or </span>
-<span class="sd">       segments do not contain the same number of atoms, see the final</span>
-<span class="sd">       paragraph.</span>
+<span class="sd">       segments do not contain the same number of atoms, see the </span>
+<span class="sd">       second-to-last paragraph.</span>
 
 <span class="sd">       If the trajectory is not unwrapped, the number of periodic </span>
 <span class="sd">       boundary crossings (and optionally, the system dimensions if they</span>
@@ -443,12 +448,12 @@
 <span class="sd">       holding the masses should be one-dimensional, while that </span>
 <span class="sd">       containing the positions should be two-dimensional. To calculate</span>
 <span class="sd">       center(s) of mass for group(s), the array-like object holding the</span>
-<span class="sd">       masses should be two-dimensional (indexing: group, particle </span>
-<span class="sd">       mass), while that containing the positions should be </span>
-<span class="sd">       three-dimensional (indexing: group, particle position, </span>
-<span class="sd">       dimension). When a list or tuple is used, the inner arrays do not</span>
-<span class="sd">       have to be homogeneously shaped, thus allowing you to calculate </span>
-<span class="sd">       the centers of mass for different residues or segments.</span>
+<span class="sd">       masses should be two-dimensional (order: group, particle mass), </span>
+<span class="sd">       while that containing the positions should be three-dimensional</span>
+<span class="sd">       (order: group, particle position, axis). When a list or tuple is </span>
+<span class="sd">       used, the inner arrays do not have to be homogeneously shaped, </span>
+<span class="sd">       thus allowing you to calculate the centers of mass for residues</span>
+<span class="sd">       or segments with different numbers of atoms.</span>
 
 <span class="sd">       You may also provide only one of the particle masses or </span>
 <span class="sd">       positions, in which case the missing information will be</span>
@@ -707,7 +712,10 @@
         <span class="k">return</span> <span class="n">com</span><span class="p">,</span> <span class="n">masses</span><span class="p">,</span> <span class="n">positions</span>
     <span class="k">return</span> <span class="n">com</span></div>
 
-<div class="viewcode-block" id="radius_of_gyration"><a class="viewcode-back" href="../../../api/mdhelper.algorithm.molecule.radius_of_gyration.html#mdhelper.algorithm.molecule.radius_of_gyration">[docs]</a><span class="k">def</span> <span class="nf">radius_of_gyration</span><span class="p">(</span>
+
+<div class="viewcode-block" id="radius_of_gyration">
+<a class="viewcode-back" href="../../../api/mdhelper.algorithm.molecule.radius_of_gyration.html#mdhelper.algorithm.molecule.radius_of_gyration">[docs]</a>
+<span class="k">def</span> <span class="nf">radius_of_gyration</span><span class="p">(</span>
         <span class="n">group</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">grouping</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
         <span class="n">positions</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">masses</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">com</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
@@ -751,12 +759,15 @@
 <span class="sd">       heirarchy, you can specify the desired grouping and the </span>
 <span class="sd">       appropriate radii of gyration will be calculated. Otherwise, if</span>
 <span class="sd">       and only if the :code:`AtomGroup` contains equisized or identical</span>
-<span class="sd">       groups corresponding to the desired grouping, you can provide the </span>
+<span class="sd">       groups corresponding to the desired grouping (i.e., the </span>
+<span class="sd">       :code:`AtomGroup` has particles that are or can be treated as </span>
+<span class="sd">       nonbonded entities or topological groups with the same number of</span>
+<span class="sd">       but not necessarily identical constituents), you can provide the </span>
 <span class="sd">       total number of groups and the particle masses and positions will</span>
 <span class="sd">       be distributed accordingly. If the :code:`AtomGroup` does not </span>
 <span class="sd">       have the correct structural information and the residues or </span>
-<span class="sd">       segments do not contain the same number of atoms, see the final</span>
-<span class="sd">       paragraph.</span>
+<span class="sd">       segments do not contain the same number of atoms, see the </span>
+<span class="sd">       second-to-last paragraph.</span>
 
 <span class="sd">       If the trajectory is not unwrapped, the number of periodic </span>
 <span class="sd">       boundary crossings (and optionally, the system dimensions if they</span>
@@ -764,16 +775,16 @@
 
 <span class="sd">       Alternatively, the *unwrapped* particle masses and positions can </span>
 <span class="sd">       be provided directly as a :class:`numpy.ndarray`, list, or tuple.</span>
-<span class="sd">       To calculate the overall radius of gyration, the array-like object</span>
-<span class="sd">       holding the masses should be one-dimensional, while that </span>
+<span class="sd">       To calculate the overall radius of gyration, the array-like </span>
+<span class="sd">       object holding the masses should be one-dimensional, while that </span>
 <span class="sd">       containing the positions should be two-dimensional. To calculate</span>
 <span class="sd">       radii of gyration for group(s), the array-like object holding the</span>
-<span class="sd">       masses should be two-dimensional (indexing: group, particle </span>
-<span class="sd">       mass), while that containing the positions should be </span>
-<span class="sd">       three-dimensional (indexing: group, particle position, </span>
-<span class="sd">       dimension). When a list or tuple is used, the inner arrays do not</span>
-<span class="sd">       have to be homogeneously shaped, thus allowing you to calculate </span>
-<span class="sd">       the radii of gyration for different residues or segments.</span>
+<span class="sd">       masses should be two-dimensional (order: group, particle mass), </span>
+<span class="sd">       while that containing the positions should be three-dimensional</span>
+<span class="sd">       (order: group, particle position, axis). When a list or tuple is </span>
+<span class="sd">       used, the inner arrays do not have to be homogeneously shaped, </span>
+<span class="sd">       thus allowing you to calculate the radii of gyration for residues</span>
+<span class="sd">       or segments with different numbers of atoms.</span>
 
 <span class="sd">       You may also provide only one of the particle masses or </span>
 <span class="sd">       positions, in which case the missing information will be</span>
@@ -973,6 +984,7 @@
         <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;a,ad-&gt;d&quot;</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">m</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> 
             <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">com</span><span class="p">)]</span>
     <span class="p">)</span></div>
+
                 
 </pre></div>
         </article>
@@ -1006,9 +1018,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
+</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>

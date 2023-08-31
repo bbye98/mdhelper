@@ -35,11 +35,11 @@ def _setup_pair(
         Custom nonbonded force object.
 
     cutoff : `float` or `openmm.unit.Quantity`
-        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded
+        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
         interactions in the simulation sytem. Must be less than half the
         periodic simulation box dimensions. 
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     global_params : `dict`, optional
         Global parameters.
@@ -80,59 +80,68 @@ def coul_gauss(
 
     .. math::
 
-       u_\textrm{Coul}(r_{12})=\frac{q_1q_2}{4\pi\varepsilon_0 r_{12}}
-       \textrm{erf}(\alpha_{12}r_{12})
+       u_\mathrm{Coul}(r_{12})=\frac{q_1q_2}{4\pi\varepsilon_0r_{12}}
+       \mathrm{erf}(\alpha_{12}r_{12})
     
-    where :math:`q_1` and :math:`q_2` are the particle charges in e,
-    :math:`\varepsilon_0` is the vacuum permittivity, and
-    :math:`\alpha_{12}` is an inverse screening length or damping
-    parameter. Effectively, electrostatic interactions are dampened for
-    high charges at small separation distances.
+    where :math:`q_1` and :math:`q_2` are the particle charges in 
+    :math:`\mathrm{e}`, :math:`\varepsilon_0` is the vacuum 
+    permittivity, and :math:`\alpha_{12}=\sqrt{\alpha_1^2+\alpha_2^2}`
+    is an inverse screening length or damping parameter in 
+    :math:`\mathrm{nm}^{-1}`. Effectively, electrostatic interactions
+    are dampened for charges at small separation distances but remain
+    unchanged at large separation distances.
 
-    :math:`q_1`, :math:`q_2`, and :math:`\alpha_{12}` are determined
-    from the per-particle parameters `charge` and `alpha`, respectively,
-    which are set in the main script using
-    :meth:`openmm.openmm.NonbondedForce.addParticle`.
-
-    To account for a solvent implicitly using its relative permittivity
-    :math:`\varepsilon_\textrm{r}`, scale the particle charges
-    :math:`q_i` by :math:`1/\sqrt{\varepsilon_\textrm{r}}`.
-
-    In addition to the default mixing rule for :math:`\alpha_{12}`, an
-    implementation of the Gaussian core model is available:
+    Additionally, an implementation of the electrostatic pair potential
+    in the Gaussian core model
 
     .. math::
 
-       u_\textrm{Coul}(r_{12})=\frac{q_1q_2}{4\pi\varepsilon_0 r_{12}}
-       \textrm{erf}\left(\frac{\pi^{1/2}}{2^{1/2}a_{12}}r_{12}\right)
+       u_\mathrm{Coul}(r_{12})=\frac{q_1q_2}{4\pi\varepsilon_0r_{12}}
+       \mathrm{erf}\left(\frac{\pi^{1/2}}{2^{1/2}a_{12}}r_{12}\right)
+
+    is available, where :math:`a_{12}=\sqrt{a_1^2+a_2^2}` with 
+    :math:`a_1` and :math:`a_2` being the electrostatic smearing radii
+    in :math:`\mathrm{nm}`.
+
+    To account for the solvent polarization implicitly using its 
+    relative permittivity :math:`\varepsilon_\mathrm{r}`, scale the 
+    particle charges :math:`q_1` and :math:`q_2` by 
+    :math:`1/\sqrt{\varepsilon_\mathrm{r}}`.
+
+    After creating the pair potentials, particles should be registered
+    using :meth:`openmm.openmm.NonbondedForce.addParticle` and 
+    :meth:`openmm.openmm.CustomNonbondedForce.addParticle`.
 
     Parameters
     ----------
     cutoff : `float` or `openmm.unit.Quantity`
-        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded
+        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
         interactions in the simulation sytem. Must be less than half the
-        periodic simulation box dimensions. 
+        minimum periodic simulation box dimension. 
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     tol : `float`, default: :code:`1e-4`
         Error tolerance :math:`\delta` for Ewald summation.
 
     g_ewald : `float` or `openmm.unit.Quantity`, keyword-only, optional
-        Ewald splitting parameter :math:`g_\textrm{Ewald}`. If not
+        Ewald splitting parameter :math:`g_\mathrm{Ewald}`. If not
         provided, `g_ewald` is computed using
 
         .. math::
 
-           g_\textrm{Ewald}=\frac{\sqrt{-\log(2\delta)}}{r_\textrm{cut}}
+           g_\mathrm{Ewald}=\frac{\sqrt{-\log(2\delta)}}{r_\mathrm{cut}}
 
-        **Reference unit**: :math:`\textrm{nm}^{-1}`.
+        **Reference unit**: :math:`\mathrm{nm}^{-1}`.
 
     dims : `array_like` or `openmm.unit.Quantity`, keyword-only, optional
         Simulation system dimensions. Must be provided with `g_ewald` to
-        calculate the number of mesh nodes :math:`n_\textrm{mesh}`.
+        calculate the number of mesh nodes :math:`n_\mathrm{mesh}`.
+        Both `dims` and `g_ewald` must either have units or be unitless.
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Shape**: :math:`(3,)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     mix : `str`, keyword-only, default: :code:`"default"`
         Mixing rule for :math:`\alpha_{12}`.
@@ -144,30 +153,54 @@ def coul_gauss(
            * :code:`"default"`: Default mixing rule.
 
              .. math::
+
                 \alpha_{12}=\frac{\alpha_1\alpha_2}
                 {\sqrt{\alpha_1^2+\alpha_2^2}}
+
+             **Per-particle parameters**: 
+             
+             * :class:`openmm.openmm.CustomNonbondedForce`: 
+               :math:`(q_i,\,\alpha_i)`.
+             * :class:`openmm.openmm.NonbondedForce`:
+               :math:`(q_i,\,\sigma_i,\,\epsilon_i)`.
 
            * :code:`"core"`: Gaussian core model.
 
              .. math::
+
                 \begin{gather*}
-                  a_{12}^2=a_1^2+a_2^2\\ 
+                  a_{12}^2=a_1^2+a_2^2\\
                   \alpha_{12}=\sqrt{\frac{\pi}{2a_{12}^2}}
                 \end{gather*}
 
              This is equivalent to setting 
-             :math:`\alpha_i=\sqrt{\pi/(2a_i^2)}`. :math:`a_{12}`, which 
-             has units of :math:`\textrm{nm}`, is determined from the
-             per-particle parameter `a`. `a` is automatically added to
-             `per_params` and should be set in the main script using
-             :meth:`openmm.openmm.NonbondedForce.addParticle`.
+             :math:`\alpha_i=\sqrt{\pi/(2a_i^2)}` in the default mixing
+             rule. 
 
-        Alternatively, a custom mixing rule can be provided as a string
-        with valid C++ syntax. The expression must have the form
-        :code:`"alpha12 = ...;"`. Unless custom global or per-particle
-        parameters are defined, the expression should contain
-        :code:`"alpha1"` and :code:`"alpha2"`. If a mixing rule is not
-        provided, the default mixing rule is used.
+             * :class:`openmm.openmm.CustomNonbondedForce`: 
+               :math:`(q_i,\,a_i)`.
+             * :class:`openmm.openmm.NonbondedForce`:
+               :math:`(q_i,\,\sigma_i,\,\epsilon_i)`.
+
+           * :code:`"alpha12 = ...;"`: Custom mixing rule. The string 
+             containing the expression for :math:`\alpha_{12}` must be
+             written in valid C++ syntax, with any custom global and
+             per-particle parameters and tabulated functions defined in 
+             `global_params`, `per_params`, and `tab_funcs`, 
+             respectively.
+
+             **Per-particle parameters**: 
+             
+             * :class:`openmm.openmm.CustomNonbondedForce`: 
+               :math:`(q_i,\,\ldots)`.
+             * :class:`openmm.openmm.NonbondedForce`:
+               :math:`(q_i,\,\sigma_i,\,\epsilon_i)`.
+
+        .. hint::
+
+           To disable the Lennard-Jones potential, set 
+           :math:`\sigma_i=0\,\mathrm{nm}` and 
+           :math:`\epsilon_i=0\,\mathrm{kJ/mol}` for all particles.
 
     global_params : `dict`, keyword-only, optional
         Additional global parameters for use in the definition of
@@ -186,7 +219,7 @@ def coul_gauss(
     pair_coul_gauss_dir : `openmm.CustomNonbondedForce`
         Short-range electrostatic contribution evaluated in real space.
         
-    pair_coul_gauss_recip : `openmm.NonbondedForce`
+    pair_coul_gauss_rec : `openmm.NonbondedForce`
         Long-range electrostatic contribution evaluated in Fourier
         (reciprocal) space.
 
@@ -213,10 +246,10 @@ def coul_gauss(
     } | global_params
     if mix == "default":
         mix = "alpha12=alpha1*alpha2/sqrt(alpha1^2+alpha2^2);"
-        per_params = ["alpha"] + per_params
+        per_params = ["alpha"]
     elif mix == "core":
         mix = f"alpha12=sqrt({np.pi}/(2*(a1^2+a2^2)));"
-        per_params = ["a"] + per_params
+        per_params = ["a"]
 
     pair_coul_gauss_dir = openmm.CustomNonbondedForce(
         f"ONE_4PI_EPS0*q1*q2*(erf(alpha12*r)-erf(G_EWALD*r))/r;{mix}"
@@ -224,10 +257,10 @@ def coul_gauss(
     pair_coul_gauss_dir.addPerParticleParameter("q")
     _setup_pair(pair_coul_gauss_dir, cutoff, global_params, per_params, tab_funcs)
 
-    pair_coul_gauss_recip = lj_coul(cutoff, tol, g_ewald=g_ewald, dims=dims)
-    pair_coul_gauss_recip.setIncludeDirectSpace(False)
+    pair_coul_gauss_rec = lj_coul(cutoff, tol, g_ewald=g_ewald, dims=dims)
+    pair_coul_gauss_rec.setIncludeDirectSpace(False)
 
-    return pair_coul_gauss_dir, pair_coul_gauss_recip
+    return pair_coul_gauss_dir, pair_coul_gauss_rec
 
 def gauss(
         cutoff: Union[float, openmm.unit.Quantity],
@@ -246,45 +279,47 @@ def gauss(
 
     .. math::
         
-       u_\textrm{Gauss}(r_{12})=\alpha_{12}\exp{(-\beta_{12}r_{12}^2)}
+       u_\mathrm{Gauss}(r_{12})=\alpha_{12}\exp{(-\beta_{12}r_{12}^2)}
 
     where :math:`\alpha_{12}` is a magnitude scaling constant in
-    :math:`\textrm{kJ/mol}` and :math:`\beta_{12}` is a screening length
-    in :math:`\textrm{nm}`.
-
-    :math:`\alpha_{12}` and :math:`\beta_{12}` are determined from
-    per-particle parameters `alpha` and `beta`, respectively, which are
-    set in the main script using
-    :meth:`openmm.openmm.NonbondedForce.addParticle`.
+    :math:`\mathrm{kJ/mol}` and :math:`\beta_{12}` is a screening length
+    in :math:`\mathrm{nm}`.
 
     In addition to arithmetic and geometric mixing rules for
     :math:`\alpha_{12}` and :math:`\beta_{12}`, an implementation of the
-    Gaussian core model for a melt is available:
+    excluded volume pair potential in the Gaussian core model
 
     .. math::
 
-        u_\textrm{Gauss}(r_{12})=A\left(\frac{3}{2\pi\sigma_{12}^2}
+        u_\mathrm{Gauss}(r_{12})=A\left(\frac{3}{2\pi\sigma_{12}^2}
         \right)^{3/2}\exp{\left(-\frac{3}{2\sigma_{12}^2}r_{12}^2\right)}
+
+    is available, where :math:`A` is the repulsion parameter in
+    :math:`\mathrm{nm}^3\cdot\mathrm{kJ/mol}` and :math:`\sigma_{12}` is
+    the average particle size in :math:`\mathrm{nm}`.
+
+    After creating the pair potential, particles should be registered
+    using :meth:`openmm.openmm.CustomNonbondedForce.addParticle`.
 
     Parameters
     ----------
     cutoff : `float` or `openmm.unit.Quantity`         
-        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded
+        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
         interactions in the simulation sytem. Must be less than half the
-        periodic simulation box dimensions. 
+        minimum periodic simulation box dimension. 
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     cutoff_gauss : `float` or `openmm.unit.Quantity`, optional
         Cutoff distance for the Gaussian potential. Must be less than
         `cutoff`. If not provided, it is set to the shared cutoff
         distance for the nonbonded interactions. 
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     shift : `bool`, keyword-only, default: :code:`True`
         Determines whether the Gaussian potential is shifted at its
-        cutoff to :math:`0\;\textrm{kJ/mol}`.
+        cutoff to :math:`0\,\mathrm{kJ/mol}`.
         
     mix : `str`, keyword-only, default: :code:`"geometric"`
         Mixing rule for :math:`\alpha_{12}` and :math:`\beta_{12}`. 
@@ -302,6 +337,8 @@ def gauss(
                   \beta_{12}=\frac{2}{\beta_1^{-1}+\beta_2^{-1}}
                 \end{gather*}
 
+             **Per-particle parameters**: :math:`(\alpha_i,\,\beta_i)`.
+
            * :code:`"geometric"`: Geometric mixing rule.
 
              .. math::
@@ -310,6 +347,8 @@ def gauss(
                   \alpha_{12}=\sqrt{\alpha_1\alpha_2}\\
                   \beta_{12}=\sqrt{\beta_1\beta_2}
                 \end{gather*}
+
+             **Per-particle parameters**: :math:`(\alpha_i,\,\beta_i)`.
 
            * :code:`"core"`: Gaussian core model.
 
@@ -322,23 +361,17 @@ def gauss(
                   \frac{\beta_{12}}{\pi}\right)^{3/2}
                 \end{gather*}
 
-           :math:`\sigma_{12}`, which has units of :math:`\textrm{nm}`,
-           is determined from the per-particle parameter `sigma`.
-           `sigma` is automatically added to `per_params` and should be
-           set in the main script using
-           :meth:`openmm.openmm.NonbondedForce.addParticle`.
-           The global parameter :math:`A`, which has units of
-           :math:`\textrm{nm}^3 \cdot \textrm{kJ/mol}`, should be
-           provided to this function via 
-           :code:`global_params={"A": ...}`.
+             **Global parameter**: :math:`A`.
 
-        Alternatively, a custom mixing rule can be provided as a string
-        with valid C++ syntax. The expression must have the form
-        :code:`"alpha12 = ...; beta12 = ...;"`. Unless custom global or
-        per-particle parameters are defined, the expression should
-        contain :code:`"alpha1"`, :code:`"alpha2"`, :code:`"beta1"`, and
-        :code:`"beta2"`. If a mixing rule is not provided, the default
-        geometric mixing rule is used.
+             **Per-particle parameter**: :math:`\sigma_i`.
+
+           * :code:`"alpha12 = ...; beta12 = ...;"`: Custom mixing rule.
+             The string containing the expressions for 
+             :math:`\alpha_{12}` and :math:`\beta_{12}` must be written
+             in valid C++ syntax, with any custom global and 
+             per-particle parameters and tabulated functions defined in 
+             `global_params`, `per_params`, and `tab_funcs`, 
+             respectively.
         
     global_params : `dict`, keyword-only, optional
         Optional global parameters for use in the definition of
@@ -374,15 +407,22 @@ def gauss(
     root = "alpha12*exp(-beta12*r^2)"
     suffix = f"-ucut);ucut=alpha12*exp(-beta12*{cutoff_gauss}^2);" if shift else ");"
     if mix == "arithmetic":
-        per_params = ["alpha", "beta"] + per_params
         mix = "alpha12=sqrt(alpha1*alpha2);beta12=2/(1/beta1+1/beta2);"
+        per_params = ["alpha", "beta"]
     elif mix == "geometric":
-        per_params = ["alpha", "beta"] + per_params
         mix = "alpha12=sqrt(alpha1*alpha2);beta12=sqrt(beta1*beta2);"
-    elif mix == "core":
+        per_params = ["alpha", "beta"]
+    elif "core" in mix:
+        mix = mix.replace(
+            "core", 
+            f"alpha12=A*(beta12/{np.pi})^(3/2);beta12=3/(2*sigma12sq);"
+            "sigma12sq=sigma1^2+sigma2^2"
+        )
+        if not mix.endswith(";"):
+            mix += ";"
+        if "A" not in mix and "A" not in global_params:
+            raise ValueError("Global parameter 'A' not specified.")
         per_params = ["sigma"] + per_params
-        mix = (f"alpha12=A*(beta12/{np.pi})^(3/2);beta12=3/(2*sigma12sq);"
-               "sigma12sq=sigma1^2+sigma2^2;")
 
     pair_gauss = openmm.CustomNonbondedForce(f"{prefix}{root}{suffix}{mix}")
     _setup_pair(pair_gauss, cutoff, global_params, per_params, tab_funcs)
@@ -403,17 +443,17 @@ def lj_coul(
     .. math::
 
        \begin{gather*}
-         u_\textrm{Coul}(r_{12})=\frac{q_1q_2}{4\pi\varepsilon_0r_{12}}\\
-         u_\textrm{LJ}(r_{12})=4\epsilon_{12}\left[\left(
+         u_\mathrm{Coul}(r_{12})=\frac{q_1q_2}{4\pi\varepsilon_0r_{12}}\\
+         u_\mathrm{LJ}(r_{12})=4\epsilon_{12}\left[\left(
          \frac{\sigma_{12}}{r_{12}}\right)^{12}
          -\left(\frac{\sigma_{12}}{r_{12}} \right)^6\right]
        \end{gather*}
     
-    where :math:`q_1` and :math:`q_2` are the particle charges in e,
-    :math:`\varepsilon_0` is the vacuum permittivity,
-    :math:`\sigma_{12}` is the size of the particle in
-    :math:`\textrm{nm}`, and :math:`\epsilon_{12}` is the dispersion
-    energy in :math:`\textrm{kJ/mol}`. :math:`q_1`, :math:`q_2`,
+    where :math:`q_1` and :math:`q_2` are the particle charges in
+    :math:`\mathrm{e}`, :math:`\varepsilon_0` is the vacuum 
+    permittivity, :math:`\sigma_{12}` is the averged particle size in
+    :math:`\mathrm{nm}`, and :math:`\epsilon_{12}` is the dispersion
+    energy in :math:`\mathrm{kJ/mol}`. :math:`q_1`, :math:`q_2`,
     :math:`\sigma_{12}`, and :math:`\epsilon_{12}` are determined from
     per-particle parameters `charge`, `sigma`, and `epsilon`,
     respectively, which are set in the main script using
@@ -431,41 +471,43 @@ def lj_coul(
     
     To disable the LJ potential and use a different excluded volume
     interaction potential but keep the Coulomb potential, set
-    :math:`\sigma_{12}=0\;\textrm{nm}` and
-    :math:`\epsilon_{12}=0\;\textrm{kJ/mol}` for all particles.
+    :math:`\sigma_{12}=0\,\mathrm{nm}` and
+    :math:`\epsilon_{12}=0\,\mathrm{kJ/mol}` for all particles.
 
     To account for a solvent implicitly using its relative permittivity
-    :math:`\varepsilon_\textrm{r}`, scale the particle charges
-    :math:`q_i` by :math:`1/\sqrt{\varepsilon_\textrm{r}}`.
+    :math:`\varepsilon_\mathrm{r}`, scale the particle charges
+    :math:`q_i` by :math:`1/\sqrt{\varepsilon_\mathrm{r}}`.
 
     Parameters
     ----------
     cutoff : `float` or `openmm.unit.Quantity`         
-        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded
+        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
         interactions in the simulation sytem. Must be less than half the
-        periodic simulation box dimensions. 
+        minimum periodic simulation box dimension. 
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     tol : `float`, default: :code:`1e-4`
         Error tolerance :math:`\delta` for Ewald summation.
 
     g_ewald : `float` or `openmm.unit.Quantity`, keyword-only, optional
-        Ewald splitting parameter :math:`g_\textrm{Ewald}`. If not
+        Ewald splitting parameter :math:`g_\mathrm{Ewald}`. If not
         provided, `g_ewald` is computed using
 
         .. math::
 
-           g_\textrm{Ewald}=\frac{\sqrt{-\log(2\delta)}}{r_\textrm{cut}}
+           g_\mathrm{Ewald}=\frac{\sqrt{-\log(2\delta)}}{r_\mathrm{cut}}
 
-        **Reference unit**: :math:`\textrm{nm}^{-1}`.
+        **Reference unit**: :math:`\mathrm{nm}^{-1}`.
         
     dims : `float` or `openmm.unit.Quantity`, keyword-only, optional
         Simulation system dimensions. Must be provided with `g_ewald` to
-        calculate the number of mesh nodes :math:`n_\textrm{mesh}`.
+        calculate the number of mesh nodes :math:`n_\mathrm{mesh}`.
         Both `dims` and `g_ewald` must either have units or be unitless.
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Shape**: :math:`(3,)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
     
     Returns
     -------
@@ -503,31 +545,31 @@ def ljts(
     .. math::
 
        \begin{gather*}
-         u_\textrm{LJTS}(r_{12})=\begin{cases}
-           u_\textrm{LJ}(r_{12})-u_\textrm{LJ}(r_\textrm{cut}),
-           &\textrm{if}\,r_{12}<r_\textrm{cut}\\
-           0,&\textrm{if}\,r_{12}\geq r_\textrm{cut}
+         u_\mathrm{LJTS}(r_{12})=\begin{cases}
+           u_\mathrm{LJ}(r_{12})-u_\mathrm{LJ}(r_\mathrm{cut}),
+           &\mathrm{if}\,r_{12}<r_\mathrm{cut}\\
+           0,&\mathrm{if}\,r_{12}\geq r_\mathrm{cut}
         \end{cases}\\
-        u_\textrm{LJ}(r_{12})=4\epsilon_{12}
+        u_\mathrm{LJ}(r_{12})=4\epsilon_{12}
         \left[\left(\frac{\sigma_{12}}{r_{12}}\right)^{12}
         -\left(\frac{\sigma_{12}}{r_{12}}\right)^6\right]
        \end{gather*}
     
-    where :math:`\sigma_{12}` is the size of the particle in
-    :math:`\textrm{nm}` and :math:`\epsilon_{12}` is the dispersion
-    energy in :math:`\textrm{kJ/mol}`. :math:`\sigma_{12}` and
-    :math:`\epsilon_{12}` are determined from per-particle parameters
-    `sigma` and `epsilon`, respectively, which are set in the main
-    script using :meth:`openmm.openmm.NonbondedForce.addParticle`.
+    where :math:`\sigma_{12}` is the average particle size in
+    :math:`\mathrm{nm}` and :math:`\epsilon_{12}` is the dispersion
+    energy in :math:`\mathrm{kJ/mol}`.
+
+    After creating the pair potentials, particles should be registered
+    using :meth:`openmm.openmm.CustomNonbondedForce.addParticle`.
 
     Parameters
     ----------
     cutoff : `float` or `openmm.unit.Quantity`         
-        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded
+        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
         interactions in the simulation sytem. Must be less than half the
-        periodic simulation box dimensions. 
+        minimum periodic simulation box dimension. 
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     cutoff_ljts : `float` or `openmm.unit.Quantity`, optional
         Cutoff distance for the LJTS potential. Must be less than the
@@ -536,11 +578,11 @@ def ljts(
         Weeks–Chander–Andersen (WCA) potential is used, a dynamic cutoff
         of :math:`2^{1/6}\sigma_{12}` is used instead. 
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     shift : `bool`, keyword-only, default: :code:`True`
         Determines whether the LJTS potential is shifted at its cutoff
-        to :math:`0\;\textrm{kJ/mol}`. If the WCA potential is used, a
+        to :math:`0\,\mathrm{kJ/mol}`. If the WCA potential is used, a
         dynamic shift of :math:`\epsilon_{12}` is used instead.
 
     wca : `bool`, keyword-only, default: :code:`False`
@@ -562,6 +604,8 @@ def ljts(
                   \epsilon_{12}=\sqrt{\epsilon_1\epsilon_2}
                 \end{gather*}
 
+             **Per-particle parameters**: :math:`(\sigma_i,\,\epsilon_i)`.
+
            * :code:`"geometric"`: Geometric mixing rule.
 
              .. math::
@@ -570,6 +614,8 @@ def ljts(
                   \sigma_{12}=\sqrt{\sigma_1\sigma_2}\\
                   \epsilon_{12}=\sqrt{\epsilon_1\epsilon_2}
                 \end{gather*}
+
+             **Per-particle parameters**: :math:`(\sigma_i,\,\epsilon_i)`.
             
            * :code:`"sixthpower"`: Sixth-power mixing rule.
         
@@ -582,13 +628,15 @@ def ljts(
                   \sigma_1^3\sigma_2^3}{\sigma_1^6+\sigma_2^6}
                 \end{gather*}
 
-        Alternatively, a custom mixing rule can be provided as a string
-        with valid C++ syntax. The expression must have the form
-        :code:`"sigma12 = ...; epsilon12 = ...;"`. Unless custom global
-        or per-particle parameters are defined, the expression should
-        contain :code:`"sigma1"`, :code:`"sigma2"`, :code:`"epsilon1"`,
-        and :code:`"epsilon2"`. If a mixing rule is not provided, the
-        default arithmetic mixing rule is used.
+             **Per-particle parameters**: :math:`(\sigma_i,\,\epsilon_i)`.
+
+           * :code:`"sigma12 = ...; epsilon12 = ...;"`: Custom mixing 
+             rule. The string containing the expression for 
+             :math:`\sigma_{12}` and :math:`\epsilon_{12}` must be
+             written in valid C++ syntax, with any custom global and
+             per-particle parameters and tabulated functions defined in 
+             `global_params`, `per_params`, and `tab_funcs`, 
+             respectively.
 
     global_params : `dict`, keyword-only, optional
         Additional global parameters for use in the definition of
@@ -636,15 +684,15 @@ def ljts(
         suffix = ");"
     if mix == "arithmetic":
         mix = "sigma12=(sigma1+sigma2)/2;epsilon12=sqrt(epsilon1*epsilon2);"
-        per_params = ["sigma", "epsilon"] + per_params
+        per_params = ["sigma", "epsilon"]
     elif mix == "geometric":
         mix = "sigma12=sqrt(sigma1*sigma2);epsilon12=sqrt(epsilon1*epsilon2);"
-        per_params = ["sigma", "epsilon"] + per_params
+        per_params = ["sigma", "epsilon"]
     elif mix == "sixthpower":
         mix = ("sigma12=((sigma1^6+sigma2^6)/2)^(1/6);"
                "epsilon12=2*sqrt(epsilon1*epsilon2)*sigma1^3*sigma2^3"
                "/(sigma1^6+sigma2^6);")
-        per_params = ["sigma", "epsilon"] + per_params
+        per_params = ["sigma", "epsilon"]
 
     pair_ljts = openmm.CustomNonbondedForce(f"{prefix}{root}{suffix}{mix}")
     _setup_pair(pair_ljts, cutoff, global_params, per_params, tab_funcs)
@@ -667,29 +715,32 @@ def solvation(
 
     .. math::
 
-       u_\textrm{solv}(r_{12})=-S_{12}\left[\left(
+       u_\mathrm{solv}(r_{12})=-S_{12}\left[\left(
        \frac{\sigma_{12}}{r_{12}}\right)^4
        -\left(\frac{\sigma_{12}}{r_\mathrm{cut}}\right)^4\right] 
 
     where :math:`\sigma_{12}` is the size of the particle in
-    :math:`\textrm{nm}` and :math:`S_{12}` is the solvation strength
-    in :math:`\textrm{kJ/mol}`.
+    :math:`\mathrm{nm}` and :math:`S_{12}` is the solvation strength
+    in :math:`\mathrm{kJ/mol}`.
+
+    After creating the pair potential, particles should be registered
+    using :meth:`openmm.openmm.CustomNonbondedForce.addParticle`.
 
     Parameters
     ----------
     cutoff : `float` or `openmm.unit.Quantity`         
-        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded
+        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
         interactions in the simulation sytem. Must be less than half the
-        periodic simulation box dimensions. 
+        minimum periodic simulation box dimension.
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     cutoff_solvation : `float` or `openmm.unit.Quantity`, optional
         Cutoff distance for the solvation potential. Must be less than the
         shared cutoff. If not provided, it is set to the shared cutoff
         distance for the nonbonded interactions. 
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     mix : `str`, keyword-only, default: :code:`"arithmetic"` 
         Mixing rule for :math:`\sigma_{12}` and :math:`S_{12}`.
@@ -707,6 +758,8 @@ def solvation(
                   S_{12}=\sqrt{S_1S_2}
                 \end{gather*}
 
+             **Per-particle parameters**: :math:`(\sigma_i, S_i)`.
+
            * :code:`"geometric"`: Geometric mixing rule.
 
              .. math::
@@ -715,6 +768,16 @@ def solvation(
                   \sigma_{12}=\sqrt{\sigma_1\sigma_2}\\
                   S_{12}=\sqrt{S_1S_2}
                 \end{gather*}
+
+             **Per-particle parameters**: :math:`(\sigma_i, S_i)`.
+
+           * :code:`"sigma12 = ...; S12 = ...;"`: Custom mixing rule.
+             The string containing the expressions for 
+             :math:`\sigma_{12}` and :math:`S_{12}` must be written
+             in valid C++ syntax, with any custom global and 
+             per-particle parameters and tabulated functions defined in 
+             `global_params`, `per_params`, and `tab_funcs`, 
+             respectively.
 
     global_params : `dict`, keyword-only, optional
         Additional global parameters for use in the definition of
@@ -750,10 +813,10 @@ def solvation(
 
     if mix == "arithmetic":
         mix = "sigma12=(sigma1+sigma2)/2;S12=sqrt(S1*S2);"
-        per_params = ["sigma", "S"] + per_params
+        per_params = ["sigma", "S"]
     elif mix == "geometric":
         mix = "sigma12=sqrt(sigma1*sigma2);S12=sqrt(S1*S2);"
-        per_params = ["sigma", "S"] + per_params
+        per_params = ["sigma", "S"]
 
     pair_solv = openmm.CustomNonbondedForce(f"{root}{mix}")
     _setup_pair(pair_solv, cutoff, global_params, per_params, tab_funcs)
@@ -776,37 +839,35 @@ def yukawa(
 
     .. math::
 
-       u_\textrm{Yukawa}(r_{12})=\frac{\alpha_{12}
+       u_\mathrm{Yukawa}(r_{12})=\frac{\alpha_{12}
        \exp(-\kappa r_{12})}{r_{12}}
     
     where :math:`\alpha_{12}` is a magnitude scaling constant in
-    :math:`\textrm{nm}\cdot\textrm{kJ/mol}` and :math:`\kappa` is a
-    screening length in :math:`\textrm{nm}^{-1}`. 
-    
-    :math:`\kappa` is a global parameter that must be provided in
-    `global_params`, while :math:`\alpha_{12}` is determined from the
-    per-particle parameter `alpha` that must be set in the main script
-    using :meth:`openmm.openmm.NonbondedForce.addParticle`.
+    :math:`\mathrm{nm}\cdot\mathrm{kJ/mol}` and :math:`\kappa` is a
+    screening length in :math:`\mathrm{nm}^{-1}`. 
+
+    After creating the pair potential, particles should be registered
+    using :meth:`openmm.openmm.CustomNonbondedForce.addParticle`.
 
     Parameters
     ----------
     cutoff : `float` or `openmm.unit.Quantity`         
-        Shared cutoff distance :math:`r_\textrm{cut}` for all nonbonded
+        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
         interactions in the simulation sytem. Must be less than half the
-        periodic simulation box dimensions. 
+        minimum periodic simulation box dimension. 
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     cutoff_yukawa : `float` or `openmm.unit.Quantity`, optional
         Cutoff distance for the Yukawa potential. Must be less than the
         shared cutoff. If not provided, it is set to the shared cutoff
         distance for the nonbonded interactions. 
         
-        **Reference unit**: :math:`\textrm{nm}`.
+        **Reference unit**: :math:`\mathrm{nm}`.
 
     shift : `bool`, keyword-only, default: :code:`True`
         Determines whether the Yukawa potential is shifted at its
-        cutoff to :math:`0\;\textrm{kJ/mol}`.
+        cutoff to :math:`0\,\mathrm{kJ/mol}`.
 
     mix : `str`, keyword-only, default: :code:`"geometric"` 
         Mixing rule for :math:`\alpha_{12}`.
@@ -821,24 +882,37 @@ def yukawa(
 
                 \alpha_{12}=\sqrt{\alpha_1\alpha_2}
 
-        Alternatively, a custom mixing rule can be provided as a string
-        with valid C++ syntax. The expression must have the form
-        :code:`"alpha12 = ...;"`. Unless custom global or per-particle
-        parameters  are defined, the expression should contain
-        :code:`"alpha1"` and :code:`"alpha2"`. If a mixing rule is not
-        provided, the default geometric mixing rule is used.
+             **Global parameter**: :math:`\kappa`.
+
+             **Per-particle parameter**: :math:`\alpha_i`.
+
+           * :code:`"alpha12 = ...;"`: Custom mixing rule. The string
+             containing the expressions for :math:`\alpha_{12}` (and 
+             optionally, :math:`\kappa`) must be written in valid C++
+             syntax, with any custom global and per-particle parameters
+             and tabulated functions defined in `global_params`, 
+             `per_params`, and `tab_funcs`, respectively. 
+             
+             Should you want to use the geometric mixing rule for 
+             :math:`\alpha_{12}` and specify an alternate definition for
+             :math:`\kappa`, you can include :code:`"geometric;"` in the
+             string but 
+              
+             Be aware that the
+             parameters and functions used in the geometric mixing rule
+             will take precedence over those defined here.
 
     global_params : `dict`, keyword-only, optional
         Additional global parameters for use in the definition of
-        :math:`\alpha_{12}`.
+        :math:`\alpha_{12}` (and optionally, :math:`\kappa`).
 
     per_params : `list`, keyword-only, optional
         Additional per-particle parameters for use in the definition of
-        :math:`\alpha_{12}`.
+        :math:`\alpha_{12}` (and optionally, :math:`\kappa`).
 
     tab_funcs : `dict`, keyword-only, optional
         Optional tabulated functions for use in the definition of
-        :math:`\alpha_{12}`.
+        :math:`\alpha_{12}` (and optionally, :math:`\kappa`).
 
     Returns
     -------
@@ -862,11 +936,15 @@ def yukawa(
     root = "alpha12*exp(-kappa*r)/r"
     suffix = f"-ucut);ucut=alpha12*exp(-kappa*{cutoff_yukawa})/{cutoff_yukawa};" \
              if shift else ");"
-    if mix == "geometric":
+    if "geometric" in mix:
+        mix = mix.replace("geometric", "alpha12=sqrt(alpha1*alpha2)")
+        if not mix.endswith(";"):
+            mix += ";"
+        if "kappa" not in mix and "kappa" not in global_params:
+            raise ValueError("Global parameter 'kappa' not defined.")
         per_params = ["alpha"] + per_params
-        mix = "alpha12=sqrt(alpha1*alpha2);"
 
-    Yukawa = openmm.CustomNonbondedForce(f"{prefix}{root}{suffix}{mix}")
-    _setup_pair(Yukawa, cutoff, global_params, per_params, tab_funcs)
+    pair_yukawa = openmm.CustomNonbondedForce(f"{prefix}{root}{suffix}{mix}")
+    _setup_pair(pair_yukawa, cutoff, global_params, per_params, tab_funcs)
 
-    return Yukawa
+    return pair_yukawa

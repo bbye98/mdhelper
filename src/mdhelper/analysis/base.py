@@ -11,6 +11,7 @@ multiprocessing, Dask, and Joblib libraries for parallelization.
 
 from abc import abstractmethod
 from datetime import datetime
+import logging
 import multiprocessing
 import os
 from typing import TextIO, Union
@@ -34,7 +35,6 @@ from MDAnalysis.coordinates.base import ReaderBase
 import numpy as np
 
 from .. import ArrayLike
-from ..utility import log
 
 class SerialAnalysisBase(AnalysisBase):
 
@@ -225,8 +225,11 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             Parallel analysis base object.
         """
 
-        verbose = getattr(self, '_verbose', False) if verbose is None \
-                  else verbose
+        _verbose = getattr(self, '_verbose', False) if verbose is None \
+                           else verbose
+        logging.basicConfig(format="{asctime} | {levelname:^8s} | {message}", 
+                            style="{", 
+                            level=logging.INFO if _verbose else logging.WARNING)
 
         self._setup_frames(self._trajectory, start=start, stop=stop,
                            step=step, frames=frames)
@@ -238,12 +241,13 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                  else np.arange(self.start, self.stop, self.step)
         indices = np.arange(len(frames))
 
+        if _verbose:
+            time_start = datetime.now()
+
         if module == "dask" and FOUND_DASK:
             try:
-                config = {
-                    "scheduler": distributed.worker.get_client(),
-                    **kwargs
-                }
+                config = {"scheduler": distributed.worker.get_client(),
+                          **kwargs}
                 n_jobs = min(len(config["scheduler"].get_worker_logs()), 
                              n_jobs)
             except ValueError:
@@ -266,15 +270,14 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                 elif n_jobs == 1 and method not in {"single-threaded", "sync",
                                                     "synchronous"}:
                     method = "synchronous"
-                    warnings.warn(f"Since {n_jobs=}, the synchronous "
-                                  "Dask scheduler will be used instead.")
+                    logging.warning(f"Since {n_jobs=}, the synchronous "
+                                    "Dask scheduler will be used instead.")
                 config = {"scheduler": method} | kwargs
                 if method == "processes":
                     config["num_workers"] = n_jobs
 
-            if verbose:
-                log(f"Starting analysis using Dask ({n_jobs=}, "
-                    f"scheduler={config['scheduler']})...")
+            logging.info(f"Starting analysis using Dask ({n_jobs=}, "
+                         f"scheduler={config['scheduler']})...")
 
             jobs = []
             if block:
@@ -287,9 +290,6 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                 for frame, index in zip(frames, indices):
                     jobs.append(dask.delayed(self._single_frame)(frame, index))
 
-            if verbose:
-                time_start = datetime.now()
-
             self._results = dask.delayed(jobs).compute(**config)
             if block:
                 self._results = [r for b in self._results for r in b]
@@ -299,11 +299,8 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                                                      None}:
                 raise ValueError("Invalid Joblib backend.")
 
-            if verbose:
-                log("Starting analysis using Joblib "
-                    f"({n_jobs=}, backend={method})...")
-                time_start = datetime.now()
-            
+            logging.info("Starting analysis using Joblib "
+                         f"({n_jobs=}, backend={method})...")           
             if block:
                 self._results = joblib.Parallel(n_jobs=n_jobs, prefer=method, 
                                                 **kwargs)(
@@ -331,16 +328,12 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             elif method not in {"fork", "forkserver", "spawn"}:
                 raise ValueError("Invalid multiprocessing start method.")
 
-            if verbose:
-                log("Starting analysis using multiprocessing "
-                    f"({n_jobs=}, {method=})...")
-                time_start = datetime.now()
-
+            logging.info("Starting analysis using multiprocessing "
+                         f"({n_jobs=}, {method=})...")
             with multiprocessing.get_context(method).Pool(n_jobs, **kwargs) as p:
                 self._results = p.starmap(self._single_frame, 
                                           zip(frames, indices))
-        if verbose:
-            log(f"Finished! Time elapsed: {datetime.now() - time_start}.")
+        logging.info(f"Analysis finished in {datetime.now() - time_start}.")
 
         self._conclude()
         return self

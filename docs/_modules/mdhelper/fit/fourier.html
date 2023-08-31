@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.2.2 and Furo 2023.07.26 -->
         <title>mdhelper.fit.fourier - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -405,7 +405,9 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<div class="viewcode-block" id="fourier"><a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier.html#mdhelper.fit.fourier.fourier">[docs]</a><span class="k">def</span> <span class="nf">fourier</span><span class="p">(</span>
+<div class="viewcode-block" id="fourier">
+<a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier.html#mdhelper.fit.fourier.fourier">[docs]</a>
+<span class="k">def</span> <span class="nf">fourier</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">omega</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -470,7 +472,10 @@
     <span class="n">kwx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">omega</span> <span class="o">*</span> <span class="n">x</span>
     <span class="k">return</span> <span class="n">a0</span><span class="o">+</span><span class="n">args</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">kwx</span><span class="p">)</span><span class="o">+</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">kwx</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="fourier1"><a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier1.html#mdhelper.fit.fourier.fourier1">[docs]</a><span class="k">def</span> <span class="nf">fourier1</span><span class="p">(</span>
+
+<div class="viewcode-block" id="fourier1">
+<a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier1.html#mdhelper.fit.fourier.fourier1">[docs]</a>
+<span class="k">def</span> <span class="nf">fourier1</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">a0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">omega</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 
@@ -507,7 +512,10 @@
     
     <span class="k">return</span> <span class="n">fourier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="fourier2"><a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier2.html#mdhelper.fit.fourier.fourier2">[docs]</a><span class="k">def</span> <span class="nf">fourier2</span><span class="p">(</span>
+
+<div class="viewcode-block" id="fourier2">
+<a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier2.html#mdhelper.fit.fourier.fourier2">[docs]</a>
+<span class="k">def</span> <span class="nf">fourier2</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">a0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">b2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">omega</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 
@@ -551,7 +559,10 @@
     
     <span class="k">return</span> <span class="n">fourier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="fourier3"><a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier3.html#mdhelper.fit.fourier.fourier3">[docs]</a><span class="k">def</span> <span class="nf">fourier3</span><span class="p">(</span>
+
+<div class="viewcode-block" id="fourier3">
+<a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier3.html#mdhelper.fit.fourier.fourier3">[docs]</a>
+<span class="k">def</span> <span class="nf">fourier3</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">a0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">b2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">omega</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 
@@ -602,7 +613,10 @@
     
     <span class="k">return</span> <span class="n">fourier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">b3</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="fourier4"><a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier4.html#mdhelper.fit.fourier.fourier4">[docs]</a><span class="k">def</span> <span class="nf">fourier4</span><span class="p">(</span>
+
+<div class="viewcode-block" id="fourier4">
+<a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier4.html#mdhelper.fit.fourier.fourier4">[docs]</a>
+<span class="k">def</span> <span class="nf">fourier4</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">a0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">b2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a4</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b4</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">omega</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -661,7 +675,10 @@
     
     <span class="k">return</span> <span class="n">fourier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">b3</span><span class="p">,</span> <span class="n">a4</span><span class="p">,</span> <span class="n">b4</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="fourier5"><a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier5.html#mdhelper.fit.fourier.fourier5">[docs]</a><span class="k">def</span> <span class="nf">fourier5</span><span class="p">(</span>
+
+<div class="viewcode-block" id="fourier5">
+<a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier5.html#mdhelper.fit.fourier.fourier5">[docs]</a>
+<span class="k">def</span> <span class="nf">fourier5</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">a0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">b2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a4</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b4</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">a5</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b5</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">omega</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -725,7 +742,10 @@
     
     <span class="k">return</span> <span class="n">fourier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">b3</span><span class="p">,</span> <span class="n">a4</span><span class="p">,</span> <span class="n">b4</span><span class="p">,</span> <span class="n">a5</span><span class="p">,</span> <span class="n">b5</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="fourier6"><a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier6.html#mdhelper.fit.fourier.fourier6">[docs]</a><span class="k">def</span> <span class="nf">fourier6</span><span class="p">(</span>
+
+<div class="viewcode-block" id="fourier6">
+<a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier6.html#mdhelper.fit.fourier.fourier6">[docs]</a>
+<span class="k">def</span> <span class="nf">fourier6</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">a0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">b2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a4</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b4</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">a5</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b5</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a6</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b6</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">omega</span><span class="p">:</span> <span class="nb">float</span>
@@ -797,7 +817,10 @@
     <span class="k">return</span> <span class="n">fourier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">b3</span><span class="p">,</span> <span class="n">a4</span><span class="p">,</span> <span class="n">b4</span><span class="p">,</span> <span class="n">a5</span><span class="p">,</span> <span class="n">b5</span><span class="p">,</span>
                    <span class="n">a6</span><span class="p">,</span> <span class="n">b6</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="fourier7"><a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier7.html#mdhelper.fit.fourier.fourier7">[docs]</a><span class="k">def</span> <span class="nf">fourier7</span><span class="p">(</span>
+
+<div class="viewcode-block" id="fourier7">
+<a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier7.html#mdhelper.fit.fourier.fourier7">[docs]</a>
+<span class="k">def</span> <span class="nf">fourier7</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">a0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">b2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a4</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b4</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">a5</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b5</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a6</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b6</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a7</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -875,7 +898,10 @@
     <span class="k">return</span> <span class="n">fourier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">b3</span><span class="p">,</span> <span class="n">a4</span><span class="p">,</span> <span class="n">b4</span><span class="p">,</span> <span class="n">a5</span><span class="p">,</span> <span class="n">b5</span><span class="p">,</span>
                    <span class="n">a6</span><span class="p">,</span> <span class="n">b6</span><span class="p">,</span> <span class="n">a7</span><span class="p">,</span> <span class="n">b7</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="fourier8"><a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier8.html#mdhelper.fit.fourier.fourier8">[docs]</a><span class="k">def</span> <span class="nf">fourier8</span><span class="p">(</span>
+
+<div class="viewcode-block" id="fourier8">
+<a class="viewcode-back" href="../../../api/mdhelper.fit.fourier.fourier8.html#mdhelper.fit.fourier.fourier8">[docs]</a>
+<span class="k">def</span> <span class="nf">fourier8</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">a0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">b2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b3</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a4</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b4</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">a5</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b5</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a6</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b6</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">a7</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -958,6 +984,7 @@
     
     <span class="k">return</span> <span class="n">fourier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">b3</span><span class="p">,</span> <span class="n">a4</span><span class="p">,</span> <span class="n">b4</span><span class="p">,</span> <span class="n">a5</span><span class="p">,</span> <span class="n">b5</span><span class="p">,</span>
                    <span class="n">a6</span><span class="p">,</span> <span class="n">b6</span><span class="p">,</span> <span class="n">a7</span><span class="p">,</span> <span class="n">b7</span><span class="p">,</span> <span class="n">a8</span><span class="p">,</span> <span class="n">b8</span><span class="p">)</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -990,9 +1017,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
+</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>

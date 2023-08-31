@@ -169,14 +169,14 @@ activate a virtual environment named `<venv_name>` using
 
  4. Install the required dependencies using
 
-        python -m pip install -r minimum_requirements.txt
+        python -m pip install -r requirements_minimal.txt
 
     or
 
-        conda install --file minimum_requirements.txt
+        conda install --file requirements_minimal.txt
 
     If you would like to install the optional dependencies as well,
-    remove the `minimum_` prefix from the filenames above.
+    remove the `_minimal` prefix from the filenames above.
 
  5. Now, you can use MDHelper by first adding the path to the `src` 
     directory in your Python scripts. To verify that MDHelper has been 

@@ -1,4 +1,3 @@
-# PRECOMPILED CORE DEPENDENCIES
 matplotlib
 mdanalysis
 netcdf4

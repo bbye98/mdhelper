@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="solvation" href="mdhelper.openmm.pair.solvation.html" /><link rel="prev" title="lj_coul" href="mdhelper.openmm.pair.lj_coul.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19 -->
         <title>ljts - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -341,10 +341,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="mdhelper.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="mdhelper.utility.log.html">log</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -382,49 +378,48 @@
         </div>
         <article role="main">
           <section id="ljts">
-<h1>ljts<a class="headerlink" href="#ljts" title="Permalink to this heading">#</a></h1>
+<h1>ljts<a class="headerlink" href="#ljts" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="mdhelper.openmm.pair.ljts">
-<span class="sig-prename descclassname"><span class="pre">mdhelper.openmm.pair.</span></span><span class="sig-name descname"><span class="pre">ljts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff_ljts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'arithmetic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wca</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">openmm.unit.quantity.Quantity</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab_funcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">openmm.unit.quantity.Quantity</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Discrete2DFunction.html#openmm.openmm.Discrete2DFunction" title="(in OpenMM Python API v8.0.0)"><span class="pre">openmm.openmm.Discrete2DFunction</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomNonbondedForce.html#openmm.openmm.CustomNonbondedForce" title="(in OpenMM Python API v8.0.0)"><span class="pre">CustomNonbondedForce</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/pair.html#ljts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.pair.ljts" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mdhelper.openmm.pair.</span></span><span class="sig-name descname"><span class="pre">ljts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff_ljts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'arithmetic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wca</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab_funcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Discrete2DFunction.html#openmm.openmm.Discrete2DFunction" title="(in OpenMM Python API v8.0.0)"><span class="pre">Discrete2DFunction</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomNonbondedForce.html#openmm.openmm.CustomNonbondedForce" title="(in OpenMM Python API v8.0.0)"><span class="pre">CustomNonbondedForce</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/pair.html#ljts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.pair.ljts" title="Link to this definition">#</a></dt>
 <dd><p>Implements the Lennard-Jones truncated and shifted (LJTS) pair
 potential.</p>
 <p>The potential energy between two LJ particles is given by</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{gather*}
-  u_\textrm{LJTS}(r_{12})=\begin{cases}
-    u_\textrm{LJ}(r_{12})-u_\textrm{LJ}(r_\textrm{cut}),
-    &amp;\textrm{if}\,r_{12}&lt;r_\textrm{cut}\\
-    0,&amp;\textrm{if}\,r_{12}\geq r_\textrm{cut}
+  u_\mathrm{LJTS}(r_{12})=\begin{cases}
+    u_\mathrm{LJ}(r_{12})-u_\mathrm{LJ}(r_\mathrm{cut}),
+    &amp;\mathrm{if}\,r_{12}&lt;r_\mathrm{cut}\\
+    0,&amp;\mathrm{if}\,r_{12}\geq r_\mathrm{cut}
  \end{cases}\\
- u_\textrm{LJ}(r_{12})=4\epsilon_{12}
+ u_\mathrm{LJ}(r_{12})=4\epsilon_{12}
  \left[\left(\frac{\sigma_{12}}{r_{12}}\right)^{12}
  -\left(\frac{\sigma_{12}}{r_{12}}\right)^6\right]
 \end{gather*}\end{split}\]</div>
 </div>
-<p>where <span class="math notranslate nohighlight">\(\sigma_{12}\)</span> is the size of the particle in
-<span class="math notranslate nohighlight">\(\textrm{nm}\)</span> and <span class="math notranslate nohighlight">\(\epsilon_{12}\)</span> is the dispersion
-energy in <span class="math notranslate nohighlight">\(\textrm{kJ/mol}\)</span>. <span class="math notranslate nohighlight">\(\sigma_{12}\)</span> and
-<span class="math notranslate nohighlight">\(\epsilon_{12}\)</span> are determined from per-particle parameters
-<cite>sigma</cite> and <cite>epsilon</cite>, respectively, which are set in the main
-script using <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.NonbondedForce.html#openmm.openmm.NonbondedForce.addParticle" title="(in OpenMM Python API v8.0.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">openmm.openmm.NonbondedForce.addParticle()</span></code></a>.</p>
+<p>where <span class="math notranslate nohighlight">\(\sigma_{12}\)</span> is the average particle size in
+<span class="math notranslate nohighlight">\(\mathrm{nm}\)</span> and <span class="math notranslate nohighlight">\(\epsilon_{12}\)</span> is the dispersion
+energy in <span class="math notranslate nohighlight">\(\mathrm{kJ/mol}\)</span>.</p>
+<p>After creating the pair potentials, particles should be registered
+using <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomNonbondedForce.html#openmm.openmm.CustomNonbondedForce.addParticle" title="(in OpenMM Python API v8.0.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">openmm.openmm.CustomNonbondedForce.addParticle()</span></code></a>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>cutoff</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Shared cutoff distance <span class="math notranslate nohighlight">\(r_\textrm{cut}\)</span> for all nonbonded
+<dt><strong>cutoff</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Shared cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> for all nonbonded
 interactions in the simulation sytem. Must be less than half the
-periodic simulation box dimensions.</p>
-<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\textrm{nm}\)</span>.</p>
+minimum periodic simulation box dimension.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>.</p>
 </dd>
 <dt><strong>cutoff_ljts</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite>, optional</span></dt><dd><p>Cutoff distance for the LJTS potential. Must be less than the
 shared cutoff distance. If not provided, it is set to the shared
 cutoff distance for the nonbonded interactions. If the
 Weeks–Chander–Andersen (WCA) potential is used, a dynamic cutoff
 of <span class="math notranslate nohighlight">\(2^{1/6}\sigma_{12}\)</span> is used instead.</p>
-<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\textrm{nm}\)</span>.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>.</p>
 </dd>
 <dt><strong>shift</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the LJTS potential is shifted at its cutoff
-to <span class="math notranslate nohighlight">\(0\;\textrm{kJ/mol}\)</span>. If the WCA potential is used, a
+to <span class="math notranslate nohighlight">\(0\,\mathrm{kJ/mol}\)</span>. If the WCA potential is used, a
 dynamic shift of <span class="math notranslate nohighlight">\(\epsilon_{12}\)</span> is used instead.</p>
 </dd>
 <dt><strong>wca</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Determines whether to use the WCA potential.</p>
@@ -441,6 +436,7 @@ dynamic shift of <span class="math notranslate nohighlight">\(\epsilon_{12}\)</s
   \epsilon_{12}=\sqrt{\epsilon_1\epsilon_2}
 \end{gather*}\end{split}\]</div>
 </div>
+<p><strong>Per-particle parameters</strong>: <span class="math notranslate nohighlight">\((\sigma_i,\,\epsilon_i)\)</span>.</p>
 </li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">&quot;geometric&quot;</span></code>: Geometric mixing rule.</p>
 <div class="math-wrapper docutils container">
@@ -450,6 +446,7 @@ dynamic shift of <span class="math notranslate nohighlight">\(\epsilon_{12}\)</s
   \epsilon_{12}=\sqrt{\epsilon_1\epsilon_2}
 \end{gather*}\end{split}\]</div>
 </div>
+<p><strong>Per-particle parameters</strong>: <span class="math notranslate nohighlight">\((\sigma_i,\,\epsilon_i)\)</span>.</p>
 </li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">&quot;sixthpower&quot;</span></code>: Sixth-power mixing rule.</p>
 <div class="math-wrapper docutils container">
@@ -461,16 +458,17 @@ dynamic shift of <span class="math notranslate nohighlight">\(\epsilon_{12}\)</s
   \sigma_1^3\sigma_2^3}{\sigma_1^6+\sigma_2^6}
 \end{gather*}\end{split}\]</div>
 </div>
+<p><strong>Per-particle parameters</strong>: <span class="math notranslate nohighlight">\((\sigma_i,\,\epsilon_i)\)</span>.</p>
 </li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;sigma12</span> <span class="pre">=</span> <span class="pre">...;</span> <span class="pre">epsilon12</span> <span class="pre">=</span> <span class="pre">...;&quot;</span></code>: Custom mixing
+rule. The string containing the expression for
+<span class="math notranslate nohighlight">\(\sigma_{12}\)</span> and <span class="math notranslate nohighlight">\(\epsilon_{12}\)</span> must be
+written in valid C++ syntax, with any custom global and
+per-particle parameters and tabulated functions defined in
+<cite>global_params</cite>, <cite>per_params</cite>, and <cite>tab_funcs</cite>,
+respectively.</p></li>
 </ul>
 </div>
-<p>Alternatively, a custom mixing rule can be provided as a string
-with valid C++ syntax. The expression must have the form
-<code class="code docutils literal notranslate"><span class="pre">&quot;sigma12</span> <span class="pre">=</span> <span class="pre">...;</span> <span class="pre">epsilon12</span> <span class="pre">=</span> <span class="pre">...;&quot;</span></code>. Unless custom global
-or per-particle parameters are defined, the expression should
-contain <code class="code docutils literal notranslate"><span class="pre">&quot;sigma1&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&quot;sigma2&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&quot;epsilon1&quot;</span></code>,
-and <code class="code docutils literal notranslate"><span class="pre">&quot;epsilon2&quot;</span></code>. If a mixing rule is not provided, the
-default arithmetic mixing rule is used.</p>
 </dd>
 <dt><strong>global_params</strong><span class="classifier"><cite>dict</cite>, keyword-only, optional</span></dt><dd><p>Additional global parameters for use in the definition of
 <span class="math notranslate nohighlight">\(\sigma_{12}\)</span> and <span class="math notranslate nohighlight">\(\epsilon_{12}\)</span>.</p>
@@ -562,9 +560,9 @@ default arithmetic mixing rule is used.</p>
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>

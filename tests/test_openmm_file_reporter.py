@@ -104,8 +104,7 @@ def test_classes_netcdffile_netcdfreporter():
     assert ncdf.get_velocities().shape == (5, 1, 3)
     assert ncdf.get_forces().shape == (5, 1, 3)
 
-    # TEST CASE 6: Correct number of atoms and lack of velocities and 
-    # forces for subset trajectory file
+    # TEST CASE 6: Correct number of atoms for subset trajectory file
     s.register_particles(system, topology, 1, mass, nbforce=pair_lj, 
                          sigma=size, epsilon=21.285 * unit.kilojoule_per_mole)
     integrator = openmm.LangevinMiddleIntegrator(temp, 1e-3 / dt, dt)
@@ -113,18 +112,16 @@ def test_classes_netcdffile_netcdfreporter():
     simulation.context.setPositions(np.vstack((dims / 4, 3 * dims / 4)) 
                                     * unit.angstrom)
     simulation.reporters.append(
-        reporter.NetCDFReporter("traj_subset.nc", 1, periodic=True, subset=[0])
+        reporter.NetCDFReporter("traj_subset.nc", 1, periodic=True, velocities=True, 
+                                forces=True, subset=[0])
     )
     simulation.step(1)
 
     ncdf = file.NetCDFFile("traj_subset.nc", "r")
     assert ncdf.get_num_atoms() == 1
-    with pytest.warns(UserWarning):
-        assert ncdf.get_velocities() is None
-    with pytest.warns(UserWarning):
-        assert ncdf.get_forces() is None
 
-    # TEST CASE 7: Correct number of atoms for full trajectory file
+    # TEST CASE 7: Correct number of atoms and lack of velocities and 
+    # forces for full trajectory file
     state = simulation.context.getState(getPositions=True)
     file.NetCDFFile.write_model(
         "traj_two.nc", 
@@ -133,3 +130,7 @@ def test_classes_netcdffile_netcdfreporter():
     )
     ncdf = file.NetCDFFile("traj_two.nc", "r")
     assert ncdf.get_num_atoms() == 2
+    with pytest.warns(UserWarning):
+        assert ncdf.get_velocities() is None
+    with pytest.warns(UserWarning):
+        assert ncdf.get_forces() is None

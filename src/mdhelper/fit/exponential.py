@@ -91,8 +91,9 @@ def exp(x: np.ndarray, *args: float) -> np.ndarray:
     """
 
     n = len(args)
-    assert n >= 2 and n % 2 == 0, \
-        "Number of fitting parameters must be greater than 2 and even."
+    if n < 2 or n % 2 != 0:
+        emsg = "Number of fitting parameters must be greater than 2 and even."
+        raise ValueError(emsg)
     return np.exp(args[1::2] * x[:, None]) @ args[::2]
 
 def exp1(x: np.ndarray, a: float, b: float) -> np.ndarray:

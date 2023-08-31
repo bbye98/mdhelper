@@ -62,12 +62,12 @@ def fene(
     where :math:`k_{12}` is the bond coefficient in
     :math:`\textrm{kJ}/(\textrm{nm}^2\cdot\textrm{mol})`,
     :math:`r_{0,12}` is the equilibrium bond length in
-    :math:`\textrm{nm}`, :math:`\sigma_{12}` is the size of the particle
-    in :math:`\textrm{nm}`, and :math:`\epsilon_{12}` is the dispersion
-    energy in :math:`\textrm{kJ/mol}`. :math:`k_{12}`, :math:`r_{0,12}`,
-    :math:`\sigma_{12}` and :math:`\epsilon_{12}` are  determined from 
-    per-particle parameters `k`, `r0`, `sigma` and `epsilon`, 
-    respectively, which are set in the main script using
+    :math:`\textrm{nm}`, :math:`\sigma_{12}` is the average particle 
+    size in :math:`\textrm{nm}`, and :math:`\epsilon_{12}` is the 
+    dispersion energy in :math:`\textrm{kJ/mol}`. :math:`k_{12}`, 
+    :math:`r_{0,12}`, :math:`\sigma_{12}` and :math:`\epsilon_{12}` are
+    determined from per-particle parameters `k`, `r0`, `sigma` and 
+    `epsilon`, respectively, which are set using
     :meth:`openmm.openmm.CustomBondForce.addBond` and
     :meth:`openmm.openmm.NonbondedForce.addParticle`.
 

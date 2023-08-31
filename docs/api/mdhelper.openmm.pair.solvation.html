@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="yukawa" href="mdhelper.openmm.pair.yukawa.html" /><link rel="prev" title="ljts" href="mdhelper.openmm.pair.ljts.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19 -->
         <title>solvation - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -341,10 +341,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="mdhelper.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="mdhelper.utility.log.html">log</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -382,33 +378,35 @@
         </div>
         <article role="main">
           <section id="solvation">
-<h1>solvation<a class="headerlink" href="#solvation" title="Permalink to this heading">#</a></h1>
+<h1>solvation<a class="headerlink" href="#solvation" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="mdhelper.openmm.pair.solvation">
-<span class="sig-prename descclassname"><span class="pre">mdhelper.openmm.pair.</span></span><span class="sig-name descname"><span class="pre">solvation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff_solvation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'arithmetic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">openmm.unit.quantity.Quantity</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab_funcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">openmm.unit.quantity.Quantity</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Discrete2DFunction.html#openmm.openmm.Discrete2DFunction" title="(in OpenMM Python API v8.0.0)"><span class="pre">openmm.openmm.Discrete2DFunction</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomNonbondedForce.html#openmm.openmm.CustomNonbondedForce" title="(in OpenMM Python API v8.0.0)"><span class="pre">CustomNonbondedForce</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/pair.html#solvation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.pair.solvation" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mdhelper.openmm.pair.</span></span><span class="sig-name descname"><span class="pre">solvation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff_solvation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'arithmetic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab_funcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.0.0)"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.Discrete2DFunction.html#openmm.openmm.Discrete2DFunction" title="(in OpenMM Python API v8.0.0)"><span class="pre">Discrete2DFunction</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomNonbondedForce.html#openmm.openmm.CustomNonbondedForce" title="(in OpenMM Python API v8.0.0)"><span class="pre">CustomNonbondedForce</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/pair.html#solvation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.pair.solvation" title="Link to this definition">#</a></dt>
 <dd><p>Implements the solvation pair potential.</p>
 <p>The solvation energy between particles is given by</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
-\[u_\textrm{solv}(r_{12})=-S_{12}\left[\left(
+\[u_\mathrm{solv}(r_{12})=-S_{12}\left[\left(
 \frac{\sigma_{12}}{r_{12}}\right)^4
 -\left(\frac{\sigma_{12}}{r_\mathrm{cut}}\right)^4\right]\]</div>
 </div>
 <p>where <span class="math notranslate nohighlight">\(\sigma_{12}\)</span> is the size of the particle in
-<span class="math notranslate nohighlight">\(\textrm{nm}\)</span> and <span class="math notranslate nohighlight">\(S_{12}\)</span> is the solvation strength
-in <span class="math notranslate nohighlight">\(\textrm{kJ/mol}\)</span>.</p>
+<span class="math notranslate nohighlight">\(\mathrm{nm}\)</span> and <span class="math notranslate nohighlight">\(S_{12}\)</span> is the solvation strength
+in <span class="math notranslate nohighlight">\(\mathrm{kJ/mol}\)</span>.</p>
+<p>After creating the pair potential, particles should be registered
+using <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomNonbondedForce.html#openmm.openmm.CustomNonbondedForce.addParticle" title="(in OpenMM Python API v8.0.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">openmm.openmm.CustomNonbondedForce.addParticle()</span></code></a>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>cutoff</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Shared cutoff distance <span class="math notranslate nohighlight">\(r_\textrm{cut}\)</span> for all nonbonded
+<dt><strong>cutoff</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Shared cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> for all nonbonded
 interactions in the simulation sytem. Must be less than half the
-periodic simulation box dimensions.</p>
-<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\textrm{nm}\)</span>.</p>
+minimum periodic simulation box dimension.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>.</p>
 </dd>
 <dt><strong>cutoff_solvation</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite>, optional</span></dt><dd><p>Cutoff distance for the solvation potential. Must be less than the
 shared cutoff. If not provided, it is set to the shared cutoff
 distance for the nonbonded interactions.</p>
-<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\textrm{nm}\)</span>.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>.</p>
 </dd>
 <dt><strong>mix</strong><span class="classifier"><cite>str</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">&quot;arithmetic&quot;</span></code></span></dt><dd><p>Mixing rule for <span class="math notranslate nohighlight">\(\sigma_{12}\)</span> and <span class="math notranslate nohighlight">\(S_{12}\)</span>.</p>
 <div class="docutils container">
@@ -422,6 +420,7 @@ distance for the nonbonded interactions.</p>
   S_{12}=\sqrt{S_1S_2}
 \end{gather*}\end{split}\]</div>
 </div>
+<p><strong>Per-particle parameters</strong>: <span class="math notranslate nohighlight">\((\sigma_i, S_i)\)</span>.</p>
 </li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">&quot;geometric&quot;</span></code>: Geometric mixing rule.</p>
 <div class="math-wrapper docutils container">
@@ -431,7 +430,15 @@ distance for the nonbonded interactions.</p>
   S_{12}=\sqrt{S_1S_2}
 \end{gather*}\end{split}\]</div>
 </div>
+<p><strong>Per-particle parameters</strong>: <span class="math notranslate nohighlight">\((\sigma_i, S_i)\)</span>.</p>
 </li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;sigma12</span> <span class="pre">=</span> <span class="pre">...;</span> <span class="pre">S12</span> <span class="pre">=</span> <span class="pre">...;&quot;</span></code>: Custom mixing rule.
+The string containing the expressions for
+<span class="math notranslate nohighlight">\(\sigma_{12}\)</span> and <span class="math notranslate nohighlight">\(S_{12}\)</span> must be written
+in valid C++ syntax, with any custom global and
+per-particle parameters and tabulated functions defined in
+<cite>global_params</cite>, <cite>per_params</cite>, and <cite>tab_funcs</cite>,
+respectively.</p></li>
 </ul>
 </div>
 </dd>
@@ -525,9 +532,9 @@ distance for the nonbonded interactions.</p>
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>

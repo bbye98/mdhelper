@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.2.2 and Furo 2023.07.26 -->
         <title>mdhelper.openmm.system - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -405,7 +405,9 @@
 <span class="kn">from</span> <span class="nn">.unit</span> <span class="kn">import</span> <span class="n">VACUUM_PERMITTIVITY</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
 
-<div class="viewcode-block" id="register_particles"><a class="viewcode-back" href="../../../api/mdhelper.openmm.system.register_particles.html#mdhelper.openmm.system.register_particles">[docs]</a><span class="k">def</span> <span class="nf">register_particles</span><span class="p">(</span>
+<div class="viewcode-block" id="register_particles">
+<a class="viewcode-back" href="../../../api/mdhelper.openmm.system.register_particles.html#mdhelper.openmm.system.register_particles">[docs]</a>
+<span class="k">def</span> <span class="nf">register_particles</span><span class="p">(</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">topology</span><span class="p">:</span> <span class="n">app</span><span class="o">.</span><span class="n">Topology</span><span class="p">,</span>
         <span class="n">N</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mass</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
         <span class="n">chain</span><span class="p">:</span> <span class="n">app</span><span class="o">.</span><span class="n">Chain</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">app</span><span class="o">.</span><span class="n">Element</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -497,7 +499,10 @@
         <span class="k">for</span> <span class="n">cnbforce</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">cnbforces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">cnbforce</span><span class="o">.</span><span class="n">addParticle</span><span class="p">(</span><span class="n">param</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="slab_correction"><a class="viewcode-back" href="../../../api/mdhelper.openmm.system.slab_correction.html#mdhelper.openmm.system.slab_correction">[docs]</a><span class="k">def</span> <span class="nf">slab_correction</span><span class="p">(</span>
+
+<div class="viewcode-block" id="slab_correction">
+<a class="viewcode-back" href="../../../api/mdhelper.openmm.system.slab_correction.html#mdhelper.openmm.system.slab_correction">[docs]</a>
+<span class="k">def</span> <span class="nf">slab_correction</span><span class="p">(</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">topology</span><span class="p">:</span> <span class="n">app</span><span class="o">.</span><span class="n">Topology</span><span class="p">,</span>
         <span class="n">nbforce</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">],</span>
         <span class="n">temp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">fric</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
@@ -769,7 +774,10 @@
 
     <span class="k">return</span> <span class="n">integrator</span></div>
 
-<div class="viewcode-block" id="image_charges"><a class="viewcode-back" href="../../../api/mdhelper.openmm.system.image_charges.html#mdhelper.openmm.system.image_charges">[docs]</a><span class="k">def</span> <span class="nf">image_charges</span><span class="p">(</span>
+
+<div class="viewcode-block" id="image_charges">
+<a class="viewcode-back" href="../../../api/mdhelper.openmm.system.image_charges.html#mdhelper.openmm.system.image_charges">[docs]</a>
+<span class="k">def</span> <span class="nf">image_charges</span><span class="p">(</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">topology</span><span class="p">:</span> <span class="n">app</span><span class="o">.</span><span class="n">Topology</span><span class="p">,</span>
         <span class="n">positions</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
         <span class="n">temp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">fric</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
@@ -1016,7 +1024,10 @@
 
     <span class="k">return</span> <span class="n">positions</span><span class="p">,</span> <span class="n">integrator</span></div>
 
-<div class="viewcode-block" id="electric_field"><a class="viewcode-back" href="../../../api/mdhelper.openmm.system.electric_field.html#mdhelper.openmm.system.electric_field">[docs]</a><span class="k">def</span> <span class="nf">electric_field</span><span class="p">(</span>
+
+<div class="viewcode-block" id="electric_field">
+<a class="viewcode-back" href="../../../api/mdhelper.openmm.system.electric_field.html#mdhelper.openmm.system.electric_field">[docs]</a>
+<span class="k">def</span> <span class="nf">electric_field</span><span class="p">(</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">nbforce</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">,</span>
         <span class="n">efield</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,],</span> <span class="o">*</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">charge_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">atom_indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1103,7 +1114,10 @@
     
     <span class="n">system</span><span class="o">.</span><span class="n">addForce</span><span class="p">(</span><span class="n">efield</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="estimate_pressure_tensor"><a class="viewcode-back" href="../../../api/mdhelper.openmm.system.estimate_pressure_tensor.html#mdhelper.openmm.system.estimate_pressure_tensor">[docs]</a><span class="k">def</span> <span class="nf">estimate_pressure_tensor</span><span class="p">(</span>
+
+<div class="viewcode-block" id="estimate_pressure_tensor">
+<a class="viewcode-back" href="../../../api/mdhelper.openmm.system.estimate_pressure_tensor.html#mdhelper.openmm.system.estimate_pressure_tensor">[docs]</a>
+<span class="k">def</span> <span class="nf">estimate_pressure_tensor</span><span class="p">(</span>
         <span class="n">context</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span> <span class="n">dh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">diag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span>
@@ -1239,6 +1253,7 @@
     <span class="k">return</span> <span class="p">(</span>
         <span class="p">(</span><span class="n">p_kinetic</span> <span class="o">+</span> <span class="n">p_virial</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span> <span class="o">*</span> <span class="n">volume</span><span class="p">)</span>
     <span class="p">)</span><span class="o">.</span><span class="n">in_units_of</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">)</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -1271,9 +1286,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
+</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>

@@ -1,10 +1,10 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19 -->
         <title>mdhelper.openmm.bond - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -423,7 +423,9 @@
     <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">per_params</span><span class="p">:</span>
         <span class="n">cbforce</span><span class="o">.</span><span class="n">addPerBondParameter</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
 
-<div class="viewcode-block" id="fene"><a class="viewcode-back" href="../../../api/mdhelper.openmm.bond.fene.html#mdhelper.openmm.bond.fene">[docs]</a><span class="k">def</span> <span class="nf">fene</span><span class="p">(</span>
+<div class="viewcode-block" id="fene">
+<a class="viewcode-back" href="../../../api/mdhelper.openmm.bond.fene.html#mdhelper.openmm.bond.fene">[docs]</a>
+<span class="k">def</span> <span class="nf">fene</span><span class="p">(</span>
         <span class="nb">globals</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="n">pers</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;r0&quot;</span><span class="p">],</span> <span class="n">wca</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">CustomBondForce</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">]:</span>
@@ -444,12 +446,12 @@
 <span class="sd">    where :math:`k_{12}` is the bond coefficient in</span>
 <span class="sd">    :math:`\textrm{kJ}/(\textrm{nm}^2\cdot\textrm{mol})`,</span>
 <span class="sd">    :math:`r_{0,12}` is the equilibrium bond length in</span>
-<span class="sd">    :math:`\textrm{nm}`, :math:`\sigma_{12}` is the size of the particle</span>
-<span class="sd">    in :math:`\textrm{nm}`, and :math:`\epsilon_{12}` is the dispersion</span>
-<span class="sd">    energy in :math:`\textrm{kJ/mol}`. :math:`k_{12}`, :math:`r_{0,12}`,</span>
-<span class="sd">    :math:`\sigma_{12}` and :math:`\epsilon_{12}` are  determined from </span>
-<span class="sd">    per-particle parameters `k`, `r0`, `sigma` and `epsilon`, </span>
-<span class="sd">    respectively, which are set in the main script using</span>
+<span class="sd">    :math:`\textrm{nm}`, :math:`\sigma_{12}` is the average particle </span>
+<span class="sd">    size in :math:`\textrm{nm}`, and :math:`\epsilon_{12}` is the </span>
+<span class="sd">    dispersion energy in :math:`\textrm{kJ/mol}`. :math:`k_{12}`, </span>
+<span class="sd">    :math:`r_{0,12}`, :math:`\sigma_{12}` and :math:`\epsilon_{12}` are</span>
+<span class="sd">    determined from per-particle parameters `k`, `r0`, `sigma` and </span>
+<span class="sd">    `epsilon`, respectively, which are set using</span>
 <span class="sd">    :meth:`openmm.openmm.CustomBondForce.addBond` and</span>
 <span class="sd">    :meth:`openmm.openmm.NonbondedForce.addParticle`.</span>
 
@@ -488,6 +490,7 @@
         <span class="k">return</span> <span class="n">bond_fene</span><span class="p">,</span> <span class="n">pair_wca</span>
 
     <span class="k">return</span> <span class="n">bond_fene</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -520,9 +523,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3ba4146"></script>
+</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
