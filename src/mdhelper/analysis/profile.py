@@ -111,7 +111,7 @@ def potential_profile(
             emsg = ("'V0' has units, while the rest of the data is "
                     "reduced.")
             raise ValueError(emsg)
-        V0 /= unit.volt
+        V0 = V0.value_in_unit(unit.volt)
         if isinstance(V0, unit.Quantity):
             raise ValueError("'V0' has invalid units.")
     
@@ -130,7 +130,7 @@ def potential_profile(
                     emsg = ("'dV' has units, while the rest of the data is "
                             "reduced.")
                     raise ValueError(emsg)
-                dV /= unit.volt
+                dV.value_in_unit(unit.volt)
                 if isinstance(V0, unit.Quantity):
                     raise ValueError("'dV' has invalid units.")
         
@@ -166,7 +166,7 @@ def potential_profile(
             emsg = ("'sigma_e' has units, while the rest of the data "
                     "is reduced.")
             raise ValueError(emsg)
-        sigma_e /= unit.elementary_charge / unit.angstrom ** 2
+        sigma_e = sigma_e.value_in_unit(unit.elementary_charge / unit.angstrom ** 2)
         if isinstance(sigma_e, unit.Quantity):
             raise ValueError("'sigma_e' has invalid units.")
 

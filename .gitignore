@@ -4,6 +4,7 @@
 .ruff_cache/
 dist/
 examples/
+paper/
 src/mdhelper.egg-info
 tests/.coverage
 tests/data/

@@ -232,14 +232,14 @@ def optimize_pme(
 
     # Build list of cutoff distances to test
     if isinstance(min_cutoff, unit.Quantity):
-        min_cutoff /= unit.nanometer
+        min_cutoff = min_cutoff.value_in_unit(unit.nanometer)
     if isinstance(max_cutoff, unit.Quantity):
-        max_cutoff /= unit.nanometer
+        max_cutoff = max_cutoff.value_in_unit(unit.nanometer)
     cutoffs = {"gpu": {min_cutoff}}
     if cpu_pme:
         cutoffs["cpu"] = {min_cutoff}
 
-    for dim in [v[i] / unit.nanometer
+    for dim in [v[i].value_in_unit(unit.nanometer)
                 for i, v in enumerate(system.getDefaultPeriodicBoxVectors())]:
 
         # Iterate through possible grid sizes

@@ -27,7 +27,7 @@ extern "C" __global__ void integrateICLangevinPart1(
                          noisescale * sqrtInvMass * random[randomIndex].y;
             velocity.z =
                 vscale * velocity.z +
-                fscale * velocity.w * force[index + paddedNumAtoms * 2] +
+                fscale * velocity.w * force[index + 2 * paddedNumAtoms] +
                 noisescale * sqrtInvMass * random[randomIndex].z;
             velm[index] = velocity;
             posDelta[index] =
@@ -44,9 +44,9 @@ extern "C" __global__ void integrateICLangevinPart1(
  */
 
 extern "C" __global__ void integrateICLangevinPart2(
-    int numAtoms, real4* __restrict__ posq, real4* __restrict__ posqCorrection,
-    const mixed4* __restrict__ posDelta, mixed4* __restrict__ velm,
-    const mixed2* __restrict__ dt) {
+    int numAtoms, real4* __restrict__ posq, const mixed4* __restrict__ posDelta,
+    mixed4* __restrict__ velm, const mixed2* __restrict__ dt,
+    real4* __restrict__ posqCorrection) {
 #if __CUDA_ARCH__ >= 130
     double invStepSize = 1.0 / dt[0].y;
 #else
@@ -161,20 +161,19 @@ extern "C" __global__ void selectICLangevinStepSize(
 }
 
 /**
- * Modify the position of image charges
+ * Update the positions of image charges.
  */
 
 extern "C" __global__ void updateImageParticlePositions(
     int numRealAtoms, int numCells, double zmax, real4* __restrict__ posq,
-    real4* __restrict__ posqCorrection, int* __restrict__ invAtomOrder) {
-    //    unsigned int index = threadIdx.x;
+    real4* __restrict__ posqCorrection, int* __restrict__ invAtomIndex) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     while (index < numRealAtoms) {
-        real4 pos0 = posq[invAtomOrder[index]];
+        real4 pos0 = posq[invAtomIndex[index]];
         if (pos0.w != -pos0.w) {
 #ifdef USE_MIXED_PRECISION
             real4 pos1 = pos0;
-            real4 pos2 = posqCorrection[invAtomOrder[index]];
+            real4 pos2 = posqCorrection[invAtomIndex[index]];
             mixed4 pos =
                 make_mixed4(pos1.x + (mixed)pos2.x, pos1.y + (mixed)pos2.y,
                             pos1.z + (mixed)pos2.z, pos1.w);
@@ -183,15 +182,15 @@ extern "C" __global__ void updateImageParticlePositions(
 #endif
             for (int i = 1; i < numCells; i++) {
                 pos.z = -pos.z + zmax * (2 * i);
-                pos.w = posq[invAtomOrder[index + numRealAtoms * i]].w;
+                pos.w = posq[invAtomIndex[index + numRealAtoms * i]].w;
 #ifdef USE_MIXED_PRECISION
-                posq[invAtomOrder[index + numRealAtoms * i]] = make_real4(
+                posq[invAtomIndex[index + numRealAtoms * i]] = make_real4(
                     (real)pos.x, (real)pos.y, (real)pos.z, (real)pos.w);
-                posqCorrection[invAtomOrder[index + numRealAtoms * i]] =
+                posqCorrection[invAtomIndex[index + numRealAtoms * i]] =
                     make_real4(pos.x - (real)pos.x, pos.y - (real)pos.y,
                                pos.z - (real)pos.z, 0);
 #else
-                posq[invAtomOrder[index + numRealAtoms * i]] = pos;
+                posq[invAtomIndex[index + numRealAtoms * i]] = pos;
 #endif
             }
         }
@@ -200,15 +199,14 @@ extern "C" __global__ void updateImageParticlePositions(
 }
 
 /**
- * Reorder the inverse atom indexes
+ * Reorder the inverse atom indices.
  */
 
-extern "C" __global__ void reorderInverseAtomOrderIndexes(
-    int numAtoms, int* __restrict__ atomIndex, int* __restrict__ invAtomOrder) {
-    //    unsigned int index = threadIdx.x;
+extern "C" __global__ void reorderInverseAtomOrderIndices(
+    int numAtoms, int* __restrict__ atomIndex, int* __restrict__ invAtomIndex) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     while (index < numAtoms) {
-        invAtomOrder[atomIndex[index]] = index;
+        invAtomIndex[atomIndex[index]] = index;
         index += blockDim.x * gridDim.x;
     }
 }

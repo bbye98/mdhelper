@@ -133,11 +133,11 @@ def create_atoms(
             dims = dims.getUnitCellDimensions()
         if length_unit is None:
             length_unit = dims.unit
-        dims /= length_unit
+        dims = dims.value_in_unit(length_unit)
     if isinstance(length, unit.Quantity):
         if length_unit is None:
             length_unit = length.unit
-        length /= length_unit
+        length = length.value_in_unit(length_unit)
 
     if lattice is None:
 

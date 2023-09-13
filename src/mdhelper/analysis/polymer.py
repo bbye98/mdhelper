@@ -353,7 +353,7 @@ class Gyradius(_PolymerAnalysisBase):
 
         # Preallocate arrays to store results
         shape = (self._n_groups, self.n_frames, 3) if self._components \
-                else (self._n_groups, self.n_frames)
+                 else (self._n_groups, self.n_frames)
         self.results.gyradius = np.empty(shape, dtype=float)
         
         # Store reference units
@@ -378,15 +378,13 @@ class Gyradius(_PolymerAnalysisBase):
                 positions += self._images[i] * self._dims
 
             # Calculate radius of gyration
-            gyradius = molecule.radius_of_gyration(
+            self.results.gyradius[i, self._frame_index] \
+                = molecule.radius_of_gyration(
                     grouping="segments",
                     positions=positions.reshape((M, N_p, 3)),
                     masses=g.masses.reshape((M, N_p)),
                     components=self._components
                 )
-            if not self._components:
-                gyradius = gyradius.mean()
-            self.results.gyradius[i, self._frame_index] = gyradius
 
 class Relaxation(_PolymerAnalysisBase):
 
@@ -534,8 +532,8 @@ class Relaxation(_PolymerAnalysisBase):
         self._fft = fft
         if dt:
             self._dt = dt
-            if type(dt).__name__ == "Quantity":
-                self._dt /= unit.picosecond
+            if isinstance(dt, unit.Quantity):
+                self._dt = self._dt.value_in_unit(unit.picosecond)
         else:
             self._dt = self._trajectory.dt
 

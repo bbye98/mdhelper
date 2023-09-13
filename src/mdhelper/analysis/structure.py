@@ -744,12 +744,13 @@ class RDF(SerialAnalysisBase):
             kBT = temp
         else:
             if isinstance(temp, (int, float)):
-                kBT = (unit.AVOGADRO_CONSTANT_NA 
-                       * unit.BOLTZMANN_CONSTANT_kB * temp * unit.kelvin
-                       / unit.kilojoule_per_mole)
+                kBT = (
+                    unit.AVOGADRO_CONSTANT_NA 
+                    * unit.BOLTZMANN_CONSTANT_kB * temp * unit.kelvin
+                ).value_in_unit(unit.kilojoule_per_mole)
             else:
                 kBT = (unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB
-                       * temp / unit.kilojoule_per_mole)
+                       * temp).value_in_unit(unit.kilojoule_per_mole)
             self.results.units = {"results.pmf": unit.kilojoule_per_mole}
 
         self.results.pmf = -kBT * np.log(self._get_rdf())

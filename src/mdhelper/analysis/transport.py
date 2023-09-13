@@ -795,13 +795,15 @@ class Onsager(SerialAnalysisBase):
             self._kBT = temp
         else:
             if isinstance(temp, (int, float)):
-                self._kBT = (unit.AVOGADRO_CONSTANT_NA 
-                             * unit.BOLTZMANN_CONSTANT_kB
-                             * temp * unit.kelvin 
-                             / unit.kilojoule_per_mole)
+                self._kBT = (
+                    unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB
+                    * temp * unit.kelvin
+                ).value_in_unit(unit.kilojoule_per_mole)
             else:
-                self._kBT = (unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB
-                             * temp / unit.kilojoule_per_mole)
+                self._kBT = (
+                    unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB 
+                    * temp
+                ).value_in_unit(unit.kilojoule_per_mole)
             self.results.units = {"_dims": unit.angstrom,
                                   "_kBT": unit.kilojoule_per_mole}
         
@@ -811,7 +813,7 @@ class Onsager(SerialAnalysisBase):
         if dt:
             self._dt = dt
             if isinstance(dt, unit.Quantity):
-                self._dt /= unit.picosecond
+                self._dt = self._dt.value_in_unit(unit.picosecond)
         else:
             self._dt = self._trajectory.dt
         self._fft = fft

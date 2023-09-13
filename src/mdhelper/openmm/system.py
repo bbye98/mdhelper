@@ -12,10 +12,14 @@ from typing import Any, Iterable, Union
 import warnings
 
 try:
-    from constvplugin import ConstVLangevinIntegrator
-    FOUND_CONSTVPLUGIN = True
+    from openmm_ic import ICLangevinIntegrator
+    FOUND_ICPLUGIN = True
 except ImportError:
-    FOUND_CONSTVPLUGIN = False
+    try:
+        from constvplugin import ConstVLangevinIntegrator as ICLangevinIntegrator
+        FOUND_ICPLUGIN = True
+    except ImportError:
+        FOUND_ICPLUGIN = False
 import numpy as np
 import openmm
 from openmm import app, unit
@@ -391,8 +395,7 @@ def image_charges(
         system: openmm.System, topology: app.Topology,
         positions: Union[np.ndarray, unit.Quantity],
         temp: Union[float, unit.Quantity], fric: Union[float, unit.Quantity],
-        dt: Union[float, unit.Quantity], axis: int = 2, *,
-        wall_indices: np.ndarray = None,
+        dt: Union[float, unit.Quantity], *, wall_indices: np.ndarray = None,
         nbforce: openmm.NonbondedForce = None,
         cnbforces: Union[Iterable[openmm.CustomNonbondedForce],
                          dict[openmm.CustomNonbondedForce, Iterable[Any]]] = {},
@@ -404,6 +407,10 @@ def image_charges(
     boundaries (with a relative permittivity of
     :math:`\varepsilon_\mathrm{r}=\infty`). For more information about
     the method, see Refs. [1]_, [2]_, and [3]_.
+
+    .. note::
+
+       The boundaries must be in the $xy$-plane and along the $z$-axis.
 
     Parameters
     ----------
@@ -435,11 +442,6 @@ def image_charges(
         Integration step size :math:`\Delta t`. 
         
         **Reference unit**: :math:`\mathrm{ps}`.
-
-    axis : `int`, default: :code:`2`
-        Axis along which to apply the method of image charges, with 
-        :math:`x` being :code:`0`, :math:`y` being :code:`1`, and 
-        :math:`z` being :code:`2`.
 
     nbforce : `openmm.NonbondedForce`, keyword-only, optional
         Standard Lennard-Jones (LJ) and Coulomb pair potential used in
@@ -483,8 +485,7 @@ def image_charges(
 
     wall_indices : `numpy.ndarray`, keyword-only, optional
         Atom indices corresponding to wall particles. If not provided,
-        the wall particles are guessed using the system dimensions and
-        `axis`.
+        the wall particles are guessed using the system dimensions.
 
     Returns
     -------
@@ -553,10 +554,13 @@ def image_charges(
        https://doi.org/10.1073/pnas.2020615118.
     """
 
-    if not FOUND_CONSTVPLUGIN:
-        emsg = ("The required constant potential MD integrator plugin "
-                "(https://github.com/scychon/openmm_constV) was not found. "
-                "As such, the method of image charges is unavailable.")
+    if not FOUND_ICPLUGIN:
+        emsg = ("An integrator capable of simulating a system with "
+                "image charges was not found. As such, the method of "
+                "image charges is unavailable unless the openmm-ic "
+                "(https://github.com/bbye98/mdhelper/tree/main/lib/openmm-ic-plugin) "
+                "or the constvplugin (https://github.com/scychon/openmm_constV) "
+                "package is installed.")
         raise ImportError(emsg)
 
     # Get system information
@@ -565,29 +569,29 @@ def image_charges(
     pbv = system.getDefaultPeriodicBoxVectors()
     N_real = positions.shape[0]
     if isinstance(positions, unit.Quantity):
-        positions /= unit.nanometer
+        positions = positions.value_in_unit(unit.nanometer)
 
     # Guess indices of left and right walls if not provided
     if wall_indices is None:
         wall_indices = np.concatenate(
-            ((positions[:, axis] == 0).nonzero()[0],
-            (positions[:, axis] == dims[axis] / unit.nanometer).nonzero()[0])
+            ((positions[:, 2] == 0).nonzero()[0],
+            (positions[:, 2] == dims[2] / unit.nanometer).nonzero()[0])
         )
 
     # Mirror particle positions
-    flip = np.ones(3, dtype=int)
-    flip[axis] *= -1
-    positions = np.concatenate((positions, positions * flip)) * unit.nanometer
+    positions = np.concatenate(
+        (positions, positions * np.array((1, 1, -1), dtype=int))
+    ) * unit.nanometer
 
     # Update and set new system dimensions
-    dims[axis] *= 2
+    dims[2] *= 2
     topology.setUnitCellDimensions(dims)
-    pbv[axis] *= 2
+    pbv[2] *= 2
     system.setDefaultPeriodicBoxVectors(*pbv)
 
     # Instantiate an integrator that simulates a system using
     # Langevin dynamics and updates the image charge positions
-    integrator = ConstVLangevinIntegrator(temp, fric, dt)
+    integrator = ICLangevinIntegrator(temp, fric, dt)
 
     # Register image charges to the system, topology, and force field
     chains_ic = [topology.addChain() for _ in range(topology.getNumChains())]
@@ -715,7 +719,7 @@ def electric_field(
     for i in atom_indices:
         q = nbforce.getParticleParameters(i)[charge_index]
         if isinstance(q, unit.Quantity):
-            q /= unit.elementary_charge
+            q = q.value_in_unit(unit.elementary_charge)
         if not np.isclose(q, 0):
             efield.addParticle(i, (q,))
     

@@ -263,12 +263,12 @@ def coul_gauss(
     return pair_coul_gauss_dir, pair_coul_gauss_rec
 
 def gauss(
-        cutoff: Union[float, openmm.unit.Quantity],
-        cutoff_gauss: Union[float, openmm.unit.Quantity] = None, *,
+        cutoff: Union[float, unit.Quantity],
+        cutoff_gauss: Union[float, unit.Quantity] = None, *,
         shift: bool = True, mix: str = "geometric",
-        global_params: dict[str, Union[float, openmm.unit.Quantity]] = {},
+        global_params: dict[str, Union[float, unit.Quantity]] = {},
         per_params: list = [],
-        tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
                                    openmm.Discrete2DFunction]] = {}
     ) -> openmm.CustomNonbondedForce:
 
@@ -392,12 +392,12 @@ def gauss(
     """
 
     if isinstance(cutoff, unit.Quantity):
-        cutoff /= unit.nanometer
+        cutoff = cutoff.value_in_unit(unit.nanometer)
     if cutoff_gauss is None:
         cutoff_gauss = cutoff
     else:
         if isinstance(cutoff_gauss):
-            cutoff_gauss /= unit.nanometer
+            cutoff_gauss = cutoff_gauss.value_in_unit(unit.nanometer)
         if cutoff_gauss > cutoff:
             emsg = ("The cutoff distance for the Gaussian potential "
                     "must be less than the shared cutoff distance.")
@@ -532,7 +532,7 @@ def ljts(
         shift: bool = True, mix: str = "arithmetic", wca: bool = False,
         global_params: dict[str, Union[float, unit.Quantity]] = {},
         per_params: list = [],
-        tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
                                    openmm.Discrete2DFunction]] = {}
     ) -> openmm.CustomNonbondedForce:
 
@@ -657,12 +657,12 @@ def ljts(
     """
 
     if isinstance(cutoff, unit.Quantity):
-        cutoff /= unit.nanometer
+        cutoff = cutoff.value_in_unit(unit.nanometer)
     if cutoff_ljts is None:
         cutoff_ljts = cutoff
     else:
         if isinstance(cutoff_ljts):
-            cutoff_ljts /= unit.nanometer
+            cutoff_ljts = cutoff_ljts.value_in_unit(unit.nanometer)
         if cutoff_ljts > cutoff:
             emsg = ("The cutoff distance for the LJTS potential must be "
                     "less than the shared cutoff distance.")
@@ -798,12 +798,12 @@ def solvation(
     """
 
     if isinstance(cutoff, unit.Quantity):
-        cutoff /= unit.nanometer
+        cutoff = cutoff.value_in_unit(unit.nanometer)
     if cutoff_solvation is None:
         cutoff_solvation = cutoff
     else:
         if isinstance(cutoff_solvation):
-            cutoff_solvation /= unit.nanometer
+            cutoff_solvation = cutoff_solvation.value_in_unit(unit.nanometer)
         if cutoff_solvation > cutoff:
             emsg = ("The cutoff distance for the solvation potential "
                     "must be less than the shared cutoff distance.")
@@ -921,12 +921,12 @@ def yukawa(
     """
 
     if isinstance(cutoff, unit.Quantity):
-        cutoff /= unit.nanometer
+        cutoff = cutoff.value_in_unit(unit.nanometer)
     if cutoff_yukawa is None:
         cutoff_yukawa = cutoff
     else:
         if isinstance(cutoff_yukawa):
-            cutoff_yukawa /= unit.nanometer
+            cutoff_yukawa = cutoff_yukawa.value_in_unit(unit.nanometer)
         if cutoff_yukawa > cutoff:
             emsg = ("The cutoff distance for the LJTS potential must be "
                     "less than the shared cutoff distance.")

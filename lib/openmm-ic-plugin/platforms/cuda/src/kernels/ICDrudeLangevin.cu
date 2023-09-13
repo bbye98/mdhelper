@@ -143,7 +143,7 @@ extern "C" __global__ void integrateICDrudeLangevinPart2(
 }
 
 /**
- * Apply hard wall constraints
+ * Apply hard wall constraints.
  */
 extern "C" __global__ void applyHardWallConstraints(
     real4* __restrict__ posq, real4* __restrict__ posqCorrection,

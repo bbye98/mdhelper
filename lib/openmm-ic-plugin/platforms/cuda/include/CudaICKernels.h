@@ -16,7 +16,7 @@ class CudaIntegrateICLangevinStepKernel : public IntegrateICLangevinStepKernel {
         : IntegrateICLangevinStepKernel(name, platform),
           cu(cu),
           params(NULL),
-          invAtomOrder(NULL) {}
+          invAtomIndex(NULL) {}
     ~CudaIntegrateICLangevinStepKernel();
 
     /**
@@ -48,7 +48,7 @@ class CudaIntegrateICLangevinStepKernel : public IntegrateICLangevinStepKernel {
    private:
     CudaContext& cu;
     double prevTemp, prevFriction, prevStepSize, cellZSize;
-    CudaArray *params, *invAtomOrder;
+    CudaArray *params, *invAtomIndex;
     CUfunction kernel1, kernel2, kernelImage, kernelReorder;
 };
 
@@ -95,7 +95,7 @@ class CudaIntegrateICDrudeLangevinStepKernel
    private:
     CudaContext& cu;
     double prevStepSize, cellZSize;
-    CudaArray normalParticles, pairParticles, invAtomOrder;
+    CudaArray normalParticles, pairParticles, invAtomIndex;
     CUfunction kernel1, kernel2, hardwallKernel, kernelImage, kernelReorder;
 };
 

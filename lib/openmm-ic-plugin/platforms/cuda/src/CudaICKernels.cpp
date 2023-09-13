@@ -19,7 +19,7 @@ using namespace std;
 CudaIntegrateICLangevinStepKernel::~CudaIntegrateICLangevinStepKernel() {
     cu.setAsCurrent();
     if (params != NULL) delete params;
-    if (invAtomOrder != NULL) delete invAtomOrder;
+    if (invAtomIndex != NULL) delete invAtomIndex;
 }
 
 void CudaIntegrateICLangevinStepKernel::initialize(
@@ -35,7 +35,7 @@ void CudaIntegrateICLangevinStepKernel::initialize(
     kernel1 = cu.getKernel(module, "integrateICLangevinPart1");
     kernel2 = cu.getKernel(module, "integrateICLangevinPart2");
     kernelImage = cu.getKernel(module, "updateImageParticlePositions");
-    kernelReorder = cu.getKernel(module, "reorderInverseAtomOrderIndexes");
+    kernelReorder = cu.getKernel(module, "reorderInverseAtomOrderIndices");
     params = new CudaArray(
         cu, 3,
         cu.getUseDoublePrecision() || cu.getUseMixedPrecision() ? sizeof(double)
@@ -44,7 +44,8 @@ void CudaIntegrateICLangevinStepKernel::initialize(
     prevStepSize = -1.0;
 
     // Check image particles are properly set (same number as original, mass =
-    // 0)
+    // 0).
+
     int numCells = integrator.getNumCells();
     if (numCells % 2 != 0)
         throw OpenMMException("Number of cells must be even");
@@ -57,7 +58,8 @@ void CudaIntegrateICLangevinStepKernel::initialize(
             throw OpenMMException("Image particle has nonzero mass");
     }
 
-    // Check for the unit cell z-dimension
+    // Check the unit cell z-dimension.
+
     Vec3 a, b, c;
     system.getDefaultPeriodicBoxVectors(a, b, c);
     cellZSize = integrator.getCellZSize();
@@ -68,9 +70,10 @@ void CudaIntegrateICLangevinStepKernel::initialize(
             "Unit cell dimension does not match the provided cellZSize value");
     }
 
-    //    // Initialize the positions of the image particles
-    invAtomOrder =
-        CudaArray::create<int>(cu, cu.getPaddedNumAtoms(), "invAtomOrder");
+    // Initialize the positions of the image particles.
+
+    invAtomIndex =
+        CudaArray::create<int>(cu, cu.getPaddedNumAtoms(), "invAtomIndex");
 }
 
 void CudaIntegrateICLangevinStepKernel::execute(
@@ -87,7 +90,7 @@ void CudaIntegrateICLangevinStepKernel::execute(
     cu.getIntegrationUtilities().setNextStepSize(stepSize);
     if (temperature != prevTemp || friction != prevFriction ||
         stepSize != prevStepSize) {
-        // Calculate the integration parameters.
+        // Recreate the computation objects with the new parameters.
 
         double kT = BOLTZ * temperature;
         double vscale = exp(-stepSize * friction);
@@ -114,7 +117,7 @@ void CudaIntegrateICLangevinStepKernel::execute(
     if (cu.getAtomsWereReordered()) {
         void* argsReorder[] = {&numAtoms,
                                &cu.getAtomIndexArray().getDevicePointer(),
-                               &invAtomOrder->getDevicePointer()};
+                               &invAtomIndex->getDevicePointer()};
         cu.executeKernel(kernelReorder, argsReorder, numAtoms, 128);
     }
 
@@ -143,10 +146,10 @@ void CudaIntegrateICLangevinStepKernel::execute(
                                    : 0);
     void* args2[] = {&numAtoms,
                      &cu.getPosq().getDevicePointer(),
-                     &posCorrection,
                      &integration.getPosDelta().getDevicePointer(),
                      &cu.getVelm().getDevicePointer(),
-                     &integration.getStepSize().getDevicePointer()};
+                     &integration.getStepSize().getDevicePointer(),
+                     &posCorrection};
     cu.executeKernel(kernel2, args2, numAtoms, 128);
     integration.computeVirtualSites();
 
@@ -154,7 +157,7 @@ void CudaIntegrateICLangevinStepKernel::execute(
 
     void* argsImage[] = {&numRealAtoms,  &numCells,
                          &cellZSize,     &cu.getPosq().getDevicePointer(),
-                         &posCorrection, &invAtomOrder->getDevicePointer()};
+                         &posCorrection, &invAtomIndex->getDevicePointer()};
     cu.executeKernel(kernelImage, argsImage, numRealAtoms, 128);
 
     // Update the time and step count.
@@ -177,7 +180,9 @@ void CudaIntegrateICDrudeLangevinStepKernel::initialize(
     cu.getIntegrationUtilities().initRandomNumberGenerator(
         (unsigned int)integrator.getRandomNumberSeed());
 
-    // check for even number of atoms and zero mass for image charges
+    // Check image particles are properly set (same number as original, mass =
+    // 0).
+
     int numCells = integrator.getNumCells();
     if (numCells % 2 != 0)
         throw OpenMMException("Number of cells must be even");
@@ -190,9 +195,10 @@ void CudaIntegrateICDrudeLangevinStepKernel::initialize(
             throw OpenMMException("Image particle has nonzero mass");
     }
     int numRealAtoms = numAtoms / numCells;
-    invAtomOrder.initialize<int>(cu, cu.getPaddedNumAtoms(), "invAtomOrder");
+    invAtomIndex.initialize<int>(cu, cu.getPaddedNumAtoms(), "invAtomIndex");
 
-    // Check for the unit cell z-dimension
+    // Check the unit cell z-dimension.
+
     Vec3 a, b, c;
     system.getDefaultPeriodicBoxVectors(a, b, c);
     cellZSize = integrator.getCellZSize();
@@ -322,7 +328,7 @@ void CudaIntegrateICDrudeLangevinStepKernel::execute(
     if (cu.getAtomsWereReordered()) {
         void* argsReorder[] = {&numAtoms,
                                &cu.getAtomIndexArray().getDevicePointer(),
-                               &invAtomOrder.getDevicePointer()};
+                               &invAtomIndex.getDevicePointer()};
         cu.executeKernel(kernelReorder, argsReorder, numAtoms, 128);
     }
 
@@ -355,10 +361,11 @@ void CudaIntegrateICDrudeLangevinStepKernel::execute(
     CUdeviceptr posCorrection =
         (cu.getUseMixedPrecision() ? cu.getPosqCorrection().getDevicePointer()
                                    : 0);
-    void* args2[] = {&cu.getPosq().getDevicePointer(), &posCorrection,
+    void* args2[] = {&cu.getPosq().getDevicePointer(),
                      &integration.getPosDelta().getDevicePointer(),
                      &cu.getVelm().getDevicePointer(),
-                     &integration.getStepSize().getDevicePointer()};
+                     &integration.getStepSize().getDevicePointer(),
+                     &posCorrection};
     cu.executeKernel(kernel2, args2, numRealAtoms);
 
     // Apply hard wall constraints.
@@ -379,7 +386,7 @@ void CudaIntegrateICDrudeLangevinStepKernel::execute(
 
     void* argsImage[] = {&numRealAtoms,  &numCells,
                          &cellZSize,     &cu.getPosq().getDevicePointer(),
-                         &posCorrection, &invAtomOrder.getDevicePointer()};
+                         &posCorrection, &invAtomIndex.getDevicePointer()};
     cu.executeKernel(kernelImage, argsImage, numRealAtoms, 128);
 
     // Update the time and step count.
