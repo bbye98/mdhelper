@@ -1,7 +1,7 @@
 r"""
 Gaussian models
 ===============
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 The Gaussian model fits peaks, and is given by
 

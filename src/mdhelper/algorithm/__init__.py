@@ -1,7 +1,7 @@
 """
 General algorithms
 ==================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module is a collection of general algorithms used in other MDHelper
 modules.

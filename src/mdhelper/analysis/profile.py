@@ -1,9 +1,10 @@
 """
 Linear profiles
 ===============
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
-This module contains classes to quantify properties along axes.
+This module contains classes to quantify properties along axes, such as
+density profiles.
 """
 
 from typing import Any, Union
@@ -108,8 +109,8 @@ def potential_profile(
     # Check V0 for unit consistency
     if isinstance(V0, unit.Quantity):
         if reduced:
-            emsg = ("'V0' has units, while the rest of the data is "
-                    "reduced.")
+            emsg = ("'V0' has units, but the rest of the data is "
+                    "or should be reduced.")
             raise ValueError(emsg)
         V0 = V0.value_in_unit(unit.volt)
         if isinstance(V0, unit.Quantity):
@@ -127,8 +128,8 @@ def potential_profile(
             # Check dV for unit consistency
             if isinstance(dV, unit.Quantity):
                 if reduced:
-                    emsg = ("'dV' has units, while the rest of the data is "
-                            "reduced.")
+                    emsg = ("'dV' has units, but the rest of the data is "
+                            "or should be reduced.")
                     raise ValueError(emsg)
                 dV.value_in_unit(unit.volt)
                 if isinstance(V0, unit.Quantity):
@@ -163,7 +164,7 @@ def potential_profile(
     # Check sigma_e for unit consistency
     elif isinstance(sigma_e, unit.Quantity):
         if reduced:
-            emsg = ("'sigma_e' has units, while the rest of the data "
+            emsg = ("'sigma_e' has units, but the rest of the data "
                     "is reduced.")
             raise ValueError(emsg)
         sigma_e = sigma_e.value_in_unit(unit.elementary_charge / unit.angstrom ** 2)
@@ -279,6 +280,8 @@ class DensityProfile(SerialAnalysisBase):
 
         **Shape**: :math:`(3,)`.
 
+        **Reference unit**: :math:`\mathrm{Å}`.
+
     scales : array-like, keyword-only, optional
         Scaling factors for each system dimension. If an `int` is 
         provided, the same value is used for all axes.
@@ -373,6 +376,8 @@ class DensityProfile(SerialAnalysisBase):
             if dims is None:
                 raise ValueError("Trajectory does not contain system dimensions.")
             self._dims = dims
+            if isinstance(dims, unit.Quantity):
+                self._dims = self._dims.value_in_unit(unit.angstrom)
 
         if isinstance(scales, (int, float)) or \
                 len(scales) == 3 and isinstance(scales[0], (int, float)):

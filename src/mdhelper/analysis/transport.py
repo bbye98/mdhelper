@@ -1,7 +1,7 @@
 """
 Transport properties
 ====================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains classes to evaluate the transport properties of
 fluid systems.
@@ -766,6 +766,7 @@ class Onsager(SerialAnalysisBase):
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
         super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
+        
         if self.universe.dimensions is None:
             self._dims = None
         else:
@@ -1159,7 +1160,7 @@ class Onsager(SerialAnalysisBase):
         if rhos is not None:
             if isinstance(rhos, unit.Quantity):
                 self.results.units["_rho"] = rhos.units
-                rhos = rhos.value_in_unit(self.results.units)
+                rhos = rhos.value_in_unit(self.results.units["_rho"])
             self._rhos = rhos if isinstance(rhos, np.ndarray) \
                          else np.array(rhos)
         if self._rhos is None:

@@ -1,7 +1,7 @@
 """
 Bulk structural analysis
 ========================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains classes to analyze the structure of bulk fluid and
 electrolyte systems.

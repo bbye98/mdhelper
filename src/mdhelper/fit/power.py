@@ -1,7 +1,7 @@
 r"""
 Power models
 ============
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 The power model is given by
 

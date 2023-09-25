@@ -1,7 +1,7 @@
 """
 Molecular structure
 ===================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains algorithms for computing structural information
 for a collection of particles.

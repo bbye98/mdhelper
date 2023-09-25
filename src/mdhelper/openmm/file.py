@@ -1,7 +1,7 @@
 """
 Custom OpenMM topology and trajectory file readers and writers
 ==============================================================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module provides custom topology and trajectory file readers and
 writers for OpenMM.

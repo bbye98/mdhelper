@@ -18,7 +18,7 @@ To build it, follow these steps:
 1. Create a directory in which to build the plugin.
 2. Set environmental variables such as `CXXFLAGS='-std=c++11'`,
    `OPENMM_CUDA_COMPILER=$(which nvcc)`, etc.
-3. Run the CMake GUI or `ccmake`` and specify your new directory as the
+3. Run the CMake GUI or `ccmake` and specify your new directory as the
    build directory and the top level directory of this project as the 
    source directory.
 4. Press "Configure".
@@ -29,9 +29,8 @@ To build it, follow these steps:
 6. Set `CMAKE_INSTALL_PREFIX` to the directory where the plugin should 
    be installed. Usually, this will be the same as `OPENMM_DIR`, so the
    plugin will be added to your OpenMM installation.
-7. If you plan to build the CUDA platform, make sure that 
-   `CUDA_TOOLKIT_ROOT_DIR` is set correctly and that `IC_BUILD_CUDA_LIB`
-   is enabled.
+7. Make sure that `CUDA_TOOLKIT_ROOT_DIR` is set correctly and that 
+   `IC_BUILD_CUDA_LIB` is enabled.
 8. Press "Configure" again if necessary, then press "Generate".
 9. Use the build system you selected to build and install the plugin using
 
@@ -47,7 +46,8 @@ Python API
 
 The two integrators available are `openmm_ic.ICLangevinIntegrator` and
 `openmm_ic.ICDrudeLangevinIntegrator`, and they have the same methods as
-their counterparts `openmm.LangevinIntegrator` and `openmm.DrudeLangevinIntegrator`, respectively.
+their counterparts `openmm.LangevinIntegrator` and 
+`openmm.DrudeLangevinIntegrator`, respectively.
 
 A simple example is provided below:
 
@@ -114,4 +114,6 @@ Citing This Work
 ================
 Any work that uses this plugin should cite the following publication:
 
-C. Y. Son and Z.-G. Wang, Image-Charge Effects on Ion Adsorption near Aqueous Interfaces, Proc. Natl. Acad. Sci. U.S.A. 118, e2020615118 (2021). https://doi.org/10.1073/pnas.2020615118
+C. Y. Son and Z.-G. Wang, Image-Charge Effects on Ion Adsorption near 
+Aqueous Interfaces, Proc. Natl. Acad. Sci. U.S.A. 118, e2020615118 
+(2021). https://doi.org/10.1073/pnas.2020615118

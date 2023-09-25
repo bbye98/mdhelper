@@ -1,13 +1,14 @@
 """
 OpenMM system extensions and tools
 ==================================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains implementations of common OpenMM topology 
 transformations, like the Yeh–Berkowitz slab correction, the method of
 image charges, and adding an external electric field.
 """
 
+import logging
 from typing import Any, Iterable, Union
 import warnings
 
@@ -58,7 +59,7 @@ def register_particles(
         Molar mass. If not provided, particles have no mass and will not
         move. 
         
-        **Reference unit**: :math:`\mathrm{g/mol}`.
+        **Reference unit**: :math:`\\mathrm{g/mol}`.
 
     chain : `openmm.app.Chain`, keyword-only, optional
         Chain that the atom(s) should be added to. If not provided,
@@ -82,21 +83,21 @@ def register_particles(
         Charge :math:`q` of the atoms for use in the Coulomb potential
         in `nbforce`. 
         
-        **Reference unit**: :math:`\mathrm{e}`.
+        **Reference unit**: :math:`\\mathrm{e}`.
 
     sigma : `float` or `openmm.unit.Quantity`, keyword-only, \
     default: :code`0`
         :math:`\sigma` parameter of the Lennard-Jones potential in
         `nbforce`. 
         
-        **Reference unit**: :math:`\mathrm{nm}`.
+        **Reference unit**: :math:`\\mathrm{nm}`.
 
     epsilon : `float` or `openmm.unit.Quantity`, keyword-only, \
     default: :code`0`
         :math:`\epsilon` parameter of the Lennard-Jones potential in
         `nbforce`. 
         
-        **Reference unit**: :math:`\mathrm{kJ/mol}`.
+        **Reference unit**: :math:`\\mathrm{kJ/mol}`.
 
     cnbforces : `dict`, keyword-only, optional
         Custom pair potential objects implementing other non-standard
@@ -395,11 +396,11 @@ def image_charges(
         system: openmm.System, topology: app.Topology,
         positions: Union[np.ndarray, unit.Quantity],
         temp: Union[float, unit.Quantity], fric: Union[float, unit.Quantity],
-        dt: Union[float, unit.Quantity], *, wall_indices: np.ndarray = None,
+        dt: Union[float, unit.Quantity], *, wall_indices: ArrayLike = None,
         nbforce: openmm.NonbondedForce = None,
         cnbforces: Union[Iterable[openmm.CustomNonbondedForce],
                          dict[openmm.CustomNonbondedForce, Iterable[Any]]] = {},
-        params: Iterable[Iterable[Any]] = ()
+        params: Iterable[Iterable[Any]] = (), exclude: bool = False
     ) -> tuple[unit.Quantity, openmm.Integrator]:
 
     r"""
@@ -483,9 +484,20 @@ def image_charges(
         See the Examples section below for a simple illustration of the
         possibilities outlined above.
 
-    wall_indices : `numpy.ndarray`, keyword-only, optional
+    wall_indices : array-like, keyword-only, optional
         Atom indices corresponding to wall particles. If not provided,
         the wall particles are guessed using the system dimensions.
+
+    exclude : `bool`, keyword-only, default: :code:`False`
+        Specifies whether interactions between a wall particle and all
+        image wall particles should be excluded. If :code:`False`, only
+        the interaction between a wall particle and its own image is
+        removed.
+
+        .. tip::
+
+           If you want accurate forces acting on wall particles, set
+           :code:`exclude=True`.
 
     Returns
     -------
@@ -574,20 +586,22 @@ def image_charges(
     # Guess indices of left and right walls if not provided
     if wall_indices is None:
         wall_indices = np.concatenate(
-            ((positions[:, 2] == 0).nonzero()[0],
-            (positions[:, 2] == dims[2] / unit.nanometer).nonzero()[0])
+            (np.isclose(positions[:, 2], 0).nonzero()[0], 
+             np.isclose(positions[:, 2], dims[2] / unit.nanometer).nonzero()[0])
         )
 
     # Mirror particle positions
     positions = np.concatenate(
         (positions, positions * np.array((1, 1, -1), dtype=int))
     ) * unit.nanometer
+    logging.info(f"Mirrored {N_real:,} particles over the z-axis.")
 
     # Update and set new system dimensions
     dims[2] *= 2
     topology.setUnitCellDimensions(dims)
     pbv[2] *= 2
     system.setDefaultPeriodicBoxVectors(*pbv)
+    logging.info(f"Doubled z-dimension to {dims[2]}.")
 
     # Instantiate an integrator that simulates a system using
     # Langevin dynamics and updates the image charge positions
@@ -621,20 +635,36 @@ def image_charges(
                                         if isinstance(value, dict) \
                                         else value
             force.addParticle(params)
+    logging.info(f"Registered {system.getNumParticles() - N_real:,} "
+                 "image particles to the force field.")
 
     # Add existing particle exclusions to mirrored image charges
     for i in range(nbforce.getNumExceptions()):
         i1, i2, qq = nbforce.getExceptionParameters(i)[:3]
-        nbforce.addException(N_real + i1, N_real + i2, qq, 0, 0)
-        for force in cnbforces:
-            i1, i2 = force.getExclusionParticles(i)
-            force.addExclusion(N_real + i1, N_real + i2)
+        if i1 not in wall_indices and i2 not in wall_indices:
+            nbforce.addException(N_real + i1, N_real + i2, qq, 0, 0)
+            for force in cnbforces:
+                i1, i2 = force.getExclusionParticles(i)
+                force.addExclusion(N_real + i1, N_real + i2)
+    logging.info("Mirrored excluded non-wall image particle–image "
+                 "particle interactions.")
 
-    # Prevent wall particles from interacting with their mirrors
-    for i in wall_indices:
-        nbforce.addException(i, N_real + i, 0, 0, 0)
-        for force in cnbforces:
-            force.addExclusion(i, N_real + i)
+    # Prevent wall particles from interacting with all image wall
+    # particles
+    if exclude:
+        for i in wall_indices:
+            for j in wall_indices:
+                nbforce.addException(i, N_real + j, 0, 0, 0)
+                for force in cnbforces:
+                    force.addExclusion(i, N_real + j)
+
+    # Prevent wall particles from interacting their images
+    else:
+        for i in wall_indices:
+            nbforce.addException(i, N_real + i, 0, 0, 0)
+            for force in cnbforces:
+                force.addExclusion(i, N_real + i)
+    logging.info("Removed wall–image wall interactions.")
 
     return positions, integrator
 

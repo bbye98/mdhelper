@@ -1,7 +1,7 @@
 """
 Axis components
 ===============
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module provides additional functionality for Matplotlib axes.
 """

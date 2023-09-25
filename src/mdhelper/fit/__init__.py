@@ -1,7 +1,7 @@
 r"""
 Curve fitting
 =============
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module provides a library of curve fitting models, such as 
 exponential, Fourier series, polynomial, and power law models, for use

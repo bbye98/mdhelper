@@ -1,4 +1,4 @@
-analysis
+﻿analysis
 ========
 
 .. automodule:: mdhelper.analysis
@@ -27,6 +27,7 @@ analysis
    :recursive:
 
    mdhelper.analysis.base
+   mdhelper.analysis.electrostatics
    mdhelper.analysis.polymer
    mdhelper.analysis.profile
    mdhelper.analysis.structure

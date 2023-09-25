@@ -1,7 +1,7 @@
 """
 Custom OpenMM reporters
 =======================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module provides custom optimized OpenMM reporters.
 """

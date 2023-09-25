@@ -1,7 +1,7 @@
 """
 Polymeric analysis
 ==================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains classes to determine the structural
 and dynamical properties of polymeric systems.
@@ -53,16 +53,19 @@ def correlation_shift(*args, **kwargs) -> np.ndarray[float]:
 def relaxation_time(time: np.ndarray, acf: np.ndarray) -> float:
 
     r"""
-    Estimates the orientational relaxation time using an ACF.
+    Estimates the orientational relaxation time :math:`\tau_\mathrm{r}`
+    of a polymer using the end-to-end vector autocorrelation function
+    (ACF) time series :math:`C_\mathrm{ee}`.
     
-    A stretched exponential function
+    A stretched exponential function with :math:`\tau` and :math:`\beta`
+    as coefficients,
 
     .. math::
 
        C_\mathrm{ee}=\exp{\left[-(t/\tau)^\beta\right]}
     
-    is fitted to the end-to-end vector autocorrelation function (ACF) vs.
-    time relationship, and the relaxation time is estimated using
+    is fitted to the ACF time series, and the relaxation time is estimated 
+    using
 
     .. math::
 

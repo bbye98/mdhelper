@@ -1,7 +1,7 @@
 r"""
 Polynomial models
 =================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 Polynomial models for curves are given by
 

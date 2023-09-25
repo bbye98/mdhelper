@@ -1,7 +1,7 @@
 """
 OpenMM physical constants and unit conversions
 ==============================================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains physical constants and helper functions for unit
 reduction.

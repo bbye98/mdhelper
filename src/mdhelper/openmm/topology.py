@@ -1,7 +1,7 @@
 """
 OpenMM topology transformations
 ===============================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains implementations of common OpenMM topology 
 transformations, like the generation of initial particle positions and
@@ -113,12 +113,12 @@ def _is_topology_object(obj: Any):
     return isinstance(obj, (app.Atom, app.topology.Bond, app.Residue, app.Chain))
 
 def subset(
-        topology: app.Topology, positions: np.ndarray = None, *,
+        topology: app.Topology, positions: np.ndarray, *,
         delete: ArrayLike = None, keep: ArrayLike = None,
         types: Union[str, Iterable[str]] = None
     ) -> Union[app.Topology, np.ndarray]:
 
-    """
+    r"""
     Creates a topology subset and get its corresponding particle positions.
 
     Parameters
@@ -191,7 +191,8 @@ def subset(
     # Ensure object type(s) are provided if not all items are topology 
     # objects
     elif types is None \
-            and not all(_is_topology_object(i) for i in delete or keep):
+            and not all(_is_topology_object(i) for i in
+                        next(a for a in [delete, keep] if a is not None)):
         emsg = ("Object types must be specified for the topology items "
                 f"to be {'kept' if found[0] else 'deleted'}.")
         raise ValueError(emsg)

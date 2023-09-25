@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19 -->
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.09.10 -->
         <title>mdhelper.analysis.polymer - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -338,10 +338,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.plot.rcparam.update.html">update</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/mdhelper.utility.log.html">log</a></li>
 </ul>
 </li>
 </ul>
@@ -746,7 +742,7 @@
 
         <span class="c1"># Preallocate arrays to store results</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span> \
-                <span class="k">else</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
+                 <span class="k">else</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">gyradius</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         
         <span class="c1"># Store reference units</span>
@@ -771,15 +767,13 @@
                 <span class="n">positions</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dims</span>
 
             <span class="c1"># Calculate radius of gyration</span>
-            <span class="n">gyradius</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">radius_of_gyration</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">gyradius</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> \
+                <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">radius_of_gyration</span><span class="p">(</span>
                     <span class="n">grouping</span><span class="o">=</span><span class="s2">&quot;segments&quot;</span><span class="p">,</span>
                     <span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
                     <span class="n">masses</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">)),</span>
                     <span class="n">components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span>
-                <span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">:</span>
-                <span class="n">gyradius</span> <span class="o">=</span> <span class="n">gyradius</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">gyradius</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">gyradius</span></div>
+                <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Relaxation">
@@ -930,8 +924,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fft</span> <span class="o">=</span> <span class="n">fft</span>
         <span class="k">if</span> <span class="n">dt</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="n">dt</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Quantity&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">dt</span>
 

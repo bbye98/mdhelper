@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19 -->
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.09.10 -->
         <title>mdhelper.analysis.structure - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -1141,12 +1141,13 @@
             <span class="n">kBT</span> <span class="o">=</span> <span class="n">temp</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-                <span class="n">kBT</span> <span class="o">=</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span> 
-                       <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">BOLTZMANN_CONSTANT_kB</span> <span class="o">*</span> <span class="n">temp</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">kelvin</span>
-                       <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span><span class="p">)</span>
+                <span class="n">kBT</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span> 
+                    <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">BOLTZMANN_CONSTANT_kB</span> <span class="o">*</span> <span class="n">temp</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">kelvin</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">kBT</span> <span class="o">=</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">BOLTZMANN_CONSTANT_kB</span>
-                       <span class="o">*</span> <span class="n">temp</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span><span class="p">)</span>
+                       <span class="o">*</span> <span class="n">temp</span><span class="p">)</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;results.pmf&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span><span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pmf</span> <span class="o">=</span> <span class="o">-</span><span class="n">kBT</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_rdf</span><span class="p">())</span></div>

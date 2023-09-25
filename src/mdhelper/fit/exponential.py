@@ -1,7 +1,7 @@
 r"""
 Exponential models
 ==================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 Exponentials are often used when the rate of change of a quantity is
 proportional to the initial amount of the quantity. The general

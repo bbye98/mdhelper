@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.3 and Furo 2023.08.19 -->
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.09.10 -->
         <title>mdhelper.openmm.pair - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -340,10 +340,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/mdhelper.utility.log.html">log</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -650,12 +646,12 @@
 <div class="viewcode-block" id="gauss">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.pair.gauss.html#mdhelper.openmm.pair.gauss">[docs]</a>
 <span class="k">def</span> <span class="nf">gauss</span><span class="p">(</span>
-        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
-        <span class="n">cutoff_gauss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
+        <span class="n">cutoff_gauss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
         <span class="n">shift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;geometric&quot;</span><span class="p">,</span>
-        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
-        <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+        <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
                                    <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">:</span>
 
@@ -779,12 +775,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
-        <span class="n">cutoff</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">cutoff</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">cutoff_gauss</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">cutoff_gauss</span> <span class="o">=</span> <span class="n">cutoff</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_gauss</span><span class="p">):</span>
-            <span class="n">cutoff_gauss</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+            <span class="n">cutoff_gauss</span> <span class="o">=</span> <span class="n">cutoff_gauss</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cutoff_gauss</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the Gaussian potential &quot;</span>
                     <span class="s2">&quot;must be less than the shared cutoff distance.&quot;</span><span class="p">)</span>
@@ -925,7 +921,7 @@
         <span class="n">shift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;arithmetic&quot;</span><span class="p">,</span> <span class="n">wca</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
-        <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+        <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
                                    <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">:</span>
 
@@ -1050,12 +1046,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
-        <span class="n">cutoff</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">cutoff</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">cutoff_ljts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">cutoff_ljts</span> <span class="o">=</span> <span class="n">cutoff</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_ljts</span><span class="p">):</span>
-            <span class="n">cutoff_ljts</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+            <span class="n">cutoff_ljts</span> <span class="o">=</span> <span class="n">cutoff_ljts</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cutoff_ljts</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the LJTS potential must be &quot;</span>
                     <span class="s2">&quot;less than the shared cutoff distance.&quot;</span><span class="p">)</span>
@@ -1194,12 +1190,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
-        <span class="n">cutoff</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">cutoff</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">cutoff_solvation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">cutoff_solvation</span> <span class="o">=</span> <span class="n">cutoff</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_solvation</span><span class="p">):</span>
-            <span class="n">cutoff_solvation</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+            <span class="n">cutoff_solvation</span> <span class="o">=</span> <span class="n">cutoff_solvation</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cutoff_solvation</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the solvation potential &quot;</span>
                     <span class="s2">&quot;must be less than the shared cutoff distance.&quot;</span><span class="p">)</span>
@@ -1320,12 +1316,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
-        <span class="n">cutoff</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">cutoff</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">cutoff_yukawa</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">cutoff_yukawa</span> <span class="o">=</span> <span class="n">cutoff</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_yukawa</span><span class="p">):</span>
-            <span class="n">cutoff_yukawa</span> <span class="o">/=</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
+            <span class="n">cutoff_yukawa</span> <span class="o">=</span> <span class="n">cutoff_yukawa</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cutoff_yukawa</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the LJTS potential must be &quot;</span>
                     <span class="s2">&quot;less than the shared cutoff distance.&quot;</span><span class="p">)</span>

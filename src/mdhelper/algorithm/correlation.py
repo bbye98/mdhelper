@@ -1,7 +1,7 @@
 """
 Statistical correlation
 =======================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains algorithms for computing the correlation between 
 data with various shapes that evolve over time. This includes real- and

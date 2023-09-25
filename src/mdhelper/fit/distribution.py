@@ -1,7 +1,7 @@
 r"""
 Weibull distribution models
 ===========================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 The Weibull distribution is widely used in reliability and life (failure
 rate) data analysis. This module provides the one-, two-, and

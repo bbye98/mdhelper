@@ -1,7 +1,7 @@
 """
 OpenMM utility functions
 ========================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains OpenMM-related utility functions.
 """
@@ -20,7 +20,7 @@ def _create_context(
         positions: np.ndarray, platform: openmm.Platform, properties: dict
     ) -> openmm.Context:
 
-    """
+    r"""
     Creates an OpenMM Context by cloning the Integrator passed to this
     function. Useful for benchmarking different simulation systems.
 
@@ -114,9 +114,9 @@ def optimize_pme(
     positions : `np.ndarray` or `unit.Quantity`
         Initial positions of the :math:`N` particles in the system.
 
-        **Shape**: :math:`(N,\,3)`.
+        **Shape**: :math:`(N,\\,3)`.
 
-        **Reference unit**: :math:`\mathrm{nm}`.
+        **Reference unit**: :math:`\\mathrm{nm}`.
     
     platform : `openmm.Platform`
         OpenMM platform.
@@ -127,12 +127,12 @@ def optimize_pme(
     min_cutoff : `float` or `unit.Quantity`
         Minimum cutoff distance to test.
 
-        **Reference unit**: :math:`\mathrm{nm}`.
+        **Reference unit**: :math:`\\mathrm{nm}`.
 
     max_cutoff : `float` or `unit.Quantity`
         Maximum cutoff distance to test.
 
-        **Reference unit**: :math:`\mathrm{nm}`.
+        **Reference unit**: :math:`\\mathrm{nm}`.
 
     pmeforce : `openmm.NonbondedForce` or `openmm.AmoebaMultipoleForce`, \
     keyword-only, optional
@@ -169,7 +169,7 @@ def optimize_pme(
     cutoff : `unit.Quantity`
         Optimal cutoff distance.
 
-        **Reference unit**: :math:`\mathrm{nm}`.
+        **Reference unit**: :math:`\\mathrm{nm}`.
     
     cpu_pme : `bool`
         Specifies whether to use the CPU to perform reciprocal space 

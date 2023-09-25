@@ -1,7 +1,7 @@
 """
 MDHelper
 ========
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 """
 
 from typing import TypeVar

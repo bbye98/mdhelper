@@ -1,7 +1,7 @@
 """
 Analysis base classes
 =====================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains custom base classes :class:`SerialAnalysisBase` and
 :class:`ParallelAnalysisBase` for serial and multithreaded data 

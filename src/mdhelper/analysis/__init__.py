@@ -1,7 +1,7 @@
 """
 Simulation trajectory analysis
 ==============================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module provides a variety of classes for analyzing simulation 
 trajectories.

@@ -1,7 +1,7 @@
 r"""
 Fourier series models
 =====================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 The Fourier series is a sum of sine and cosine functions that describes
 a periodic signal, and can be represented in trigonometric form as

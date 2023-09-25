@@ -1,7 +1,7 @@
 """
 Utility algorithms
 ==================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains logical and mathematical utility functions used by
 other MDHelper modules.
@@ -75,7 +75,7 @@ def replicate(
         cell_dims: np.ndarray, cell_pos: np.ndarray, n_cells: ArrayLike
     ) -> np.ndarray:
 
-    """
+    r"""
     Replicate point(s) in an unit cell along the :math:`x`-, :math:`y`-,
     and :math:`z`-directions.
 
@@ -132,7 +132,7 @@ def replicate(
 
 def rebin(x: np.ndarray, factor: int = None) -> np.ndarray:
 
-    """
+    r"""
     Rebin discrete data.
 
     Parameters

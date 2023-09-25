@@ -1,7 +1,7 @@
 """
 OpenMM tools
 ============
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module provides a number of extensions to the OpenMM simulation
 toolkit.

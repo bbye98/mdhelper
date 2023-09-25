@@ -1,7 +1,7 @@
 """
 Custom OpenMM pair potentials
 =============================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains implementations of commonly used pair potentials
 that are not available in OpenMM, such as the Gaussian and Yukawa

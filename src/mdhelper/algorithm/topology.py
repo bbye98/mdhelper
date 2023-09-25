@@ -1,7 +1,7 @@
 """
 Topology transformations
 ========================
-.. moduleauthor:: Benjamin B. Ye <bye@caltech.edu>
+.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains implementations of common topology 
 transformations, like the generation of initial particle positions.
