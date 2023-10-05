@@ -12,15 +12,16 @@ from mdhelper.openmm import system as s, topology as t # noqa: E402
 def test_func_subset_errors():
 
     topology = app.Topology()
-    topology.addAtom("", "", topology.addResidue("", topology.addChain()))
+    topology.addAtom("", "", topology.addResidue("", topology.addChain())) 
+    positions = np.array((0, 0, 0))
 
     # TEST CASE 1: Both items to delete and keep are specified
     with pytest.raises(ValueError):
-        t.subset(topology, delete=[0], keep=[0])
+        t.subset(topology, positions, delete=[0], keep=[0])
 
     # TEST CASE 2: No item type specified
     with pytest.raises(ValueError):
-        t.subset(topology, delete=[0])
+        t.subset(topology, positions, delete=[0])
 
 def test_func_subset_polymer():
 
