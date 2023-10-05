@@ -165,7 +165,7 @@ extern "C" __global__ void selectICLangevinStepSize(
  */
 
 extern "C" __global__ void updateImageParticlePositions(
-    int numRealAtoms, int numCells, double zmax, real4* __restrict__ posq,
+    int numRealAtoms, int numCells, double cellZSize, real4* __restrict__ posq,
     real4* __restrict__ posqCorrection, int* __restrict__ invAtomIndex) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     while (index < numRealAtoms) {
@@ -181,7 +181,7 @@ extern "C" __global__ void updateImageParticlePositions(
             real4 pos = pos0;
 #endif
             for (int i = 1; i < numCells; i++) {
-                pos.z = -pos.z + zmax * (2 * i);
+                pos.z = -pos.z + cellZSize * (2 * i);
                 pos.w = posq[invAtomIndex[index + numRealAtoms * i]].w;
 #ifdef USE_MIXED_PRECISION
                 posq[invAtomIndex[index + numRealAtoms * i]] = make_real4(

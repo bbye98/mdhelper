@@ -396,12 +396,12 @@ def image_charges(
         system: openmm.System, topology: app.Topology,
         positions: Union[np.ndarray, unit.Quantity],
         temp: Union[float, unit.Quantity], fric: Union[float, unit.Quantity],
-        dt: Union[float, unit.Quantity], *, wall_indices: ArrayLike = None,
+        dt: Union[float, unit.Quantity], *, n_cells: int = 2,
         nbforce: openmm.NonbondedForce = None,
         cnbforces: Union[Iterable[openmm.CustomNonbondedForce],
                          dict[openmm.CustomNonbondedForce, Iterable[Any]]] = {},
-        params: Iterable[Iterable[Any]] = (), exclude: bool = False
-    ) -> tuple[unit.Quantity, openmm.Integrator]:
+        params: Iterable[Iterable[Any]] = (), wall_indices: ArrayLike = None, 
+        exclude: bool = False) -> tuple[unit.Quantity, openmm.Integrator]:
 
     r"""
     Implements the method of image charges for perfectly conducting
@@ -443,6 +443,17 @@ def image_charges(
         Integration step size :math:`\Delta t`. 
         
         **Reference unit**: :math:`\mathrm{ps}`.
+
+    n_cells : `int`, keyword-only, default: :code:`2`
+        Total number :math:`n_\mathrm{cell}` of cells, with :math:`1` 
+        real and :math:`n_\mathrm{cell}-1` image cells.
+
+        .. tip::
+
+           Use :math:`n_\mathrm{cell}>2` to instantiate a 
+           highly-confined simulation system with periodic dimensions
+           large enough to satisfy the constraint that the force field
+           cutoff be less than half the box size.
 
     nbforce : `openmm.NonbondedForce`, keyword-only, optional
         Standard Lennard-Jones (LJ) and Coulomb pair potential used in
@@ -576,10 +587,12 @@ def image_charges(
         raise ImportError(emsg)
 
     # Get system information
-    dims = np.array(topology.getUnitCellDimensions() / unit.nanometer) \
-           * unit.nanometer
+    dims = np.asarray(
+        topology.getUnitCellDimensions().value_in_unit(unit.nanometer)
+    )
     pbv = system.getDefaultPeriodicBoxVectors()
-    N_real = positions.shape[0]
+    L_z = dims[2]
+    N_real_atoms = positions.shape[0]
     if isinstance(positions, unit.Quantity):
         positions = positions.value_in_unit(unit.nanometer)
 
@@ -587,65 +600,88 @@ def image_charges(
     if wall_indices is None:
         wall_indices = np.concatenate(
             (np.isclose(positions[:, 2], 0).nonzero()[0], 
-             np.isclose(positions[:, 2], dims[2] / unit.nanometer).nonzero()[0])
+             np.isclose(positions[:, 2], dims[2]).nonzero()[0])
         )
 
     # Mirror particle positions
-    positions = np.concatenate(
-        (positions, positions * np.array((1, 1, -1), dtype=int))
-    ) * unit.nanometer
-    logging.info(f"Mirrored {N_real:,} particles over the z-axis.")
+    if n_cells == 2:
+        positions = np.concatenate(
+            (positions, positions * np.array((1, 1, -1), dtype=int))
+        ) * unit.nanometer
+    else:
+        positions = np.tile(positions, (n_cells, 1))
+        for cell_index in range(1, n_cells):
+            start = cell_index * N_real_atoms
+            stop = (cell_index + 1) * N_real_atoms
+            positions[start:stop, 2] = (
+                (1 - 2 * (cell_index % 2)) * positions[start:stop, 2]
+                - 2 * np.floor(cell_index / 2) * dims[2] 
+            )
+        positions *= unit.nanometer
+    logging.info(f"Replicated {N_real_atoms:,} particles {n_cells - 1} "
+                 "time(s) over the z-axis.")
 
     # Update and set new system dimensions
-    dims[2] *= 2
+    dims[2] *= n_cells
+    dims *= unit.nanometer
     topology.setUnitCellDimensions(dims)
-    pbv[2] *= 2
+    pbv[2] *= n_cells
     system.setDefaultPeriodicBoxVectors(*pbv)
-    logging.info(f"Doubled z-dimension to {dims[2]}.")
+    logging.info(f"Increased z-dimension to {dims[2]}.")
 
     # Instantiate an integrator that simulates a system using
     # Langevin dynamics and updates the image charge positions
-    integrator = ICLangevinIntegrator(temp, fric, dt)
+    integrator = ICLangevinIntegrator(temp, fric, dt, n_cells, L_z)
 
     # Register image charges to the system, topology, and force field
-    chains_ic = [topology.addChain() for _ in range(topology.getNumChains())]
-    residues_ic = [topology.addResidue(f"IC_{r.name}", 
-                                       chains_ic[r.chain.index])
-                   for r in list(topology.residues())]
-    for i, atom in enumerate(list(topology.atoms())):
-        system.addParticle(0)
-        topology.addAtom(f"IC_{atom.name}", atom.element,
-                         residues_ic[atom.residue.index])
-        if nbforce is not None:
-            nbforce.addParticle(
-                0 if i in wall_indices
-                else -nbforce.getParticleParameters(i)[0], 0, 0)
-        for force, kwargs in cnbforces.items():
-            params = np.array(force.getParticleParameters(i))
-            if kwargs is None:
-                params[:] = 0
-            else:
-                if "charge" in kwargs:
-                    params[kwargs["charge"]] *= 0 if i in wall_indices else -1
-                if "zero" in kwargs:
-                    params[kwargs["zero"]] = 0
-                if "replace" in kwargs:
-                    for index, value in kwargs["replace"].items():
-                        params[index] = value[params[index]] \
-                                        if isinstance(value, dict) \
-                                        else value
-            force.addParticle(params)
-    logging.info(f"Registered {system.getNumParticles() - N_real:,} "
+    N_real_chains = topology.getNumChains()
+    atoms = list(topology.atoms())
+    residues = list(topology.residues())
+    for c in range(1, n_cells):
+        sign = (1 - 2 * (c % 2))
+        chains_ic = [topology.addChain() for _ in range(N_real_chains)]
+        residues_ic = [topology.addResidue(f"IC_{r.name}", 
+                                           chains_ic[r.chain.index])
+                       for r in residues]
+        for i, atom in enumerate(atoms):
+            system.addParticle(0)
+            topology.addAtom(f"IC_{atom.name}", atom.element, 
+                             residues_ic[atom.residue.index])
+            if nbforce is not None:
+                nbforce.addParticle(
+                    0 if i in wall_indices
+                    else sign * nbforce.getParticleParameters(i)[0], 
+                    0, 0
+                )
+            for force, kwargs in cnbforces.items():
+                params = np.array(force.getParticleParameters(i))
+                if kwargs is None:
+                    params[:] = 0
+                else:
+                    if "charge" in kwargs:
+                        params[kwargs["charge"]] *= 0 if i in wall_indices else sign
+                    if "zero" in kwargs:
+                        params[kwargs["zero"]] = 0
+                    if "replace" in kwargs:
+                        for index, value in kwargs["replace"].items():
+                            params[index] = value[params[index]] \
+                                            if isinstance(value, dict) \
+                                            else value
+                force.addParticle(params)
+    logging.info(f"Registered {system.getNumParticles() - N_real_atoms:,} "
                  "image particles to the force field.")
 
     # Add existing particle exclusions to mirrored image charges
     for i in range(nbforce.getNumExceptions()):
         i1, i2, qq = nbforce.getExceptionParameters(i)[:3]
         if i1 not in wall_indices and i2 not in wall_indices:
-            nbforce.addException(N_real + i1, N_real + i2, qq, 0, 0)
-            for force in cnbforces:
-                i1, i2 = force.getExclusionParticles(i)
-                force.addExclusion(N_real + i1, N_real + i2)
+            for c in range(1, n_cells):
+                nbforce.addException(c * N_real_atoms + i1, 
+                                     c * N_real_atoms + i2, qq, 0, 0)
+                for force in cnbforces:
+                    i1, i2 = force.getExclusionParticles(i)
+                    force.addExclusion(c * N_real_atoms + i1, 
+                                       c * N_real_atoms + i2)
     logging.info("Mirrored excluded non-wall image particle–image "
                  "particle interactions.")
 
@@ -654,16 +690,18 @@ def image_charges(
     if exclude:
         for i in wall_indices:
             for j in wall_indices:
-                nbforce.addException(i, N_real + j, 0, 0, 0)
-                for force in cnbforces:
-                    force.addExclusion(i, N_real + j)
+                for c in range(1, n_cells):
+                    nbforce.addException(i, c * N_real_atoms + j, 0, 0, 0)
+                    for force in cnbforces:
+                        force.addExclusion(i, c * N_real_atoms + j)
 
     # Prevent wall particles from interacting their images
     else:
         for i in wall_indices:
-            nbforce.addException(i, N_real + i, 0, 0, 0)
-            for force in cnbforces:
-                force.addExclusion(i, N_real + i)
+            for c in range(1, n_cells):
+                nbforce.addException(i, c * N_real_atoms + i, 0, 0, 0)
+                for force in cnbforces:
+                    force.addExclusion(i, c * N_real_atoms + i)
     logging.info("Removed wall–image wall interactions.")
 
     return positions, integrator

@@ -21,7 +21,7 @@ class OPENMM_EXPORT_IC ICLangevinIntegrator : public OpenMM::Integrator {
      * @param cellZSize      the z-dimension of the unit cell (in nanometers)
      */
     ICLangevinIntegrator(double temperature, double frictionCoeff,
-                         double stepSize, int numCells = 2, double zmax = -1);
+                         double stepSize, int numCells = 2, double cellZSize = -1);
 
     /**
      * Get the temperature of the main heat bath.

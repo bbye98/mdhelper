@@ -13,7 +13,7 @@ using std::vector;
 
 ICDrudeLangevinIntegrator::ICDrudeLangevinIntegrator(
     double temperature, double frictionCoeff, double drudeTemperature,
-    double drudeFrictionCoeff, double stepSize, int numCells, double zmax) {
+    double drudeFrictionCoeff, double stepSize, int numCells, double cellZSize) {
     setTemperature(temperature);
     setFriction(frictionCoeff);
     setDrudeTemperature(drudeTemperature);
@@ -21,7 +21,7 @@ ICDrudeLangevinIntegrator::ICDrudeLangevinIntegrator(
     setMaxDrudeDistance(0);
     setStepSize(stepSize);
     setNumCells(numCells);
-    setCellZSize(zmax);
+    setCellZSize(cellZSize);
     setConstraintTolerance(1e-5);
     setRandomNumberSeed(0);
 }
