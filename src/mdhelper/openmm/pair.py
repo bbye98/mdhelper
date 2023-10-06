@@ -23,7 +23,8 @@ def _setup_pair(
         global_params: dict[str, Union[float, unit.Quantity]],
         per_params: list,
         tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
-                                   openmm.Discrete2DFunction]]
+                                   openmm.Discrete2DFunction]],
+        method: int = openmm.CustomNonbondedForce.CutoffPeriodic
     ) -> None:
 
     r"""
@@ -48,28 +49,34 @@ def _setup_pair(
         Per-particle parameters.
 
     tab_funcs : `dict`, optional
-        Optional tabulated functions.
+        Tabulated functions.
+
+    method : `int`, default: :code:`2`
+        Cutoff method.
     """
 
-    for param in global_params.items():
-        cnbforce.addGlobalParameter(*param)
-    for param in per_params:
-        cnbforce.addPerParticleParameter(param)
-    for name, func in tab_funcs.items():
-        if not isinstance(func, openmm.Discrete2DFunction):
-            func = openmm.Discrete2DFunction(*func.shape, func.ravel().tolist())
-        cnbforce.addTabulatedFunction(name, func)
+    if global_params:
+        for param in global_params.items():
+            cnbforce.addGlobalParameter(*param)
+    if per_params:
+        for param in per_params:
+            cnbforce.addPerParticleParameter(param)
+    if tab_funcs:
+        for name, func in tab_funcs.items():
+            if not isinstance(func, openmm.Discrete2DFunction):
+                func = openmm.Discrete2DFunction(*func.shape, func.ravel().tolist())
+            cnbforce.addTabulatedFunction(name, func)
     cnbforce.setCutoffDistance(cutoff)
-    cnbforce.setNonbondedMethod(openmm.CustomNonbondedForce.CutoffPeriodic)
+    cnbforce.setNonbondedMethod(method)
 
 def coul_gauss(
         cutoff: Union[float, unit.Quantity], tol: float = 1e-4, *,
         g_ewald: Union[float, unit.Quantity] = None,
         dims: Union[Iterable, unit.Quantity] = None,
-        mix: str = "default", per_params: list = [],
-        global_params: dict[str, Union[float, unit.Quantity]] = {},
+        mix: str = "default", per_params: list = None,
+        global_params: dict[str, Union[float, unit.Quantity]] = None,
         tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
-                                   openmm.Discrete2DFunction]] = {}
+                                   openmm.Discrete2DFunction]] = None
     ) -> tuple[openmm.CustomNonbondedForce, openmm.NonbondedForce]:
 
     r"""
@@ -240,10 +247,13 @@ def coul_gauss(
     if g_ewald is None:
         g_ewald = np.sqrt(-np.log(2 * tol)) / cutoff
 
-    global_params = {
+    if global_params is None:
+        global_params = {}
+    global_params |= {
         "G_EWALD": g_ewald,
-        "ONE_4PI_EPS0": unit.AVOGADRO_CONSTANT_NA / (4 * np.pi * VACUUM_PERMITTIVITY)
-    } | global_params
+        "ONE_4PI_EPS0": unit.AVOGADRO_CONSTANT_NA / (4 * np.pi
+                                                     * VACUUM_PERMITTIVITY)
+    }
     if mix == "default":
         mix = "alpha12=alpha1*alpha2/sqrt(alpha1^2+alpha2^2);"
         per_params = ["alpha"]
@@ -255,21 +265,20 @@ def coul_gauss(
         f"ONE_4PI_EPS0*q1*q2*(erf(alpha12*r)-erf(G_EWALD*r))/r;{mix}"
     )
     pair_coul_gauss_dir.addPerParticleParameter("q")
-    _setup_pair(pair_coul_gauss_dir, cutoff, global_params, per_params, tab_funcs)
-
+    _setup_pair(pair_coul_gauss_dir, cutoff, global_params, per_params,
+                tab_funcs)
     pair_coul_gauss_rec = lj_coul(cutoff, tol, g_ewald=g_ewald, dims=dims)
     pair_coul_gauss_rec.setIncludeDirectSpace(False)
-
     return pair_coul_gauss_dir, pair_coul_gauss_rec
 
 def gauss(
         cutoff: Union[float, unit.Quantity],
         cutoff_gauss: Union[float, unit.Quantity] = None, *,
         shift: bool = True, mix: str = "geometric",
-        global_params: dict[str, Union[float, unit.Quantity]] = {},
-        per_params: list = [],
+        global_params: dict[str, Union[float, unit.Quantity]] = None,
+        per_params: list = None,
         tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
-                                   openmm.Discrete2DFunction]] = {}
+                                   openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
     r"""
@@ -396,7 +405,7 @@ def gauss(
     if cutoff_gauss is None:
         cutoff_gauss = cutoff
     else:
-        if isinstance(cutoff_gauss):
+        if isinstance(cutoff_gauss, unit.Quantity):
             cutoff_gauss = cutoff_gauss.value_in_unit(unit.nanometer)
         if cutoff_gauss > cutoff:
             emsg = ("The cutoff distance for the Gaussian potential "
@@ -405,7 +414,8 @@ def gauss(
 
     prefix = f"step({cutoff_gauss}-r)*(" if cutoff != cutoff_gauss else "("
     root = "alpha12*exp(-beta12*r^2)"
-    suffix = f"-ucut);ucut=alpha12*exp(-beta12*{cutoff_gauss}^2);" if shift else ");"
+    suffix = (f"-ucut);ucut=alpha12*exp(-beta12*{cutoff_gauss}^2);" 
+              if shift else ");")
     if mix == "arithmetic":
         mix = "alpha12=sqrt(alpha1*alpha2);beta12=2/(1/beta1+1/beta2);"
         per_params = ["alpha", "beta"]
@@ -422,12 +432,73 @@ def gauss(
             mix += ";"
         if "A" not in mix and "A" not in global_params:
             raise ValueError("Global parameter 'A' not specified.")
-        per_params = ["sigma"] + per_params
+        if per_params is None:
+            per_params = []
+        per_params += ["sigma"]
 
     pair_gauss = openmm.CustomNonbondedForce(f"{prefix}{root}{suffix}{mix}")
     _setup_pair(pair_gauss, cutoff, global_params, per_params, tab_funcs)
-    
     return pair_gauss
+
+def dpd(
+        cutoff: Union[float, unit.Quantity],
+        cutoff_dpd: Union[float, unit.Quantity] = None, *,
+        mix: str = None, per_params: list = None,
+        global_params: dict[str, Union[float, unit.Quantity]] = None,
+        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
+                                   openmm.Discrete2DFunction]] = None
+    ) -> openmm.CustomNonbondedForce:
+
+    r"""
+    Implements the conservative part of the dissipative particle
+    dynamics (DPD) force.
+
+    .. note::
+
+       This does not include an implementation of the DPD thermostat.
+
+    The potential energy between two DPD beads is given by:
+
+    .. math::
+
+       u_\mathrm{DPD}(r_{12})=\frac{1}{2}A_{12}r_\mathrm{cut}
+       \left(1-\frac{r}{r_\mathrm{cut}}\right)^2
+
+    where :math:`A_{12}` is the conservative force parameter in 
+    :math:`\mathrm{kJ/(mol\cdot nm)}` and :math:`r_\mathrm{cut}` is the
+    interaction cutoff distance in :math:`\mathrm{nm}`.
+
+    As :math:`A_{12}` has no well-defined mixing rule, it must be 
+    
+    * evaluated using a custom mixing rule in `mix` with necessary 
+      per-particle parameters in `per_params`, 
+    * specified as a global parameter in `global_params`, or
+    * provided for each pair of atom types in `tab_funcs`.
+
+    After creating the pair potential, particles should be registered
+    using :meth:`openmm.openmm.CustomNonbondedForce.addParticle`.
+    """
+
+    if isinstance(cutoff, unit.Quantity):
+        cutoff = cutoff.value_in_unit(unit.nanometer)
+    if cutoff_dpd is None:
+        cutoff_dpd = cutoff
+    else:
+        if isinstance(cutoff_dpd, unit.Quantity):
+            cutoff_dpd = cutoff_dpd.value_in_unit(unit.nanometer)
+        if cutoff_dpd > cutoff:
+            emsg = ("The cutoff distance for the dissipative particle "
+                    "dynamics (DPD) potential must be less than the "
+                    "shared cutoff distance.")
+            raise ValueError(emsg)
+
+    energy = f"0.5*A12*{cutoff_dpd}*(1-r/{cutoff_dpd})^2;"
+    if mix:
+        energy = f"{energy}{mix}"
+    
+    pair_dpd = openmm.CustomNonbondedForce(energy)
+    _setup_pair(pair_dpd, cutoff, global_params, per_params, tab_funcs)
+    return pair_dpd
 
 def lj_coul(
         cutoff: Union[float,unit.Quantity], tol: float = 1e-4, *,
@@ -523,17 +594,16 @@ def lj_coul(
     else:
         n_mesh = np.ceil(2 * g_ewald * dims / (3 * tol ** (1 / 5)))
         pair_lj_coul.setPMEParameters(g_ewald, *n_mesh)
-
     return pair_lj_coul
 
 def ljts(
         cutoff: Union[float, unit.Quantity],
         cutoff_ljts: Union[float, unit.Quantity] = None, *,
         shift: bool = True, mix: str = "arithmetic", wca: bool = False,
-        global_params: dict[str, Union[float, unit.Quantity]] = {},
-        per_params: list = [],
+        global_params: dict[str, Union[float, unit.Quantity]] = None,
+        per_params: list = None,
         tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
-                                   openmm.Discrete2DFunction]] = {}
+                                   openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
     r"""
@@ -661,7 +731,7 @@ def ljts(
     if cutoff_ljts is None:
         cutoff_ljts = cutoff
     else:
-        if isinstance(cutoff_ljts):
+        if isinstance(cutoff_ljts, unit.Quantity):
             cutoff_ljts = cutoff_ljts.value_in_unit(unit.nanometer)
         if cutoff_ljts > cutoff:
             emsg = ("The cutoff distance for the LJTS potential must be "
@@ -696,16 +766,15 @@ def ljts(
 
     pair_ljts = openmm.CustomNonbondedForce(f"{prefix}{root}{suffix}{mix}")
     _setup_pair(pair_ljts, cutoff, global_params, per_params, tab_funcs)
-
     return pair_ljts
 
 def solvation(
         cutoff: Union[float, unit.Quantity],
         cutoff_solvation: Union[float, unit.Quantity] = None, *,
-        mix: str = "arithmetic", per_params: list = [],
-        global_params: dict[str, Union[float, unit.Quantity]] = {},
+        mix: str = "arithmetic", per_params: list = None,
+        global_params: dict[str, Union[float, unit.Quantity]] = None,
         tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
-                                   openmm.Discrete2DFunction]] = {}
+                                   openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
     r"""
@@ -802,7 +871,7 @@ def solvation(
     if cutoff_solvation is None:
         cutoff_solvation = cutoff
     else:
-        if isinstance(cutoff_solvation):
+        if isinstance(cutoff_solvation, unit.Quantity):
             cutoff_solvation = cutoff_solvation.value_in_unit(unit.nanometer)
         if cutoff_solvation > cutoff:
             emsg = ("The cutoff distance for the solvation potential "
@@ -810,7 +879,6 @@ def solvation(
             raise ValueError(emsg)
 
     root = "-S12*((sigma12/r)^4-(sigma12/cut)^4)"
-
     if mix == "arithmetic":
         mix = "sigma12=(sigma1+sigma2)/2;S12=sqrt(S1*S2);"
         per_params = ["sigma", "S"]
@@ -820,16 +888,15 @@ def solvation(
 
     pair_solv = openmm.CustomNonbondedForce(f"{root}{mix}")
     _setup_pair(pair_solv, cutoff, global_params, per_params, tab_funcs)
-
     return pair_solv
 
 def yukawa(
         cutoff: Union[float, unit.Quantity],
         cutoff_yukawa: Union[float, unit.Quantity] = None, *,
-        shift: bool = True, mix: str = "geometric", per_params: list = [],
-        global_params: dict[str, Union[float, unit.Quantity]] = {},
+        shift: bool = True, mix: str = "geometric", per_params: list = None,
+        global_params: dict[str, Union[float, unit.Quantity]] = None,
         tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
-                                   openmm.Discrete2DFunction]] = {}
+                                   openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
     r"""
@@ -925,7 +992,7 @@ def yukawa(
     if cutoff_yukawa is None:
         cutoff_yukawa = cutoff
     else:
-        if isinstance(cutoff_yukawa):
+        if isinstance(cutoff_yukawa, unit.Quantity):
             cutoff_yukawa = cutoff_yukawa.value_in_unit(unit.nanometer)
         if cutoff_yukawa > cutoff:
             emsg = ("The cutoff distance for the LJTS potential must be "
@@ -934,17 +1001,18 @@ def yukawa(
 
     prefix = f"step({cutoff_yukawa}-r)*(" if cutoff != cutoff_yukawa else "("
     root = "alpha12*exp(-kappa*r)/r"
-    suffix = f"-ucut);ucut=alpha12*exp(-kappa*{cutoff_yukawa})/{cutoff_yukawa};" \
-             if shift else ");"
+    suffix = (f"-ucut);ucut=alpha12*exp(-kappa*{cutoff_yukawa})/{cutoff_yukawa};"
+              if shift else ");")
     if "geometric" in mix:
         mix = mix.replace("geometric", "alpha12=sqrt(alpha1*alpha2)")
         if not mix.endswith(";"):
             mix += ";"
         if "kappa" not in mix and "kappa" not in global_params:
             raise ValueError("Global parameter 'kappa' not defined.")
-        per_params = ["alpha"] + per_params
+        if per_params is None:
+            per_params = []
+        per_params += ["alpha"]
 
     pair_yukawa = openmm.CustomNonbondedForce(f"{prefix}{root}{suffix}{mix}")
     _setup_pair(pair_yukawa, cutoff, global_params, per_params, tab_funcs)
-
     return pair_yukawa

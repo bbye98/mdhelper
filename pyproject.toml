@@ -29,7 +29,7 @@ for molecular dynamics (MD) simulations.
 """
 license = { file = "LICENSE" }
 readme = "README.md"
-requires-python = ">=3.8,<=3.10"
+requires-python = ">=3.9"
 
 [project.urls]
 "Homepage" = "https://github.com/bbye98/mdhelper"

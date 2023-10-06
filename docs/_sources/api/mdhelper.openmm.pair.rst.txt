@@ -16,6 +16,7 @@ pair
       :nosignatures:
    
       coul_gauss
+      dpd
       gauss
       lj_coul
       ljts

@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.5 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>mdhelper.openmm.pair - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -187,6 +187,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.html">electrostatics</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.html">polymer</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of polymer</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
@@ -295,6 +296,7 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.html">pair</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle navigation of pair</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.coul_gauss.html">coul_gauss</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.dpd.html">dpd</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.gauss.html">gauss</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.lj_coul.html">lj_coul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.ljts.html">ljts</a></li>
@@ -379,7 +381,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Custom OpenMM pair potentials</span>
 <span class="sd">=============================</span>
-<span class="sd">.. moduleauthor:: Benjamin B. Ye &lt;bye@caltech.edu&gt;</span>
+<span class="sd">.. moduleauthor:: Benjamin Ye &lt;GitHub: @bbye98&gt;</span>
 
 <span class="sd">This module contains implementations of commonly used pair potentials</span>
 <span class="sd">that are not available in OpenMM, such as the Gaussian and Yukawa</span>
@@ -401,7 +403,8 @@
         <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]],</span>
         <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
         <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
-                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]],</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="o">.</span><span class="n">CutoffPeriodic</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -426,19 +429,25 @@
 <span class="sd">        Per-particle parameters.</span>
 
 <span class="sd">    tab_funcs : `dict`, optional</span>
-<span class="sd">        Optional tabulated functions.</span>
+<span class="sd">        Tabulated functions.</span>
+
+<span class="sd">    method : `int`, default: :code:`2`</span>
+<span class="sd">        Cutoff method.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">global_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">cnbforce</span><span class="o">.</span><span class="n">addGlobalParameter</span><span class="p">(</span><span class="o">*</span><span class="n">param</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">per_params</span><span class="p">:</span>
-        <span class="n">cnbforce</span><span class="o">.</span><span class="n">addPerParticleParameter</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">tab_funcs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">):</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
-        <span class="n">cnbforce</span><span class="o">.</span><span class="n">addTabulatedFunction</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">global_params</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">global_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">cnbforce</span><span class="o">.</span><span class="n">addGlobalParameter</span><span class="p">(</span><span class="o">*</span><span class="n">param</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">per_params</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">per_params</span><span class="p">:</span>
+            <span class="n">cnbforce</span><span class="o">.</span><span class="n">addPerParticleParameter</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tab_funcs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">tab_funcs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">):</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            <span class="n">cnbforce</span><span class="o">.</span><span class="n">addTabulatedFunction</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
     <span class="n">cnbforce</span><span class="o">.</span><span class="n">setCutoffDistance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
-    <span class="n">cnbforce</span><span class="o">.</span><span class="n">setNonbondedMethod</span><span class="p">(</span><span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="o">.</span><span class="n">CutoffPeriodic</span><span class="p">)</span>
+    <span class="n">cnbforce</span><span class="o">.</span><span class="n">setNonbondedMethod</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
 
 <div class="viewcode-block" id="coul_gauss">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.pair.coul_gauss.html#mdhelper.openmm.pair.coul_gauss">[docs]</a>
@@ -446,10 +455,10 @@
         <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
         <span class="n">g_ewald</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dims</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
-        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
-                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">]:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -620,10 +629,13 @@
     <span class="k">if</span> <span class="n">g_ewald</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">g_ewald</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">tol</span><span class="p">))</span> <span class="o">/</span> <span class="n">cutoff</span>
 
-    <span class="n">global_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="n">global_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">global_params</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">global_params</span> <span class="o">|=</span> <span class="p">{</span>
         <span class="s2">&quot;G_EWALD&quot;</span><span class="p">:</span> <span class="n">g_ewald</span><span class="p">,</span>
-        <span class="s2">&quot;ONE_4PI_EPS0&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">VACUUM_PERMITTIVITY</span><span class="p">)</span>
-    <span class="p">}</span> <span class="o">|</span> <span class="n">global_params</span>
+        <span class="s2">&quot;ONE_4PI_EPS0&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                                                     <span class="o">*</span> <span class="n">VACUUM_PERMITTIVITY</span><span class="p">)</span>
+    <span class="p">}</span>
     <span class="k">if</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
         <span class="n">mix</span> <span class="o">=</span> <span class="s2">&quot;alpha12=alpha1*alpha2/sqrt(alpha1^2+alpha2^2);&quot;</span>
         <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">]</span>
@@ -635,11 +647,10 @@
         <span class="sa">f</span><span class="s2">&quot;ONE_4PI_EPS0*q1*q2*(erf(alpha12*r)-erf(G_EWALD*r))/r;</span><span class="si">{</span><span class="n">mix</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
     <span class="n">pair_coul_gauss_dir</span><span class="o">.</span><span class="n">addPerParticleParameter</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)</span>
-    <span class="n">_setup_pair</span><span class="p">(</span><span class="n">pair_coul_gauss_dir</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span> <span class="n">tab_funcs</span><span class="p">)</span>
-
+    <span class="n">_setup_pair</span><span class="p">(</span><span class="n">pair_coul_gauss_dir</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span>
+                <span class="n">tab_funcs</span><span class="p">)</span>
     <span class="n">pair_coul_gauss_rec</span> <span class="o">=</span> <span class="n">lj_coul</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">g_ewald</span><span class="o">=</span><span class="n">g_ewald</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">)</span>
     <span class="n">pair_coul_gauss_rec</span><span class="o">.</span><span class="n">setIncludeDirectSpace</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">pair_coul_gauss_dir</span><span class="p">,</span> <span class="n">pair_coul_gauss_rec</span></div>
 
 
@@ -649,10 +660,10 @@
         <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
         <span class="n">cutoff_gauss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
         <span class="n">shift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;geometric&quot;</span><span class="p">,</span>
-        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
-        <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
-                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -779,7 +790,7 @@
     <span class="k">if</span> <span class="n">cutoff_gauss</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">cutoff_gauss</span> <span class="o">=</span> <span class="n">cutoff</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_gauss</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_gauss</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
             <span class="n">cutoff_gauss</span> <span class="o">=</span> <span class="n">cutoff_gauss</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cutoff_gauss</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the Gaussian potential &quot;</span>
@@ -788,7 +799,8 @@
 
     <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;step(</span><span class="si">{</span><span class="n">cutoff_gauss</span><span class="si">}</span><span class="s2">-r)*(&quot;</span> <span class="k">if</span> <span class="n">cutoff</span> <span class="o">!=</span> <span class="n">cutoff_gauss</span> <span class="k">else</span> <span class="s2">&quot;(&quot;</span>
     <span class="n">root</span> <span class="o">=</span> <span class="s2">&quot;alpha12*exp(-beta12*r^2)&quot;</span>
-    <span class="n">suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;-ucut);ucut=alpha12*exp(-beta12*</span><span class="si">{</span><span class="n">cutoff_gauss</span><span class="si">}</span><span class="s2">^2);&quot;</span> <span class="k">if</span> <span class="n">shift</span> <span class="k">else</span> <span class="s2">&quot;);&quot;</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-ucut);ucut=alpha12*exp(-beta12*</span><span class="si">{</span><span class="n">cutoff_gauss</span><span class="si">}</span><span class="s2">^2);&quot;</span> 
+              <span class="k">if</span> <span class="n">shift</span> <span class="k">else</span> <span class="s2">&quot;);&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;arithmetic&quot;</span><span class="p">:</span>
         <span class="n">mix</span> <span class="o">=</span> <span class="s2">&quot;alpha12=sqrt(alpha1*alpha2);beta12=2/(1/beta1+1/beta2);&quot;</span>
         <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">]</span>
@@ -805,12 +817,76 @@
             <span class="n">mix</span> <span class="o">+=</span> <span class="s2">&quot;;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;A&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mix</span> <span class="ow">and</span> <span class="s2">&quot;A&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">global_params</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Global parameter &#39;A&#39; not specified.&quot;</span><span class="p">)</span>
-        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+        <span class="k">if</span> <span class="n">per_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">per_params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">per_params</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">]</span>
 
     <span class="n">pair_gauss</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">root</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}{</span><span class="n">mix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">_setup_pair</span><span class="p">(</span><span class="n">pair_gauss</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span> <span class="n">tab_funcs</span><span class="p">)</span>
-    
     <span class="k">return</span> <span class="n">pair_gauss</span></div>
+
+
+<div class="viewcode-block" id="dpd">
+<a class="viewcode-back" href="../../../api/mdhelper.openmm.pair.dpd.html#mdhelper.openmm.pair.dpd">[docs]</a>
+<span class="k">def</span> <span class="nf">dpd</span><span class="p">(</span>
+        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
+        <span class="n">cutoff_dpd</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+        <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the conservative part of the dissipative particle</span>
+<span class="sd">    dynamics (DPD) force.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">       This does not include an implementation of the DPD thermostat.</span>
+
+<span class="sd">    The potential energy between two DPD beads is given by:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       u_\mathrm{DPD}(r_{12})=\frac{1}{2}A_{12}r_\mathrm{cut}</span>
+<span class="sd">       \left(1-\frac{r}{r_\mathrm{cut}}\right)^2</span>
+
+<span class="sd">    where :math:`A_{12}` is the conservative force parameter in </span>
+<span class="sd">    :math:`\mathrm{kJ/(mol\cdot nm)}` and :math:`r_\mathrm{cut}` is the</span>
+<span class="sd">    interaction cutoff distance in :math:`\mathrm{nm}`.</span>
+
+<span class="sd">    As :math:`A_{12}` has no well-defined mixing rule, it must be </span>
+<span class="sd">    </span>
+<span class="sd">    * evaluated using a custom mixing rule in `mix` with necessary </span>
+<span class="sd">      per-particle parameters in `per_params`, </span>
+<span class="sd">    * specified as a global parameter in `global_params`, or</span>
+<span class="sd">    * provided for each pair of atom types in `tab_funcs`.</span>
+
+<span class="sd">    After creating the pair potential, particles should be registered</span>
+<span class="sd">    using :meth:`openmm.openmm.CustomNonbondedForce.addParticle`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">cutoff</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cutoff_dpd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cutoff_dpd</span> <span class="o">=</span> <span class="n">cutoff</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_dpd</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+            <span class="n">cutoff_dpd</span> <span class="o">=</span> <span class="n">cutoff_dpd</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cutoff_dpd</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
+            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the dissipative particle &quot;</span>
+                    <span class="s2">&quot;dynamics (DPD) potential must be less than the &quot;</span>
+                    <span class="s2">&quot;shared cutoff distance.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+
+    <span class="n">energy</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;0.5*A12*</span><span class="si">{</span><span class="n">cutoff_dpd</span><span class="si">}</span><span class="s2">*(1-r/</span><span class="si">{</span><span class="n">cutoff_dpd</span><span class="si">}</span><span class="s2">)^2;&quot;</span>
+    <span class="k">if</span> <span class="n">mix</span><span class="p">:</span>
+        <span class="n">energy</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">energy</span><span class="si">}{</span><span class="n">mix</span><span class="si">}</span><span class="s2">&quot;</span>
+    
+    <span class="n">pair_dpd</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span>
+    <span class="n">_setup_pair</span><span class="p">(</span><span class="n">pair_dpd</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span> <span class="n">tab_funcs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pair_dpd</span></div>
 
 
 <div class="viewcode-block" id="lj_coul">
@@ -909,7 +985,6 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">n_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">g_ewald</span> <span class="o">*</span> <span class="n">dims</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">tol</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">5</span><span class="p">)))</span>
         <span class="n">pair_lj_coul</span><span class="o">.</span><span class="n">setPMEParameters</span><span class="p">(</span><span class="n">g_ewald</span><span class="p">,</span> <span class="o">*</span><span class="n">n_mesh</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">pair_lj_coul</span></div>
 
 
@@ -919,10 +994,10 @@
         <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
         <span class="n">cutoff_ljts</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
         <span class="n">shift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;arithmetic&quot;</span><span class="p">,</span> <span class="n">wca</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
-        <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
-                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1050,7 +1125,7 @@
     <span class="k">if</span> <span class="n">cutoff_ljts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">cutoff_ljts</span> <span class="o">=</span> <span class="n">cutoff</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_ljts</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_ljts</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
             <span class="n">cutoff_ljts</span> <span class="o">=</span> <span class="n">cutoff_ljts</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cutoff_ljts</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the LJTS potential must be &quot;</span>
@@ -1085,7 +1160,6 @@
 
     <span class="n">pair_ljts</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">root</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}{</span><span class="n">mix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">_setup_pair</span><span class="p">(</span><span class="n">pair_ljts</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span> <span class="n">tab_funcs</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">pair_ljts</span></div>
 
 
@@ -1094,10 +1168,10 @@
 <span class="k">def</span> <span class="nf">solvation</span><span class="p">(</span>
         <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
         <span class="n">cutoff_solvation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-        <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;arithmetic&quot;</span><span class="p">,</span> <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
-        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;arithmetic&quot;</span><span class="p">,</span> <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
-                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1194,7 +1268,7 @@
     <span class="k">if</span> <span class="n">cutoff_solvation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">cutoff_solvation</span> <span class="o">=</span> <span class="n">cutoff</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_solvation</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_solvation</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
             <span class="n">cutoff_solvation</span> <span class="o">=</span> <span class="n">cutoff_solvation</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cutoff_solvation</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the solvation potential &quot;</span>
@@ -1202,7 +1276,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
     <span class="n">root</span> <span class="o">=</span> <span class="s2">&quot;-S12*((sigma12/r)^4-(sigma12/cut)^4)&quot;</span>
-
     <span class="k">if</span> <span class="n">mix</span> <span class="o">==</span> <span class="s2">&quot;arithmetic&quot;</span><span class="p">:</span>
         <span class="n">mix</span> <span class="o">=</span> <span class="s2">&quot;sigma12=(sigma1+sigma2)/2;S12=sqrt(S1*S2);&quot;</span>
         <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">]</span>
@@ -1212,7 +1285,6 @@
 
     <span class="n">pair_solv</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">root</span><span class="si">}{</span><span class="n">mix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">_setup_pair</span><span class="p">(</span><span class="n">pair_solv</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span> <span class="n">tab_funcs</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">pair_solv</span></div>
 
 
@@ -1221,10 +1293,10 @@
 <span class="k">def</span> <span class="nf">yukawa</span><span class="p">(</span>
         <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
         <span class="n">cutoff_yukawa</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-        <span class="n">shift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;geometric&quot;</span><span class="p">,</span> <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
-        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">shift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;geometric&quot;</span><span class="p">,</span> <span class="n">per_params</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">global_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tab_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
-                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+                                   <span class="n">openmm</span><span class="o">.</span><span class="n">Discrete2DFunction</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1320,7 +1392,7 @@
     <span class="k">if</span> <span class="n">cutoff_yukawa</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">cutoff_yukawa</span> <span class="o">=</span> <span class="n">cutoff</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_yukawa</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff_yukawa</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
             <span class="n">cutoff_yukawa</span> <span class="o">=</span> <span class="n">cutoff_yukawa</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cutoff_yukawa</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The cutoff distance for the LJTS potential must be &quot;</span>
@@ -1329,19 +1401,20 @@
 
     <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;step(</span><span class="si">{</span><span class="n">cutoff_yukawa</span><span class="si">}</span><span class="s2">-r)*(&quot;</span> <span class="k">if</span> <span class="n">cutoff</span> <span class="o">!=</span> <span class="n">cutoff_yukawa</span> <span class="k">else</span> <span class="s2">&quot;(&quot;</span>
     <span class="n">root</span> <span class="o">=</span> <span class="s2">&quot;alpha12*exp(-kappa*r)/r&quot;</span>
-    <span class="n">suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;-ucut);ucut=alpha12*exp(-kappa*</span><span class="si">{</span><span class="n">cutoff_yukawa</span><span class="si">}</span><span class="s2">)/</span><span class="si">{</span><span class="n">cutoff_yukawa</span><span class="si">}</span><span class="s2">;&quot;</span> \
-             <span class="k">if</span> <span class="n">shift</span> <span class="k">else</span> <span class="s2">&quot;);&quot;</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-ucut);ucut=alpha12*exp(-kappa*</span><span class="si">{</span><span class="n">cutoff_yukawa</span><span class="si">}</span><span class="s2">)/</span><span class="si">{</span><span class="n">cutoff_yukawa</span><span class="si">}</span><span class="s2">;&quot;</span>
+              <span class="k">if</span> <span class="n">shift</span> <span class="k">else</span> <span class="s2">&quot;);&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="s2">&quot;geometric&quot;</span> <span class="ow">in</span> <span class="n">mix</span><span class="p">:</span>
         <span class="n">mix</span> <span class="o">=</span> <span class="n">mix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;geometric&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha12=sqrt(alpha1*alpha2)&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">mix</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">):</span>
             <span class="n">mix</span> <span class="o">+=</span> <span class="s2">&quot;;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;kappa&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mix</span> <span class="ow">and</span> <span class="s2">&quot;kappa&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">global_params</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Global parameter &#39;kappa&#39; not defined.&quot;</span><span class="p">)</span>
-        <span class="n">per_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">per_params</span>
+        <span class="k">if</span> <span class="n">per_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">per_params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">per_params</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">]</span>
 
     <span class="n">pair_yukawa</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">root</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}{</span><span class="n">mix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">_setup_pair</span><span class="p">(</span><span class="n">pair_yukawa</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">global_params</span><span class="p">,</span> <span class="n">per_params</span><span class="p">,</span> <span class="n">tab_funcs</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">pair_yukawa</span></div>
 
 </pre></div>

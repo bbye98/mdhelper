@@ -87,7 +87,7 @@ def register_particles(
 
     sigma : `float` or `openmm.unit.Quantity`, keyword-only, \
     default: :code`0`
-        :math:`\sigma` parameter of the Lennard-Jones potential in
+        :math:`\\sigma` parameter of the Lennard-Jones potential in
         `nbforce`. 
         
         **Reference unit**: :math:`\\mathrm{nm}`.
