@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="yukawa" href="mdhelper.openmm.pair.yukawa.html" /><link rel="prev" title="ljts" href="mdhelper.openmm.pair.ljts.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="wca" href="mdhelper.openmm.pair.wca.html" /><link rel="prev" title="ljts" href="mdhelper.openmm.pair.ljts.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>solvation - MDHelper documentation</title>
@@ -214,6 +214,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -302,6 +303,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.lj_coul.html">lj_coul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.ljts.html">ljts</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">solvation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.wca.html">wca</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.yukawa.html">yukawa</a></li>
 </ul>
 </li>
@@ -400,14 +402,14 @@ using <a class="reference external" href="http://docs.openmm.org/latest/api-pyth
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>cutoff</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Shared cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> for all nonbonded
-interactions in the simulation sytem. Must be less than half the
-minimum periodic simulation box dimension.</p>
+<dt><strong>cutoff</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Shared cutoff distance for all nonbonded interactions in the
+simulation sytem. Must be less than half the minimum periodic
+simulation box dimension.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>.</p>
 </dd>
-<dt><strong>cutoff_solvation</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite>, optional</span></dt><dd><p>Cutoff distance for the solvation potential. Must be less than the
-shared cutoff. If not provided, it is set to the shared cutoff
-distance for the nonbonded interactions.</p>
+<dt><strong>cutoff_solvation</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite>, optional</span></dt><dd><p>Cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> for the solvation
+potential. Must be less than the shared cutoff distance. If not
+provided, it is set to the shared cutoff distance.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>.</p>
 </dd>
 <dt><strong>mix</strong><span class="classifier"><cite>str</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">&quot;arithmetic&quot;</span></code></span></dt><dd><p>Mixing rule for <span class="math notranslate nohighlight">\(\sigma_{12}\)</span> and <span class="math notranslate nohighlight">\(S_{12}\)</span>.</p>
@@ -471,12 +473,12 @@ respectively.</p></li>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="mdhelper.openmm.pair.yukawa.html">
+          <a class="next-page" href="mdhelper.openmm.pair.wca.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">yukawa</div>
+                <div class="title">wca</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

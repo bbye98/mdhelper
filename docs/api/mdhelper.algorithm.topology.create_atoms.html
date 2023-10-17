@@ -214,6 +214,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -302,6 +303,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.lj_coul.html">lj_coul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.ljts.html">ljts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.solvation.html">solvation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.wca.html">wca</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.yukawa.html">yukawa</a></li>
 </ul>
 </li>
@@ -398,13 +400,13 @@ random melts or polymers.</p>
 <dt><strong>N_p</strong><span class="classifier"><cite>int</cite>, default: <code class="code docutils literal notranslate"><span class="pre">1</span></code></span></dt><dd><p>Number of particles (monomers) <span class="math notranslate nohighlight">\(N_p\)</span> in each
 segment (polymer chain).</p>
 <p><strong>Valid values</strong>: <span class="math notranslate nohighlight">\(1\leq N_\mathrm{p}\leq N\)</span>, with
-<span class="math notranslate nohighlight">\(N\)</span> divisible by :math`N_mathrm{p}`.</p>
+<span class="math notranslate nohighlight">\(N\)</span> divisible by <span class="math notranslate nohighlight">\(N_\mathrm{p}\)</span>.</p>
 </dd>
 <dt><strong>lattice</strong><span class="classifier"><cite>str</cite>, keyword-only, optional</span></dt><dd><p>Lattice type, with the relevant length scale specified in
 <cite>length</cite>. If <cite>lattice</cite> is not specified, particle positions will
 be assigned randomly.</p>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <p>To build walls with the correct periodicity, set the
 <span class="math notranslate nohighlight">\(z\)</span>-dimension to <code class="code docutils literal notranslate"><span class="pre">0</span></code> in <cite>dims</cite> and
 <code class="code docutils literal notranslate"><span class="pre">flexible=True</span></code>. This function will then return
@@ -440,10 +442,10 @@ to reflect the width of 20 replicas. To ignore a direction (and
 make that dimension constant), such as when creating walls, set
 that dimension to <code class="code docutils literal notranslate"><span class="pre">0</span></code> in <cite>dims</cite>.</p>
 </dd>
-<dt><strong>connectivity</strong><span class="classifier"><cite>bool</cite>, default: <cite>False</cite></span></dt><dd><p>Determines whether bond information is returned for polymeric
+<dt><strong>connectivity</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Determines whether bond information is returned for polymeric
 systems. Has no effect if <code class="code docutils literal notranslate"><span class="pre">N_p=1</span></code>.</p>
 </dd>
-<dt><strong>randomize</strong><span class="classifier"><cite>bool</cite>, default: <cite>False</cite></span></dt><dd><p>Determines whether the order of the replicated polymer positions
+<dt><strong>randomize</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Determines whether the order of the replicated polymer positions
 are randomized. Has no effect if <code class="code docutils literal notranslate"><span class="pre">N_p=1</span></code>.</p>
 </dd>
 <dt><strong>length_unit</strong><span class="classifier"><cite>openmm.unit.Unit</cite>, optional</span></dt><dd><p>Length unit. If not specified, it is determined automatically

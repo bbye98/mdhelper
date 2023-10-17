@@ -213,6 +213,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -296,10 +297,12 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.html">pair</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle navigation of pair</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.coul_gauss.html">coul_gauss</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.dpd.html">dpd</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.gauss.html">gauss</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.lj_coul.html">lj_coul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.ljts.html">ljts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.solvation.html">solvation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.wca.html">wca</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.yukawa.html">yukawa</a></li>
 </ul>
 </li>
@@ -751,14 +754,15 @@
 <span class="sd">    .. math::</span>
 
 <span class="sd">       g_{ij}(r)=\frac{1}{N_iN_j}\sum_\alpha\sum_\beta \left\langle</span>
-<span class="sd">       \delta\left(|\pmb{r}_\alpha-\pmb{r}_\beta|-r\right)\right\rangle</span>
+<span class="sd">       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)</span>
+<span class="sd">       \right\rangle</span>
 
 <span class="sd">    where :math:`N_i` and :math:`N_j` are the number of particles, and</span>
-<span class="sd">    :math:`\pmb{r}_\alpha` and :math:`\pmb{r}_\beta` are the positions </span>
-<span class="sd">    of particles :math:`\alpha` and :math:`\beta` belonging to </span>
-<span class="sd">    species :math:`i` and :math:`j`, respectively. The RDF is normalized</span>
-<span class="sd">    such that :math:`\lim_{r\rightarrow\infty}g_{ij}(r)=1` in a </span>
-<span class="sd">    homogeneous system.</span>
+<span class="sd">    :math:`\mathbf{r}_\alpha` and :math:`\mathbf{r}_\beta` are the </span>
+<span class="sd">    positions of particles :math:`\alpha` and :math:`\beta` belonging </span>
+<span class="sd">    to species :math:`i` and :math:`j`, respectively. The RDF is </span>
+<span class="sd">    normalized such that :math:`\lim_{r\rightarrow\infty}g_{ij}(r)=1` in</span>
+<span class="sd">    a homogeneous system.</span>
 
 <span class="sd">    (A closely related quantity is the single particle density </span>
 <span class="sd">    :math:`n_{ij}(r)=\rho_jg_{ij}(r)`, where :math:`\rho_j` is the</span>
@@ -811,7 +815,8 @@
 <span class="sd">        Number of histogram bins :math:`N_\mathrm{bins}`.</span>
 
 <span class="sd">    range : array-like, default: :code:`(0.0, 15.0)`</span>
-<span class="sd">        Range of radii values.</span>
+<span class="sd">        Range of radii values. The upper bound should be less than half</span>
+<span class="sd">        the largest system dimension.</span>
 
 <span class="sd">        **Shape**: :math:`(2,)`.</span>
 
@@ -1323,6 +1328,395 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">counts</span> <span class="o">/</span> <span class="n">norm</span></div>
 
         
+<div class="viewcode-block" id="RDF2D">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF2D.html#mdhelper.analysis.structure.RDF2D">[docs]</a>
+<span class="k">class</span> <span class="nc">RDF2D</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A serial implementation to calculate the two-dimensional radial</span>
+<span class="sd">    distribution function (RDF) :math:`g_{ij}(r)` between types </span>
+<span class="sd">    :math:`i` and :math:`j` and its related properties.</span>
+
+<span class="sd">    It is given by</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       g_{ij}(r)=\frac{1}{N_iN_j}\sum_\alpha\sum_\beta \left\langle</span>
+<span class="sd">       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)</span>
+<span class="sd">       \right\rangle</span>
+
+<span class="sd">    where :math:`N_i` and :math:`N_j` are the number of particles, and</span>
+<span class="sd">    :math:`\mathbf{r}_\alpha` and :math:`\mathbf{r}_\beta` are the positions </span>
+<span class="sd">    of particles :math:`\alpha` and :math:`\beta` belonging to </span>
+<span class="sd">    species :math:`i` and :math:`j`, respectively. The RDF is normalized</span>
+<span class="sd">    such that :math:`\lim_{r\rightarrow\infty}g_{ij}(r)=1` in a </span>
+<span class="sd">    homogeneous system.</span>
+
+<span class="sd">    (A closely related quantity is the single particle density </span>
+<span class="sd">    :math:`n_{ij}(r)=\rho_jg_{ij}(r)`, where :math:`\rho_j` is the</span>
+<span class="sd">    number density of species :math:`j`.)</span>
+
+<span class="sd">    The RDF can also be used to obtain the potential of mean force</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       w_{ij}(r)=-k_\mathrm{B}T\ln{g_{ij}(r)}</span>
+
+<span class="sd">    where :math:`k_\mathrm{B}` is the Boltzmann constant and :math:`T`</span>
+<span class="sd">    is the system temperature.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ag1 : `MDAnalysis.AtomGroup`</span>
+<span class="sd">        First atom group :math:`i`.</span>
+
+<span class="sd">    ag2 : `MDAnalysis.AtomGroup`</span>
+<span class="sd">        Second atom group :math:`j`.</span>
+<span class="sd">    </span>
+<span class="sd">    n_bins : `int`, default: :code:`201`</span>
+<span class="sd">        Number of histogram bins :math:`N_\mathrm{bins}`.</span>
+
+<span class="sd">    range : array-like, default: :code:`(0.0, 15.0)`</span>
+<span class="sd">        Range of radii values. The upper bound should be less than half</span>
+<span class="sd">        the largest system dimension.</span>
+
+<span class="sd">        **Shape**: :math:`(2,)`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
+
+<span class="sd">    drop_axis : `int` or `str`, keyword-only, default: :code:`2`</span>
+<span class="sd">        Axis in three-dimensional space to ignore in the two-dimensional</span>
+<span class="sd">        analysis.</span>
+
+<span class="sd">        **Valid values**: :code:`0` or :code:`x` for the :math:`x`-axis,</span>
+<span class="sd">        :code:`1` or :code:`y` for the :math:`y`-axis, and :code:`2` or</span>
+<span class="sd">        :code:`z` for the :math:`z`-axis.</span>
+
+<span class="sd">    norm : `str`, keyword-only, default: :code:`&quot;rdf&quot;`</span>
+<span class="sd">        Determines how the radial histograms are normalized.</span>
+<span class="sd">        </span>
+<span class="sd">        .. container::</span>
+
+<span class="sd">           **Valid values**: </span>
+<span class="sd">        </span>
+<span class="sd">           * :code:`norm=&quot;rdf&quot;`: The radial distribution function</span>
+<span class="sd">             :math:`g_{ij}(r)` is computed.</span>
+<span class="sd">           * :code:`norm=&quot;density&quot;`: The single particle density </span>
+<span class="sd">             :math:`n_{ij}(r)` is computed.</span>
+<span class="sd">           * :code:`norm=None`: The raw particle pair count in the </span>
+<span class="sd">             radial histogram bins is returned.</span>
+
+<span class="sd">    exclusion : array-like, keyword-only, optional</span>
+<span class="sd">        Tiles to exclude from the interparticle distances. The </span>
+<span class="sd">        `groupings` parameter dictates what a tile represents.</span>
+
+<span class="sd">        **Shape**: :math:`(2,)`.</span>
+
+<span class="sd">        **Example**: :code:`(1, 1)` to exclude self-interactions.</span>
+
+<span class="sd">    groupings : `str` or array-like, keyword-only, default: :code:`&quot;atoms&quot;`</span>
+<span class="sd">        Determines whether the centers of mass are used in lieu of</span>
+<span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
+<span class="sd">        value is used for all `groups`.</span>
+
+<span class="sd">        .. container::</span>
+
+<span class="sd">           **Valid values**: </span>
+
+<span class="sd">           * :code:`&quot;atoms&quot;`: Atom positions (generally for </span>
+<span class="sd">             coarse-grained simulations).</span>
+<span class="sd">           * :code:`&quot;residues&quot;`: Residues&#39; centers of mass (for </span>
+<span class="sd">             atomistic simulations).</span>
+<span class="sd">           * :code:`&quot;segments&quot;`: Segments&#39; centers of mass (for </span>
+<span class="sd">             atomistic polymer simulations).</span>
+
+<span class="sd">    reduced : `bool`, keyword-only, default: :code:`False`</span>
+<span class="sd">        Specifies whether the data is in reduced units.</span>
+
+<span class="sd">    n_batches : `int`, keyword-only, optional</span>
+<span class="sd">        Number of batches to divide the histogram calculation into.</span>
+<span class="sd">        This is useful for large systems that cannot be processed in a</span>
+<span class="sd">        single pass.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           If you use too few bins and too many batches, the histogram</span>
+<span class="sd">           counts may be off by a few due to the floating-point nature</span>
+<span class="sd">           of the cutoffs. However, when the RDF is averaged over a</span>
+<span class="sd">           long trajectory with many particles, the difference should</span>
+<span class="sd">           be negligible.</span>
+
+<span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
+<span class="sd">        Determines whether detailed progress is shown.</span>
+
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments to pass to</span>
+<span class="sd">        :class:`MDAnalysis.analysis.base.AnalysisBase`.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : `MDAnalysis.Universe`</span>
+<span class="sd">        :class:`MDAnalysis.core.universe.Universe` object containing all</span>
+<span class="sd">        information describing the system.</span>
+
+<span class="sd">    results.units : `dict`</span>
+<span class="sd">        Reference units for the results. For example, to get the </span>
+<span class="sd">        reference units for :code:`results.bins`, call </span>
+<span class="sd">        :code:`results.units[&quot;results.bins&quot;]`.</span>
+
+<span class="sd">    results.edges : `numpy.ndarray`</span>
+<span class="sd">        Edges of the histogram bins.</span>
+
+<span class="sd">        **Shape**: :math:`(N_\mathrm{bins}+1,)`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\textrm{Å}`.</span>
+
+<span class="sd">    results.bins : `numpy.ndarray`</span>
+<span class="sd">        Centers of the histogram bins.</span>
+
+<span class="sd">        **Shape**: :math:`(N_\mathrm{bins},)`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\textrm{Å}`.</span>
+
+<span class="sd">    results.counts : `numpy.ndarray`</span>
+<span class="sd">        Raw particle pair counts in the radial histogram bins.</span>
+
+<span class="sd">        **Shape**: :math:`(N_\mathrm{bins},)`.</span>
+
+<span class="sd">    results.rdf : `numpy.ndarray`</span>
+<span class="sd">        .. container::</span>
+
+<span class="sd">           One of</span>
+<span class="sd">        </span>
+<span class="sd">           * :code:`norm=&quot;rdf&quot;`: the radial distribution function</span>
+<span class="sd">             :math:`g_{ij}(r)`,</span>
+<span class="sd">           * :code:`norm=&quot;density&quot;`: the single particle density</span>
+<span class="sd">             :math:`n_{ij}(r)`, or</span>
+<span class="sd">           * :code:`norm=None`: the raw particle pair count in the</span>
+<span class="sd">             radial histogram bins.</span>
+
+<span class="sd">        **Shape**: :math:`(N_\mathrm{bins},)`.</span>
+
+<span class="sd">    results.pmf : `numpy.ndarray`</span>
+<span class="sd">        Potential of mean force :math:`w(r)`. Only available after</span>
+<span class="sd">        running :meth:`calculate_pmf`.</span>
+
+<span class="sd">        **Shape**: :math:`(N_\mathrm{bins},)`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{kJ/mol}`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">ag1</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ag2</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">201</span><span class="p">,</span> <span class="nb">range</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span> <span class="o">*</span><span class="p">,</span>
+            <span class="n">drop_axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">norm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rdf&quot;</span><span class="p">,</span> 
+            <span class="n">exclusion</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span>
+            <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span> <span class="o">=</span> <span class="n">ag1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span> <span class="o">=</span> <span class="n">ag1</span> <span class="k">if</span> <span class="n">ag2</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ag2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">universe</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trajectory does not contain system &quot;</span>
+                             <span class="s2">&quot;dimension information.&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groupings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">groupings</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">,</span> <span class="s2">&quot;segments&quot;</span><span class="p">}:</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">groupings</span><span class="si">}</span><span class="s2">&#39;. The options are &quot;</span>
+                        <span class="s2">&quot;&#39;atoms&#39;, &#39;residues&#39;, and &#39;segments&#39;.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">[</span><span class="n">groupings</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groupings</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">g</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">,</span> <span class="s2">&quot;segments&quot;</span><span class="p">}:</span>
+                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&#39;. The options are &quot;</span>
+                            <span class="s2">&quot;&#39;atoms&#39;, &#39;residues&#39;, and &#39;segments&#39;.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">groupings</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groupings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">groupings</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_drop_axis</span> <span class="o">=</span> <span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">drop_axis</span><span class="p">)</span> <span class="o">-</span> <span class="mi">120</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">drop_axis</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> 
+                           <span class="k">else</span> <span class="n">drop_axis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_bins</span> <span class="o">=</span> <span class="n">n_bins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_range</span> <span class="o">=</span> <span class="nb">range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span> <span class="o">=</span> <span class="n">norm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion</span> <span class="o">=</span> <span class="n">exclusion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span> <span class="o">=</span> <span class="n">reduced</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span> <span class="o">=</span> <span class="n">n_batches</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># Preallocate arrays to store neighbor counts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> 
+                             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_bins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;results.bins&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span>
+                                  <span class="s2">&quot;results.edges&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">}</span>
+
+        <span class="c1"># Preallocate floating-point number for total area analyzed</span>
+        <span class="c1"># (for when system dimensions can change, such as during NpT</span>
+        <span class="c1"># equilibration)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_area</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">dimensions</span>
+        <span class="n">pos1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> \
+                <span class="k">else</span> <span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">pos2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> \
+                <span class="k">else</span> <span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        
+        <span class="c1"># Apply corrections to avoid including periodic images in the</span>
+        <span class="c1"># dimension to exclude</span>
+        <span class="n">pos1</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drop_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos2</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drop_axis</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">dims</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_drop_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">dims</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+        <span class="c1"># Tally counts in each pair separation distance bin</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">:</span>
+            <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span><span class="p">)</span>
+            <span class="n">ranges_indices</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">e</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span> <span class="o">&gt;</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> 
+                            <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span> <span class="o">&lt;</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> 
+                          <span class="o">*</span><span class="p">((</span><span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> 
+                            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))]</span>
+            <span class="p">}</span>
+
+            <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ranges_indices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">radial_histogram</span><span class="p">(</span>
+                    <span class="n">pos1</span><span class="o">=</span><span class="n">pos1</span><span class="p">,</span> <span class="n">pos2</span><span class="o">=</span><span class="n">pos2</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">range</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> 
+                    <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="n">exclusion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_exclusion</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">counts</span> <span class="o">+=</span> <span class="n">radial_histogram</span><span class="p">(</span>
+                <span class="n">pos1</span><span class="o">=</span><span class="n">pos1</span><span class="p">,</span> <span class="n">pos2</span><span class="o">=</span><span class="n">pos2</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">,</span>
+                <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="n">exclusion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_exclusion</span>
+            <span class="p">)</span>
+        
+        <span class="c1"># Add area analyzed</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_area</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">volume</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_drop_axis</span><span class="p">]</span>
+            
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># Compute the normalization factor</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">norm</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
+                <span class="n">_N2</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;n_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion</span><span class="p">:</span>
+                    <span class="n">_N2</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">norm</span> <span class="o">*=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;n_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">_N2</span>
+                         <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_area</span><span class="p">)</span>
+        
+        <span class="c1"># Compute and store the radial distribution function, the single</span>
+        <span class="c1"># particle density, or the raw radial pair counts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">counts</span> <span class="o">/</span> <span class="n">norm</span>
+
+    <span class="k">def</span> <span class="nf">_get_rdf</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the existing radial distribution function (RDF) if </span>
+<span class="sd">        :code:`norm=&quot;rdf&quot;` was passed to the :class:`RDF` constructor. </span>
+<span class="sd">        Otherwise, the RDF is calculated and returned.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rdf : `numpy.ndarray`</span>
+<span class="sd">            Radial distribution function :math:`g_{ij}(r)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rdf</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_N2</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;n_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion</span><span class="p">:</span>
+                <span class="n">_N2</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_area</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">counts</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">_N2</span>
+                <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;n_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> 
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">edges</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="RDF2D.calculate_coordination_numbers">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF2D.html#mdhelper.analysis.structure.RDF2D.calculate_coordination_numbers">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_coordination_numbers</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the coordination numbers :math:`n_k`.</span>
+
+<span class="sd">        If the radial distribution function :math:`g_{ij}(r)` does not </span>
+<span class="sd">        contain :math:`k` local minima, this method will return </span>
+<span class="sd">        `numpy.nan` for the coordination numbers that could not be </span>
+<span class="sd">        calculated.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rho : `float`</span>
+<span class="sd">            Number density :math:`\rho_j` of species :math:`j`.</span>
+<span class="sd">            </span>
+<span class="sd">            **Reference unit**: :math:`\mathrm{nm}^{-3}`.</span>
+
+<span class="sd">        n : `int`, keyword-only, default: :code:`2`</span>
+<span class="sd">            Number of coordination numbers to calculate.</span>
+
+<span class="sd">        threshold : `float`, keyword-only, default: :code:`0.1`</span>
+<span class="sd">            Minimum :math:`g_{ij}(r)` value for a local minimum to be</span>
+<span class="sd">            considered the boundary of a radial shell.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">coordination_numbers</span> <span class="o">=</span> <span class="n">coordination_numbers</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_rdf</span><span class="p">(),</span> <span class="n">rho</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RDF2D.calculate_pmf">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF2D.html#mdhelper.analysis.structure.RDF2D.calculate_pmf">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculate_pmf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the potential of mean force :math:`w_{ij}(r)`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        temp : `float` or `openmm.unit.Quantity`</span>
+<span class="sd">            System temperature :math:`T`.</span>
+
+<span class="sd">            .. note::</span>
+
+<span class="sd">               If :code:`reduced=True` was set in the :class:`RDF` </span>
+<span class="sd">               constructor, `temp` should be equal to the energy scale.</span>
+<span class="sd">               When the Lennard-Jones potential is used, it generally</span>
+<span class="sd">               means that :math:`T^*=1`, or `temp=1`.</span>
+
+<span class="sd">            **Reference unit**: :math:`\mathrm{K}`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span><span class="p">:</span>
+            <span class="n">kBT</span> <span class="o">=</span> <span class="n">temp</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+                <span class="n">kBT</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span> 
+                    <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">BOLTZMANN_CONSTANT_kB</span> <span class="o">*</span> <span class="n">temp</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">kelvin</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kBT</span> <span class="o">=</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">BOLTZMANN_CONSTANT_kB</span>
+                       <span class="o">*</span> <span class="n">temp</span><span class="p">)</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;results.pmf&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="o">.</span><span class="n">kilojoule_per_mole</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pmf</span> <span class="o">=</span> <span class="o">-</span><span class="n">kBT</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_rdf</span><span class="p">())</span></div>
+</div>
+
+
 <div class="viewcode-block" id="StructureFactor">
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.StructureFactor.html#mdhelper.analysis.structure.StructureFactor">[docs]</a>
 <span class="k">class</span> <span class="nc">StructureFactor</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>

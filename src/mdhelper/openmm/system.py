@@ -13,11 +13,11 @@ from typing import Any, Iterable, Union
 import warnings
 
 try:
-    from openmm_ic import ICLangevinIntegrator
+    from constvplugin import ConstVLangevinIntegrator as ICLangevinIntegrator
     FOUND_ICPLUGIN = True
 except ImportError:
     try:
-        from constvplugin import ConstVLangevinIntegrator as ICLangevinIntegrator
+        from openmm_ic import ICLangevinIntegrator
         FOUND_ICPLUGIN = True
     except ImportError:
         FOUND_ICPLUGIN = False

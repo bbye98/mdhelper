@@ -131,7 +131,7 @@ def potential_profile(
                     emsg = ("'dV' has units, but the rest of the data is "
                             "or should be reduced.")
                     raise ValueError(emsg)
-                dV.value_in_unit(unit.volt)
+                dV = dV.value_in_unit(unit.volt)
                 if isinstance(V0, unit.Quantity):
                     raise ValueError("'dV' has invalid units.")
         

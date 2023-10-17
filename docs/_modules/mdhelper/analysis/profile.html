@@ -213,6 +213,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -296,10 +297,12 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.html">pair</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle navigation of pair</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.coul_gauss.html">coul_gauss</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.dpd.html">dpd</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.gauss.html">gauss</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.lj_coul.html">lj_coul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.ljts.html">ljts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.solvation.html">solvation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.wca.html">wca</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.yukawa.html">yukawa</a></li>
 </ul>
 </li>
@@ -512,7 +515,7 @@
                     <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&#39;dV&#39; has units, but the rest of the data is &quot;</span>
                             <span class="s2">&quot;or should be reduced.&quot;</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
-                <span class="n">dV</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">volt</span><span class="p">)</span>
+                <span class="n">dV</span> <span class="o">=</span> <span class="n">dV</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">volt</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">V0</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;dV&#39; has invalid units.&quot;</span><span class="p">)</span>
         

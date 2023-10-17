@@ -57,7 +57,7 @@ def lj_scaling(
         **Example**: 
         :code:`{"diffusivity": (("length", 2), ("time", -1))}`.
 
-    default : `bool`, default: `True`
+    default : `bool`, default: :code:`True`
         Determines whether the default scaling factors are included.
 
     Returns

@@ -214,6 +214,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -302,6 +303,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.lj_coul.html">lj_coul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.ljts.html">ljts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.solvation.html">solvation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.wca.html">wca</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.yukawa.html">yukawa</a></li>
 </ul>
 </li>
@@ -419,15 +421,15 @@ using <a class="reference external" href="http://docs.openmm.org/latest/api-pyth
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>cutoff</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Shared cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> for all nonbonded
-interactions in the simulation sytem. Must be less than half the
-minimum periodic simulation box dimension.</p>
+<dt><strong>cutoff</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Shared cutoff distance for all nonbonded interactions in the
+simulation sytem. Must be less than half the minimum periodic
+simulation box dimension.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>.</p>
 </dd>
 <dt><strong>tol</strong><span class="classifier"><cite>float</cite>, default: <code class="code docutils literal notranslate"><span class="pre">1e-4</span></code></span></dt><dd><p>Error tolerance <span class="math notranslate nohighlight">\(\delta\)</span> for Ewald summation.</p>
 </dd>
 <dt><strong>g_ewald</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite>, keyword-only, optional</span></dt><dd><p>Ewald splitting parameter <span class="math notranslate nohighlight">\(g_\mathrm{Ewald}\)</span>. If not
-provided, <cite>g_ewald</cite> is computed using</p>
+provided, it is computed using</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[g_\mathrm{Ewald}=\frac{\sqrt{-\log(2\delta)}}{r_\mathrm{cut}}\]</div>
@@ -492,8 +494,8 @@ respectively.</p>
 </li>
 </ul>
 </div>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <p>To disable the Lennard-Jones potential, set
 <span class="math notranslate nohighlight">\(\sigma_i=0\,\mathrm{nm}\)</span> and
 <span class="math notranslate nohighlight">\(\epsilon_i=0\,\mathrm{kJ/mol}\)</span> for all particles.</p>

@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="StructureFactor" href="mdhelper.analysis.structure.StructureFactor.html" /><link rel="prev" title="ParallelStructureFactor" href="mdhelper.analysis.structure.ParallelStructureFactor.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="RDF2D" href="mdhelper.analysis.structure.RDF2D.html" /><link rel="prev" title="ParallelStructureFactor" href="mdhelper.analysis.structure.ParallelStructureFactor.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>RDF - MDHelper documentation</title>
@@ -214,6 +214,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">RDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -302,6 +303,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.lj_coul.html">lj_coul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.ljts.html">ljts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.solvation.html">solvation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.wca.html">wca</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.yukawa.html">yukawa</a></li>
 </ul>
 </li>
@@ -392,14 +394,15 @@ function (RDF) <span class="math notranslate nohighlight">\(g_{ij}(r)\)</span> b
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[g_{ij}(r)=\frac{1}{N_iN_j}\sum_\alpha\sum_\beta \left\langle
-\delta\left(|\pmb{r}_\alpha-\pmb{r}_\beta|-r\right)\right\rangle\]</div>
+\delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
+\right\rangle\]</div>
 </div>
 <p>where <span class="math notranslate nohighlight">\(N_i\)</span> and <span class="math notranslate nohighlight">\(N_j\)</span> are the number of particles, and
-<span class="math notranslate nohighlight">\(\pmb{r}_\alpha\)</span> and <span class="math notranslate nohighlight">\(\pmb{r}_\beta\)</span> are the positions
-of particles <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> belonging to
-species <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>, respectively. The RDF is normalized
-such that <span class="math notranslate nohighlight">\(\lim_{r\rightarrow\infty}g_{ij}(r)=1\)</span> in a
-homogeneous system.</p>
+<span class="math notranslate nohighlight">\(\mathbf{r}_\alpha\)</span> and <span class="math notranslate nohighlight">\(\mathbf{r}_\beta\)</span> are the
+positions of particles <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> belonging
+to species <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>, respectively. The RDF is
+normalized such that <span class="math notranslate nohighlight">\(\lim_{r\rightarrow\infty}g_{ij}(r)=1\)</span> in
+a homogeneous system.</p>
 <p>(A closely related quantity is the single particle density
 <span class="math notranslate nohighlight">\(n_{ij}(r)=\rho_jg_{ij}(r)\)</span>, where <span class="math notranslate nohighlight">\(\rho_j\)</span> is the
 number density of species <span class="math notranslate nohighlight">\(j\)</span>.)</p>
@@ -443,7 +446,8 @@ properties, such as</p>
 </dd>
 <dt><strong>n_bins</strong><span class="classifier"><cite>int</cite>, default: <code class="code docutils literal notranslate"><span class="pre">201</span></code></span></dt><dd><p>Number of histogram bins <span class="math notranslate nohighlight">\(N_\mathrm{bins}\)</span>.</p>
 </dd>
-<dt><strong>range</strong><span class="classifier">array-like, default: <code class="code docutils literal notranslate"><span class="pre">(0.0,</span> <span class="pre">15.0)</span></code></span></dt><dd><p>Range of radii values.</p>
+<dt><strong>range</strong><span class="classifier">array-like, default: <code class="code docutils literal notranslate"><span class="pre">(0.0,</span> <span class="pre">15.0)</span></code></span></dt><dd><p>Range of radii values. The upper bound should be less than half
+the largest system dimension.</p>
 <p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((2,)\)</span>.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å}\)</span>.</p>
 </dd>
@@ -739,12 +743,12 @@ depending on the values of <cite>archive</cite> and <cite>compress</cite>.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="mdhelper.analysis.structure.StructureFactor.html">
+          <a class="next-page" href="mdhelper.analysis.structure.RDF2D.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">StructureFactor</div>
+                <div class="title">RDF2D</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

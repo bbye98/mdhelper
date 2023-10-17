@@ -39,7 +39,7 @@ class NetCDFFile():
     mode : `str`
         NetCDF file access mode.
 
-    restart : `bool`, default: `False`
+    restart : `bool`, default: :code:`False`
         Specifies whether the NetCDF file is a trajectory or restart file.
 
     **kwargs
@@ -303,7 +303,7 @@ class NetCDFFile():
             Specifies whether forces exerted on atoms should be
             written.
         
-        restart : `bool`, default: `False`
+        restart : `bool`, default: :code:`False`
             Specifies whether the NetCDF file is a trajectory or restart
             file.
             
@@ -606,7 +606,7 @@ class NetCDFFile():
 
             **Reference unit**: :math:`^\\circ`.
 
-        restart : `bool`, keyword-only, default: `False`
+        restart : `bool`, keyword-only, default: :code:`False`
             Prevents the frame index from being incremented if writing a
             NetCDF restart file.
         """

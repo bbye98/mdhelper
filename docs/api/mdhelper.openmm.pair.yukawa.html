@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="reporter" href="mdhelper.openmm.reporter.html" /><link rel="prev" title="solvation" href="mdhelper.openmm.pair.solvation.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="reporter" href="mdhelper.openmm.reporter.html" /><link rel="prev" title="wca" href="mdhelper.openmm.pair.wca.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>yukawa - MDHelper documentation</title>
@@ -214,6 +214,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -302,6 +303,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.lj_coul.html">lj_coul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.ljts.html">ljts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.solvation.html">solvation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.wca.html">wca</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">yukawa</a></li>
 </ul>
 </li>
@@ -399,14 +401,14 @@ using <a class="reference external" href="http://docs.openmm.org/latest/api-pyth
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>cutoff</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Shared cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> for all nonbonded
-interactions in the simulation sytem. Must be less than half the
-minimum periodic simulation box dimension.</p>
+<dt><strong>cutoff</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Shared cutoff distance for all nonbonded interactions in the
+simulation sytem. Must be less than half the minimum periodic
+simulation box dimension.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>.</p>
 </dd>
-<dt><strong>cutoff_yukawa</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite>, optional</span></dt><dd><p>Cutoff distance for the Yukawa potential. Must be less than the
-shared cutoff. If not provided, it is set to the shared cutoff
-distance for the nonbonded interactions.</p>
+<dt><strong>cutoff_yukawa</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite>, optional</span></dt><dd><p>Cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> for the Yukawa potential.
+Must be less than the shared cutoff distance. If not provided,
+it is set to the shared cutoff distance.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>.</p>
 </dd>
 <dt><strong>shift</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the Yukawa potential is shifted at its
@@ -477,14 +479,14 @@ will take precedence over those defined here.</p>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="mdhelper.openmm.pair.solvation.html">
+          <a class="prev-page" href="mdhelper.openmm.pair.wca.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">solvation</div>
+                <div class="title">wca</div>
                 
               </div>
             </a>

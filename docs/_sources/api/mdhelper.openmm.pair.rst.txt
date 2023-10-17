@@ -1,4 +1,4 @@
-pair
+﻿pair
 ====
 
 .. automodule:: mdhelper.openmm.pair
@@ -21,6 +21,7 @@ pair
       lj_coul
       ljts
       solvation
+      wca
       yukawa
    
    

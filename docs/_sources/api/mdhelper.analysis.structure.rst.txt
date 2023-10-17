@@ -1,4 +1,4 @@
-structure
+﻿structure
 =========
 
 .. automodule:: mdhelper.analysis.structure
@@ -36,6 +36,7 @@ structure
       ParallelRDF
       ParallelStructureFactor
       RDF
+      RDF2D
       StructureFactor
    
    

@@ -214,6 +214,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -302,6 +303,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.lj_coul.html">lj_coul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.ljts.html">ljts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.solvation.html">solvation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.wca.html">wca</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.yukawa.html">yukawa</a></li>
 </ul>
 </li>
@@ -404,10 +406,50 @@ interaction cutoff distance in <span class="math notranslate nohighlight">\(\mat
 <li><p>evaluated using a custom mixing rule in <cite>mix</cite> with necessary
 per-particle parameters in <cite>per_params</cite>,</p></li>
 <li><p>specified as a global parameter in <cite>global_params</cite>, or</p></li>
-<li><p>provided for each pair of atom types in <cite>tab_funcs</cite>.</p></li>
+<li><p>provided for each pair of atom types in <cite>tab_funcs</cite> while
+specifying <code class="code docutils literal notranslate"><span class="pre">mix=&quot;A12=A(type1,type2);&quot;</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">per_params=(&quot;type&quot;,)</span></code>.</p></li>
 </ul>
 <p>After creating the pair potential, particles should be registered
 using <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomNonbondedForce.html#openmm.openmm.CustomNonbondedForce.addParticle" title="(in OpenMM Python API v8.0.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">openmm.openmm.CustomNonbondedForce.addParticle()</span></code></a>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>cutoff</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite></span></dt><dd><p>Shared cutoff distance for all nonbonded interactions in the
+simulation sytem. Must be less than half the minimum periodic
+simulation box dimension.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>.</p>
+</dd>
+<dt><strong>cutoff_dpd</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite>, optional</span></dt><dd><p>Cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> for the DPD potential.
+Must be less than the shared cutoff distance. If not provided,
+it is set to the shared cutoff distance.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>.</p>
+</dd>
+<dt><strong>mix</strong><span class="classifier"><cite>str</cite>, keyword-only, optional</span></dt><dd><p>Mixing rule for <span class="math notranslate nohighlight">\(A_{12}\)</span>. Must be defined if
+<span class="math notranslate nohighlight">\(A_{12}\)</span> is not a global parameter. The string containing
+the expression for <span class="math notranslate nohighlight">\(A_{12}\)</span> must be written in valid C++
+syntax, with any custom global and per-particle parameters and
+tabulated functions defined in <cite>global_params</cite>, <cite>per_params</cite>,
+and <cite>tab_funcs</cite>, respectively.</p>
+</dd>
+<dt><strong>global_params</strong><span class="classifier"><cite>dict</cite>, keyword-only, optional</span></dt><dd><p>Additional global parameters for use in the definition of
+<span class="math notranslate nohighlight">\(A_{12}\)</span>.</p>
+</dd>
+<dt><strong>per_params</strong><span class="classifier"><cite>list</cite>, keyword-only, optional</span></dt><dd><p>Additional per-particle parameters for use in the definition of
+<span class="math notranslate nohighlight">\(A_{12}\)</span>.</p>
+</dd>
+<dt><strong>tab_funcs</strong><span class="classifier"><cite>dict</cite>, keyword-only, optional</span></dt><dd><p>Optional tabulated functions for use in the definition of
+<span class="math notranslate nohighlight">\(A_{12}\)</span>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>pair_dpd</strong><span class="classifier"><cite>openmm.CustomNonbondedForce</cite></span></dt><dd><p>DPD pair potential.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

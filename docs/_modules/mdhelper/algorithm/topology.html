@@ -213,6 +213,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -296,10 +297,12 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.html">pair</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle navigation of pair</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.coul_gauss.html">coul_gauss</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.dpd.html">dpd</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.gauss.html">gauss</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.lj_coul.html">lj_coul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.ljts.html">ljts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.solvation.html">solvation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.wca.html">wca</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.pair.yukawa.html">yukawa</a></li>
 </ul>
 </li>
@@ -423,14 +426,14 @@
 <span class="sd">        segment (polymer chain). </span>
 <span class="sd">        </span>
 <span class="sd">        **Valid values**: :math:`1\leq N_\mathrm{p}\leq N`, with </span>
-<span class="sd">        :math:`N` divisible by :math`N_\mathrm{p}`.</span>
+<span class="sd">        :math:`N` divisible by :math:`N_\mathrm{p}`.</span>
 
 <span class="sd">    lattice : `str`, keyword-only, optional</span>
 <span class="sd">        Lattice type, with the relevant length scale specified in </span>
 <span class="sd">        `length`. If `lattice` is not specified, particle positions will</span>
 <span class="sd">        be assigned randomly.</span>
 
-<span class="sd">        .. hint::</span>
+<span class="sd">        .. tip::</span>
 
 <span class="sd">           To build walls with the correct periodicity, set the </span>
 <span class="sd">           :math:`z`-dimension to :code:`0` in `dims` and </span>
@@ -470,11 +473,11 @@
 <span class="sd">        make that dimension constant), such as when creating walls, set</span>
 <span class="sd">        that dimension to :code:`0` in `dims`.</span>
 
-<span class="sd">    connectivity : `bool`, default: `False`</span>
+<span class="sd">    connectivity : `bool`, default: :code:`False`</span>
 <span class="sd">        Determines whether bond information is returned for polymeric</span>
 <span class="sd">        systems. Has no effect if :code:`N_p=1`.</span>
 
-<span class="sd">    randomize : `bool`, default: `False`</span>
+<span class="sd">    randomize : `bool`, default: :code:`False`</span>
 <span class="sd">        Determines whether the order of the replicated polymer positions</span>
 <span class="sd">        are randomized. Has no effect if :code:`N_p=1`.</span>
 

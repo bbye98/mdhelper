@@ -81,7 +81,7 @@ def fene(
         Additional per-particle parameters for use in the definition of
         :math:`k_{12}` and :math:`r_{0,12}`.
 
-    wca : `bool`, default: `True`
+    wca : `bool`, default: :code:`True`
         Determines whether the Weeks–Chander–Andersen (WCA) potential is
         included.
 

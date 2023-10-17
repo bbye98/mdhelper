@@ -122,9 +122,9 @@ def coul_gauss(
     Parameters
     ----------
     cutoff : `float` or `openmm.unit.Quantity`
-        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
-        interactions in the simulation sytem. Must be less than half the
-        minimum periodic simulation box dimension. 
+        Shared cutoff distance for all nonbonded interactions in the
+        simulation sytem. Must be less than half the minimum periodic
+        simulation box dimension. 
         
         **Reference unit**: :math:`\mathrm{nm}`.
 
@@ -133,7 +133,7 @@ def coul_gauss(
 
     g_ewald : `float` or `openmm.unit.Quantity`, keyword-only, optional
         Ewald splitting parameter :math:`g_\mathrm{Ewald}`. If not
-        provided, `g_ewald` is computed using
+        provided, it is computed using
 
         .. math::
 
@@ -203,7 +203,7 @@ def coul_gauss(
              * :class:`openmm.openmm.NonbondedForce`:
                :math:`(q_i,\,\sigma_i,\,\epsilon_i)`.
 
-        .. hint::
+        .. tip::
 
            To disable the Lennard-Jones potential, set 
            :math:`\sigma_i=0\,\mathrm{nm}` and 
@@ -271,6 +271,109 @@ def coul_gauss(
     pair_coul_gauss_rec.setIncludeDirectSpace(False)
     return pair_coul_gauss_dir, pair_coul_gauss_rec
 
+def dpd(
+        cutoff: Union[float, unit.Quantity],
+        cutoff_dpd: Union[float, unit.Quantity] = None, *,
+        mix: str = None, per_params: list = None,
+        global_params: dict[str, Union[float, unit.Quantity]] = None,
+        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
+                                   openmm.Discrete2DFunction]] = None
+    ) -> openmm.CustomNonbondedForce:
+
+    r"""
+    Implements the conservative part of the dissipative particle
+    dynamics (DPD) force.
+
+    .. note::
+
+       This does not include an implementation of the DPD thermostat.
+
+    The potential energy between two DPD beads is given by:
+
+    .. math::
+
+       u_\mathrm{DPD}(r_{12})=\frac{1}{2}A_{12}r_\mathrm{cut}
+       \left(1-\frac{r}{r_\mathrm{cut}}\right)^2
+
+    where :math:`A_{12}` is the conservative force parameter in 
+    :math:`\mathrm{kJ/(mol\cdot nm)}` and :math:`r_\mathrm{cut}` is the
+    interaction cutoff distance in :math:`\mathrm{nm}`.
+
+    As :math:`A_{12}` has no well-defined mixing rule, it must be 
+    
+    * evaluated using a custom mixing rule in `mix` with necessary 
+      per-particle parameters in `per_params`, 
+    * specified as a global parameter in `global_params`, or
+    * provided for each pair of atom types in `tab_funcs` while 
+      specifying :code:`mix="A12=A(type1,type2);"` and 
+      :code:`per_params=("type",)`.
+
+    After creating the pair potential, particles should be registered
+    using :meth:`openmm.openmm.CustomNonbondedForce.addParticle`.
+
+    Parameters
+    ----------
+    cutoff : `float` or `openmm.unit.Quantity`         
+        Shared cutoff distance for all nonbonded interactions in the
+        simulation sytem. Must be less than half the minimum periodic
+        simulation box dimension. 
+        
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    cutoff_dpd : `float` or `openmm.unit.Quantity`, optional
+        Cutoff distance :math:`r_\mathrm{cut}` for the DPD potential.
+        Must be less than the shared cutoff distance. If not provided,
+        it is set to the shared cutoff distance.
+        
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    mix : `str`, keyword-only, optional
+        Mixing rule for :math:`A_{12}`. Must be defined if 
+        :math:`A_{12}` is not a global parameter. The string containing
+        the expression for :math:`A_{12}` must be written in valid C++
+        syntax, with any custom global and per-particle parameters and
+        tabulated functions defined in `global_params`, `per_params`, 
+        and `tab_funcs`, respectively.
+
+    global_params : `dict`, keyword-only, optional
+        Additional global parameters for use in the definition of
+        :math:`A_{12}`.
+
+    per_params : `list`, keyword-only, optional
+        Additional per-particle parameters for use in the definition of
+        :math:`A_{12}`.
+
+    tab_funcs : `dict`, keyword-only, optional
+        Optional tabulated functions for use in the definition of
+        :math:`A_{12}`.
+
+    Returns
+    -------
+    pair_dpd : `openmm.CustomNonbondedForce`
+        DPD pair potential.
+    """
+
+    if isinstance(cutoff, unit.Quantity):
+        cutoff = cutoff.value_in_unit(unit.nanometer)
+    if cutoff_dpd is None:
+        cutoff_dpd = cutoff
+    else:
+        if isinstance(cutoff_dpd, unit.Quantity):
+            cutoff_dpd = cutoff_dpd.value_in_unit(unit.nanometer)
+        if cutoff_dpd > cutoff:
+            emsg = ("The cutoff distance for the dissipative particle "
+                    "dynamics (DPD) potential must be less than the "
+                    "shared cutoff distance.")
+            raise ValueError(emsg)
+
+    energy = f"0.5*A12*{cutoff_dpd}*(1-r/{cutoff_dpd})^2;"
+    if mix:
+        energy = f"{energy}{mix}"
+    
+    pair_dpd = openmm.CustomNonbondedForce(energy)
+    _setup_pair(pair_dpd, cutoff, global_params, per_params, tab_funcs)
+    return pair_dpd
+
 def gauss(
         cutoff: Union[float, unit.Quantity],
         cutoff_gauss: Union[float, unit.Quantity] = None, *,
@@ -313,16 +416,16 @@ def gauss(
     Parameters
     ----------
     cutoff : `float` or `openmm.unit.Quantity`         
-        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
-        interactions in the simulation sytem. Must be less than half the
-        minimum periodic simulation box dimension. 
+        Shared cutoff distance for all nonbonded interactions in the
+        simulation sytem. Must be less than half the minimum periodic
+        simulation box dimension. 
         
         **Reference unit**: :math:`\mathrm{nm}`.
 
     cutoff_gauss : `float` or `openmm.unit.Quantity`, optional
-        Cutoff distance for the Gaussian potential. Must be less than
-        `cutoff`. If not provided, it is set to the shared cutoff
-        distance for the nonbonded interactions. 
+        Cutoff distance :math:`r_\mathrm{cut}` for the Gaussian 
+        potential. Must be less than the shared cutoff distance. If not
+        provided, it is set to the shared cutoff distance. 
         
         **Reference unit**: :math:`\mathrm{nm}`.
 
@@ -440,66 +543,6 @@ def gauss(
     _setup_pair(pair_gauss, cutoff, global_params, per_params, tab_funcs)
     return pair_gauss
 
-def dpd(
-        cutoff: Union[float, unit.Quantity],
-        cutoff_dpd: Union[float, unit.Quantity] = None, *,
-        mix: str = None, per_params: list = None,
-        global_params: dict[str, Union[float, unit.Quantity]] = None,
-        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
-                                   openmm.Discrete2DFunction]] = None
-    ) -> openmm.CustomNonbondedForce:
-
-    r"""
-    Implements the conservative part of the dissipative particle
-    dynamics (DPD) force.
-
-    .. note::
-
-       This does not include an implementation of the DPD thermostat.
-
-    The potential energy between two DPD beads is given by:
-
-    .. math::
-
-       u_\mathrm{DPD}(r_{12})=\frac{1}{2}A_{12}r_\mathrm{cut}
-       \left(1-\frac{r}{r_\mathrm{cut}}\right)^2
-
-    where :math:`A_{12}` is the conservative force parameter in 
-    :math:`\mathrm{kJ/(mol\cdot nm)}` and :math:`r_\mathrm{cut}` is the
-    interaction cutoff distance in :math:`\mathrm{nm}`.
-
-    As :math:`A_{12}` has no well-defined mixing rule, it must be 
-    
-    * evaluated using a custom mixing rule in `mix` with necessary 
-      per-particle parameters in `per_params`, 
-    * specified as a global parameter in `global_params`, or
-    * provided for each pair of atom types in `tab_funcs`.
-
-    After creating the pair potential, particles should be registered
-    using :meth:`openmm.openmm.CustomNonbondedForce.addParticle`.
-    """
-
-    if isinstance(cutoff, unit.Quantity):
-        cutoff = cutoff.value_in_unit(unit.nanometer)
-    if cutoff_dpd is None:
-        cutoff_dpd = cutoff
-    else:
-        if isinstance(cutoff_dpd, unit.Quantity):
-            cutoff_dpd = cutoff_dpd.value_in_unit(unit.nanometer)
-        if cutoff_dpd > cutoff:
-            emsg = ("The cutoff distance for the dissipative particle "
-                    "dynamics (DPD) potential must be less than the "
-                    "shared cutoff distance.")
-            raise ValueError(emsg)
-
-    energy = f"0.5*A12*{cutoff_dpd}*(1-r/{cutoff_dpd})^2;"
-    if mix:
-        energy = f"{energy}{mix}"
-    
-    pair_dpd = openmm.CustomNonbondedForce(energy)
-    _setup_pair(pair_dpd, cutoff, global_params, per_params, tab_funcs)
-    return pair_dpd
-
 def lj_coul(
         cutoff: Union[float,unit.Quantity], tol: float = 1e-4, *,
         g_ewald: Union[float, unit.Quantity] = None,
@@ -563,7 +606,7 @@ def lj_coul(
 
     g_ewald : `float` or `openmm.unit.Quantity`, keyword-only, optional
         Ewald splitting parameter :math:`g_\mathrm{Ewald}`. If not
-        provided, `g_ewald` is computed using
+        provided, it is computed using
 
         .. math::
 
@@ -599,7 +642,10 @@ def lj_coul(
 def ljts(
         cutoff: Union[float, unit.Quantity],
         cutoff_ljts: Union[float, unit.Quantity] = None, *,
-        shift: bool = True, mix: str = "arithmetic", wca: bool = False,
+        coefs: Union[dict[str, float], tuple[float, float, float]] = (1, 1, 4), 
+        powers: Union[dict[str, float], tuple[float, float]] = (12, 6),
+        shift: bool = True, mix: str = "arithmetic", mie: bool = False,
+        wca: bool = False,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
         per_params: list = None,
         tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
@@ -607,27 +653,76 @@ def ljts(
     ) -> openmm.CustomNonbondedForce:
 
     r"""
-    Implements the Lennard-Jones truncated and shifted (LJTS) pair
-    potential.
+    Implements the generalized Lennard-Jones truncated and shifted 
+    (LJTS) pair potential and its derivatives, such as the Mie
+    and Weeks–Chandler–Andersen (WCA) potentials.
 
-    The potential energy between two LJ particles is given by
+    The generalized LJ potential is given by
+
+    .. math::
+
+       u_\mathrm{LJ}(r_{12})=C\epsilon_{12}
+       \left[A\left(\frac{\sigma_{12}}{r_{12}}\right)^{\gamma_\mathrm{r}}
+       -B\left(\frac{\sigma_{12}}{r_{12}}\right)^{\gamma_\mathrm{a}}\right]
+
+    where :math:`\sigma_{12}` is the average particle size in
+    :math:`\mathrm{nm}`, :math:`\epsilon_{12}` is the dispersion
+    energy in :math:`\mathrm{kJ/mol}`, and :math:`A`, :math:`B`, 
+    :math:`C`, :math:`\gamma_\mathrm{r}`, and :math:`\gamma_\mathrm{a}`
+    are constants.
+
+    The standard 12-6 LJ potential, which is the most frequently used
+    form, uses :math:`A=1`, :math:`B=1`, :math:`C=4`, 
+    :math:`\gamma_\mathrm{r}=12`, and :math:`\gamma_\mathrm{a}=6`.
+
+    While :math:`\gamma_\mathrm{a}=6` is justified by the London
+    dispersion force, no such rationale exists for 
+    :math:`\gamma_\mathrm{r}=12`. By relaxing the restrictions on what
+    values :math:`\gamma_\mathrm{r}` and :math:`\gamma_\mathrm{a}` can
+    take on and keeping :math:`A=1` and :math:`B=1`, the Mie potential
+    is obtained:
 
     .. math::
 
        \begin{gather*}
-         u_\mathrm{LJTS}(r_{12})=\begin{cases}
-           u_\mathrm{LJ}(r_{12})-u_\mathrm{LJ}(r_\mathrm{cut}),
-           &\mathrm{if}\,r_{12}<r_\mathrm{cut}\\
-           0,&\mathrm{if}\,r_{12}\geq r_\mathrm{cut}
-        \end{cases}\\
-        u_\mathrm{LJ}(r_{12})=4\epsilon_{12}
-        \left[\left(\frac{\sigma_{12}}{r_{12}}\right)^{12}
-        -\left(\frac{\sigma_{12}}{r_{12}}\right)^6\right]
+         u_\mathrm{Mie}(r_{12})=C_\mathrm{Mie}\epsilon_{12}
+         \left[\left(\frac{\sigma_{12}}{r_{12}}\right)^{\gamma_\mathrm{r}}
+         -\left(\frac{\sigma_{12}}{r_{12}}\right)^{\gamma_\mathrm{a}}\right]\\
+         C_\mathrm{Mie}=\frac{\gamma_\mathrm{r}}
+         {\gamma_\mathrm{r}-\gamma_\mathrm{a}}
+         \left(\frac{\gamma_\mathrm{r}}{\gamma_\mathrm{a}}\right)
+         ^{\gamma_\mathrm{a}/(\gamma_\mathrm{r}-\gamma_\mathrm{a})}
        \end{gather*}
-    
-    where :math:`\sigma_{12}` is the average particle size in
-    :math:`\mathrm{nm}` and :math:`\epsilon_{12}` is the dispersion
-    energy in :math:`\mathrm{kJ/mol}`.
+
+    In dense fluids, it is common to use a purely repulsive potential. 
+    The standard 12-6 LJ potential can be truncated and shifted at a 
+    cutoff of :math:`r_\mathrm{cut}=2^{1/6}\sigma_{12}` to get the WCA
+    potential, which is widely employed as a reference potential in 
+    simulations of liquid systems. A generalized WCA potential can be
+    acquired by truncating and shifting the Mie potential instead at a
+    cutoff of :math:`r_\mathrm{WCA}=(\gamma_\mathrm{r}/\gamma_\mathrm{a})
+    ^{1/(\gamma_\mathrm{r}-\gamma_\mathrm{a})}\sigma_{12}`:
+
+    .. math::
+
+       u_\mathrm{WCA}(r_{12})=\begin{cases}
+         C_\mathrm{Mie}\epsilon_{12}\left[
+         \left(\dfrac{\sigma_{12}}{r_{12}}\right)^{\gamma_\mathrm{r}}
+         -\left(\dfrac{\sigma_{12}}{r_{12}}\right)^{\gamma_\mathrm{a}}
+         \right]+\epsilon_{12},&\mathrm{if}\,r_{12}<r_\mathrm{WCA}\\
+         0,&\mathrm{if}\,r_{12}\geq r_\mathrm{WCA}
+       \end{cases}
+
+    In the case where flexibility is allowed for all constants and the
+    cutoff, the generalized LJTS potential is obtained:
+
+    .. math::
+
+       u_\mathrm{LJTS}(r_{12})=\begin{cases}
+         u_\mathrm{LJ}(r_{12})-u_\mathrm{LJ}(r_\mathrm{cut}),
+         &\mathrm{if}\,r_{12}<r_\mathrm{cut}\\
+         0,&\mathrm{if}\,r_{12}\geq r_\mathrm{cut}
+       \end{cases}
 
     After creating the pair potentials, particles should be registered
     using :meth:`openmm.openmm.CustomNonbondedForce.addParticle`.
@@ -635,28 +730,46 @@ def ljts(
     Parameters
     ----------
     cutoff : `float` or `openmm.unit.Quantity`         
-        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
-        interactions in the simulation sytem. Must be less than half the
-        minimum periodic simulation box dimension. 
+        Shared cutoff distance for all nonbonded interactions in the
+        simulation sytem. Must be less than half the minimum periodic
+        simulation box dimension. 
         
         **Reference unit**: :math:`\mathrm{nm}`.
 
     cutoff_ljts : `float` or `openmm.unit.Quantity`, optional
-        Cutoff distance for the LJTS potential. Must be less than the
-        shared cutoff distance. If not provided, it is set to the shared
-        cutoff distance for the nonbonded interactions. If the
-        Weeks–Chander–Andersen (WCA) potential is used, a dynamic cutoff
-        of :math:`2^{1/6}\sigma_{12}` is used instead. 
+        Cutoff distance :math:`r_\mathrm{cut}` for the LJTS potential.
+        Must be less than the shared cutoff distance. If not provided,
+        it is set to the shared cutoff distance. If the WCA potential is
+        used, the dynamic cutoff :math:`r_\mathrm{WCA}` is used instead. 
         
         **Reference unit**: :math:`\mathrm{nm}`.
+
+    coefs : `tuple` or `dict`, keyword-only, default: :code:`(1, 1, 4)`
+        Coefficients :math:`A`, :math:`B`, and :math:`C`, in that order.
+        If a `dict` is provided, use the keys :code:`"A"`, :code:`"B"`,
+        and :code:`"C"`, respectively. If the Mie or WCA potential is
+        used, the appropriate coefficients are used instead.
+
+    powers : `tuple`, keyword-only, default: :code:`(12, 6)`
+        Powers :math:`\gamma_\mathrm{r}` and :math:`\gamma_\mathrm{a}`, 
+        in that order. If a `dict` is provided, use the keys :code:`"r"`
+        and :code:`"a"`, respectively.
 
     shift : `bool`, keyword-only, default: :code:`True`
         Determines whether the LJTS potential is shifted at its cutoff
         to :math:`0\,\mathrm{kJ/mol}`. If the WCA potential is used, a
         dynamic shift of :math:`\epsilon_{12}` is used instead.
 
+    mie : `bool`, keyword-only, default: :code:`False`
+        Determines whether to use the Mie potential. If :code:`True`,
+        `coefs` is superseded by the correct values for the Mie 
+        potential. Only one of `mie` and `wca` can be :code:`True`.
+
     wca : `bool`, keyword-only, default: :code:`False`
-        Determines whether to use the WCA potential.
+        Determines whether to use the WCA potential. If :code:`True`, 
+        `cutoff_ljts`, `coefs`, and `shift` are superseded by the 
+        correct values for the WCA potential. Only one of `mie` and
+        `wca` can be :code:`True`.
 
     mix : `str`, keyword-only, default: :code:`"arithmetic"`
         Mixing rule for :math:`\sigma_{12}` and :math:`\epsilon_{12}`.
@@ -737,21 +850,32 @@ def ljts(
             emsg = ("The cutoff distance for the LJTS potential must be "
                     "less than the shared cutoff distance.")
             raise ValueError(emsg)
-
+        
+    if mie and wca:
+        raise ValueError("Both 'mie' and 'wca' are set to True.")
+    elif mie or wca:
+        coef_mie = (powers[0] / (powers[0] - powers[1]) 
+                    * (powers[0] / powers[1]) ** (powers[1] / (powers[0] - powers[1])))
+    if isinstance(powers, dict):
+        powers = (powers["r"], powers["a"])
     if wca:
-        prefix = "step(2^(1/6)*sigma12-r)*("
-    elif cutoff != cutoff_ljts:
-        prefix = f"step({cutoff_ljts}-r)*("
-    else:
-        prefix = "("
-    root = "4*epsilon12*((sigma12/r)^12-(sigma12/r)^6)"
-    if wca:
+        cutoff_wca = (powers[0] / powers[1]) ** (1 / (powers[0] - powers[1]))
+        root = (f"{coef_mie}*epsilon12*((sigma12/r)^{powers[0]}"
+                f"-(sigma12/r)^{powers[1]})")
+        prefix = f"step({cutoff_wca}*sigma12-r)*("
         suffix = "+epsilon12);"
-    elif shift:
-        suffix = (f"-ucut);ucut=4*epsilon12*((sigma12/{cutoff_ljts})^12"
-                  f"-(sigma12/{cutoff_ljts})^6));")
     else:
-        suffix = ");"
+        if mie:
+            coefs = (1, 1, coef_mie)
+        elif isinstance(coefs, dict):
+            coefs = (coefs["A"], coefs["B"], coefs["C"])
+        root = (f"{coefs[2]}*epsilon12*({coefs[0]}*(sigma12/r)^{powers[0]}"
+                f"-{coefs[1]}*(sigma12/r)^{powers[1]})")
+        prefix = f"step({cutoff_ljts}-r)*(" if cutoff != cutoff_ljts else "("
+        suffix = ((f"-ucut);ucut={coefs[2]}*epsilon12"
+                   f"*({coefs[0]}*(sigma12/{cutoff_ljts})^{powers[0]}"
+                   f"-{coefs[1]}*(sigma12/{cutoff_ljts})^{powers[1]}));") 
+                  if shift else ");")
     if mix == "arithmetic":
         mix = "sigma12=(sigma1+sigma2)/2;epsilon12=sqrt(epsilon1*epsilon2);"
         per_params = ["sigma", "epsilon"]
@@ -798,16 +922,16 @@ def solvation(
     Parameters
     ----------
     cutoff : `float` or `openmm.unit.Quantity`         
-        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
-        interactions in the simulation sytem. Must be less than half the
-        minimum periodic simulation box dimension.
+        Shared cutoff distance for all nonbonded interactions in the
+        simulation sytem. Must be less than half the minimum periodic
+        simulation box dimension.
         
         **Reference unit**: :math:`\mathrm{nm}`.
 
     cutoff_solvation : `float` or `openmm.unit.Quantity`, optional
-        Cutoff distance for the solvation potential. Must be less than the
-        shared cutoff. If not provided, it is set to the shared cutoff
-        distance for the nonbonded interactions. 
+        Cutoff distance :math:`r_\mathrm{cut}` for the solvation 
+        potential. Must be less than the shared cutoff distance. If not
+        provided, it is set to the shared cutoff distance. 
         
         **Reference unit**: :math:`\mathrm{nm}`.
 
@@ -890,6 +1014,134 @@ def solvation(
     _setup_pair(pair_solv, cutoff, global_params, per_params, tab_funcs)
     return pair_solv
 
+def wca(cutoff: Union[float, unit.Quantity], *, mix: str = "arithmetic",
+        powers: Union[dict[str, float], tuple[float, float]] = (12, 6),
+        global_params: dict[str, Union[float, unit.Quantity]] = None,
+        per_params: list = None,
+        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
+                                   openmm.Discrete2DFunction]] = None
+    ) -> openmm.CustomNonbondedForce:
+
+    r"""
+    Implements the generalized Weeks–Chander–Andersen (WCA) pair 
+    potential.
+
+    The potential energy between two WCA particles is given by
+
+    .. math::
+       
+       \begin{gather*}
+         u_\mathrm{WCA}(r_{12})=\begin{cases}
+           C_\mathrm{Mie}\epsilon_{12}\left[
+           \left(\dfrac{\sigma_{12}}{r_{12}}\right)^{\gamma_\mathrm{r}}
+           -\left(\dfrac{\sigma_{12}}{r_{12}}\right)^{\gamma_\mathrm{a}}
+           \right]+\epsilon_{12},&\mathrm{if}\,r_{12}<r_\mathrm{WCA}\\
+           0,&\mathrm{if}\,r_{12}\geq r_\mathrm{WCA}
+         \end{cases}\\
+         C_\mathrm{Mie}=\frac{\gamma_\mathrm{r}}
+         {\gamma_\mathrm{r}-\gamma_\mathrm{a}}
+         \left(\frac{\gamma_\mathrm{r}}{\gamma_\mathrm{a}}\right)
+         ^{\gamma_\mathrm{a}/(\gamma_\mathrm{r}-\gamma_\mathrm{a})}
+       \end{gather*}
+
+    where :math:`\sigma_{12}` is the average particle size in
+    :math:`\mathrm{nm}`, :math:`\epsilon_{12}` is the dispersion energy
+    in :math:`\mathrm{kJ/mol}`, :math:`\gamma_\mathrm{r}` and
+    :math:`\gamma_\mathrm{a}` are the powers for the repulsive and 
+    attractive terms, respectively, and 
+    :math:`r_\mathrm{WCA}=(\gamma_\mathrm{r}/\gamma_\mathrm{a})
+    ^{1/(\gamma_\mathrm{r}-\gamma_\mathrm{a})}\sigma_{12}` is the 
+    cutoff distance.
+
+    After creating the pair potentials, particles should be registered
+    using :meth:`openmm.openmm.CustomNonbondedForce.addParticle`.
+
+    Parameters
+    ----------
+    cutoff : `float` or `openmm.unit.Quantity`         
+        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
+        interactions in the simulation sytem. Must be less than half the
+        minimum periodic simulation box dimension. 
+        
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    powers : `tuple`, keyword-only, default: :code:`(12, 6)`
+        Powers :math:`\gamma_\mathrm{r}` and :math:`\gamma_\mathrm{a}`, 
+        in that order. If a `dict` is provided, use the keys :code:`"r"`
+        and :code:`"a"`, respectively.
+
+    mix : `str`, keyword-only, default: :code:`"arithmetic"`
+        Mixing rule for :math:`\sigma_{12}` and :math:`\epsilon_{12}`.
+        
+        .. container::
+
+           **Valid values**:
+
+           * :code:`"arithmetic"`: Lorentz-Berthelot combining rule.
+
+             .. math::
+
+                \begin{gather*}
+                  \sigma_{12}=\frac{\sigma_1+\sigma_2}{2}\\
+                  \epsilon_{12}=\sqrt{\epsilon_1\epsilon_2}
+                \end{gather*}
+
+             **Per-particle parameters**: :math:`(\sigma_i,\,\epsilon_i)`.
+
+           * :code:`"geometric"`: Geometric mixing rule.
+
+             .. math::
+               
+                \begin{gather*}
+                  \sigma_{12}=\sqrt{\sigma_1\sigma_2}\\
+                  \epsilon_{12}=\sqrt{\epsilon_1\epsilon_2}
+                \end{gather*}
+
+             **Per-particle parameters**: :math:`(\sigma_i,\,\epsilon_i)`.
+            
+           * :code:`"sixthpower"`: Sixth-power mixing rule.
+        
+             .. math::
+                
+                \begin{gather*}
+                  \sigma_{12}=\left(\frac{\sigma_1^6
+                  +\sigma_2^6}{2}\right)^{1/6}\\
+                  \epsilon_{12}=\frac{2\sqrt{\epsilon_1\epsilon_2}
+                  \sigma_1^3\sigma_2^3}{\sigma_1^6+\sigma_2^6}
+                \end{gather*}
+
+             **Per-particle parameters**: :math:`(\sigma_i,\,\epsilon_i)`.
+
+           * :code:`"sigma12 = ...; epsilon12 = ...;"`: Custom mixing 
+             rule. The string containing the expression for 
+             :math:`\sigma_{12}` and :math:`\epsilon_{12}` must be
+             written in valid C++ syntax, with any custom global and
+             per-particle parameters and tabulated functions defined in 
+             `global_params`, `per_params`, and `tab_funcs`, 
+             respectively.
+
+    global_params : `dict`, keyword-only, optional
+        Additional global parameters for use in the definition of
+        :math:`\sigma_{12}` and :math:`\epsilon_{12}`.
+
+    per_params : `list`, keyword-only, optional
+        Additional per-particle parameters for use in the definition of
+        :math:`\sigma_{12}` and :math:`\epsilon_{12}`.
+
+    tab_funcs : `dict`, keyword-only, optional
+        Optional tabulated functions for use in the definition of
+        :math:`\sigma_{12}` and :math:`\epsilon_{12}`.
+
+    Returns
+    -------
+    pair_wca : `openmm.CustomNonbondedForce`
+        WCA pair potential.
+    """
+
+    return ljts(cutoff, powers=powers, mix=mix, wca=True, 
+                global_params=global_params, per_params=per_params,
+                tab_funcs=tab_funcs)
+
 def yukawa(
         cutoff: Union[float, unit.Quantity],
         cutoff_yukawa: Union[float, unit.Quantity] = None, *,
@@ -919,16 +1171,16 @@ def yukawa(
     Parameters
     ----------
     cutoff : `float` or `openmm.unit.Quantity`         
-        Shared cutoff distance :math:`r_\mathrm{cut}` for all nonbonded
-        interactions in the simulation sytem. Must be less than half the
-        minimum periodic simulation box dimension. 
+        Shared cutoff distance for all nonbonded interactions in the
+        simulation sytem. Must be less than half the minimum periodic
+        simulation box dimension. 
         
         **Reference unit**: :math:`\mathrm{nm}`.
 
     cutoff_yukawa : `float` or `openmm.unit.Quantity`, optional
-        Cutoff distance for the Yukawa potential. Must be less than the
-        shared cutoff. If not provided, it is set to the shared cutoff
-        distance for the nonbonded interactions. 
+        Cutoff distance :math:`r_\mathrm{cut}` for the Yukawa potential.
+        Must be less than the shared cutoff distance. If not provided, 
+        it is set to the shared cutoff distance. 
         
         **Reference unit**: :math:`\mathrm{nm}`.
 

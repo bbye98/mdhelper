@@ -214,6 +214,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -302,6 +303,7 @@
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">lj_coul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.ljts.html">ljts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.solvation.html">solvation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.wca.html">wca</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.pair.yukawa.html">yukawa</a></li>
 </ul>
 </li>
@@ -432,7 +434,7 @@ minimum periodic simulation box dimension.</p>
 <dt><strong>tol</strong><span class="classifier"><cite>float</cite>, default: <code class="code docutils literal notranslate"><span class="pre">1e-4</span></code></span></dt><dd><p>Error tolerance <span class="math notranslate nohighlight">\(\delta\)</span> for Ewald summation.</p>
 </dd>
 <dt><strong>g_ewald</strong><span class="classifier"><cite>float</cite> or <cite>openmm.unit.Quantity</cite>, keyword-only, optional</span></dt><dd><p>Ewald splitting parameter <span class="math notranslate nohighlight">\(g_\mathrm{Ewald}\)</span>. If not
-provided, <cite>g_ewald</cite> is computed using</p>
+provided, it is computed using</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[g_\mathrm{Ewald}=\frac{\sqrt{-\log(2\delta)}}{r_\mathrm{cut}}\]</div>

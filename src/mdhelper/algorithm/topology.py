@@ -42,14 +42,14 @@ def create_atoms(
         segment (polymer chain). 
         
         **Valid values**: :math:`1\leq N_\mathrm{p}\leq N`, with 
-        :math:`N` divisible by :math`N_\mathrm{p}`.
+        :math:`N` divisible by :math:`N_\mathrm{p}`.
 
     lattice : `str`, keyword-only, optional
         Lattice type, with the relevant length scale specified in 
         `length`. If `lattice` is not specified, particle positions will
         be assigned randomly.
 
-        .. hint::
+        .. tip::
 
            To build walls with the correct periodicity, set the 
            :math:`z`-dimension to :code:`0` in `dims` and 
@@ -89,11 +89,11 @@ def create_atoms(
         make that dimension constant), such as when creating walls, set
         that dimension to :code:`0` in `dims`.
 
-    connectivity : `bool`, default: `False`
+    connectivity : `bool`, default: :code:`False`
         Determines whether bond information is returned for polymeric
         systems. Has no effect if :code:`N_p=1`.
 
-    randomize : `bool`, default: `False`
+    randomize : `bool`, default: :code:`False`
         Determines whether the order of the replicated polymer positions
         are randomized. Has no effect if :code:`N_p=1`.
 
