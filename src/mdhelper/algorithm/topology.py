@@ -10,12 +10,12 @@ transformations, like the generation of initial particle positions.
 from typing import Any, Union
 
 import numpy as np
-from openmm import app, unit
-
+from pint import UnitRegistry
+unit = UnitRegistry()
 from . import utility
 
 def create_atoms(
-        dims: Union[np.ndarray, unit.Quantity, app.Topology], N: int = None,
+        dims: Union[np.ndarray, unit.Quantity], N: int = None,
         N_p: int = 1, *, lattice: str = None, 
         length: Union[float, unit.Quantity] = 0.34,
         flexible: bool = False, connectivity: bool = False, 
@@ -129,15 +129,15 @@ def create_atoms(
 
     # Remove units, if necessary
     if not isinstance(dims, np.ndarray):
-        if isinstance(dims, app.Topology):
-            dims = dims.getUnitCellDimensions()
+        # if isinstance(dims, app.Topology):
+        #     dims = dims.getUnitCellDimensions()
         if length_unit is None:
             length_unit = dims.unit
-        dims = dims.value_in_unit(length_unit)
+        dims = dims.to(length_unit)
     if isinstance(length, unit.Quantity):
         if length_unit is None:
             length_unit = length.unit
-        length = length.value_in_unit(length_unit)
+        length = length.to(length_unit)
 
     if lattice is None:
 

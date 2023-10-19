@@ -14,7 +14,9 @@ import warnings
 import MDAnalysis as mda
 from MDAnalysis.lib import distances
 import numpy as np
-from openmm import unit
+from pint import UnitRegistry
+unit = UnitRegistry()
+
 from scipy.integrate import simpson
 from scipy.signal import argrelextrema
 
@@ -747,13 +749,13 @@ class RDF(SerialAnalysisBase):
         else:
             if isinstance(temp, (int, float)):
                 kBT = (
-                    unit.AVOGADRO_CONSTANT_NA 
-                    * unit.BOLTZMANN_CONSTANT_kB * temp * unit.kelvin
-                ).value_in_unit(unit.kilojoule_per_mole)
+                    unit.avogadro_constant 
+                    * unit.boltzmann_constant * temp * unit.kelvin
+                ).to(unit.Unit('kJ/mol'))
             else:
-                kBT = (unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB
-                       * temp).value_in_unit(unit.kilojoule_per_mole)
-            self.results.units = {"results.pmf": unit.kilojoule_per_mole}
+                kBT = (unit.avogadro_constant * unit.boltzmann_constant
+                       * temp).to(unit.Unit('kJ/mol'))
+            self.results.units = {"results.pmf": unit.Unit('kJ/mol')}
 
         self.results.pmf = -kBT * np.log(self._get_rdf())
 
@@ -1289,13 +1291,13 @@ class RDF2D(SerialAnalysisBase):
         else:
             if isinstance(temp, (int, float)):
                 kBT = (
-                    unit.AVOGADRO_CONSTANT_NA 
-                    * unit.BOLTZMANN_CONSTANT_kB * temp * unit.kelvin
-                ).value_in_unit(unit.kilojoule_per_mole)
+                    unit.avogadro_constant 
+                    * unit.boltzmann_constant * temp * unit.kelvin
+                ).to(unit.Unit('kJ/mol'))
             else:
-                kBT = (unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB
-                       * temp).value_in_unit(unit.kilojoule_per_mole)
-            self.results.units = {"results.pmf": unit.kilojoule_per_mole}
+                kBT = (unit.avogadro_constant * unit.boltzmann_constant
+                       * temp).to(unit.Unit('kJ/mol'))
+            self.results.units = {"results.pmf": unit.Unit('kJ/mol')}
 
         self.results.pmf = -kBT * np.log(self._get_rdf())
 
@@ -1999,7 +2001,7 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
 
         # Create dictionary to hold reference units
         self.results.units = {"_dims": unit.angstrom,
-                              "results.time": unit.picosecond,
+                              "results.time": unit.Unit('ps'),
                               "results.wavenumbers": unit.angstrom ** -1}
 
     def _single_frame(self) -> None:
@@ -2095,7 +2097,7 @@ class ParallelIncoherentIntermediateScatteringFunction(
 
         # Create dictionary to hold reference units
         self.results.units = {"_dims": unit.angstrom,
-                              "results.time": unit.picosecond,
+                              "results.time": unit.Unit('ps'),
                               "results.wavenumbers": unit.angstrom ** -1}
 
     def _single_frame(self, frame: int, index: int) -> None:

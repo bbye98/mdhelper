@@ -14,8 +14,9 @@ import warnings
 import MDAnalysis as mda
 from MDAnalysis.lib.log import ProgressBar
 import numpy as np
-from openmm import unit
 from scipy import optimize
+from pint import UnitRegistry
+unit = UnitRegistry()
 
 from .base import SerialAnalysisBase
 from .. import ArrayLike
@@ -324,10 +325,8 @@ def conductivity(
 
     conductivity = np.einsum("ij, ij", L_ij, z * z[:, None])
     if not reduced:
-        conductivity *= (unit.AVOGADRO_CONSTANT_NA
-                         * unit.elementary_charge ** 2 * unit.mole
-                         / unit.coulomb ** 2)
-    return conductivity
+        conductivity *= (unit.avogadro_constant * unit.elementary_charge ** 2 * unit.mole)
+    return conductivity.to('S/m')
 
 def electrophoretic_mobility(
         L_ij: np.ndarray[float], z: ArrayLike, rho: ArrayLike, *,
@@ -384,7 +383,7 @@ def electrophoretic_mobility(
 
     mobility = (L_ij * z / rho[:, None]).sum(axis=1)
     if not reduced:
-        mobility *= (unit.AVOGADRO_CONSTANT_NA * unit.elementary_charge
+        mobility *= (unit.avogadro_constant * unit.elementary_charge
                      * unit.mole / unit.coulomb)
     return mobility
 
@@ -797,16 +796,16 @@ class Onsager(SerialAnalysisBase):
         else:
             if isinstance(temp, (int, float)):
                 self._kBT = (
-                    unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB
+                    unit.avogadro_constant * unit.boltzmann_constant
                     * temp * unit.kelvin
-                ).value_in_unit(unit.kilojoule_per_mole)
+                ).to('kJ/mol')
             else:
                 self._kBT = (
-                    unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB 
+                    unit.avogadro_constant * unit.boltzmann_constant 
                     * temp
-                ).value_in_unit(unit.kilojoule_per_mole)
+                ).to('kJ/mol')
             self.results.units = {"_dims": unit.angstrom,
-                                  "_kBT": unit.kilojoule_per_mole}
+                                  "_kBT": unit.kilo*unit.joule/unit.mole}
         
         self._n_blocks = n_blocks
         self._center = center
@@ -814,7 +813,7 @@ class Onsager(SerialAnalysisBase):
         if dt:
             self._dt = dt
             if isinstance(dt, unit.Quantity):
-                self._dt = self._dt.value_in_unit(unit.picosecond)
+                self._dt = self._dt.to(unit.Unit('ps'))
         else:
             self._dt = self._trajectory.dt
         self._fft = fft
@@ -889,7 +888,7 @@ class Onsager(SerialAnalysisBase):
 
         # Store reference units
         if not self._reduced:
-            self.results.units["results.time"] = unit.picosecond
+            self.results.units["results.time"] = unit.Unit('ps')
             self.results.units["results.msd_cross"] = unit.angstrom ** 2
             self.results.units["results.msd_self"] = unit.angstrom ** 2
     
@@ -1070,10 +1069,10 @@ class Onsager(SerialAnalysisBase):
         # Store reference units
         if not self._reduced:
             self.results.units["results.D_i"] = (unit.angstrom ** 2 
-                                                 / unit.picosecond)
+                                                 / unit.Unit('ps'))
             self.results.units["results.L_ii_self"] = \
             self.results.units["results.L_ij"] = \
-                1 / (unit.kilojoule_per_mole * unit.angstrom * unit.picosecond)
+                1 / (unit.Unit('kJ/mol') * unit.angstrom * unit.Unit('ps'))
 
     def calculate_conductivity(self, *, charges: ArrayLike = None) -> None:
 
@@ -1112,8 +1111,8 @@ class Onsager(SerialAnalysisBase):
 
         if not self._reduced:
             self.results.units["results.conductivity"] = \
-                unit.coulomb ** 2 / (unit.kilojoule * unit.angstrom
-                                     * unit.picosecond)
+                unit.coulomb ** 2 / (unit.Unit('kJ') * unit.angstrom
+                                     * unit.Unit('ps'))
 
     def calculate_electrophoretic_mobility(
             self, *, charges: ArrayLike = None, rhos: ArrayLike = None
@@ -1173,8 +1172,8 @@ class Onsager(SerialAnalysisBase):
         
         if not self._reduced:
             self.results.units["results.mobility"] = \
-                unit.angstrom ** 2 * unit.coulomb / (unit.kilojoule
-                                                     * unit.picosecond)
+                unit.angstrom ** 2 * unit.coulomb / (unit.Unit('kJ')
+                                                     * unit.Unit('ps'))
 
     def calculate_transference_number(
             self, *, charges: ArrayLike = None) -> None:

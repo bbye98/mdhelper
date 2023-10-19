@@ -12,13 +12,13 @@ import warnings
 
 import MDAnalysis as mda
 import numpy as np
-from openmm import unit
 from scipy import integrate
+from pint import UnitRegistry
+unit = UnitRegistry()
 
 from .base import SerialAnalysisBase
 from .. import ArrayLike
 from ..algorithm import molecule
-from ..openmm import unit as u
 
 def potential_profile(
         bins: Union[np.ndarray, unit.Quantity], 
@@ -112,7 +112,7 @@ def potential_profile(
             emsg = ("'V0' has units, but the rest of the data is "
                     "or should be reduced.")
             raise ValueError(emsg)
-        V0 = V0.value_in_unit(unit.volt)
+        V0 = V0.to(unit.volt)
         if isinstance(V0, unit.Quantity):
             raise ValueError("'V0' has invalid units.")
     
@@ -131,7 +131,7 @@ def potential_profile(
                     emsg = ("'dV' has units, but the rest of the data is "
                             "or should be reduced.")
                     raise ValueError(emsg)
-                dV = dV.value_in_unit(unit.volt)
+                dV = dV.to(unit.volt)
                 if isinstance(V0, unit.Quantity):
                     raise ValueError("'dV' has invalid units.")
         
@@ -139,7 +139,7 @@ def potential_profile(
             if reduced:
                 sigma_e /= 4 * np.pi
             else:
-                sigma_e *= (u.VACUUM_PERMITTIVITY * unit.volt * unit.angstrom 
+                sigma_e *= (unit.vacuum_permittivity * unit.volt * unit.angstrom 
                             / unit.elementary_charge)
             sigma_e -= integrate.trapezoid(bins * charge_density, bins) / L
 
@@ -167,7 +167,7 @@ def potential_profile(
             emsg = ("'sigma_e' has units, but the rest of the data "
                     "is reduced.")
             raise ValueError(emsg)
-        sigma_e = sigma_e.value_in_unit(unit.elementary_charge / unit.angstrom ** 2)
+        sigma_e = sigma_e.to(unit.elementary_charge / unit.angstrom ** 2)
         if isinstance(sigma_e, unit.Quantity):
             raise ValueError("'sigma_e' has invalid units.")
 
@@ -178,7 +178,7 @@ def potential_profile(
         potential *= 4 * np.pi
     else:
         potential *= unit.elementary_charge \
-                     / (u.VACUUM_PERMITTIVITY * unit.angstrom * unit.volt)
+                     / (unit.vacuum_permittivity * unit.angstrom * unit.volt)
         
     return potential
 
@@ -377,7 +377,7 @@ class DensityProfile(SerialAnalysisBase):
                 raise ValueError("Trajectory does not contain system dimensions.")
             self._dims = dims
             if isinstance(dims, unit.Quantity):
-                self._dims = self._dims.value_in_unit(unit.angstrom)
+                self._dims = self._dims.to(unit.angstrom)
 
         if isinstance(scales, (int, float)) or \
                 len(scales) == 3 and isinstance(scales[0], (int, float)):
