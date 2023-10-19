@@ -3,6 +3,7 @@ matplotlib
 mdanalysis
 netcdf4
 numpy
+pint
 scipy
 sympy
 
