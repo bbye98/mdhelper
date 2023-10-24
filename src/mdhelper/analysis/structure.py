@@ -1189,7 +1189,7 @@ class RDF2D(SerialAnalysisBase):
         
         # Add area analyzed
         if self._norm == "rdf":
-            self._area += np.delete(dims, self._drop_axis).prod() 
+            self._area += np.delete(dims[:3], self._drop_axis).prod() 
             
     def _conclude(self):
 
@@ -1366,7 +1366,7 @@ class ParallelRDF2D(RDF2D, ParallelAnalysisBase):
         
         # Store area analyzed in the current frame in the last slot of
         # the results array
-        result[self._n_bins] = np.delete(dims, self._drop_axis).prod()
+        result[self._n_bins] = np.delete(dims[:3], self._drop_axis).prod()
 
         return result
 
