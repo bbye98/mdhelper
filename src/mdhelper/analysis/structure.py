@@ -845,11 +845,10 @@ class ParallelRDF(RDF, ParallelAnalysisBase):
             reduced: bool = False, n_batches: int = None, 
             verbose: bool = True, **kwargs) -> None:
 
-        RDF.__init__(self, ag1, ag2, n_bins, range, norm=norm,
-                     exclusion=exclusion, groupings=groupings, 
-                     reduced=reduced, n_batches=n_batches,
-                     verbose=verbose, **kwargs)
-        ParallelAnalysisBase.__init__(self, ag1.universe.trajectory,
+        RDF.__init__(self, ag1, ag2, n_bins, range, norm=norm, 
+                     exclusion=exclusion, groupings=groupings, reduced=reduced,
+                     n_batches=n_batches, verbose=verbose, **kwargs)
+        ParallelAnalysisBase.__init__(self, ag1.universe.trajectory, 
                                       verbose=verbose, **kwargs)
 
     def _single_frame(self, frame: int, index: int) -> np.ndarray:
@@ -1190,7 +1189,7 @@ class RDF2D(SerialAnalysisBase):
         
         # Add area analyzed
         if self._norm == "rdf":
-            self._area += self._ts.volume / self._ts.dimensions[self._drop_axis]
+            self._area += np.delete(dims, self._drop_axis).prod() 
             
     def _conclude(self):
 
@@ -1298,6 +1297,101 @@ class RDF2D(SerialAnalysisBase):
             self.results.units = {"results.pmf": unit.kilojoule_per_mole}
 
         self.results.pmf = -kBT * np.log(self._get_rdf())
+
+class ParallelRDF2D(RDF2D, ParallelAnalysisBase):
+
+    """
+    A multithreaded implementation to calculate the two-dimensional 
+    radial distribution function (RDF) :math:`g_{ij}(r)` between types
+    :math:`i` and :math:`j` and its related properties.
+    
+    .. note::
+       For a theoretical background and a complete list of
+       parameters, attributes, and available methods, see :class:`RDF2D`.
+    """
+
+    def __init__(
+            self, ag1: mda.AtomGroup, ag2: mda.AtomGroup = None,
+            n_bins: int = 201, range: ArrayLike = (0.0, 15.0), *,
+            drop_axis: Union[int, str] = 2, norm: str = "rdf", 
+            exclusion: ArrayLike = None, 
+            groupings: Union[str, ArrayLike] = "atoms",
+            reduced: bool = False, n_batches: int = None,
+            verbose: bool = True, **kwargs) -> None:
+        
+        RDF2D.__init__(self, ag1, ag2, n_bins, range, drop_axis=drop_axis,
+                       norm=norm, exclusion=exclusion, groupings=groupings,
+                       reduced=reduced, n_batches=n_batches, verbose=verbose,
+                       **kwargs)
+        ParallelAnalysisBase.__init__(self, ag1.universe.trajectory,
+                                      verbose=verbose, **kwargs)
+        
+    def _single_frame(self, frame: int, index: int) -> np.ndarray:
+
+        _ts = self._trajectory[frame]
+        result = np.empty(1 + self._n_bins, dtype=float)
+
+        dims = _ts.dimensions
+        pos1 = self.ag1.positions if self._groupings[0] == "atoms" \
+               else molecule.center_of_mass(self.ag1, self._groupings[0])
+        pos2 = self.ag2.positions if self._groupings[1] == "atoms" \
+               else molecule.center_of_mass(self.ag2, self._groupings[1])
+        
+        # Apply corrections to avoid including periodic images in the
+        # dimension to exclude
+        pos1[:, self._drop_axis] = pos2[:, self._drop_axis] = 0
+        dims[self._drop_axis] = dims[:3].max()
+
+        # Compute radial histogram for a single frame
+        if self._n_batches:
+            edges = np.array_split(self.results.edges, self._n_batches)
+            ranges_indices = {
+                e: np.where((self.results.bins > e[0]) 
+                            & (self.results.bins < e[1]))[0]
+                for e in [(self._range[0], edges[0][-1]), 
+                          *((a[-1], b[-1]) 
+                            for a, b in zip(edges[:-1], edges[1:]))]
+            }
+
+            for r, i in ranges_indices.items():
+                result[i] = radial_histogram(
+                    pos1=pos1, pos2=pos2, n_bins=i.shape[0], range=r, 
+                    dims=dims, exclusion=self._exclusion
+                )
+        else:
+            result[:self._n_bins] = radial_histogram(
+                pos1=pos1, pos2=pos2, n_bins=self._n_bins, range=self._range,
+                dims=dims, exclusion=self._exclusion
+            )
+        
+        # Store area analyzed in the current frame in the last slot of
+        # the results array
+        result[self._n_bins] = np.delete(dims, self._drop_axis).prod()
+
+        return result
+
+    def _conclude(self):
+
+        # Tally counts in each pair separation distance bin over all
+        # frames
+        self._results = np.vstack(self._results).sum(axis=0)
+        self.results.counts[:] = self._results[:self._n_bins]
+        self._area = self._results[self._n_bins]
+
+        # Compute the normalization factor
+        norm = self.n_frames
+        if self._norm is not None:
+            norm *= np.pi * np.diff(self.results.edges ** 2)
+            if self._norm == "rdf":
+                _N2 = getattr(self.ag2, f"n_{self._groupings[1]}")
+                if self._exclusion:
+                    _N2 -= self._exclusion[1]
+                norm *= (getattr(self.ag1, f"n_{self._groupings[0]}") * _N2
+                         * self.n_frames / self._area)
+        
+        # Compute and store the radial distribution function, the single
+        # particle density, or the raw radial pair counts
+        self.results.rdf = self.results.counts / norm
 
 class StructureFactor(SerialAnalysisBase):
 

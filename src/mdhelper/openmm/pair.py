@@ -750,7 +750,7 @@ def ljts(
         and :code:`"C"`, respectively. If the Mie or WCA potential is
         used, the appropriate coefficients are used instead.
 
-    powers : `tuple`, keyword-only, default: :code:`(12, 6)`
+    powers : `tuple` or `dict`, keyword-only, default: :code:`(12, 6)`
         Powers :math:`\gamma_\mathrm{r}` and :math:`\gamma_\mathrm{a}`, 
         in that order. If a `dict` is provided, use the keys :code:`"r"`
         and :code:`"a"`, respectively.
@@ -874,7 +874,7 @@ def ljts(
         prefix = f"step({cutoff_ljts}-r)*(" if cutoff != cutoff_ljts else "("
         suffix = ((f"-ucut);ucut={coefs[2]}*epsilon12"
                    f"*({coefs[0]}*(sigma12/{cutoff_ljts})^{powers[0]}"
-                   f"-{coefs[1]}*(sigma12/{cutoff_ljts})^{powers[1]}));") 
+                   f"-{coefs[1]}*(sigma12/{cutoff_ljts})^{powers[1]});") 
                   if shift else ");")
     if mix == "arithmetic":
         mix = "sigma12=(sigma1+sigma2)/2;epsilon12=sqrt(epsilon1*epsilon2);"
@@ -1065,7 +1065,7 @@ def wca(cutoff: Union[float, unit.Quantity], *, mix: str = "arithmetic",
         
         **Reference unit**: :math:`\mathrm{nm}`.
 
-    powers : `tuple`, keyword-only, default: :code:`(12, 6)`
+    powers : `tuple` or `dict`, keyword-only, default: :code:`(12, 6)`
         Powers :math:`\gamma_\mathrm{r}` and :math:`\gamma_\mathrm{a}`, 
         in that order. If a `dict` is provided, use the keys :code:`"r"`
         and :code:`"a"`, respectively.
