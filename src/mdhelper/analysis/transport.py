@@ -14,15 +14,17 @@ import warnings
 import MDAnalysis as mda
 from MDAnalysis.lib.log import ProgressBar
 import numpy as np
-from openmm import unit
 from scipy import optimize
 
 from .base import SerialAnalysisBase
-from .. import ArrayLike
+from .. import FOUND_OPENMM, Q_, ureg
 from ..algorithm import correlation, molecule
 from ..fit.polynomial import poly1
 
-def msd_fft(*args, **kwargs) -> np.ndarray:
+if FOUND_OPENMM:
+    from openmm import unit
+
+def msd_fft(*args, **kwargs) -> np.ndarray[float]:
 
     """
     Calculates the mean squared displacement (MSD) or the analogous 
@@ -51,12 +53,13 @@ def msd_shift(*args, **kwargs) -> np.ndarray:
     return correlation.msd_shift(*args, **kwargs)
 
 def coefficients(
-        time: np.ndarray, msd_cross: np.ndarray, msd_self: np.ndarray, 
-        Ns: np.ndarray, dims: np.ndarray, kBT: float, start: int = 1, 
+        time: np.ndarray[float], msd_cross: np.ndarray[float],
+        msd_self: np.ndarray[float], Ns: np.ndarray[int], 
+        dims: np.ndarray[float], kBT: float, start: int = 1, 
         stop: int = None, scale: str = "log", *, start_self: int = None, 
         stop_self: int = None, scale_self: str = None, 
         enforce_linear: bool = True, verbose: bool = False
-    ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray[float], np.ndarray[float], np.ndarray[float]]:
 
     r"""
     Fits the mean squared displacements (MSDs) or the analogous cross
@@ -279,7 +282,7 @@ def coefficients(
         return L_ij, Ns * D_i / denom, D_i
 
 def conductivity(
-        L_ij: np.ndarray[float], z: ArrayLike, *, reduced: bool = False
+        L_ij: np.ndarray[float], z: np.ndarray[float], *, reduced: bool = False
     ) -> np.ndarray[float]:
 
     r"""
@@ -309,7 +312,7 @@ def conductivity(
 
     Returns
     -------
-    conductivity : `numpy.ndarray`
+    kappas : `numpy.ndarray`
         Conductivities :math:`\kappa` for the atoms or residues in the
         :math:`N_\mathrm{g}` groups and :math:`N_\mathrm{b}` trajectory
         blocks.
@@ -322,16 +325,16 @@ def conductivity(
         **To SI unit**: :math:`1\times10^{19}\,\mathrm{S}/\mathrm{m}`.
     """
 
-    conductivity = np.einsum("ij, ij", L_ij, z * z[:, None])
+    kappas = np.einsum("ij, ij", L_ij, z * z[:, None])
     if not reduced:
-        conductivity *= (unit.AVOGADRO_CONSTANT_NA
-                         * unit.elementary_charge ** 2 * unit.mole
-                         / unit.coulomb ** 2)
-    return conductivity
+        kappas = (kappas * ureg.avogadro_constant 
+                  * ureg.elementary_charge ** 2 * ureg.mole
+                  / ureg.coulomb ** 2).to_reduced_units().magnitude
+    return kappas
 
 def electrophoretic_mobility(
-        L_ij: np.ndarray[float], z: ArrayLike, rho: ArrayLike, *,
-        reduced: bool = False) -> np.ndarray[float]:
+        L_ij: np.ndarray[float], z: np.ndarray[float], rho: np.ndarray[float],
+        *, reduced: bool = False) -> np.ndarray[float]:
 
     r"""
     Calculates the electrophoretic mobility :math:`\mu_i` of each
@@ -368,7 +371,7 @@ def electrophoretic_mobility(
 
     Returns
     -------
-    electrophoretic_mobility : `numpy.ndarray`
+    mus : `numpy.ndarray`
         Electrophoretic mobilities :math:`\mu_i` for the atoms or 
         residues in the :math:`N_\mathrm{g}` groups and 
         :math:`N_\mathrm{b}` trajectory blocks.
@@ -382,14 +385,14 @@ def electrophoretic_mobility(
         (\mathrm{V}\cdot\mathrm{s})`.
     """
 
-    mobility = (L_ij * z / rho[:, None]).sum(axis=1)
+    mus = (L_ij * z / rho[:, None]).sum(axis=1)
     if not reduced:
-        mobility *= (unit.AVOGADRO_CONSTANT_NA * unit.elementary_charge
-                     * unit.mole / unit.coulomb)
-    return mobility
+        mus = (mus * ureg.avogadro_constant * ureg.elementary_charge 
+               * ureg.mole / ureg.coulomb).to_reduced_units().magnitude
+    return mus
 
 def transference_number(
-        L_ij: np.ndarray[float], z: ArrayLike) -> np.ndarray[float]:
+        L_ij: np.ndarray[float], z: np.ndarray[float]) -> np.ndarray[float]:
 
     r"""
     Calculates the transference number :math:`t_i` of each species using
@@ -415,7 +418,7 @@ def transference_number(
 
     Returns
     -------
-    transference_number : `numpy.ndarray`
+    ts : `numpy.ndarray`
         Transference numbers :math:`t_i` for the atoms or residues in
         the :math:`N_\mathrm{g}` groups and :math:`N_\mathrm{b}` 
         trajectory blocks.
@@ -755,22 +758,18 @@ class Onsager(SerialAnalysisBase):
     _GROUPINGS = {"atoms", "residues", "segments"}
 
     def __init__(
-            self, groups: Union[mda.AtomGroup, ArrayLike],
-            groupings: Union[str, ArrayLike] = "atoms",
-            temp: Union[float, unit.Quantity] = 300, *, n_blocks: int = 1,
-            center: bool = False, com_wrap: bool = False, 
-            dt: Union[float, unit.Quantity] = None, fft: bool = True, 
+            self, groups: Union[mda.AtomGroup, list[mda.AtomGroup]],
+            groupings: Union[str, list[str]] = "atoms",
+            temp: Union[float, "unit.Quantity", Q_] = 300, *, 
+            dims: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
+            n_blocks: int = 1, center: bool = False, com_wrap: bool = False, 
+            dt: Union[float, "unit.Quantity", Q_] = None, fft: bool = True, 
             reduced: bool = False, unwrap: bool = False, verbose: bool = True,
             **kwargs) -> None:
         
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
         super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
-        
-        if self.universe.dimensions is None:
-            self._dims = None
-        else:
-            self._dims = self.universe.dimensions[:3].copy()
 
         self._n_groups = len(self._groups)
         if isinstance(groupings, str):
@@ -792,29 +791,51 @@ class Onsager(SerialAnalysisBase):
             self._groupings = groupings
 
         self._reduced = reduced
-        if self._reduced:
-            self._kBT = temp
+        if dims:
+            if isinstance(dims, np.ndarray):
+                self._dims = dims
+            else:
+                if reduced:
+                    raise TypeError("'dims' cannot have units when "
+                                    "'reduced=True'.")
+                if dims.__module__ == "openmm.unit.quantity":
+                    self._dims = dims.value_in_units(unit.angstrom)
+                else:
+                    self._dims = dims.m_as(ureg.angstrom)
+        elif self.universe.dimensions is None:
+            self._dims = None
+        else:
+            self._dims = self.universe.dimensions[:3].copy()
+
+        if reduced:
+            if isinstance(temp, (int, float)):
+                self._kBT = temp
+            else:
+                raise TypeError("'temp' cannot have units when 'reduced=True'.")
         else:
             if isinstance(temp, (int, float)):
-                self._kBT = (
-                    unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB
-                    * temp * unit.kelvin
-                ).value_in_unit(unit.kilojoule_per_mole)
-            else:
-                self._kBT = (
-                    unit.AVOGADRO_CONSTANT_NA * unit.BOLTZMANN_CONSTANT_kB 
-                    * temp
-                ).value_in_unit(unit.kilojoule_per_mole)
-            self.results.units = {"_dims": unit.angstrom,
-                                  "_kBT": unit.kilojoule_per_mole}
+                temp *= ureg.kelvin
+            elif temp.__module__ == "openmm.unit.quantity":
+                temp = temp.value_in_unit(unit.kelvin) * ureg.kelvin
+            self._kBT = (ureg.avogadro_constant * ureg.boltzmann_constant
+                         * temp).m_as(ureg.kilojoule / ureg.mole)
+            self.results.units = {"_dims": ureg.angstrom,
+                                  "_kBT": ureg.kilojoule / ureg.mole}
         
         self._n_blocks = n_blocks
         self._center = center
         self._com_wrap = com_wrap
         if dt:
-            self._dt = dt
-            if isinstance(dt, unit.Quantity):
-                self._dt = self._dt.value_in_unit(unit.picosecond)
+            if isinstance(dt, (int, float)):
+                self._dt = dt
+            else:
+                if reduced:
+                    raise TypeError("'dt' cannot have units when "
+                                    "'reduced=True'.")
+                if dt.__module__ == "openmm.unit.quantity":
+                    self._dt = dt.value_in_unit(unit.picosecond)
+                else:
+                    self._dt = dt.m_as(ureg.picosecond)
         else:
             self._dt = self._trajectory.dt
         self._fft = fft
@@ -889,9 +910,9 @@ class Onsager(SerialAnalysisBase):
 
         # Store reference units
         if not self._reduced:
-            self.results.units["results.time"] = unit.picosecond
-            self.results.units["results.msd_cross"] = unit.angstrom ** 2
-            self.results.units["results.msd_self"] = unit.angstrom ** 2
+            self.results.units["results.time"] = ureg.picosecond
+            self.results.units["results.msd_cross"] = ureg.angstrom ** 2
+            self.results.units["results.msd_self"] = ureg.angstrom ** 2
     
     def _single_frame(self) -> None:
 
@@ -944,6 +965,7 @@ class Onsager(SerialAnalysisBase):
 
         # Compute the MSDs (or their analogs) for each unique AtomGroup
         # pair
+        # TODO: Only sum two dimensions if system is 2D
         msd = msd_fft if self._fft else msd_shift
         for i, (a1, a2) in enumerate(ProgressBar(self.results.pairs,
                                                  verbose=self._verbose)):
@@ -972,7 +994,7 @@ class Onsager(SerialAnalysisBase):
             else:
                 self.results.msd_cross[i] = np.nan
         
-        # Account for dimensionality by dividing by 2 * n
+        # Account for dimensionality by dividing by 2 * D
         if self._dims is None:
             d = 6
             wmsg = ("No system size information found in the "
@@ -1075,7 +1097,7 @@ class Onsager(SerialAnalysisBase):
             self.results.units["results.L_ij"] = \
                 1 / (unit.kilojoule_per_mole * unit.angstrom * unit.picosecond)
 
-    def calculate_conductivity(self, *, charges: ArrayLike = None) -> None:
+    def calculate_conductivity(self, *, charges: np.ndarray = None) -> None:
 
         r"""
         Calculates the ionic conductivity :math:`\kappa` using the
@@ -1116,7 +1138,7 @@ class Onsager(SerialAnalysisBase):
                                      * unit.picosecond)
 
     def calculate_electrophoretic_mobility(
-            self, *, charges: ArrayLike = None, rhos: ArrayLike = None
+            self, *, charges: np.ndarray = None, rhos: np.ndarray = None
         ) -> None:
 
         r"""
@@ -1177,7 +1199,7 @@ class Onsager(SerialAnalysisBase):
                                                      * unit.picosecond)
 
     def calculate_transference_number(
-            self, *, charges: ArrayLike = None) -> None:
+            self, *, charges: np.ndarray = None) -> None:
 
         r"""
         Calculates the transference number of each species using the

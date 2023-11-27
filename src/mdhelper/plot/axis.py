@@ -6,13 +6,15 @@ Axis components
 This module provides additional functionality for Matplotlib axes.
 """
 
+from typing import Any
+
 import matplotlib as mpl
 import numpy as np
 
 def tabular_legend(
-        rows: list, cols: list, *, hlabel: str = None, vlabel: str = None,
-        hla: str = "left", vla: str = "top", condense: bool = False,
-        **kwargs: ...) -> tuple[dict, int, int]:
+        rows: list[str], cols: list[str], *, hlabel: str = None, 
+        vlabel: str = None, hla: str = "left", vla: str = "top", 
+        condense: bool = False, **kwargs) -> tuple[dict[str, Any], int, int]:
 
     r"""
     Sets up a tabular legend for a :class:`matplotlib.axes.Axes` object.

@@ -12,7 +12,9 @@ import sympy
 
 from .. import ArrayLike
 
-def closest_factors(value: int, n_factors: int, reverse: bool = False) -> np.ndarray:
+def closest_factors(
+        value: int, n_factors: int, reverse: bool = False
+    ) -> np.ndarray[int]:
 
     """
     Get the :math:`n` closest factors for a given number :math:`N`, 
@@ -72,8 +74,8 @@ def closest_factors(value: int, n_factors: int, reverse: bool = False) -> np.nda
     return np.sort(factors)
 
 def replicate(
-        cell_dims: np.ndarray, cell_pos: np.ndarray, n_cells: ArrayLike
-    ) -> np.ndarray:
+        cell_dims: np.ndarray[float], cell_pos: np.ndarray[float], 
+        n_cells: np.ndarray[int]) -> np.ndarray[float]:
 
     r"""
     Replicate point(s) in an unit cell along the :math:`x`-, :math:`y`-,
@@ -81,24 +83,24 @@ def replicate(
 
     Parameters
     ----------
-    cell_dims : `np.ndarray`
+    cell_dims : `numpy.ndarray`
         Dimensions of the unit cell.
 
         **Shape**: :math:`(3,)`.
 
-    cell_pos : `np.ndarray`
+    cell_pos : `numpy.ndarray`
         Positions of the :math:`N` points inside the unit cell.
 
         **Shape**: :math:`(N,\,3)`.
 
-    n_cells : `np.ndarray`
+    n_cells : `numpy.ndarray`
         Number of times to replicate the unit cell in each direction.
 
         **Shape**: :math:`(3,)`.
 
     Returns
     -------
-    pos : `np.ndarray`
+    pos : `numpy.ndarray`
         Positions of the original and replicated points.
     """
 
@@ -130,7 +132,7 @@ def replicate(
     
     return np.vstack((x, y, z)).T
 
-def rebin(x: np.ndarray, factor: int = None) -> np.ndarray:
+def rebin(x: np.ndarray[float], factor: int = None) -> np.ndarray[float]:
 
     r"""
     Rebin discrete data.

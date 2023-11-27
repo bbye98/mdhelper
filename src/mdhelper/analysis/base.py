@@ -238,7 +238,8 @@ class ParallelAnalysisBase(SerialAnalysisBase):
         n_jobs = min(n_jobs or np.inf, self.n_frames, 
                      len(os.sched_getaffinity(0)))
         frames = frames if frames \
-                 else np.arange(self.start, self.stop, self.step)
+                 else np.arange(self.start or 0, self.stop or self.n_frames,
+                                self.step)
         indices = np.arange(len(frames))
 
         if _verbose:

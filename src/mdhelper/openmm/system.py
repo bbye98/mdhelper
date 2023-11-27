@@ -21,12 +21,14 @@ except ImportError:
         FOUND_ICPLUGIN = True
     except ImportError:
         FOUND_ICPLUGIN = False
+import mpmath
 import numpy as np
 import openmm
 from openmm import app, unit
+from scipy import special
 
 from .unit import VACUUM_PERMITTIVITY
-from .. import ArrayLike
+from .. import Q_, ArrayLike
 
 def register_particles(
         system: openmm.System, topology: app.Topology,
@@ -47,7 +49,7 @@ def register_particles(
     Parameters
     ----------
     system : `openmm.System`
-        OpenMM molecular system.
+        OpenMM molecular system. Can be :code:`None`.
 
     topology : `openmm.app.Topology`
         Topological information about an OpenMM system.
@@ -72,7 +74,8 @@ def register_particles(
         Name of the atom(s) to add.
     
     resname : `str`, keyword-only, optional
-        Name of the residue(s) to add.
+        Name of the residue(s) to add. If not specified, `name` is used
+        if it was specified.
 
     nbforce : `openmm.NonbondedForce`, keyword-only, optional
         Built-in hybrid pair potential object containing the
@@ -108,14 +111,17 @@ def register_particles(
         :func:`mdhelper.openmm.pair.gauss`.
     """
 
+    has_nbforce = nbforce is not None
+    has_system = system is not None
     per_chain = chain is None
     for _ in range(N):
-        system.addParticle(mass)
+        if has_system:
+            system.addParticle(mass)
         if per_chain:
             chain = topology.addChain()
-        residue = topology.addResidue(resname, chain)
+        residue = topology.addResidue(resname or name, chain)
         topology.addAtom(name, element, residue)
-        if nbforce is not None:
+        if has_nbforce:
             nbforce.addParticle(charge, sigma, epsilon)
         for cnbforce, param in cnbforces.items():
             cnbforce.addParticle(param)
@@ -276,14 +282,19 @@ def slab_correction(
     system.setDefaultPeriodicBoxVectors(*pbv)
 
     # Obtain particle charge information
-    dtype = type(nbforce.getParticleParameters(0)[charge_index])
-    qs = np.fromiter(
-        (nbforce.getParticleParameters(i)[charge_index] / unit.elementary_charge
-         for i in range(nbforce.getNumParticles())) if dtype == unit.Quantity \
-        else (nbforce.getParticleParameters(i)[charge_index]
-              for i in range(nbforce.getNumParticles())),
-        dtype=float
-    )
+    if nbforce.getParticleParameters(0)[charge_index] == unit.Quantity:
+        qs = np.fromiter(
+            (nbforce.getParticleParameters(i)[charge_index]
+             .value_in_unit(unit.elementary_charge)
+             for i in range(nbforce.getNumParticles())),
+            dtype=float
+        )
+    else:
+        qs = np.fromiter(
+            (nbforce.getParticleParameters(i)[charge_index]
+             for i in range(nbforce.getNumParticles())),
+            dtype=float
+        )
     neutral = qs.min() == qs.max()
     if not neutral:
         q_tot = qs.sum()
@@ -396,12 +407,12 @@ def image_charges(
         system: openmm.System, topology: app.Topology,
         positions: Union[np.ndarray, unit.Quantity],
         temp: Union[float, unit.Quantity], fric: Union[float, unit.Quantity],
-        dt: Union[float, unit.Quantity], *, n_cells: int = 2,
-        nbforce: openmm.NonbondedForce = None,
+        dt: Union[float, unit.Quantity], *, gamma: float = -1, 
+        n_cells: int = 2, nbforce: openmm.NonbondedForce = None,
         cnbforces: Union[Iterable[openmm.CustomNonbondedForce],
                          dict[openmm.CustomNonbondedForce, Iterable[Any]]] = {},
-        params: Iterable[Iterable[Any]] = (), wall_indices: ArrayLike = None, 
-        exclude: bool = False) -> tuple[unit.Quantity, openmm.Integrator]:
+        wall_indices: ArrayLike = None, exclude: bool = False
+    ) -> tuple[unit.Quantity, openmm.Integrator]:
 
     r"""
     Implements the method of image charges for perfectly conducting
@@ -411,7 +422,8 @@ def image_charges(
 
     .. note::
 
-       The boundaries must be in the $xy$-plane and along the $z$-axis.
+       The boundaries must be in the :math:`xy`-plane and along the 
+       :math:`z`-axis.
 
     Parameters
     ----------
@@ -443,6 +455,9 @@ def image_charges(
         Integration step size :math:`\Delta t`. 
         
         **Reference unit**: :math:`\mathrm{ps}`.
+
+    gamma : `float`, keyword-only, default: :code:`-1`
+        Scaled image charge magnitude :math:`\gamma`.
 
     n_cells : `int`, keyword-only, default: :code:`2`
         Total number :math:`n_\mathrm{cell}` of cells, with :math:`1` 
@@ -529,7 +544,7 @@ def image_charges(
     Prepare the `cnbforces` `dict` argument for a system with the
     following custom pair potentials:
 
-    * :code:`PairGauss`: Gaussian potential with per-particle
+    * :code:`pair_gauss`: Gaussian potential with per-particle
       parameters `type` and `beta`.
         
       * `type` is the particle type, and is used to look up a
@@ -542,11 +557,11 @@ def image_charges(
         example, the new value is :math:`\beta = 42` (arbitrary
         units).
 
-    * :code:`PairWCA`: Weeks–Chander–Andersen potential with per-
+    * :code:`pair_wca`: Weeks–Chander–Andersen potential with per-
       particle parameters `sigma` and `epsilon`, both of which
       should be set to :math:`0` to turn off this potential for
       image charges.
-    * :code:`PairCoulRecip`: Smeared Coulomb potential with per-
+    * :code:`pair_coul_recip`: Smeared Coulomb potential with per-
       particle parameter `charge`, which should be flipped for image
       charges, and `dummy`, a value that should be set to :math:`0`.
 
@@ -554,9 +569,9 @@ def image_charges(
 
        NEW_BETA_VALUE = 42
        cnbforces = {
-           PairGauss: {"replace": {0: {0: 2, 1: 3}, 1: NEW_BETA_VALUE}},
-           PairWCA: None,
-           PairCoulRecip: {"charge": 0, "zero": 1}
+           pair_gauss: {"replace": {0: {0: 2, 1: 3}, 1: NEW_BETA_VALUE}},
+           pair_wca: None,
+           pair_coul_recip: {"charge": 0, "zero": 1}
        }
 
     References
@@ -575,6 +590,18 @@ def image_charges(
        Adsorption near Aqueous Interfaces. *Proc. Natl. Acad. Sci.
        U.S.A.* **2021**, *118* (19), e2020615118.
        https://doi.org/10.1073/pnas.2020615118.
+
+    .. [4] Dos Santos, A. P.; Girotto, M.; Levin, Y. Simulations of 
+       Coulomb Systems with Slab Geometry Using an Efficient 3D Ewald 
+       Summation Method. *The Journal of Chemical Physics* **2016**, 
+       **144** (14), 144103. https://doi.org/10.1063/1.4945560.
+
+    .. [5] Dos Santos, A. P.; Girotto, M.; Levin, Y. Simulations of 
+       Coulomb Systems Confined by Polarizable Surfaces Using Periodic 
+       Green Functions. *The Journal of Chemical Physics* **2017**, 
+       **147** (18), 184105. https://doi.org/10.1063/1.4997420.
+
+    .. [6] Son, C. Y.; Wang, Z.-G. Manuscript in preparation.
     """
 
     if not FOUND_ICPLUGIN:
@@ -585,6 +612,54 @@ def image_charges(
                 "or the constvplugin (https://github.com/scychon/openmm_constV) "
                 "package is installed.")
         raise ImportError(emsg)
+    
+    if np.isclose(gamma, 0):
+        raise ValueError("Use the slab correction for gamma=0.")
+    if not np.isclose(gamma, -1) and n_cells != 2:
+        emsg = ("The method of image charges with gamma != -1 is only "
+                "implemented for n_cells=2.")
+        raise ValueError(emsg)
+
+    def _ic_beta(
+            gamma: float, x: float, 
+            dims: Union[np.ndarray[float], unit.Quantity, Q_]
+        ) -> float:
+
+        """
+        Computes the :math:`\beta` value used in the higher-order term
+        correction for the method of image charges with 
+        :math:`\gamma\neq\pm1`.
+
+        Parameters
+        ----------
+        gamma : `float`
+            Scaled image charge magnitude :math:`\gamma`.
+
+        x : `float`
+            Scaled :math:`x`-coordinate of the ion.
+
+        dims : `numpy.ndarray`, `openmm.unit.Quantity`, or `pint.Quantity`
+            System dimensions :math:`(L_x,\,L_y,\,L_z)`.
+
+            **Reference unit**: :math:`\mathrm{nm}`.
+
+        Returns
+        -------
+        beta : `float`
+            Approximated :math:`\beta` value.
+        """
+
+        if not 0 <= x <= 1:
+            raise ValueError("'x' must be between 0 and 1.")
+        if np.isclose(x, 0.5):
+            diff = (2 * special.zeta(3, 1.5) 
+                    - 2 * gamma ** 4 * mpmath.lerchphi(gamma ** 2, 3, 1.5))
+        else:
+            diff = (special.zeta(2, 2 - x) - special.zeta(2, 1 + x) - gamma ** 4 * (
+                mpmath.lerchphi(gamma ** 2, 2, 2 - x) 
+                - mpmath.lerchphi(gamma ** 2, 2, 1 + x)
+            )) / (2 * x - 1)
+        return dims[0] * dims[1] * diff / dims[2] ** 2
 
     # Get system information
     dims = np.asarray(
@@ -602,6 +677,79 @@ def image_charges(
             (np.isclose(positions[:, 2], 0).nonzero()[0], 
              np.isclose(positions[:, 2], dims[2]).nonzero()[0])
         )
+
+    # Obtain particle charge information
+    if nbforce is None:
+        charge_index = None
+        for force, params in cnbforces:
+            if "charge" in params:
+                charge_index = params["charge"]
+                break
+        if charge_index is None:
+            raise ValueError("No charge information provided.")
+    else:
+        force = nbforce
+        charge_index = 0
+    
+    if force.getParticleParameters(0)[charge_index] == unit.Quantity:
+        qs = np.fromiter(
+            (force.getParticleParameters(i)[charge_index]
+             .value_in_unit(unit.elementary_charge)
+            for i in range(force.getNumParticles())),
+            dtype=float
+        )
+    else:
+        qs = np.fromiter(
+            (force.getParticleParameters(i)[charge_index]
+             for i in range(force.getNumParticles())),
+            dtype=float
+        )
+    neutral = qs.min() == qs.max()
+    if not neutral:
+        q_tot = qs.sum()
+        electroneutral = np.isclose(q_tot, 0)
+
+    # Find averaged beta value for image charges with gamma =/= +/-1
+    beta = (_ic_beta(gamma, 0, dims) + _ic_beta(gamma, 0.5, dims)) / 2
+
+    # Set up higher-order image charge corrections
+    cv_E_corr = openmm.CustomExternalForce("q*(1-2*z/Lz)")
+    cv_E_corr.addGlobalParameter("Lz", dims[2] * unit.nanometer)
+    cv_E_corr.addPerParticleParameter("q")
+    cv_M_z = openmm.CustomExternalForce("q*z")
+    cv_M_z.addPerParticleParameter("q")
+    cv_M_zz = openmm.CustomExternalForce("q*z^2")
+    cv_M_zz.addPerParticleParameter("q")
+    corr = openmm.CustomCVForce("")
+    corr_energy = "coef1*E_corr*M_z"
+    corr.addCollectiveVariable("E_corr", cv_E_corr)
+    corr.addCollectiveVariable("M_z", cv_M_z)
+    corr.addGlobalParameter(
+        "coef1", 
+        unit.AVOGADRO_CONSTANT_NA * gamma * beta 
+        / (16 * np.pi * VACUUM_PERMITTIVITY * dims[2] ** 2)
+    )
+    if not np.isclose(gamma, -1):
+        corr_energy += "+coef2*M_z^2"
+    if not electroneutral:
+        if np.isclose(gamma, 1):
+            corr_energy += "-coef2*q_tot*M_z*L_z"
+        elif np.isclose(gamma, -1):
+            corr_energy += "+coef2*q_tot*(M_z*L_z-M_zz)"
+        else:
+            corr_energy += "-coef2*q_tot*M_zz"
+        corr.addGlobalParameter("q_tot", q_tot)
+    if "coef2" in corr_energy:
+        corr.addGlobalParameter(
+            "coef2", 
+            unit.AVOGADRO_CONSTANT_NA 
+            / (2 * VACUUM_PERMITTIVITY * dims[0] * dims[1] * dims[2])
+        )
+    if "L_z" in corr_energy:
+        corr.addGlobalParameter("L_z", dims[2] * unit.nanometer)
+    if "M_zz" in corr_energy:
+        corr.addCollectiveVariable("M_zz", cv_M_zz)
+    corr.setEnergyFunction(corr_energy)
 
     # Mirror particle positions
     if n_cells == 2:
@@ -638,7 +786,7 @@ def image_charges(
     atoms = list(topology.atoms())
     residues = list(topology.residues())
     for c in range(1, n_cells):
-        sign = (1 - 2 * (c % 2))
+        sign = (1 - 2 * (c % 2)) * gamma
         chains_ic = [topology.addChain() for _ in range(N_real_chains)]
         residues_ic = [topology.addResidue(f"IC_{r.name}", 
                                            chains_ic[r.chain.index])
@@ -708,7 +856,7 @@ def image_charges(
 
 def electric_field(
         system: openmm.System, nbforce: openmm.NonbondedForce,
-        efield: Union[float, unit.Quantity,], *, axis: int = 2,
+        E: Union[float, unit.Quantity,], *, axis: int = 2,
         charge_index: int = 0, atom_indices: Union[int, Iterable] = None
     ) -> None:
 
@@ -749,7 +897,7 @@ def electric_field(
            first per-particle parameter stored in `nbforce`. If not, the
            index can be specified in `charge_index`.
     
-    efield : `float` or `openmm.unit.Quantity`
+    E : `float` or `openmm.unit.Quantity`
         Electric field :math:`E`.
 
         **Reference unit**: :math:`\mathrm{kJ/(mol\cdot nm\cdot e)}`.
@@ -781,7 +929,7 @@ def electric_field(
 
     # Create and register particles to the electric field
     efield = openmm.CustomExternalForce(f"-q*E*{x}")
-    efield.addGlobalParameter("E", efield)
+    efield.addGlobalParameter("E", E)
     efield.addPerParticleParameter('q')
 
     for i in atom_indices:

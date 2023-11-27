@@ -40,6 +40,7 @@ intersphinx_mapping = {
     "mdhelper": ("https://docs.mdanalysis.org/stable/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "openmm": ("http://docs.openmm.org/latest/api-python/", None),
+    "pint": ("https://pint.readthedocs.io/en/stable/", None),
     "python": ("https://docs.python.org/3/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None)
 }

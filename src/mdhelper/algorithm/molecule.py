@@ -12,14 +12,14 @@ from typing import Union
 import MDAnalysis as mda
 import numpy as np
 
-from .. import ArrayLike
-
 def center_of_mass(
         group: mda.AtomGroup = None, grouping: str = None, *,
-        masses: ArrayLike = None, positions: ArrayLike = None,
-        images: np.ndarray = None, dims: np.ndarray = None,
+        masses: Union[list[float], np.ndarray[float]] = None, 
+        positions: Union[list[float], np.ndarray[float]] = None,
+        images: np.ndarray[int] = None, dims: np.ndarray[float] = None,
         n_groups: int = None, raw: bool = False
-    ) -> np.ndarray:
+    ) -> Union[np.ndarray[float], 
+               tuple[np.ndarray[float], np.ndarray[float], np.ndarray[float]]]:
     
     r"""
     Computes the center(s) of mass for a collection of particles.
@@ -330,10 +330,11 @@ def center_of_mass(
 
 def radius_of_gyration(
         group: mda.AtomGroup = None, grouping: str = None, *,
-        positions: ArrayLike = None, masses: ArrayLike = None,
-        com: ArrayLike = None, images: np.ndarray = None, 
-        dims: np.ndarray = None, n_groups: int = None, components: bool = False
-    ) -> Union[float, np.ndarray]:
+        positions: Union[list[tuple[tuple[float]]], np.ndarray[float]] = None,
+        masses: Union[list[tuple[float]], np.ndarray[float]] = None,
+        com: np.ndarray[float] = None, images: np.ndarray[int] = None, 
+        dims: np.ndarray[float] = None, n_groups: int = None, 
+        components: bool = False) -> Union[float, np.ndarray[float]]:
     
     r"""
     Computes the radii of gyration for a collection of particles.
