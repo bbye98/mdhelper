@@ -804,7 +804,7 @@ def image_charges(
     atoms = list(topology.atoms())
     residues = list(topology.residues())
     for c in range(1, n_cells):
-        coef = (2 * (c % 2) - 1) * gamma
+        coef = gamma ** c
         chains_ic = [topology.addChain() for _ in range(N_real_chains)]
         residues_ic = [topology.addResidue(f"IC_{r.name}", 
                                            chains_ic[r.chain.index])
