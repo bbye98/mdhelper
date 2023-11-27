@@ -10,7 +10,6 @@ other MDHelper modules.
 import numpy as np
 import sympy
 
-from .. import ArrayLike
 
 def closest_factors(
         value: int, n_factors: int, reverse: bool = False

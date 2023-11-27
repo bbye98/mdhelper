@@ -720,7 +720,7 @@ def image_charges(
     beta = (_ic_beta(gamma, 0, dims) + _ic_beta(gamma, 0.5, dims)) / 2
 
     # Set up higher-order image charge and slab corrections using real
-    # simulation cell dimensions
+    # simulation box dimensions
     cv_E_corr = openmm.CustomExternalForce("q*(1-2*z/Lz)")
     cv_E_corr.addGlobalParameter("Lz", dims[2] * unit.nanometer)
     cv_E_corr.addPerParticleParameter("q")

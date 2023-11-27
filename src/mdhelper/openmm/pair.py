@@ -9,7 +9,7 @@ potentials. Generally, the pair potentials are named after their LAMMPS
 :code:`pair_style` counterparts, if available.
 """
 
-from typing import Iterable, Union
+from typing import Union
 
 import numpy as np
 import openmm
@@ -21,7 +21,7 @@ def _setup_pair(
         cnbforce: openmm.CustomNonbondedForce,
         cutoff: Union[float, unit.Quantity],
         global_params: dict[str, Union[float, unit.Quantity]],
-        per_params: list,
+        per_params: list[str],
         tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
                                    openmm.Discrete2DFunction]],
         method: int = openmm.CustomNonbondedForce.CutoffPeriodic
@@ -72,7 +72,7 @@ def _setup_pair(
 def coul_gauss(
         cutoff: Union[float, unit.Quantity], tol: float = 1e-4, *,
         g_ewald: Union[float, unit.Quantity] = None,
-        dims: Union[Iterable, unit.Quantity] = None,
+        dims: Union[np.ndarray[float], unit.Quantity] = None,
         mix: str = "default", per_params: list = None,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
         tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
