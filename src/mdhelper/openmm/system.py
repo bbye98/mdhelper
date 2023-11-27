@@ -3,9 +3,10 @@ OpenMM system extensions and tools
 ==================================
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
-This module contains implementations of common OpenMM topology 
-transformations, like the Yeh–Berkowitz slab correction, the method of
-image charges, and adding an external electric field.
+This module contains implementations of common OpenMM system
+transformations, like the Yeh–Berkowitz and Ballenegger–Arnold–Cerdà
+slab corrections, the method of image charges, and an applied potential
+difference.
 """
 
 import logging
@@ -28,7 +29,6 @@ from openmm import app, unit
 from scipy import special
 
 from .unit import VACUUM_PERMITTIVITY
-from .. import Q_, ArrayLike
 
 def register_particles(
         system: openmm.System, topology: app.Topology,
@@ -38,8 +38,7 @@ def register_particles(
         charge: Union[float, unit.Quantity] = 0.0,
         sigma: Union[float, unit.Quantity] = 0.0,
         epsilon: Union[float, unit.Quantity] = 0.0,
-        cnbforces: Union[ArrayLike, dict[openmm.CustomNonbondedForce, 
-                                         Iterable[Any]]] = {}
+        cnbforces: dict[openmm.CustomNonbondedForce, Iterable[Any]] = None
     ) -> None:
 
     """
@@ -49,17 +48,18 @@ def register_particles(
     Parameters
     ----------
     system : `openmm.System`
-        OpenMM molecular system. Can be :code:`None`.
+        OpenMM molecular system. Can be :code:`None` if particles are to
+        be registered to the topology only.
 
     topology : `openmm.app.Topology`
         Topological information about an OpenMM system.
 
     N : `int`, default: :code:`0`
-        Number of atom(s). If not provided, no particles are added.
+        Number of atom(s). If not specified, no particles are added.
 
     mass : `float` or `openmm.unit.Quantity`, default: :code:`0`
-        Molar mass. If not provided, particles have no mass and will not
-        move. 
+        Molar mass. If not specified, particles are massless and will 
+        not move.
         
         **Reference unit**: :math:`\\mathrm{g/mol}`.
 
@@ -75,15 +75,15 @@ def register_particles(
     
     resname : `str`, keyword-only, optional
         Name of the residue(s) to add. If not specified, `name` is used
-        if it was specified.
+        if available.
 
     nbforce : `openmm.NonbondedForce`, keyword-only, optional
-        Built-in hybrid pair potential object containing the
+        Standard OpenMM pair potential object implementing the nonbonded
         Lennard-Jones and Coulomb potentials.
     
     charge : `float` or `openmm.unit.Quantity`, keyword-only, \
     default: :code`0`
-        Charge :math:`q` of the atoms for use in the Coulomb potential
+        Charge :math:`q` of the atom(s) for use in the Coulomb potential
         in `nbforce`. 
         
         **Reference unit**: :math:`\\mathrm{e}`.
@@ -107,13 +107,15 @@ def register_particles(
         pair potentials and their corresponding per-particle parameters. 
 
         **Example**: :code:`{gauss: (0.3 * unit.nanometer,)}`, where 
-        `gauss` is a custom Gaussian potential 
-        :func:`mdhelper.openmm.pair.gauss`.
+        `gauss` is a custom Gaussian potential obtained using
+        :func:`mdhelper.openmm.pair.gauss()`.
     """
 
     has_nbforce = nbforce is not None
     has_system = system is not None
     per_chain = chain is None
+    if cnbforces is None:
+        cnbforces = {}
     for _ in range(N):
         if has_system:
             system.addParticle(mass)
@@ -185,7 +187,7 @@ def slab_correction(
         Topological information about an OpenMM system.
 
     nbforce : `openmm.NonbondedForce` or `openmm.CustomNonbondedForce`
-        Pair potential containing particle charge information. 
+        Pair potential object containing particle charge information. 
         
         .. note::
            
@@ -212,14 +214,15 @@ def slab_correction(
     axis : `int`, default: :code:`2`
         Axis along which to apply the slab correction, with :math:`x`
         being :code:`0`, :math:`y` being :code:`1`, and :math:`z` being
-        :code:`2`.
+        :code:`2`. The source code and outputs, if any, will refer to 
+        this dimension as :code:`z` regardless of this value.
 
     charge_index : `int`, keyword-only, default: :code:`0`
         Index of charge :math:`q` information in the per-particle
         parameters stored in `nbforce`.
     
     z_scale : `float`, keyword-only, default: :code:`3`
-        :math:`z`-dimension scaling factor.
+        Scaling factor for the dimension specified in `axis`.
 
     method : `str`, keyword-only, default: :code:`"force"`
         Slab correction methodology.
@@ -229,11 +232,11 @@ def slab_correction(
            **Valid values**:
             
            * :code:`"force"`: Collective implementation via 
-             :class:`openmm.openmm.CustomExternalForce` and 
-             :class:`openmm.openmm.CustomCVForce` [3]_. This is 
+             :class:`openmm.CustomExternalForce` and 
+             :class:`openmm.CustomCVForce` [3]_. This is 
              generally the most efficient.
            * :code:`"integrator"`: Per-particle implementation via an
-             :class:`openmm.openmm.CustomIntegrator`.
+             :class:`openmm.CustomIntegrator`.
 
     Returns
     -------
@@ -260,8 +263,9 @@ def slab_correction(
     """
 
     # Get system dimensions
-    dims = np.array(topology.getUnitCellDimensions() / unit.nanometer) \
-           * unit.nanometer
+    dims = np.array(
+        topology.getUnitCellDimensions().value_in_units(unit.nanometer)
+    ) * unit.nanometer
     pbv = system.getDefaultPeriodicBoxVectors()
 
     # Scale system z-dimension by specified z-scale
@@ -305,7 +309,7 @@ def slab_correction(
            (2 * VACUUM_PERMITTIVITY * dims[0] * dims[1] * dims[2])
 
     # Get letter representation of axis for formula
-    x = chr(120 + axis)
+    z = chr(120 + axis)
 
     if neutral:
 
@@ -350,11 +354,11 @@ def slab_correction(
             # Implement per-particle slab correction
             if electroneutral:
                 slab_corr = openmm.CustomExternalForce(
-                    f"coef*q*({x}*M_z-M_zz/2)"
+                    f"coef*q*({z}*M_z-M_zz/2)"
                 )
             else:
                 slab_corr = openmm.CustomExternalForce(
-                    f"coef*q*({x}*M_z-(M_zz+q_tot*{x}^2)/2-q_tot*dim_z^2/12)"
+                    f"coef*q*({z}*M_z-(M_zz+q_tot*{z}^2)/2-q_tot*dim_z^2/12)"
                 )
                 slab_corr.addGlobalParameter("dim_z", dims[axis])
                 slab_corr.addGlobalParameter("q_tot", q_tot)
@@ -374,14 +378,14 @@ def slab_correction(
             integrator = openmm.LangevinMiddleIntegrator(temp, fric, dt)
 
             # Calculate instantaneous system dipole
-            M_z = openmm.CustomExternalForce(f"q*{x}")
+            M_z = openmm.CustomExternalForce(f"q*{z}")
             M_z.addPerParticleParameter("q")
 
             # Implement collective slab correction
             if electroneutral:
                 slab_corr = openmm.CustomCVForce("coef*M_z^2")
             else:
-                M_zz = openmm.CustomExternalForce(f"q*{x}^2")
+                M_zz = openmm.CustomExternalForce(f"q*{z}^2")
                 M_zz.addPerParticleParameter("q")
                 slab_corr = openmm.CustomCVForce(
                     "coef*(M_z^2-q_tot*M_zz-q_tot^2*dim_z^2/12)"
@@ -411,7 +415,7 @@ def image_charges(
         n_cells: int = 2, nbforce: openmm.NonbondedForce = None,
         cnbforces: Union[Iterable[openmm.CustomNonbondedForce],
                          dict[openmm.CustomNonbondedForce, Iterable[Any]]] = {},
-        wall_indices: ArrayLike = None, exclude: bool = False
+        wall_indices: np.ndarray[int] = None, exclude: bool = False
     ) -> tuple[unit.Quantity, openmm.Integrator]:
 
     r"""
@@ -436,7 +440,7 @@ def image_charges(
     positions : `numpy.ndarray`
         Positions of the :math:`N` particles in the real system. 
 
-        **Shape**: :math:`(N,\,,3)`.
+        **Shape**: :math:`(N,\,3)`.
         
         **Reference unit**: :math:`\mathrm{nm}`.
 
@@ -470,11 +474,15 @@ def image_charges(
            large enough to satisfy the constraint that the force field
            cutoff be less than half the box size.
 
+        **Valid values**: Even integers greater than :math:`1` when
+        :math:`\gamma=-1`.
+
     nbforce : `openmm.NonbondedForce`, keyword-only, optional
-        Standard Lennard-Jones (LJ) and Coulomb pair potential used in
-        OpenMM. For the image charges, the charges :math:`q` are flipped
-        while the LJ parameters :math:`\sigma` and :math:`\epsilon` are
-        set to :math:`0`.
+        Standard OpenMM pair potential object implementing the nonbonded
+        Lennard-Jones and Coulomb potentials. For the image charges, the
+        charges :math:`q` have their signs flipped, and the LJ 
+        parameters :math:`\sigma` and :math:`\epsilon` are both set to 
+        :math:`0`.
 
     cnbforces : `dict`, keyword-only, optional
         Custom pair potential objects implementing other non-standard
@@ -624,8 +632,7 @@ def image_charges(
 
     def _ic_beta(
             gamma: float, x: float, 
-            dims: Union[np.ndarray[float], unit.Quantity, Q_]
-        ) -> float:
+            dims: Union[np.ndarray[float], unit.Quantity]) -> float:
 
         """
         Computes the :math:`\beta` value used in the higher-order term
@@ -640,7 +647,7 @@ def image_charges(
         x : `float`
             Scaled :math:`x`-coordinate of the ion.
 
-        dims : `numpy.ndarray`, `openmm.unit.Quantity`, or `pint.Quantity`
+        dims : `numpy.ndarray` or `openmm.unit.Quantity`
             System dimensions :math:`(L_x,\,L_y,\,L_z)`.
 
             **Reference unit**: :math:`\mathrm{nm}`.
@@ -714,7 +721,8 @@ def image_charges(
     # Find averaged beta value for image charges with gamma =/= +/-1
     beta = (_ic_beta(gamma, 0, dims) + _ic_beta(gamma, 0.5, dims)) / 2
 
-    # Set up higher-order image charge corrections
+    # Set up higher-order image charge and slab corrections using real
+    # simulation cell dimensions
     cv_E_corr = openmm.CustomExternalForce("q*(1-2*z/Lz)")
     cv_E_corr.addGlobalParameter("Lz", dims[2] * unit.nanometer)
     cv_E_corr.addPerParticleParameter("q")
@@ -722,15 +730,18 @@ def image_charges(
     cv_M_z.addPerParticleParameter("q")
     cv_M_zz = openmm.CustomExternalForce("q*z^2")
     cv_M_zz.addPerParticleParameter("q")
-    corr = openmm.CustomCVForce("")
-    corr_energy = "coef1*E_corr*M_z"
-    corr.addCollectiveVariable("E_corr", cv_E_corr)
-    corr.addCollectiveVariable("M_z", cv_M_z)
-    corr.addGlobalParameter(
-        "coef1", 
-        unit.AVOGADRO_CONSTANT_NA * gamma * beta 
-        / (16 * np.pi * VACUUM_PERMITTIVITY * dims[2] ** 2)
-    )
+
+    corr_energy = ""
+    corr = openmm.CustomCVForce(corr_energy)
+    if not np.isclose(beta, 0):
+        corr_energy += "coef1*E_corr*M_z"
+        corr.addCollectiveVariable("E_corr", cv_E_corr)
+        corr.addCollectiveVariable("M_z", cv_M_z)
+        corr.addGlobalParameter(
+            "coef1", 
+            unit.AVOGADRO_CONSTANT_NA * gamma * beta 
+            / (16 * np.pi * VACUUM_PERMITTIVITY * dims[2] ** 2)
+        )
     if not np.isclose(gamma, -1):
         corr_energy += "+coef2*M_z^2"
     if not electroneutral:
@@ -751,7 +762,21 @@ def image_charges(
         corr.addGlobalParameter("L_z", dims[2] * unit.nanometer)
     if "M_zz" in corr_energy:
         corr.addCollectiveVariable("M_zz", cv_M_zz)
-    corr.setEnergyFunction(corr_energy)
+    if corr_energy:
+        if corr_energy.startswith("+"):
+            corr_energy = corr_energy.lstrip("+")
+        corr.setEnergyFunction(corr_energy)
+        system.addForce(corr)
+        logging.info("Added higher-order image charge and/or slab "
+                     "correction(s).")
+
+    # Update and set new system dimensions
+    dims[2] *= n_cells
+    dims *= unit.nanometer
+    topology.setUnitCellDimensions(dims)
+    pbv[2] *= n_cells
+    system.setDefaultPeriodicBoxVectors(*pbv)
+    logging.info(f"Increased z-dimension to {dims[2]}.")
 
     # Mirror particle positions
     if n_cells == 2:
@@ -771,14 +796,6 @@ def image_charges(
     logging.info(f"Replicated {N_real_atoms:,} particles {n_cells - 1} "
                  "time(s) over the z-axis.")
 
-    # Update and set new system dimensions
-    dims[2] *= n_cells
-    dims *= unit.nanometer
-    topology.setUnitCellDimensions(dims)
-    pbv[2] *= n_cells
-    system.setDefaultPeriodicBoxVectors(*pbv)
-    logging.info(f"Increased z-dimension to {dims[2]}.")
-
     # Instantiate an integrator that simulates a system using
     # Langevin dynamics and updates the image charge positions
     integrator = ICLangevinIntegrator(temp, fric, dt, n_cells, L_z)
@@ -788,7 +805,7 @@ def image_charges(
     atoms = list(topology.atoms())
     residues = list(topology.residues())
     for c in range(1, n_cells):
-        sign = (1 - 2 * (c % 2)) * gamma
+        coef = (2 * (c % 2) - 1) * gamma
         chains_ic = [topology.addChain() for _ in range(N_real_chains)]
         residues_ic = [topology.addResidue(f"IC_{r.name}", 
                                            chains_ic[r.chain.index])
@@ -800,7 +817,7 @@ def image_charges(
             if nbforce is not None:
                 nbforce.addParticle(
                     0 if i in wall_indices
-                    else sign * nbforce.getParticleParameters(i)[0], 
+                    else coef * nbforce.getParticleParameters(i)[0], 
                     0, 0
                 )
             for force, kwargs in cnbforces.items():
@@ -809,14 +826,15 @@ def image_charges(
                     params[:] = 0
                 else:
                     if "charge" in kwargs:
-                        params[kwargs["charge"]] *= 0 if i in wall_indices else sign
+                        params[kwargs["charge"]] *= (0 if i in wall_indices 
+                                                     else coef)
                     if "zero" in kwargs:
                         params[kwargs["zero"]] = 0
                     if "replace" in kwargs:
                         for index, value in kwargs["replace"].items():
-                            params[index] = value[params[index]] \
-                                            if isinstance(value, dict) \
-                                            else value
+                            params[index] = (value[params[index]]
+                                             if isinstance(value, dict)
+                                             else value)
                 force.addParticle(params)
     logging.info(f"Registered {system.getNumParticles() - N_real_atoms:,} "
                  "image particles to the force field.")
@@ -891,7 +909,7 @@ def electric_field(
         OpenMM molecular system.
 
     nbforce : `openmm.NonbondedForce` or `openmm.CustomNonbondedForce`
-        Pair potential containing particle charge information. 
+        Pair potential object containing particle charge information. 
         
         .. note::
            
@@ -917,11 +935,12 @@ def electric_field(
         Indices of atoms to apply the electric field to. By default,
         the electric field is applied to all atoms, but this can be
         computationally expensive when there are charged particles that
-        do not need to be included, such as image charges.
+        do not need to be included, such as image charges. If an `int`
+        is provided, all atoms up to that index are included.
     """
 
     # Get letter representation of axis for formula
-    x = chr(120 + axis)
+    z = chr(120 + axis)
 
     # Get indices of atoms that are affected by the electric field
     if atom_indices is None:
@@ -930,7 +949,7 @@ def electric_field(
         atom_indices = range(atom_indices)
 
     # Create and register particles to the electric field
-    efield = openmm.CustomExternalForce(f"-q*E*{x}")
+    efield = openmm.CustomExternalForce(f"-q*E*{z}")
     efield.addGlobalParameter("E", E)
     efield.addPerParticleParameter('q')
 
@@ -996,7 +1015,8 @@ def estimate_pressure_tensor(
     """
 
     try:
-        state = context.getState(getPositions=True, getVelocities=True, getEnergy=True)
+        state = context.getState(getPositions=True, getVelocities=True, 
+                                 getEnergy=True)
         box = state.getPeriodicBoxVectors(asNumpy=True)
         positions = state.getPositions(asNumpy=True)
         velocities = state.getVelocities(asNumpy=True)
