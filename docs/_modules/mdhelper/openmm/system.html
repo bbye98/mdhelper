@@ -391,13 +391,13 @@
 <span class="sd">.. moduleauthor:: Benjamin Ye &lt;GitHub: @bbye98&gt;</span>
 
 <span class="sd">This module contains implementations of common OpenMM system</span>
-<span class="sd">transformations, like the Yeh–Berkowitz and Ballenegger–Arnold–Cerdà</span>
-<span class="sd">slab corrections, the method of image charges, and an applied potential</span>
+<span class="sd">transformations, like the slab correction method for pseudo-2D slab </span>
+<span class="sd">systems, the method of image charges, and an applied potential </span>
 <span class="sd">difference.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -427,7 +427,7 @@
         <span class="n">charge</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
         <span class="n">sigma</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
         <span class="n">epsilon</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">cnbforces</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">cnbforces</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -503,8 +503,7 @@
     <span class="n">has_nbforce</span> <span class="o">=</span> <span class="n">nbforce</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="n">has_system</span> <span class="o">=</span> <span class="n">system</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="n">per_chain</span> <span class="o">=</span> <span class="n">chain</span> <span class="ow">is</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">cnbforces</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cnbforces</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">cnbforces</span> <span class="o">=</span> <span class="n">cnbforces</span> <span class="ow">or</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">has_system</span><span class="p">:</span>
             <span class="n">system</span><span class="o">.</span><span class="n">addParticle</span><span class="p">(</span><span class="n">mass</span><span class="p">)</span>
@@ -808,8 +807,7 @@
         <span class="n">temp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">fric</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
         <span class="n">dt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> 
         <span class="n">n_cells</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">nbforce</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">cnbforces</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">],</span>
-                         <span class="nb">dict</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">cnbforces</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">openmm</span><span class="o">.</span><span class="n">CustomNonbondedForce</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">wall_indices</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">openmm</span><span class="o">.</span><span class="n">Integrator</span><span class="p">]:</span>
 
@@ -1196,6 +1194,7 @@
     <span class="n">integrator</span> <span class="o">=</span> <span class="n">ICLangevinIntegrator</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">fric</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">n_cells</span><span class="p">,</span> <span class="n">L_z</span><span class="p">)</span>
 
     <span class="c1"># Register image charges to the system, topology, and force field</span>
+    <span class="n">cnbforces</span> <span class="o">=</span> <span class="n">cnbforces</span> <span class="ow">or</span> <span class="p">{}</span>
     <span class="n">N_real_chains</span> <span class="o">=</span> <span class="n">topology</span><span class="o">.</span><span class="n">getNumChains</span><span class="p">()</span>
     <span class="n">atoms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">())</span>
     <span class="n">residues</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">residues</span><span class="p">())</span>
@@ -1275,7 +1274,7 @@
 <span class="k">def</span> <span class="nf">electric_field</span><span class="p">(</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">nbforce</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,],</span> <span class="o">*</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="n">charge_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">atom_indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">charge_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">atom_indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1395,7 +1394,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    context : `openmm.Context`</span>
-<span class="sd">        Simulation context.</span>
+<span class="sd">        OpenMM simulation context.</span>
 
 <span class="sd">    dh : `float`, default: :code:`1e-5`</span>
 <span class="sd">        Finite difference step size.</span>

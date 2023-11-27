@@ -4,13 +4,13 @@ OpenMM system extensions and tools
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains implementations of common OpenMM system
-transformations, like the Yeh–Berkowitz and Ballenegger–Arnold–Cerdà
-slab corrections, the method of image charges, and an applied potential
+transformations, like the slab correction method for pseudo-2D slab 
+systems, the method of image charges, and an applied potential 
 difference.
 """
 
 import logging
-from typing import Any, Iterable, Union
+from typing import Any, Union
 import warnings
 
 try:
@@ -38,7 +38,7 @@ def register_particles(
         charge: Union[float, unit.Quantity] = 0.0,
         sigma: Union[float, unit.Quantity] = 0.0,
         epsilon: Union[float, unit.Quantity] = 0.0,
-        cnbforces: dict[openmm.CustomNonbondedForce, Iterable[Any]] = None
+        cnbforces: dict[openmm.CustomNonbondedForce, tuple[Any]] = None
     ) -> None:
 
     """
@@ -114,8 +114,7 @@ def register_particles(
     has_nbforce = nbforce is not None
     has_system = system is not None
     per_chain = chain is None
-    if cnbforces is None:
-        cnbforces = {}
+    cnbforces = cnbforces or {}
     for _ in range(N):
         if has_system:
             system.addParticle(mass)
@@ -413,8 +412,7 @@ def image_charges(
         temp: Union[float, unit.Quantity], fric: Union[float, unit.Quantity],
         dt: Union[float, unit.Quantity], *, gamma: float = -1, 
         n_cells: int = 2, nbforce: openmm.NonbondedForce = None,
-        cnbforces: Union[Iterable[openmm.CustomNonbondedForce],
-                         dict[openmm.CustomNonbondedForce, Iterable[Any]]] = {},
+        cnbforces: dict[openmm.CustomNonbondedForce, dict[str, Any]] = None,
         wall_indices: np.ndarray[int] = None, exclude: bool = False
     ) -> tuple[unit.Quantity, openmm.Integrator]:
 
@@ -801,6 +799,7 @@ def image_charges(
     integrator = ICLangevinIntegrator(temp, fric, dt, n_cells, L_z)
 
     # Register image charges to the system, topology, and force field
+    cnbforces = cnbforces or {}
     N_real_chains = topology.getNumChains()
     atoms = list(topology.atoms())
     residues = list(topology.residues())
@@ -877,7 +876,7 @@ def image_charges(
 def electric_field(
         system: openmm.System, nbforce: openmm.NonbondedForce,
         E: Union[float, unit.Quantity,], *, axis: int = 2,
-        charge_index: int = 0, atom_indices: Union[int, Iterable] = None
+        charge_index: int = 0, atom_indices: Union[int, np.ndarray[int]] = None
     ) -> None:
 
     r"""
@@ -994,7 +993,7 @@ def estimate_pressure_tensor(
     Parameters
     ----------
     context : `openmm.Context`
-        Simulation context.
+        OpenMM simulation context.
 
     dh : `float`, default: :code:`1e-5`
         Finite difference step size.
