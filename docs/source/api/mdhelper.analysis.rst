@@ -1,4 +1,4 @@
-analysis
+﻿analysis
 ========
 
 .. automodule:: mdhelper.analysis
@@ -31,5 +31,6 @@ analysis
    mdhelper.analysis.polymer
    mdhelper.analysis.profile
    mdhelper.analysis.structure
+   mdhelper.analysis.thermodynamics
    mdhelper.analysis.transport
 

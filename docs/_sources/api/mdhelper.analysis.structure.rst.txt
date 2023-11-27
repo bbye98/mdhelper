@@ -1,4 +1,4 @@
-﻿structure
+structure
 =========
 
 .. automodule:: mdhelper.analysis.structure

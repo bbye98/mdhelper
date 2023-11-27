@@ -614,7 +614,9 @@ def image_charges(
         raise ImportError(emsg)
     
     if np.isclose(gamma, 0):
-        raise ValueError("Use the slab correction for gamma=0.")
+        emsg = ("Use the slab correction, available via "
+                "mdhelper.openmm.system.slab_correction(), for gamma=0.")
+        raise ValueError(emsg)
     if not np.isclose(gamma, -1) and n_cells != 2:
         emsg = ("The method of image charges with gamma != -1 is only "
                 "implemented for n_cells=2.")
