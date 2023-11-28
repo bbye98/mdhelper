@@ -717,16 +717,18 @@ def image_charges(
             q = (force.getParticleParameters(i)[charge_index]
                  .value_in_unit(unit.elementary_charge))
             q_tot += q
-            cv_E_corr.addParticle(i, (q,))
-            cv_M_z.addParticle(i, (q,))
-            cv_M_zz.addParticle(i, (q,))
+            if not np.isclose(q, 0):
+                cv_E_corr.addParticle(i, (q,))
+                cv_M_z.addParticle(i, (q,))
+                cv_M_zz.addParticle(i, (q,))
     else:
         for i in range(force.getNumParticles()):
             q = force.getParticleParameters(i)[charge_index]
             q_tot += q
-            cv_E_corr.addParticle(i, (q,))
-            cv_M_z.addParticle(i, (q,))
-            cv_M_zz.addParticle(i, (q,))
+            if not np.isclose(q, 0):
+                cv_E_corr.addParticle(i, (q,))
+                cv_M_z.addParticle(i, (q,))
+                cv_M_zz.addParticle(i, (q,))
     electroneutral = np.isclose(q_tot, 0)
 
     # Figure out correction energy expression
@@ -735,11 +737,12 @@ def image_charges(
     if not np.isclose(beta, 0):
         corr_energy += "coef1*E_corr*M_z"
         corr.addCollectiveVariable("E_corr", cv_E_corr)
-        corr.addCollectiveVariable("M_z", cv_M_z)
         corr.addGlobalParameter(
             "coef1", 
-            unit.AVOGADRO_CONSTANT_NA * gamma * beta 
-            / (16 * np.pi * VACUUM_PERMITTIVITY * dims[2] ** 2)
+            (unit.AVOGADRO_CONSTANT_NA * gamma * beta 
+             / (16 * np.pi * VACUUM_PERMITTIVITY * dims[2] ** 2))
+            .in_units_of(unit.kilojoule_per_mole / 
+                         (unit.elementary_charge ** 2 * unit.nanometer))
         )
     if not np.isclose(gamma, -1):
         corr_energy += "+coef2*M_z^2"
@@ -754,11 +757,15 @@ def image_charges(
     if "coef2" in corr_energy:
         corr.addGlobalParameter(
             "coef2", 
-            unit.AVOGADRO_CONSTANT_NA 
-            / (2 * VACUUM_PERMITTIVITY * dims[0] * dims[1] * dims[2])
+            (unit.AVOGADRO_CONSTANT_NA 
+             / (2 * VACUUM_PERMITTIVITY * dims[0] * dims[1] * dims[2]))
+            .in_units_of(unit.kilojoule_per_mole 
+                         / (unit.elementary_charge * unit.nanometer) ** 2)
         )
     if "L_z" in corr_energy:
         corr.addGlobalParameter("L_z", dims[2])
+    if "M_z" in corr_energy:
+        corr.addCollectiveVariable("M_z", cv_M_z)
     if "M_zz" in corr_energy:
         corr.addCollectiveVariable("M_zz", cv_M_zz)
     if corr_energy:
