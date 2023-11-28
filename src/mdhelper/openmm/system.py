@@ -797,7 +797,7 @@ def image_charges(
 
     # Instantiate an integrator that simulates a system using
     # Langevin dynamics and updates the image charge positions
-    integrator = ICLangevinIntegrator(temp, fric, dt, n_cells, dims[2])
+    integrator = ICLangevinIntegrator(temp, fric, dt, n_cells)
 
     # Register image charges to the system, topology, and force field
     cnbforces = cnbforces or {}
