@@ -418,9 +418,9 @@ def image_charges(
 
     r"""
     Implements the method of image charges for perfectly conducting
-    boundaries (with a relative permittivity of
-    :math:`\varepsilon_\mathrm{r}=\infty`). For more information about
-    the method, see Refs. [1]_, [2]_, and [3]_.
+    boundaries. For more information about the method, see Refs. [1]_,
+    [2]_, and [3]_ for perfectly conducting boundaries, and Refs. [4]_,
+    [5]_, and [6]_ otherwise.
 
     .. note::
 
@@ -666,14 +666,13 @@ def image_charges(
                 mpmath.lerchphi(gamma ** 2, 2, 2 - x) 
                 - mpmath.lerchphi(gamma ** 2, 2, 1 + x)
             )) / (2 * x - 1)
-        return dims[0] * dims[1] * diff / dims[2] ** 2
+        return float(dims[0] * dims[1] * diff / dims[2] ** 2)
 
     # Get system information
     dims = np.asarray(
         topology.getUnitCellDimensions().value_in_unit(unit.nanometer)
-    )
+    ) * unit.nanometer
     pbv = system.getDefaultPeriodicBoxVectors()
-    L_z = dims[2]
     N_real_atoms = positions.shape[0]
     if isinstance(positions, unit.Quantity):
         positions = positions.value_in_unit(unit.nanometer)
@@ -682,9 +681,23 @@ def image_charges(
     if wall_indices is None:
         wall_indices = np.concatenate(
             (np.isclose(positions[:, 2], 0).nonzero()[0], 
-             np.isclose(positions[:, 2], dims[2]).nonzero()[0])
+             np.isclose(positions[:, 2], 
+                        dims[2].value_in_unit(unit.nanometer)).nonzero()[0])
         )
 
+    # Find averaged beta value for image charges with gamma =/= +/-1
+    beta = (_ic_beta(gamma, 0, dims) + _ic_beta(gamma, 0.5, dims)) / 2
+
+    # Set up higher-order image charge and slab corrections using real
+    # simulation box dimensions
+    cv_E_corr = openmm.CustomExternalForce("q*(1-2*z/L_z)")
+    cv_E_corr.addGlobalParameter("L_z", dims[2])
+    cv_E_corr.addPerParticleParameter("q")
+    cv_M_z = openmm.CustomExternalForce("q*z")
+    cv_M_z.addPerParticleParameter("q")
+    cv_M_zz = openmm.CustomExternalForce("q*z^2")
+    cv_M_zz.addPerParticleParameter("q")
+    
     # Obtain particle charge information
     if nbforce is None:
         charge_index = None
@@ -698,37 +711,25 @@ def image_charges(
         force = nbforce
         charge_index = 0
     
-    if force.getParticleParameters(0)[charge_index] == unit.Quantity:
-        qs = np.fromiter(
-            (force.getParticleParameters(i)[charge_index]
-             .value_in_unit(unit.elementary_charge)
-            for i in range(force.getNumParticles())),
-            dtype=float
-        )
+    q_tot = 0
+    if isinstance(force.getParticleParameters(0)[charge_index], unit.Quantity):
+        for i in range(force.getNumParticles()):
+            q = (force.getParticleParameters(i)[charge_index]
+                 .value_in_unit(unit.elementary_charge))
+            q_tot += q
+            cv_E_corr.addParticle((q,))
+            cv_M_z.addParticle((q,))
+            cv_M_zz.addParticle((q,))
     else:
-        qs = np.fromiter(
-            (force.getParticleParameters(i)[charge_index]
-             for i in range(force.getNumParticles())),
-            dtype=float
-        )
-    neutral = qs.min() == qs.max()
-    if not neutral:
-        q_tot = qs.sum()
-        electroneutral = np.isclose(q_tot, 0)
+        for i in range(force.getNumParticles()):
+            q = force.getParticleParameters(i)[charge_index]
+            q_tot += q
+            cv_E_corr.addParticle((q,))
+            cv_M_z.addParticle((q,))
+            cv_M_zz.addParticle((q,))
+    electroneutral = np.isclose(q_tot, 0)
 
-    # Find averaged beta value for image charges with gamma =/= +/-1
-    beta = (_ic_beta(gamma, 0, dims) + _ic_beta(gamma, 0.5, dims)) / 2
-
-    # Set up higher-order image charge and slab corrections using real
-    # simulation box dimensions
-    cv_E_corr = openmm.CustomExternalForce("q*(1-2*z/Lz)")
-    cv_E_corr.addGlobalParameter("Lz", dims[2] * unit.nanometer)
-    cv_E_corr.addPerParticleParameter("q")
-    cv_M_z = openmm.CustomExternalForce("q*z")
-    cv_M_z.addPerParticleParameter("q")
-    cv_M_zz = openmm.CustomExternalForce("q*z^2")
-    cv_M_zz.addPerParticleParameter("q")
-
+    # Figure out correction energy expression
     corr_energy = ""
     corr = openmm.CustomCVForce(corr_energy)
     if not np.isclose(beta, 0):
@@ -757,7 +758,7 @@ def image_charges(
             / (2 * VACUUM_PERMITTIVITY * dims[0] * dims[1] * dims[2])
         )
     if "L_z" in corr_energy:
-        corr.addGlobalParameter("L_z", dims[2] * unit.nanometer)
+        corr.addGlobalParameter("L_z", dims[2])
     if "M_zz" in corr_energy:
         corr.addCollectiveVariable("M_zz", cv_M_zz)
     if corr_energy:
@@ -770,7 +771,6 @@ def image_charges(
 
     # Update and set new system dimensions
     dims[2] *= n_cells
-    dims *= unit.nanometer
     topology.setUnitCellDimensions(dims)
     pbv[2] *= n_cells
     system.setDefaultPeriodicBoxVectors(*pbv)
@@ -788,7 +788,8 @@ def image_charges(
             stop = (cell_index + 1) * N_real_atoms
             positions[start:stop, 2] = (
                 (1 - 2 * (cell_index % 2)) * positions[start:stop, 2]
-                - 2 * np.floor(cell_index / 2) * dims[2] 
+                - 2 * np.floor(cell_index / 2) 
+                * dims[2].value_in_unit(unit.nanometer)
             )
         positions *= unit.nanometer
     logging.info(f"Replicated {N_real_atoms:,} particles {n_cells - 1} "
@@ -796,7 +797,7 @@ def image_charges(
 
     # Instantiate an integrator that simulates a system using
     # Langevin dynamics and updates the image charge positions
-    integrator = ICLangevinIntegrator(temp, fric, dt, n_cells, L_z)
+    integrator = ICLangevinIntegrator(temp, fric, dt, n_cells, dims[2])
 
     # Register image charges to the system, topology, and force field
     cnbforces = cnbforces or {}
