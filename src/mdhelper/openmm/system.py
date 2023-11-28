@@ -681,17 +681,18 @@ def image_charges(
     # Find averaged beta value for image charges with gamma =/= +/-1
     beta = (_ic_beta(gamma, 0) + _ic_beta(gamma, 0.5)) / 2
 
-    # Set up higher-order image charge and slab corrections using real
-    # simulation box dimensions
-    cv_E_corr = openmm.CustomExternalForce("q*(1-2*z/L_z)")
-    cv_E_corr.addGlobalParameter("L_z", dims[2])
+    # Set up higher-order image charge and slab corrections
+    cv_E_corr = openmm.CustomExternalForce("q*(1-2*z/L)")
+    cv_E_corr.addGlobalParameter("L", dims[2]) # real system z-dimension such
+                                               # that 0 <= (x = z / L_z) <= 1
     cv_E_corr.addPerParticleParameter("q")
     cv_M_z = openmm.CustomExternalForce("q*z")
     cv_M_z.addPerParticleParameter("q")
     cv_M_zz = openmm.CustomExternalForce("q*z^2")
     cv_M_zz.addPerParticleParameter("q")
     
-    # Obtain particle charge information
+    # Obtain particle charge information and register charges to 
+    # corrections
     if nbforce is None:
         charge_index = None
         for force, params in cnbforces:
@@ -724,6 +725,13 @@ def image_charges(
                 cv_M_zz.addParticle(i, (q,))
     electroneutral = np.isclose(q_tot, 0)
 
+    # Update and set new system dimensions
+    dims[2] *= n_cells
+    topology.setUnitCellDimensions(dims)
+    pbv[2] *= n_cells
+    system.setDefaultPeriodicBoxVectors(*pbv)
+    logging.info(f"Increased z-dimension to {dims[2]}.")
+
     # Determine correction energy expression
     corr_energy = ""
     corr = openmm.CustomCVForce(corr_energy)
@@ -733,7 +741,7 @@ def image_charges(
         corr.addGlobalParameter(
             "coef1", 
             (unit.AVOGADRO_CONSTANT_NA * gamma * beta 
-             / (16 * np.pi * VACUUM_PERMITTIVITY * dims[2] ** 2))
+             / (16 * np.pi * VACUUM_PERMITTIVITY * dims[0] * dims[1]))
             .in_units_of(unit.kilojoule_per_mole / 
                          (unit.elementary_charge ** 2 * unit.nanometer))
         )
@@ -756,7 +764,7 @@ def image_charges(
                          / (unit.elementary_charge * unit.nanometer) ** 2)
         )
     if "L_z" in corr_energy:
-        corr.addGlobalParameter("L_z", dims[2])
+        corr.addGlobalParameter("L_z", dims[2]) # periodic system z-dimension
     if "M_z" in corr_energy:
         corr.addCollectiveVariable("M_z", cv_M_z)
     if "M_zz" in corr_energy:
@@ -768,13 +776,6 @@ def image_charges(
         system.addForce(corr)
         logging.info("Added higher-order image charge and/or slab "
                      "correction(s).")
-
-    # Update and set new system dimensions
-    dims[2] *= n_cells
-    topology.setUnitCellDimensions(dims)
-    pbv[2] *= n_cells
-    system.setDefaultPeriodicBoxVectors(*pbv)
-    logging.info(f"Increased z-dimension to {dims[2]}.")
 
     # Mirror particle positions
     if n_cells == 2:
