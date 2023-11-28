@@ -741,7 +741,7 @@ def image_charges(
         corr.addGlobalParameter(
             "coef1", 
             (unit.AVOGADRO_CONSTANT_NA * gamma * beta 
-             / (16 * np.pi * VACUUM_PERMITTIVITY * dims[0] * dims[1]))
+             / (4 * np.pi * VACUUM_PERMITTIVITY * dims[2] ** 2))
             .in_units_of(unit.kilojoule_per_mole / 
                          (unit.elementary_charge ** 2 * unit.nanometer))
         )
