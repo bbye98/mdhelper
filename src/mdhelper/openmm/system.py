@@ -417,10 +417,10 @@ def image_charges(
     ) -> tuple[unit.Quantity, openmm.Integrator]:
 
     r"""
-    Implements the method of image charges for perfectly conducting
-    boundaries. For more information about the method, see Refs. [1]_,
-    [2]_, and [3]_ for perfectly conducting boundaries, and Refs. [4]_,
-    [5]_, and [6]_ otherwise.
+    Implements the method of image charges for dielectric boundaries.
+    For more information about the method, see Refs. [1]_, [2]_, and 
+    [3]_ for perfectly conducting boundaries, and Refs. [4]_, [5]_, and
+    [6]_ otherwise.
 
     .. note::
 

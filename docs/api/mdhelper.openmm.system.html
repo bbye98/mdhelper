@@ -390,9 +390,10 @@
 <span id="system"></span><h1>system<a class="headerlink" href="#module-mdhelper.openmm.system" title="Link to this heading">#</a></h1>
 <section id="openmm-system-extensions-and-tools">
 <h2>OpenMM system extensions and tools<a class="headerlink" href="#openmm-system-extensions-and-tools" title="Link to this heading">#</a></h2>
-<p>This module contains implementations of common OpenMM topology
-transformations, like the Yeh–Berkowitz slab correction, the method of
-image charges, and adding an external electric field.</p>
+<p>This module contains implementations of common OpenMM system
+transformations, like the slab correction method for pseudo-2D slab
+systems, the method of image charges, and an applied potential
+difference.</p>
 </section>
 <p class="rubric">Functions</p>
 <div class="table-wrapper autosummary longtable docutils container">
@@ -405,7 +406,7 @@ image charges, and adding an external electric field.</p>
 <td><p>Computes the estimated pressure tensor using a central finite difference for the virial contribution.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.openmm.system.image_charges.html#mdhelper.openmm.system.image_charges" title="mdhelper.openmm.system.image_charges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_charges</span></code></a></p></td>
-<td><p>Implements the method of image charges for perfectly conducting boundaries (with a relative permittivity of <span class="math notranslate nohighlight">\(\varepsilon_\mathrm{r}=\infty\)</span>).</p></td>
+<td><p>Implements the method of image charges for dielectric boundaries.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="mdhelper.openmm.system.register_particles.html#mdhelper.openmm.system.register_particles" title="mdhelper.openmm.system.register_particles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_particles</span></code></a></p></td>
 <td><p>Sequentially register particles of the same type to the simulation system, topology, and nonbonded pair potentials.</p></td>
