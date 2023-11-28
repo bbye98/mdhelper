@@ -717,16 +717,16 @@ def image_charges(
             q = (force.getParticleParameters(i)[charge_index]
                  .value_in_unit(unit.elementary_charge))
             q_tot += q
-            cv_E_corr.addParticle((q,))
-            cv_M_z.addParticle((q,))
-            cv_M_zz.addParticle((q,))
+            cv_E_corr.addParticle(i, (q,))
+            cv_M_z.addParticle(i, (q,))
+            cv_M_zz.addParticle(i, (q,))
     else:
         for i in range(force.getNumParticles()):
             q = force.getParticleParameters(i)[charge_index]
             q_tot += q
-            cv_E_corr.addParticle((q,))
-            cv_M_z.addParticle((q,))
-            cv_M_zz.addParticle((q,))
+            cv_E_corr.addParticle(i, (q,))
+            cv_M_z.addParticle(i, (q,))
+            cv_M_zz.addParticle(i, (q,))
     electroneutral = np.isclose(q_tot, 0)
 
     # Figure out correction energy expression
