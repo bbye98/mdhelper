@@ -628,9 +628,7 @@ def image_charges(
                 "implemented for n_cells=2.")
         raise ValueError(emsg)
 
-    def _ic_beta(
-            gamma: float, x: float, 
-            dims: Union[np.ndarray[float], unit.Quantity]) -> float:
+    def _ic_beta(gamma: float, x: float) -> float:
 
         """
         Computes the :math:`\beta` value used in the higher-order term
@@ -645,11 +643,6 @@ def image_charges(
         x : `float`
             Scaled :math:`x`-coordinate of the ion.
 
-        dims : `numpy.ndarray` or `openmm.unit.Quantity`
-            System dimensions :math:`(L_x,\,L_y,\,L_z)`.
-
-            **Reference unit**: :math:`\mathrm{nm}`.
-
         Returns
         -------
         beta : `float`
@@ -659,14 +652,14 @@ def image_charges(
         if not 0 <= x <= 1:
             raise ValueError("'x' must be between 0 and 1.")
         if np.isclose(x, 0.5):
-            diff = (2 * special.zeta(3, 1.5) 
-                    - 2 * gamma ** 4 * mpmath.lerchphi(gamma ** 2, 3, 1.5))
+            return float(2 * special.zeta(3, 1.5) 
+                         - 2 * gamma ** 4 * mpmath.lerchphi(gamma ** 2, 3, 1.5))
         else:
-            diff = (special.zeta(2, 2 - x) - special.zeta(2, 1 + x) - gamma ** 4 * (
-                mpmath.lerchphi(gamma ** 2, 2, 2 - x) 
-                - mpmath.lerchphi(gamma ** 2, 2, 1 + x)
-            )) / (2 * x - 1)
-        return float(dims[0] * dims[1] * diff / dims[2] ** 2)
+            return (
+                special.zeta(2, 2 - x) - special.zeta(2, 1 + x) - gamma ** 4 *
+                float(mpmath.lerchphi(gamma ** 2, 2, 2 - x) 
+                      - mpmath.lerchphi(gamma ** 2, 2, 1 + x))
+            ) / (2 * x - 1)
 
     # Get system information
     dims = np.asarray(
@@ -686,7 +679,7 @@ def image_charges(
         )
 
     # Find averaged beta value for image charges with gamma =/= +/-1
-    beta = (_ic_beta(gamma, 0, dims) + _ic_beta(gamma, 0.5, dims)) / 2
+    beta = (_ic_beta(gamma, 0) + _ic_beta(gamma, 0.5)) / 2
 
     # Set up higher-order image charge and slab corrections using real
     # simulation box dimensions
