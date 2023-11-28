@@ -724,7 +724,7 @@ def image_charges(
                 cv_M_zz.addParticle(i, (q,))
     electroneutral = np.isclose(q_tot, 0)
 
-    # Figure out correction energy expression
+    # Determine correction energy expression
     corr_energy = ""
     corr = openmm.CustomCVForce(corr_energy)
     if not np.isclose(beta, 0):
