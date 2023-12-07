@@ -13,6 +13,14 @@ import logging
 from typing import Any, Union
 import warnings
 
+import mpmath
+import numpy as np
+import openmm
+from openmm import app, unit
+from scipy import special
+
+from .unit import VACUUM_PERMITTIVITY
+
 try:
     from constvplugin import ConstVLangevinIntegrator as ICLangevinIntegrator
     FOUND_ICPLUGIN = True
@@ -22,13 +30,6 @@ except ImportError:
         FOUND_ICPLUGIN = True
     except ImportError:
         FOUND_ICPLUGIN = False
-import mpmath
-import numpy as np
-import openmm
-from openmm import app, unit
-from scipy import special
-
-from .unit import VACUUM_PERMITTIVITY
 
 def register_particles(
         system: openmm.System, topology: app.Topology,
@@ -805,8 +806,9 @@ def image_charges(
     N_real_chains = topology.getNumChains()
     atoms = list(topology.atoms())
     residues = list(topology.residues())
+    coefs = (1, gamma)
     for c in range(1, n_cells):
-        coef = gamma ** c
+        coef = coefs[c % 2]
         chains_ic = [topology.addChain() for _ in range(N_real_chains)]
         residues_ic = [topology.addResidue(f"IC_{r.name}", 
                                            chains_ic[r.chain.index])
