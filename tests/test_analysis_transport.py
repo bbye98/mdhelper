@@ -154,7 +154,7 @@ def test_class_onsager_transport_coefficients():
                       dtype=int)
     msds = compute_L_ij(*positions, volume)
 
-    onsager = transport.Onsager(groups, temp=1, center=True, com_wrap=True, 
+    onsager = transport.Onsager(groups, temperature=1, center=True, com_wrap=True, 
                                 reduced=True, dt=dt).run(start=40)
     onsager.calculate_coefficients(fit_start, fit_stop, 
                                    start_self=fit_start_self, 
