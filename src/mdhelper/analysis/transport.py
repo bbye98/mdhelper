@@ -581,8 +581,9 @@ class Onsager(SerialAnalysisBase):
 
     charges : array-like, `openmm.unit.Quantity`, or `pint.Quantity`, \
     keyword-only, optional
-        Charge numbers :math:`z_i` of the atoms or residues in the
-        :math:`N_\mathrm{g}` groups.
+        Charge numbers :math:`z_i` for the specified `groupings` in the 
+        :math:`N_\mathrm{g}` `groups`. If not provided, it will be 
+        retrieved from the topology or trajectory.
 
         **Shape**: :math:`(N_\mathrm{g},)`.
 
@@ -786,8 +787,8 @@ class Onsager(SerialAnalysisBase):
     """
 
     def __init__(
-            self, groups: Union[mda.AtomGroup, list[mda.AtomGroup]],
-            groupings: Union[str, list[str]] = "atoms",
+            self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
+            groupings: Union[str, tuple[str]] = "atoms",
             temperature: Union[float, "unit.Quantity", Q_] = 300, *, 
             charges: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
@@ -827,19 +828,19 @@ class Onsager(SerialAnalysisBase):
                 emsg = "'temperature' cannot have units when reduced=True."
                 raise TypeError(emsg)
         else:
-            if isinstance(temperature, (int, float)):
-                temperature *= ureg.kelvin
-            elif temperature.__module__ == "openmm.unit.quantity":
-                temperature = (temperature.value_in_unit(unit.kelvin) 
-                               * ureg.kelvin)
-            self._kBT = (ureg.avogadro_constant * ureg.boltzmann_constant
-                         * temperature).m_as(ureg.kilojoule / ureg.mole)
             self.results.units = {"_charges": ureg.elementary_charge,
                                   "_dimensions": ureg.angstrom, 
                                   "_dt": ureg.picosecond,
                                   "_rhos": ureg.angstrom ** -3,
                                   "_kBT": ureg.kilojoule / ureg.mole,
                                   "_volume": ureg.angstrom ** 3}
+            if isinstance(temperature, (int, float)):
+                temperature *= ureg.kelvin
+            elif temperature.__module__ == "openmm.unit.quantity":
+                temperature = (temperature.value_in_unit(unit.kelvin) 
+                               * ureg.kelvin)
+            self._kBT = (ureg.avogadro_constant * ureg.boltzmann_constant
+                         * temperature).m_as(self.results.units["_kBT"])
 
         if dimensions is not None:
             if len(dimensions) != 3:
@@ -886,7 +887,7 @@ class Onsager(SerialAnalysisBase):
                 if charges.__module__ == "openmm.unit.quantity":
                     charges = charges.value_in_unit(unit.elementary_charge)
                 else:
-                    charges = charges.m_as(ureg.elementary_charge)
+                    charges = charges.m_as(self.results.units["_charges"])
             self._charges = np.asarray(charges)
         elif hasattr(self.universe.atoms, "charges"):
             self._charges = np.fromiter(
@@ -1171,7 +1172,7 @@ class Onsager(SerialAnalysisBase):
         ----------
         charges : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
-            Charge numbers :math:`z_i` of the atoms or residues in the
+            Charge numbers :math:`z_i` of the groupings in the
             :math:`N_\mathrm{g}` groups. This argument is optional only
             if `charges` has previously been passed to a calculation
             method belonging to this class.
@@ -1198,7 +1199,7 @@ class Onsager(SerialAnalysisBase):
                 if charges.__module__ == "openmm.unit.quantity":
                     charges = charges.value_in_unit(unit.elementary_charge)
                 else:
-                    charges = charges.m_as(ureg.elementary_charge)
+                    charges = charges.m_as(self.results.units["_charges"])
             self._charges = np.asarray(charges)
         if self._charges is None:
             raise ValueError("No charge number information available.")
@@ -1227,7 +1228,7 @@ class Onsager(SerialAnalysisBase):
         ----------
         charges : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
-            Charge numbers :math:`z_i` of the atoms or residues in the
+            Charge numbers :math:`z_i` of the groupings in the
             :math:`N_\mathrm{g}` groups. This argument is optional only 
             if charge information is present in the topology or 
             `charges` has previously been passed to a calculation 
@@ -1239,7 +1240,7 @@ class Onsager(SerialAnalysisBase):
         
         rhos : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
-            Number densities :math:`n_i` of the atoms or residues in the
+            Number densities :math:`n_i` of the groupings in the
             :math:`N_\mathrm{g}` groups. 
 
             **Shape**: :math:`(N_\mathrm{g},)`.
@@ -1304,7 +1305,7 @@ class Onsager(SerialAnalysisBase):
         ----------
         charges : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
-            Charge numbers :math:`z_i` of the atoms or residues in the
+            Charge numbers :math:`z_i` of the groupings in the
             :math:`N_\mathrm{g}` groups. This argument is optional only 
             if charge information is present in the topology or 
             `charges` has previously been passed to a calculation 

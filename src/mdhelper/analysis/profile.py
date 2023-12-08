@@ -18,7 +18,6 @@ from scipy import integrate
 from .base import SerialAnalysisBase
 from .. import Q_, ureg
 from ..algorithm.molecule import center_of_mass
-from ..openmm.unit import VACUUM_PERMITTIVITY
 
 def potential_profile(
         bins: np.ndarray[float], charge_density: np.ndarray[float], 
@@ -253,6 +252,17 @@ class DensityProfile(SerialAnalysisBase):
 
         **Reference unit**: :math:`\mathrm{Å}`.
 
+    dt : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
+    keyword-only, optional
+        Time between frames :math:`\Delta t`. While this is normally
+        determined from the trajectory, the trajectory may not have the
+        correct information if the data is in reduced units. For
+        example, if your reduced timestep is :math:`0.01` and you output
+        trajectory data every :math:`10000` timesteps, then
+        :math:`\Delta t = 100`. 
+        
+        **Reference unit**: :math:`\mathrm{ps}`.
+
     scales : array-like, keyword-only, optional
         Scaling factors for each system dimension. If an `int` is 
         provided, the same value is used for all axes.
@@ -294,6 +304,13 @@ class DensityProfile(SerialAnalysisBase):
         Reference units for the results. For example, to get the 
         reference units for :code:`results.bins`, call 
         :code:`results.units["results.bins"]`.
+
+    results.times : `numpy.ndarray`
+        Times at which the density profiles are calculated.
+
+        **Shape**: :math:`(N_\mathrm{frames},)`.
+
+        **Reference unit**: :math:`\mathrm{ps}`.
 
     results.bins : `list`
         Bin centers corresponding to the density profiles in each 
@@ -337,6 +354,7 @@ class DensityProfile(SerialAnalysisBase):
             n_bins: Union[int, tuple[int]] = 201, *, 
             charges: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
+            dt: Union[float, "unit.Quantity", Q_] = None,
             scales: Union[float, tuple[float]] = 1, average: bool = True,
             recenter: dict[str, Any] = None, reduced: bool = False,
             verbose: bool = True, **kwargs) -> None:
@@ -344,37 +362,6 @@ class DensityProfile(SerialAnalysisBase):
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
         super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
-
-        if not reduced:
-            self.results.units = {"_charges": ureg.elementary_charge,
-                                  "_dimensions": ureg.angstrom}
-
-        if dimensions is not None:
-            if len(dimensions) != 3:
-                raise ValueError("'dimensions' must have length 3.")
-            if not isinstance(dimensions, (list, tuple, np.ndarray)):
-                if reduced:
-                    emsg = "'dimensions' cannot have units when reduced=True."
-                    raise TypeError(emsg)
-                if dimensions.__module__ == "openmm.unit.quantity":
-                    dimensions = dimensions.value_in_unit(unit.angstrom)
-                else:
-                    dimensions = dimensions.m_as(
-                        self.results.units["_dimensions"]
-                    )
-            self._dimensions = np.asarray(dimensions)
-        elif self.universe.dimensions is not None:
-            self._dimensions = self.universe.dimensions[:3].copy()
-        else:
-            raise ValueError("No system dimensions found or provided.")
-
-        if isinstance(scales, (int, float)) \
-                or len(scales) == 3 and isinstance(scales[0], (int, float)):
-            self._dimensions *= scales
-        else:
-            emsg = ("The scaling factor(s) must be provided as a "
-                    "floating-point number or in an array with shape (3,). ")
-            raise ValueError(emsg)
 
         self._n_groups = len(self._groups)
         if isinstance(groupings, str):
@@ -420,6 +407,51 @@ class DensityProfile(SerialAnalysisBase):
             emsg = ("The specified bin counts must be an integer or an "
                     "iterable object.")
             raise ValueError(emsg)
+        
+        if not reduced:
+            self.results.units = {"_charges": ureg.elementary_charge,
+                                  "_dimensions": ureg.angstrom,
+                                  "_dt": ureg.picosecond}
+
+        if dimensions is not None:
+            if len(dimensions) != 3:
+                raise ValueError("'dimensions' must have length 3.")
+            if not isinstance(dimensions, (list, tuple, np.ndarray)):
+                if reduced:
+                    emsg = "'dimensions' cannot have units when reduced=True."
+                    raise TypeError(emsg)
+                if dimensions.__module__ == "openmm.unit.quantity":
+                    dimensions = dimensions.value_in_unit(unit.angstrom)
+                else:
+                    dimensions = dimensions.m_as(
+                        self.results.units["_dimensions"]
+                    )
+            self._dimensions = np.asarray(dimensions)
+        elif self.universe.dimensions is not None:
+            self._dimensions = self.universe.dimensions[:3].copy()
+        else:
+            raise ValueError("No system dimensions found or provided.")
+
+        if isinstance(scales, (int, float)) \
+                or len(scales) == 3 and isinstance(scales[0], (int, float)):
+            self._dimensions *= scales
+        else:
+            emsg = ("The scaling factor(s) must be provided as a "
+                    "floating-point number or in an array with shape (3,). ")
+            raise ValueError(emsg)
+
+        if dt:
+            if not isinstance(dt, (int, float)):
+                if reduced:
+                    emsg = "'dt' cannot have units when reduced=True."
+                    raise TypeError(emsg)
+                if dt.__module__ == "openmm.unit.quantity":
+                    dt = dt.value_in_unit(unit.picosecond)
+                else:
+                    dt = dt.m_as(self.results.units["_dt"])
+            self._dt = dt
+        else:
+            self._dt = self._trajectory.dt
 
         if charges is not None:
             if len(charges) != self._n_groups:
@@ -485,27 +517,34 @@ class DensityProfile(SerialAnalysisBase):
             self._threshold = self._dimensions / 2
 
         # Preallocate arrays to hold number density data
-        shapes = np.array(
-            [(self._n_groups, n) if self._average 
-             else (self._n_groups, self.n_frames, n) for n in self._n_bins]
-        )
-        self.results.number_density = [np.zeros(shape, dtype=float) 
-                                       for shape in shapes]
+        if self._average:
+            self.results.number_density = [
+                np.zeros((self._n_groups, n), dtype=float) 
+                for n in self._n_bins
+            ]
+        else:
+            self.results.time = self.step * self._dt * np.arange(
+                self._n_frames // self._n_blocks
+            )
+            self.results.number_density = [
+                np.zeros((self._n_groups, self.n_frames, n), dtype=float) 
+                for n in self._n_bins
+            ]
 
         # Store reference units
         if not self._reduced:
-            self.results.units["results.bins"] = unit.angstrom
-            self.results.units["results.number_density"] = unit.angstrom ** -3
+            self.results.units["results.bins"] = ureg.angstrom
+            self.results.units["results.number_density"] = ureg.angstrom ** -3
 
         # Preallocate arrays to hold charge density data, if charge
         # information is available
         if self._charges is not None:
-            self.results.charge_density = [np.zeros(shape, dtype=float) 
-                                           for shape in shapes]
+            self.results.charge_density = [np.zeros_like(arr, dtype=float) 
+                                           for arr in self.results.number_density]
             if not self._reduced:
-                self.results.units["_charge"] = unit.elementary_charge
+                self.results.units["_charge"] = ureg.elementary_charge
                 self.results.units["results.charge_density"] = \
-                    self.results.units["_charge"] / unit.angstrom ** 3
+                    self.results.units["_charge"] / ureg.angstrom ** 3
     
     def _single_frame(self):
 
@@ -592,12 +631,12 @@ class DensityProfile(SerialAnalysisBase):
 
     def calculate_potential_profile(
             self, dielectric: float, axis: Union[int, str], *,
-            sigma_e: Union[float, unit.Quantity] = None,
-            dV: Union[float, unit.Quantity] = None,
-            threshold: float = 1e-5, V0: Union[float, unit.Quantity] = 0
+            sigma_e: Union[float, "unit.Quantity", Q_] = None,
+            dV: Union[float, "unit.Quantity", Q_] = None,
+            threshold: float = 1e-5, V0: Union[float, "unit.Quantity", Q_] = 0
         ) -> None:
         
-        r"""
+        """
         Calculates the average potential profile in the given dimension 
         using the charge density profile by numerically solving Poisson's 
         equation for electrostatics.
@@ -606,7 +645,7 @@ class DensityProfile(SerialAnalysisBase):
         ----------
         dielectric : `float`
             Relative permittivity or dielectric constant 
-            :math:`\varepsilon_\mathrm{r}`.
+            :math:`\\varepsilon_\mathrm{r}`.
 
         axis : `int` or `str`
             Axis along which to compute the potential profiles.
@@ -618,7 +657,8 @@ class DensityProfile(SerialAnalysisBase):
                * :code:`2` for the :math:`z`-direction.
                * :code:`"x"` for the :math:`x`-direction.
 
-        sigma_e : `float` or `openmm.unit.Quantity`, keyword-only, optional
+        sigma_e : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
+        keyword-only, optional
             Total surface charge density :math:`\sigma_e`. Used to 
             ensure that the electric field in the bulk of the solution
             is zero. If not provided, it is determined using `dV` and 
@@ -627,8 +667,9 @@ class DensityProfile(SerialAnalysisBase):
             
             **Reference unit**: :math:`\mathrm{e/Å^2}`.
 
-        dV : `float` or `openmm.unit.Quantity`, keyword-only, optional
-            Potential difference :math:`\Delta \varphi` across the system 
+        dV : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
+        keyword-only, optional
+            Potential difference :math:`\Delta \\varphi` across the system 
             dimension specified in `axis`. Has no effect if `sigma_e` is
             provided since this value is used solely to calculate 
             `sigma_e`.
@@ -647,8 +688,9 @@ class DensityProfile(SerialAnalysisBase):
             `sigma_e`. Has no effect if `sigma_e` is provided, or if
             `sigma_e` can be calculated using `dV` and `dielectric`.
 
-        V0 : `float` or `openmm.unit.Quantity`, keyword-only, default: :code:`0`
-            Potential :math:`\varphi_0` at the left boundary. 
+        V0 : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
+        keyword-only, default: :code:`0`
+            Potential :math:`\\varphi_0` at the left boundary. 
             
             **Reference unit**: :math:`\mathrm{V}`.
         """
@@ -664,7 +706,7 @@ class DensityProfile(SerialAnalysisBase):
 
             # Store reference units
             if not self._reduced:
-                self.results.units["results.potential"] = unit.volt
+                self.results.units["results.potential"] = ureg.volt
 
         if isinstance(axis, str):
             axis = ord(axis.lower()) - 120
@@ -676,6 +718,11 @@ class DensityProfile(SerialAnalysisBase):
         self.results.potential[axis] = potential_profile(
             self.results.bins[index],
             charge_density,
-            self._dimensions[axis], dielectric, sigma_e=sigma_e, dV=dV, 
-            threshold=threshold, V0=V0, reduced=self._reduced
+            self._dimensions[axis], 
+            dielectric, 
+            sigma_e=sigma_e, 
+            dV=dV, 
+            threshold=threshold, 
+            V0=V0, 
+            reduced=self._reduced
         )
