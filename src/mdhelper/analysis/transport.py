@@ -200,8 +200,9 @@ def coefficients(
     # self-diffusion coefficients
     ndim = msd_self.ndim
     if ndim not in (2, 3):
-        raise ValueError("The arrays containing the cross- and self-MSDs have "
-                         "invalid shapes.")
+        emsg = ("The arrays containing the cross- and self-MSDs have "
+                "invalid shapes.")
+        raise ValueError(emsg)
     elif ndim == 2:
         n_groups = msd_self.shape[0]
         n_blocks = 1
@@ -860,7 +861,6 @@ class Onsager(SerialAnalysisBase):
             self._dimensions = self.universe.dimensions[:3].copy()
         else:
             raise ValueError("No system dimensions found or provided.")
-        self._volume = self._dimensions.prod()
 
         if dt:
             if not isinstance(dt, (int, float)):
@@ -899,12 +899,13 @@ class Onsager(SerialAnalysisBase):
         else:
             self._charges = None
 
-        self._rhos = np.fromiter(
-            (getattr(g, f"n_{gr}") 
-             for g, gr in zip(self._groups, self._groupings)),
-            count=self._n_groups,
-            dtype=float
-        ) / self._volume
+        if np.all(~np.isclose(self._dimensions, 0)):
+            self._rhos = np.fromiter(
+                (getattr(g, f"n_{gr}") 
+                for g, gr in zip(self._groups, self._groupings)),
+                count=self._n_groups,
+                dtype=float
+            ) / self._dimensions.prod()
 
         self._n_blocks = n_blocks
         self._center = center
@@ -1062,7 +1063,7 @@ class Onsager(SerialAnalysisBase):
                 self.results.msd_cross[i] = np.nan
         
         # Account for dimensionality by dividing by 2 * D
-        D = 2 * (3 - delete_dimensions.sum())
+        D = 2 * (~delete_dimensions).sum()
         self.results.msd_cross /= D
         self.results.msd_self /= D
 

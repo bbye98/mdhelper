@@ -26,7 +26,7 @@ def potential_profile(
         reduced: bool = False) -> None:
     
     """
-    Calculates the potential profile :math:`\varphi(z)` using the charge
+    Calculates the potential profile :math:`\\varphi(z)` using the charge
     density profile by numerically solving Poisson's equation for 
     electrostatics.
 
@@ -512,7 +512,7 @@ class DensityProfile(SerialAnalysisBase):
         # each particle
         if self._recenter is not None:
             self._trajectory[self.start]
-            self._positions_prev = self.universe.atoms.positions
+            self._positions_old = self.universe.atoms.positions
             self._images = np.zeros((self.universe.atoms.n_atoms, 3), dtype=int)
             self._threshold = self._dimensions / 2
 
@@ -553,10 +553,10 @@ class DensityProfile(SerialAnalysisBase):
         if self._recenter is not None:
 
             # Unwrap all particle positions
-            dpos = positions - self._positions_prev
+            dpos = positions - self._positions_old
             mask = np.abs(dpos) >= self._threshold
             self._images[mask] -= np.sign(dpos[mask]).astype(int)
-            self._positions_prev = self.universe.atoms.positions.copy()
+            self._positions_old = self.universe.atoms.positions.copy()
             positions += self._images * self._dimensions
 
             # Calculate difference in center of mass
