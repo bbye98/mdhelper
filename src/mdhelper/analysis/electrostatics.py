@@ -11,7 +11,6 @@ from typing import Union
 
 import MDAnalysis as mda
 import numpy as np
-from openmm import unit
 
 from .base import SerialAnalysisBase
 from .. import FOUND_OPENMM, Q_, ureg
