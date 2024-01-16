@@ -523,9 +523,7 @@ class DensityProfile(SerialAnalysisBase):
                 for n in self._n_bins
             ]
         else:
-            self.results.time = self.step * self._dt * np.arange(
-                self._n_frames // self._n_blocks
-            )
+            self.results.time = self.step * self._dt * np.arange(self.n_frames)
             self.results.number_density = [
                 np.zeros((self._n_groups, self.n_frames, n), dtype=float) 
                 for n in self._n_bins
@@ -617,9 +615,10 @@ class DensityProfile(SerialAnalysisBase):
 
             # Divide the bin counts by the bin volumes and number of
             # timesteps to obtain the averaged number density profiles
+            denom = self._n_bins[a] / V
             if self._average:
-                self.results.number_density[a] \
-                    *= self._n_bins[a] / (V * self.n_frames)
+                denom /= self.n_frames
+            self.results.number_density[a] *= denom
 
             # Compute the charge density profiles
             if self._charges is not None:
