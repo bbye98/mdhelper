@@ -1,4 +1,4 @@
-unit
+﻿unit
 ====
 
 .. automodule:: mdhelper.openmm.unit
@@ -16,6 +16,7 @@ unit
       :nosignatures:
    
       lj_scaling
+      unit_scaling
    
    
 

@@ -179,14 +179,14 @@ class DipoleMoment(SerialAnalysisBase):
         **Reference unit**: :math:`\mathrm{Å}`.
 
     average : `bool`, keyword-only, default: :code:`False`
-        Determines if the dipole moment vectors and volumes are 
+        Determines whether the dipole moment vectors and volumes are 
         time-averaged.
 
     unwrap : `bool`, keyword-only, default: :code:`False`
-        Determines if atom positions are unwrapped.
+        Determines whether atom positions are unwrapped.
 
     verbose : `bool`, keyword-only, default: :code:`True`
-        Determines if progress is printed to the console.
+        Determines whether progress is printed to the console.
 
     **kwargs
         Additional keyword arguments to pass to
@@ -272,13 +272,13 @@ class DipoleMoment(SerialAnalysisBase):
             charges = list(charges)
             if len(charges) == self._n_groups:
                 for i, (g, q) in enumerate(zip(self._groups, charges)):
-                    if not isinstance(q, (list, tuple, np.ndarray)):
+                    if isinstance(q, (int, float)):
+                        q *= np.ones(g.n_atoms, dtype=float)
+                    elif not isinstance(q, (list, tuple, np.ndarray)):
                         if q.__module__ == "openmm.unit.quantity":
                             q = q.value_in_unit(unit.elementary_charge)
                         else:
                             q = q.m_as(self.results.units["_charges"])
-                    if isinstance(q, (int, float)):
-                        q *= np.ones(g.n_atoms, dtype=float)
                     elif g.n_atoms != len(q):
                         emsg = (f"The number of charges in charges[{i}] "
                                 "is not equal to the number of atoms in "
@@ -334,7 +334,7 @@ class DipoleMoment(SerialAnalysisBase):
             positions += self._images * self._dimensions
 
         # Compute dipole moment vectors and store per-frame volume
-        for i, (g, c) in enumerate(zip(self._groups, self._charges)):
+        for g, c in zip(self._groups, self._charges):
             self.results.dipole[self._frame_index] += np.dot(c, positions[g.indices])
         self.results.volume[self._frame_index] = self.universe.trajectory.ts.volume
 

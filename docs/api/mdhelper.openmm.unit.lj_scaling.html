@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="utility" href="mdhelper.openmm.utility.html" /><link rel="prev" title="unit" href="mdhelper.openmm.unit.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="unit_scaling" href="mdhelper.openmm.unit.unit_scaling.html" /><link rel="prev" title="unit" href="mdhelper.openmm.unit.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>lj_scaling - MDHelper documentation</title>
@@ -335,6 +335,7 @@
 </li>
 <li class="toctree-l3 current has-children"><a class="reference internal" href="mdhelper.openmm.unit.html">unit</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of unit</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">lj_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.unit.unit_scaling.html">unit_scaling</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.openmm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -394,7 +395,7 @@
 <h1>lj_scaling<a class="headerlink" href="#lj-scaling" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="mdhelper.openmm.unit.lj_scaling">
-<span class="sig-prename descclassname"><span class="pre">mdhelper.openmm.unit.</span></span><span class="sig-name descname"><span class="pre">lj_scaling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bases</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.1.0)"><span class="pre">Quantity</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.1.0)"><span class="pre">Quantity</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/unit.html#lj_scaling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.unit.lj_scaling" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mdhelper.openmm.unit.</span></span><span class="sig-name descname"><span class="pre">lj_scaling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bases</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.1.0)"><span class="pre">Quantity</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.1.0)"><span class="pre">Quantity</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mdhelper/openmm/unit.html#lj_scaling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.openmm.unit.lj_scaling" title="Link to this definition">#</a></dt>
 <dd><p>Computes scaling factors for Lennard-Jones reduced units.</p>
 <p>By default, the following scaling factors are calculated:</p>
 <ul class="simple">
@@ -421,16 +422,6 @@
 <p><strong>Reference units</strong>: <span class="math notranslate nohighlight">\(\mathrm{g/mol}\)</span>, <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>,
 and <span class="math notranslate nohighlight">\(\mathrm{kJ/mol}\)</span>.</p>
 </dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl>
-<dt><strong>bases</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Scaling factors.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-odd">Other Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl>
 <dt><strong>other</strong><span class="classifier"><cite>dict</cite>, optional</span></dt><dd><p>Other scaling factors to compute. The key should be the name of
 the scaling factor, and the value should contain <cite>tuple</cite>
 objects with the names of bases or default scaling factors and
@@ -438,7 +429,11 @@ their powers.</p>
 <p><strong>Example</strong>:
 <code class="code docutils literal notranslate"><span class="pre">{&quot;diffusivity&quot;:</span> <span class="pre">((&quot;length&quot;,</span> <span class="pre">2),</span> <span class="pre">(&quot;time&quot;,</span> <span class="pre">-1))}</span></code>.</p>
 </dd>
-<dt><strong>default</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the default scaling factors are included.</p>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>scales</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Scaling factors.</p>
 </dd>
 </dl>
 </dd>
@@ -452,12 +447,12 @@ their powers.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="mdhelper.openmm.utility.html">
+          <a class="next-page" href="mdhelper.openmm.unit.unit_scaling.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">utility</div>
+                <div class="title">unit_scaling</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

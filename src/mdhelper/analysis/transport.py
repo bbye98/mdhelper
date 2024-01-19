@@ -510,7 +510,7 @@ class Onsager(SerialAnalysisBase):
        \lim_{t\\rightarrow\infty}\\frac{d}{dt} 
        \sum_\\alpha\sum_{\\beta\\neq\\alpha}\left\langle\left[ 
        \pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)\\right]\cdot 
-       \left[\pmb{r}_{i,\beta}(t)-\pmb{r}_{i,\\beta}(0)\\right] 
+       \left[\pmb{r}_{i,\\beta}(t)-\pmb{r}_{i,\\beta}(0)\\right] 
        \\right\\rangle
     
     is given by the cross-correlation between two distinct particles
