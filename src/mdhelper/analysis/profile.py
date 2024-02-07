@@ -103,6 +103,15 @@ def potential_profile(
 
     reduced : `bool`, keyword-only, default: :code:`False`
         Specifies whether the data is in reduced units.
+
+    Returns
+    -------
+    potential : `numpy.ndarray`
+        Potential profile :math:`\\varphi(z)`.
+
+        **Shape**: :math:`(N_\mathrm{bins},)`.
+
+        **Reference unit**: :math:`\mathrm{V}`.
     """
   
     # Calculate the first integral of the charge density profile
@@ -540,9 +549,8 @@ class DensityProfile(SerialAnalysisBase):
             self.results.charge_density = [np.zeros_like(arr, dtype=float) 
                                            for arr in self.results.number_density]
             if not self._reduced:
-                self.results.units["_charge"] = ureg.elementary_charge
                 self.results.units["results.charge_density"] = \
-                    self.results.units["_charge"] / ureg.angstrom ** 3
+                    self.results.units["_charges"] / ureg.angstrom ** 3
     
     def _single_frame(self):
 
@@ -710,6 +718,35 @@ class DensityProfile(SerialAnalysisBase):
         if isinstance(axis, str):
             axis = ord(axis.lower()) - 120
         index = np.where(self._axes == axis)[0][0]
+
+        if sigma_e is not None and not isinstance(sigma_e, (int, float)):
+            if self._reduced:
+                emsg = "'sigma_e' cannot have units when reduced=True."
+                raise TypeError(emsg)
+            if sigma_e.__module__ == "openmm.unit.quantity":
+                sigma_e = sigma_e.value_in_unit(unit.elementary_charge 
+                                                / unit.angstrom ** 2)
+            else:
+                sigma_e = sigma_e.m_as(self.results.units["_charges"] 
+                                       / self.results.units["_dimensions"] ** 2)
+
+        if dV is not None and not isinstance(dV, (int, float)):
+            if self._reduced:
+                emsg = "'dV' cannot have units when reduced=True."
+                raise TypeError(emsg)
+            if dV.__module__ == "openmm.unit.quantity":
+                dV = dV.value_in_unit(unit.volt)
+            else:
+                dV = dV.m_as(self.results.units["results.potential"])
+
+        if V0 is not None and not isinstance(V0, (int, float)):
+            if self._reduced:
+                emsg = "'V0' cannot have units when reduced=True."
+                raise TypeError(emsg)
+            if V0.__module__ == "openmm.unit.quantity":
+                V0 = V0.value_in_unit(unit.volt)
+            else:
+                V0 = V0.m_as(self.results.units["results.potential"])
 
         charge_density = self.results.charge_density[index]
         if charge_density.ndim == 3:

@@ -1,8 +1,6 @@
 """
 MDHelper
 ========
-.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
-
 A batteries-included toolkit of analysis modules and helper functions
 for molecular dynamics (MD) simulations.
 """
@@ -16,8 +14,7 @@ Q_ = ureg.Quantity
 
 VERSION = "1.0.0"
 FOUND_OPENMM = find_spec("openmm") is not None
-__all__ = ["algorithm", "analysis", "fit", "plot", 
-           "FOUND_OPENMM"]
+__all__ = ["algorithm", "analysis", "fit", "plot", "FOUND_OPENMM", "VERSION"]
 
 # pending deprecation
 from typing import TypeVar # noqa: E402

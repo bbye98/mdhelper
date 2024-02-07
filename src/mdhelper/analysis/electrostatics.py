@@ -335,7 +335,7 @@ class DipoleMoment(SerialAnalysisBase):
 
         # Compute dipole moment vectors and store per-frame volume
         for g, c in zip(self._groups, self._charges):
-            self.results.dipole[self._frame_index] += np.dot(c, positions[g.indices])
+            self.results.dipole[self._frame_index] += c @ positions[g.indices]
         self.results.volume[self._frame_index] = self.universe.trajectory.ts.volume
 
     def _conclude(self) -> None:

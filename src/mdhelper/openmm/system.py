@@ -264,7 +264,7 @@ def slab_correction(
 
     # Get system dimensions
     dims = np.array(
-        topology.getUnitCellDimensions().value_in_units(unit.nanometer)
+        topology.getUnitCellDimensions().value_in_unit(unit.nanometer)
     ) * unit.nanometer
     pbv = system.getDefaultPeriodicBoxVectors()
 
@@ -286,7 +286,7 @@ def slab_correction(
     system.setDefaultPeriodicBoxVectors(*pbv)
 
     # Obtain particle charge information
-    if nbforce.getParticleParameters(0)[charge_index] == unit.Quantity:
+    if isinstance(nbforce.getParticleParameters(0)[charge_index], unit.Quantity):
         qs = np.fromiter(
             (nbforce.getParticleParameters(i)[charge_index]
              .value_in_unit(unit.elementary_charge)

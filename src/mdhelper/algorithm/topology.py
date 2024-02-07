@@ -10,16 +10,19 @@ transformations, like the generation of initial particle positions.
 from typing import Any, Union
 
 import numpy as np
-from openmm import app, unit
 
+from .. import FOUND_OPENMM
 from . import utility
 
+if FOUND_OPENMM:
+    from openmm import app, unit
+
 def create_atoms(
-        dims: Union[np.ndarray, unit.Quantity, app.Topology], N: int = None,
-        N_p: int = 1, *, lattice: str = None, 
-        length: Union[float, unit.Quantity] = 0.34,
+        dims: Union[np.ndarray[float], "unit.Quantity", "app.Topology"], 
+        N: int = None, N_p: int = 1, *, lattice: str = None, 
+        length: Union[float, "unit.Quantity"] = 0.34,
         flexible: bool = False, connectivity: bool = False, 
-        randomize: bool = False, length_unit: unit.Unit = None, 
+        randomize: bool = False, length_unit: "unit.Unit" = None, 
         wrap: bool = False) -> Any:
 
     r"""
@@ -129,12 +132,15 @@ def create_atoms(
 
     # Remove units, if necessary
     if not isinstance(dims, np.ndarray):
+        
+        # Assume that the user has OpenMM installed if 'dims' is a
+        # openmm.app.Topology or openmm.unit.Quantity object
         if isinstance(dims, app.Topology):
             dims = dims.getUnitCellDimensions()
         if length_unit is None:
             length_unit = dims.unit
         dims = dims.value_in_unit(length_unit)
-    if isinstance(length, unit.Quantity):
+    if not isinstance(length, (int, np.integer, float, np.floating)):
         if length_unit is None:
             length_unit = length.unit
         length = length.value_in_unit(length_unit)
@@ -168,10 +174,11 @@ def create_atoms(
             # Determine unit cell information for each segment
             n_cells = utility.closest_factors(segments, 3)
             cell_dims = dims / n_cells
-            cell_pos = np.zeros((N_p, 3), dtype=float)
-            cell_pos[0] = cell_dims / 4
+
 
             # Randomly generate a segment within the unit cell
+            cell_pos = np.zeros((N_p, 3))
+            cell_pos[0] = cell_dims / 4
             rng = np.random.default_rng()
             for i in range(1, N_p):
                 vec = rng.random(3) * 2 - 1
@@ -193,11 +200,10 @@ def create_atoms(
             # Determine all bonds
             if connectivity:
                 bonds = np.array([(i * N_p + j, i * N_p + j + 1)
-                        for i in range(segments) for j in range(N_p - 1)])
+                                  for i in range(segments)
+                                  for j in range(N_p - 1)])
                 return pos if length_unit is None else pos * length_unit, bonds
-
         return pos if length_unit is None else pos * length_unit
-
     else:
 
         # Set unit cell information
@@ -211,7 +217,6 @@ def create_atoms(
                 (0, np.sqrt(3) / 3, 2 * np.sqrt(6) / 3),
                 (0.5, 5 * np.sqrt(3) / 6, 2 * np.sqrt(6) / 3),
             ))
-
         elif lattice == "hcp":
             cell_dims = length * np.array((1, np.sqrt(3), 2 * np.sqrt(6) / 3))
             cell_pos = length * np.array((
@@ -220,7 +225,6 @@ def create_atoms(
                 (0.5, np.sqrt(3) / 6, np.sqrt(6) / 3),
                 (0, 2 * np.sqrt(3) / 3, np.sqrt(6) / 3)
             ))
-        
         elif lattice == "honeycomb":
             cell_dims = length * np.array((np.sqrt(3), 3, np.inf))
             cell_pos = length * np.array((

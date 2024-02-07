@@ -319,7 +319,7 @@ def center_of_mass(
                   / masses.sum(axis=-1, keepdims=True)
     else:
         com = np.array([np.dot(m, p) / m.sum() 
-                       for m, p in zip(masses, positions)], dtype=float)
+                       for m, p in zip(masses, positions)])
     
     # Return the center(s) of mass
     if raw and any(missing):
@@ -583,7 +583,7 @@ def radius_of_gyration(
 
         # Compute the radii of gyration in each direction for asymmetric
         # groups
-        gyradii = np.empty(com.shape, dtype=float)
+        gyradii = np.empty(com.shape)
         for i, (m, p, c) in enumerate(zip(masses, positions, com)):
             cpos = (p - c) ** 2
             gyradii[i] = np.array(

@@ -7,8 +7,9 @@ This module contains physical constants and helper functions for unit
 reduction.
 """
 
-import numpy as np
 from openmm import unit
+
+from ..algorithm import utility
 
 VACUUM_PERMITTIVITY = 8.854187812813e-12 * unit.farad / unit.meter
 
@@ -47,14 +48,7 @@ def unit_scaling(
         Scaling factors.
     """
     
-    # Evaluate the custom scaling factors
-    for name, params in other.items():
-        factor = 1
-        for base, power in params:
-            factor *= bases[base] ** power
-        bases[name] = factor
-
-    return bases
+    return utility.unit_scaling(bases, other)
 
 def lj_scaling(
         bases: dict[str, unit.Quantity], other: dict[str, list] = {}
@@ -105,22 +99,4 @@ def lj_scaling(
         Scaling factors.
     """
 
-    # Define the default scaling factors
-    bases["molar_energy"] = bases["energy"] * unit.AVOGADRO_CONSTANT_NA
-    bases["time"] = (
-        bases["mass"] * bases["length"] ** 2 / bases["molar_energy"]
-    ).sqrt().in_units_of(unit.picosecond)
-    bases["velocity"] = bases["length"] / bases["time"]
-    bases["force"] = bases["molar_energy"] / bases["length"]
-    bases["temperature"] = bases["energy"] / unit.BOLTZMANN_CONSTANT_kB
-    bases["pressure"] = bases["energy"] / bases["length"] ** 3
-    bases["dynamic_viscosity"] = bases["pressure"] * bases["time"]
-    bases["charge"] = (
-        4 * np.pi * VACUUM_PERMITTIVITY * bases["length"] * bases["energy"]
-    ).sqrt().in_units_of(unit.elementary_charge)
-    bases["dipole"] = bases["length"] * bases["charge"]
-    bases["electric_field"] = bases["force"] / bases["charge"]
-    bases["mass_density"] = bases["mass"] / (bases["length"] ** 3 
-                                             * unit.AVOGADRO_CONSTANT_NA)
-
-    return unit_scaling(bases, other)
+    return utility.lj_scaling(bases, other)

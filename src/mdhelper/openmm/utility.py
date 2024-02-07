@@ -51,10 +51,10 @@ def _create_context(
         OpenMM simulation context.
     """
 
-    Integrator = openmm.XmlSerializer.clone(integrator)
-    Context = openmm.Context(system, Integrator, platform, properties)
-    Context.setPositions(positions)
-    return Context
+    integrator = openmm.XmlSerializer.clone(integrator)
+    context = openmm.Context(system, integrator, platform, properties)
+    context.setPositions(positions)
+    return context
 
 def _time_integrator(context: openmm.Context, steps: int) -> float:
 
@@ -200,7 +200,7 @@ def optimize_pme(
     logging.info("Determining a reasonable number of timesteps for PME optimizer...")
     pmeforce.setCutoffDistance(np.sqrt(min_cutoff * max_cutoff))
     properties["UseCpuPme"] = "false"
-    Context = _create_context(system, integrator, positions, platform,
+    context = _create_context(system, integrator, positions, platform,
                               properties)
     if target_std is None:
         target_std = 0.1 * target
@@ -208,7 +208,7 @@ def optimize_pme(
     lb, ub = target - target_std, target + target_std
     steps, time = 20, 0
     while True:
-        time = _time_integrator(Context, steps)
+        time = _time_integrator(context, steps)
         logging.info(f"  GPU: {steps:14,} ts "
                      f"===> {time:{time_width}.5f} s elapsed")
         if lb < time < ub:
@@ -216,11 +216,11 @@ def optimize_pme(
         steps = int(target * steps / time)
     if cpu_pme:
         properties["UseCpuPme"] = "true"
-        Context = _create_context(system, integrator, positions, platform,
+        context = _create_context(system, integrator, positions, platform,
                                   properties)
         steps_cpu, time = 20, 0
         while True:
-            time = _time_integrator(Context, steps_cpu)
+            time = _time_integrator(context, steps_cpu)
             logging.info(f"  CPU: {steps_cpu:14,} ts "
                          f"===> {time:{time_width}.5f} s elapsed")
             if lb < time < ub:
@@ -277,15 +277,15 @@ def optimize_pme(
         for i, cutoff in enumerate(cutoffs[arch]):
             pmeforce.setCutoffDistance(cutoff)
             properties["UseCpuPme"] = str(arch == "cpu").lower()
-            Context = _create_context(system, integrator, positions, platform,
+            context = _create_context(system, integrator, positions, platform,
                                       properties)
-            times[arch][i] = _time_integrator(Context, steps)
+            times[arch][i] = _time_integrator(context, steps)
             logging.info(f"  {arch.upper()}: {cutoff:{cutoff_width}.4f} nm cutoff "
                          f"===> {times[arch][i]:{time_width}.5f} s elapsed")
 
             # Stop iteration if simulation is continuously getting slower
-            if i > 3 and np.all(times[arch][i - window:i] > 
-                                times[arch][i - window - 1:i - 1]):
+            if i > window and np.all(times[arch][i - window:i] > 
+                                     times[arch][i - window - 1:i - 1]):
                 break
     best = sorted([t, c, a] for a in times.keys()
                             for c, t in zip(cutoffs[a], times[a]))[:fastest]
@@ -294,12 +294,12 @@ def optimize_pme(
     for i, (time, cutoff, arch) in enumerate(best):
         pmeforce.setCutoffDistance(cutoff)
         properties["UseCpuPme"] = str(arch == "cpu").lower()
-        Context = _create_context(system, integrator, positions, platform,
+        context = _create_context(system, integrator, positions, platform,
                                   properties)
 
         # Replace preliminary time with median time from reruns
         best[i][0] = sorted(
-            (time, *[_time_integrator(Context, steps) for _ in range(rerun)])
+            (time, *[_time_integrator(context, steps) for _ in range(rerun)])
         )[1]
     best.sort()
 

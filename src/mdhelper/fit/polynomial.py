@@ -77,7 +77,7 @@ def poly(x: np.ndarray, *args: float) -> np.ndarray:
     array([ 0.9883393 , -0.02840946,  0.98225396,  4.02032955,  9.08581731])
     """
 
-    return args @ x ** np.arange(len(args))[:, None]
+    return args @ (x ** np.arange(len(args))[:, None])
 
 def poly1(x: np.ndarray, p1: float, p2: float) -> np.ndarray:
 
