@@ -22,14 +22,14 @@ def test_func_lj_scaling():
            == unit.kilojoule_per_mole / (unit.nanometer * unit.elementary_charge)
 
     # TEST CASE 2: No default scaling factors
-    scales = u.lj_scaling(
+    scales = u.unit_scaling(
         {"mass": 18.0153 * unit.amu, 
          "length": 0.275 * unit.nanometer, 
-         "energy": (unit.BOLTZMANN_CONSTANT_kB * temp).in_units_of(unit.kilojoule)},
-        {"diffusivity": (("length", 2), ("time", -1))},
-        default=False
+         "energy": (unit.BOLTZMANN_CONSTANT_kB * temp).in_units_of(unit.kilojoule),
+         "charge": 1 * unit.elementary_charge},
+        {"surface_charge_density": (("charge", 1), ("length", -2))}
     )
     assert "time" not in scales
 
     # TEST CASE 3: Custom scaling factors
-    assert scales["diffusivity"].unit == unit.nanometer ** 2 / unit.picosecond
+    assert scales["surface_charge_density"].unit == unit.elementary_charge / unit.nanometer ** 2
