@@ -18,7 +18,6 @@ classifiers = [
 dependencies = [
   "matplotlib",
   "mdanalysis",
-  "netCDF4",
   "numpy",
   "pint",
   "scipy",

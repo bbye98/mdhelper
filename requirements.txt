@@ -7,13 +7,13 @@ pint
 scipy
 sympy
 
-# SELF-COMPILED CORE DEPENDENCIES
-# constvplugin
-openmm
+# SELF-COMPILED DEPENDENCIES
+# constvplugin or openmm-ic-plugin
 
-# OPTIONAL CORE DEPENDENCIES
+# OPTIONAL DEPENDENCIES
 dask
 joblib
+openmm
 
 # DOCUMENTATION DEPENDENCIES
 furo

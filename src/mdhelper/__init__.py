@@ -1,21 +1,20 @@
 """
 MDHelper
 ========
-.. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
+A batteries-included toolkit of analysis modules and helper functions
+for molecular dynamics (MD) simulations.
 """
 
-from typing import TypeVar
-import numpy as np
-ArrayLike = TypeVar("ArrayLike", list, np.ndarray, tuple)
+from importlib.util import find_spec
 
-VERSION = "0.0.2"
-__all__ = ["algorithm", "analysis", "fit", "openmm", "plot"]
+from pint import UnitRegistry
+ureg = UnitRegistry(auto_reduce_dimensions=True)
+Q_ = ureg.Quantity
+
+VERSION = "1.0.0"
+FOUND_OPENMM = find_spec("openmm") is not None
+__all__ = ["algorithm", "analysis", "fit", "plot", "FOUND_OPENMM", "VERSION"]
 
 from . import algorithm, analysis, fit, plot # noqa: E402
-
-try:
-    import openmm
-    from . import openmm
-except ImportError:
-    Warning("openmm not installed. Some features may not work.")
-    pass
+if FOUND_OPENMM:
+    __all__.append("openmm")
