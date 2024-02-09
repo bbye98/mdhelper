@@ -247,7 +247,6 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.fit.exponential.html">exponential</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle navigation of exponential</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.biexp.html">biexp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.exp.html">exp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.exp1.html">exp1</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.exp2.html">exp2</a></li>
@@ -409,9 +408,36 @@
 </dd>
 <dt><strong>hlabel</strong><span class="classifier"><cite>str</cite>, keyword-only, optional</span></dt><dd><p>Horizontal label for column values.</p>
 </dd>
-<dt><strong>vlabel</strong><span class="classifier"><cite>str</cite>, keyword-only, optional</span></dt><dd><p>Vertical label for row values.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>properties</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Properties of the tabular legend to be unpacked and used in the
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.legend.html#matplotlib.axes.Axes.legend" title="(in Matplotlib v3.8.2)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.legend()</span></code></a> call.</p>
+<div class="docutils container">
+<ul class="simple">
+<li><p>handles (<cite>list</cite>): <a class="reference external" href="https://matplotlib.org/stable/api/artist_api.html#module-matplotlib.artist" title="(in Matplotlib v3.8.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.artist</span></code></a> objects to be
+added to the legend.</p></li>
+<li><p>labels (<cite>list</cite>): Labels to be shown next to the
+<a class="reference external" href="https://matplotlib.org/stable/api/artist_api.html#module-matplotlib.artist" title="(in Matplotlib v3.8.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.artist</span></code></a> objects in the legend.</p></li>
+<li><p>ncol (<cite>int</cite>): Number of columns in the legend.</p></li>
+<li><p>kwargs (<cite>dict</cite>): Keyword arguments passed to
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.legend.html#matplotlib.axes.Axes.legend" title="(in Matplotlib v3.8.2)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.legend()</span></code></a>.</p></li>
+</ul>
+</div>
 </dd>
-<dt><strong>hla</strong><span class="classifier"><cite>str</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">&quot;left&quot;</span></code></span></dt><dd><p>Alignment for <cite>hlabel</cite>.</p>
+<dt><strong>nrow</strong><span class="classifier"><cite>int</cite></span></dt><dd><p>Number of rows in the legend.</p>
+</dd>
+<dt><strong>idx_start</strong><span class="classifier"><cite>int</cite></span></dt><dd><p>Index at which to start storing handles for
+<a class="reference external" href="https://matplotlib.org/stable/api/artist_api.html#module-matplotlib.artist" title="(in Matplotlib v3.8.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.artist</span></code></a> objects.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Other Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>hlabel</strong><span class="classifier"><cite>str</cite>, optional</span></dt><dd><p>Horizontal label for column values.</p>
+</dd>
+<dt><strong>vlabel</strong><span class="classifier"><cite>str</cite>, optional</span></dt><dd><p>Vertical label for row values.</p>
+</dd>
+<dt><strong>hla</strong><span class="classifier"><cite>str</cite>, default: <code class="code docutils literal notranslate"><span class="pre">&quot;left&quot;</span></code></span></dt><dd><p>Alignment for <cite>hlabel</cite>.</p>
 <div class="docutils container">
 <p><strong>Valid values</strong>:</p>
 <ul class="simple">
@@ -434,29 +460,6 @@ corner. Cannot be used when no <cite>vlabel</cite> is specified or in
 conjuction with <code class="code docutils literal notranslate"><span class="pre">vla=&quot;center&quot;</span></code> (which will take priority).</p>
 </dd>
 <dt><strong>**kwargs</strong></dt><dd><p>Keyword arguments passed to <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.legend.html#matplotlib.axes.Axes.legend" title="(in Matplotlib v3.8.2)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.legend()</span></code></a>.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl>
-<dt><strong>properties</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Properties of the tabular legend to be unpacked and used in the
-<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.legend.html#matplotlib.axes.Axes.legend" title="(in Matplotlib v3.8.2)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.legend()</span></code></a> call.</p>
-<div class="docutils container">
-<ul class="simple">
-<li><p>handles (<cite>list</cite>): <a class="reference external" href="https://matplotlib.org/stable/api/artist_api.html#module-matplotlib.artist" title="(in Matplotlib v3.8.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.artist</span></code></a> objects to be
-added to the legend.</p></li>
-<li><p>labels (<cite>list</cite>): Labels to be shown next to the
-<a class="reference external" href="https://matplotlib.org/stable/api/artist_api.html#module-matplotlib.artist" title="(in Matplotlib v3.8.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.artist</span></code></a> objects in the legend.</p></li>
-<li><p>ncol (<cite>int</cite>): Number of columns in the legend.</p></li>
-<li><p>kwargs (<cite>dict</cite>): Keyword arguments passed to
-<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.legend.html#matplotlib.axes.Axes.legend" title="(in Matplotlib v3.8.2)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.legend()</span></code></a>.</p></li>
-</ul>
-</div>
-</dd>
-<dt><strong>nrow</strong><span class="classifier"><cite>int</cite></span></dt><dd><p>Number of rows in the legend.</p>
-</dd>
-<dt><strong>idx_start</strong><span class="classifier"><cite>int</cite></span></dt><dd><p>Index at which to start storing handles for
-<a class="reference external" href="https://matplotlib.org/stable/api/artist_api.html#module-matplotlib.artist" title="(in Matplotlib v3.8.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.artist</span></code></a> objects.</p>
 </dd>
 </dl>
 </dd>

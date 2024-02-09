@@ -246,7 +246,6 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.html">exponential</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle navigation of exponential</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.biexp.html">biexp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.exp.html">exp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.exp1.html">exp1</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.exp2.html">exp2</a></li>
@@ -445,7 +444,14 @@
 <span class="sd">        Scaling factors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">return</span> <span class="n">utility</span><span class="o">.</span><span class="n">unit_scaling</span><span class="p">(</span><span class="n">bases</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
+    <span class="c1"># Evaluate the custom scaling factors</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">base</span><span class="p">,</span> <span class="n">power</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="n">factor</span> <span class="o">*=</span> <span class="n">bases</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">**</span> <span class="n">power</span>
+        <span class="n">bases</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span>
+
+    <span class="k">return</span> <span class="n">bases</span></div>
 
 
 <div class="viewcode-block" id="lj_scaling">
@@ -499,7 +505,25 @@
 <span class="sd">        Scaling factors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="n">utility</span><span class="o">.</span><span class="n">lj_scaling</span><span class="p">(</span><span class="n">bases</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
+    <span class="c1"># Define the default scaling factors</span>
+    <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;molar_energy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span>
+    <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;molar_energy&quot;</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="o">.</span><span class="n">in_units_of</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span><span class="p">)</span>
+    <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;velocity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
+    <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;force&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;molar_energy&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span>
+    <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">BOLTZMANN_CONSTANT_kB</span>
+    <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span>
+    <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;dynamic_viscosity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
+    <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;charge&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">VACUUM_PERMITTIVITY</span> <span class="o">*</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="o">.</span><span class="n">in_units_of</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">elementary_charge</span><span class="p">)</span>
+    <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;dipole&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;charge&quot;</span><span class="p">]</span>
+    <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;electric_field&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;force&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;charge&quot;</span><span class="p">]</span>
+    <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;mass_density&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bases</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">bases</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span> 
+                                             <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">AVOGADRO_CONSTANT_NA</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">unit_scaling</span><span class="p">(</span><span class="n">bases</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 </pre></div>
         </article>

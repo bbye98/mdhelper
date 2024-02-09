@@ -154,7 +154,7 @@ def rebin(x: np.ndarray[float], factor: int = None) -> np.ndarray[float]:
 
     if factor is None:
         factors = np.array(sympy.divisors(x.shape[-1]))
-        factor_indices = np.where(factors < 10)[0]
+        factor_indices = np.where(factors <= 10)[0]
         if len(factor_indices):
             factor = factors[factor_indices[-1]]
         else:

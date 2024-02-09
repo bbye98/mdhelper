@@ -1320,7 +1320,6 @@ class ParallelRDF2D(RDF2D, ParallelAnalysisBase):
     :math:`i` and :math:`j` and its related properties.
     
     .. note::
-
        For a theoretical background and a complete list of
        parameters, attributes, and available methods, see :class:`RDF2D`.
     """
