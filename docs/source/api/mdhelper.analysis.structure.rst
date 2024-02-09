@@ -1,4 +1,4 @@
-﻿structure
+structure
 =========
 
 .. automodule:: mdhelper.analysis.structure
@@ -34,6 +34,7 @@
       IncoherentIntermediateScatteringFunction
       ParallelIncoherentIntermediateScatteringFunction
       ParallelRDF
+      ParallelRDF2D
       ParallelStructureFactor
       RDF
       RDF2D
