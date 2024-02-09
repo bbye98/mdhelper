@@ -36,9 +36,7 @@ def power(x: np.ndarray, a: float, b: float, c: float = 0) -> np.ndarray:
     b : `float`
         Power constant :math:`b` for the :math:`x^b` term.
 
-    Other parameters
-    ----------------
-    c : `float`
+    c : `float`, keyword-only, default: :code:`0`
         Constant for the :math:`y`-intercept.
 
     Returns

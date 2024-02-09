@@ -161,6 +161,47 @@ def exp2(x: np.ndarray, a: float, b: float, c: float, d: float) -> np.ndarray:
 
     return exp(x, a, b, c, d)
 
+def biexp(
+        x: np.ndarray, y0: float, a: float, b: float, c: float, d: float
+    ) -> np.ndarray:
+
+    r"""
+    Bi-exponential function.
+
+    .. math::
+
+       y=y_0+a\exp{\left(-\frac{x}{b}\right)}+c\exp{\left(-\frac{x}{d}\right)}
+
+    Parameters
+    ----------
+    x : `numpy.ndarray`
+        One-dimensional array containing :math:`x`-values.
+
+    y0 : `float`
+        Offset :math:`y_0`.
+
+    a : `float`
+        Coefficient :math:`a` for the first :math:`\exp` term.
+
+    b : `float`
+        Coefficient :math:`b` for the :math:`x` term in the first
+        :math:`\exp` term.
+
+    c : `float`
+        Coefficient :math:`a` for the second :math:`\exp` term.
+
+    d : `float`
+        Coefficient :math:`b` for the :math:`x` term in the second
+        :math:`\exp` term.
+
+    Returns
+    -------
+    fit : `numpy.ndarray`
+        Fitted :math:`y`-values.
+    """
+
+    return y0 + a * np.exp(-x / b) + c * np.exp(-x / d)
+
 def stretched_exp(x: np.ndarray, alpha: float, beta: float) -> np.ndarray:
 
     r"""
