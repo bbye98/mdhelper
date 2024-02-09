@@ -14,7 +14,6 @@ from typing import Any, Iterable, Union
 import numpy as np
 from openmm import app
 
-from .. import ArrayLike
 from ..algorithm import topology as t
 
 def create_atoms(*args, **kwargs) -> Any:
@@ -30,7 +29,8 @@ def create_atoms(*args, **kwargs) -> Any:
 
 def _get_hierarchy_indices(
         item: Union[app.Atom, app.topology.Bond, app.Residue, app.Chain],
-        bonds: dict[str, list]) -> tuple[set, set, set, set]:
+        bonds: dict[str, list]
+    ) -> tuple[set[int], set[int], set[int], set[int]]:
 
     """
     Get unique indices of all topology items related to the one passed
@@ -113,10 +113,10 @@ def _is_topology_object(obj: Any):
     return isinstance(obj, (app.Atom, app.topology.Bond, app.Residue, app.Chain))
 
 def subset(
-        topology: app.Topology, positions: np.ndarray, *,
-        delete: ArrayLike = None, keep: ArrayLike = None,
+        topology: app.Topology, positions: np.ndarray[float], *,
+        delete: list[Any] = None, keep: list[Any] = None,
         types: Union[str, Iterable[str]] = None
-    ) -> Union[app.Topology, np.ndarray]:
+    ) -> Union[app.Topology, np.ndarray[float]]:
 
     r"""
     Creates a topology subset and get its corresponding particle positions.

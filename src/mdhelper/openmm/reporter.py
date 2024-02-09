@@ -62,7 +62,7 @@ class NetCDFReporter():
             self, file: str, interval: int, append: bool = False,
             periodic: bool = None, *, velocities: bool = False,
             forces: bool = False,
-            subset: Union[slice, np.ndarray, app.Topology] = None) -> None:
+            subset: Union[slice, np.ndarray[int], app.Topology] = None) -> None:
 
         self._out = NetCDFFile(file, "a" if append else "w")
         if not FOUND_NETCDF: # pragma: no cover

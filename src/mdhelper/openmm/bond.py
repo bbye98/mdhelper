@@ -9,7 +9,7 @@ elastic (FENE) potential. Generally, the bond potentials are named after
 their LAMMPS :code:`bond_style` counterparts, if available.
 """
 
-from typing import Any, Iterable, Union
+from typing import Union
 
 import openmm
 from openmm import unit
@@ -19,7 +19,7 @@ from .pair import ljts
 def _setup_bond(
         cbforce: openmm.CustomBondForce,
         global_params: dict[str, Union[float, unit.Quantity]],
-        per_params: Iterable[Any]) -> None:
+        per_params: list[str]) -> None:
 
     """
     Sets up a :class:`openmm.CustomBondForce` object.
@@ -29,10 +29,10 @@ def _setup_bond(
     cbforce : `openmm.CustomBondForce`
         Custom bond force object.
 
-    global_params : `dict`, optional
+    global_params : `dict`
         Global parameters.
 
-    per_params : `list`, optional
+    per_params : `list`
         Per-particle parameters.
     """
 
@@ -43,7 +43,7 @@ def _setup_bond(
 
 def fene(
         globals: dict[str, Union[float, unit.Quantity]] = {},
-        pers: Iterable[str] = ["k", "r0"], wca: bool = True, **kwargs
+        pers: list[str] = ["k", "r0"], wca: bool = True, **kwargs
     ) -> tuple[openmm.CustomBondForce, openmm.CustomNonbondedForce]:
 
     r"""

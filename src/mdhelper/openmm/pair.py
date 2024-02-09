@@ -9,7 +9,7 @@ potentials. Generally, the pair potentials are named after their LAMMPS
 :code:`pair_style` counterparts, if available.
 """
 
-from typing import Iterable, Union
+from typing import Union
 
 import numpy as np
 import openmm
@@ -21,8 +21,9 @@ def _setup_pair(
         cnbforce: openmm.CustomNonbondedForce,
         cutoff: Union[float, unit.Quantity],
         global_params: dict[str, Union[float, unit.Quantity]],
-        per_params: list,
-        tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
+        per_params: list[str],
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   openmm.unit.Quantity,
                                    openmm.Discrete2DFunction]],
         method: int = openmm.CustomNonbondedForce.CutoffPeriodic
     ) -> None:
@@ -72,10 +73,11 @@ def _setup_pair(
 def coul_gauss(
         cutoff: Union[float, unit.Quantity], tol: float = 1e-4, *,
         g_ewald: Union[float, unit.Quantity] = None,
-        dims: Union[Iterable, unit.Quantity] = None,
+        dims: Union[np.ndarray[float], unit.Quantity] = None,
         mix: str = "default", per_params: list = None,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
-        tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   openmm.unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> tuple[openmm.CustomNonbondedForce, openmm.NonbondedForce]:
 
@@ -276,7 +278,8 @@ def dpd(
         cutoff_dpd: Union[float, unit.Quantity] = None, *,
         mix: str = None, per_params: list = None,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
-        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
@@ -380,7 +383,8 @@ def gauss(
         shift: bool = True, mix: str = "geometric",
         global_params: dict[str, Union[float, unit.Quantity]] = None,
         per_params: list = None,
-        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
@@ -544,7 +548,7 @@ def gauss(
     return pair_gauss
 
 def lj_coul(
-        cutoff: Union[float,unit.Quantity], tol: float = 1e-4, *,
+        cutoff: Union[float, unit.Quantity], tol: float = 1e-4, *,
         g_ewald: Union[float, unit.Quantity] = None,
         dims: Union[float, unit.Quantity] = None) -> openmm.NonbondedForce:
 
@@ -648,7 +652,8 @@ def ljts(
         wca: bool = False,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
         per_params: list = None,
-        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
@@ -750,7 +755,7 @@ def ljts(
         and :code:`"C"`, respectively. If the Mie or WCA potential is
         used, the appropriate coefficients are used instead.
 
-    powers : `tuple`, keyword-only, default: :code:`(12, 6)`
+    powers : `tuple` or `dict`, keyword-only, default: :code:`(12, 6)`
         Powers :math:`\gamma_\mathrm{r}` and :math:`\gamma_\mathrm{a}`, 
         in that order. If a `dict` is provided, use the keys :code:`"r"`
         and :code:`"a"`, respectively.
@@ -874,7 +879,7 @@ def ljts(
         prefix = f"step({cutoff_ljts}-r)*(" if cutoff != cutoff_ljts else "("
         suffix = ((f"-ucut);ucut={coefs[2]}*epsilon12"
                    f"*({coefs[0]}*(sigma12/{cutoff_ljts})^{powers[0]}"
-                   f"-{coefs[1]}*(sigma12/{cutoff_ljts})^{powers[1]}));") 
+                   f"-{coefs[1]}*(sigma12/{cutoff_ljts})^{powers[1]});") 
                   if shift else ");")
     if mix == "arithmetic":
         mix = "sigma12=(sigma1+sigma2)/2;epsilon12=sqrt(epsilon1*epsilon2);"
@@ -897,7 +902,8 @@ def solvation(
         cutoff_solvation: Union[float, unit.Quantity] = None, *,
         mix: str = "arithmetic", per_params: list = None,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
-        tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   openmm.unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
@@ -1018,7 +1024,8 @@ def wca(cutoff: Union[float, unit.Quantity], *, mix: str = "arithmetic",
         powers: Union[dict[str, float], tuple[float, float]] = (12, 6),
         global_params: dict[str, Union[float, unit.Quantity]] = None,
         per_params: list = None,
-        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
@@ -1065,7 +1072,7 @@ def wca(cutoff: Union[float, unit.Quantity], *, mix: str = "arithmetic",
         
         **Reference unit**: :math:`\mathrm{nm}`.
 
-    powers : `tuple`, keyword-only, default: :code:`(12, 6)`
+    powers : `tuple` or `dict`, keyword-only, default: :code:`(12, 6)`
         Powers :math:`\gamma_\mathrm{r}` and :math:`\gamma_\mathrm{a}`, 
         in that order. If a `dict` is provided, use the keys :code:`"r"`
         and :code:`"a"`, respectively.
@@ -1147,7 +1154,8 @@ def yukawa(
         cutoff_yukawa: Union[float, unit.Quantity] = None, *,
         shift: bool = True, mix: str = "geometric", per_params: list = None,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
-        tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   openmm.unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 

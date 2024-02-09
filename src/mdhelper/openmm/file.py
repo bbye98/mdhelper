@@ -19,10 +19,10 @@ try:
     import netCDF4 as nc
     FOUND_NETCDF = True
 except ImportError: # pragma: no cover
-    from scipy.io import netcdf_file as nc
+    from scipy.io import netcdf_file
     FOUND_NETCDF = False
 
-from .. import VERSION, ArrayLike
+from .. import VERSION
 
 class NetCDFFile():
 
@@ -32,9 +32,10 @@ class NetCDFFile():
 
     Parameters
     ----------
-    file : `str`
-        Filename of the NetCDF file. If `file` does not have the
-        :code:`.nc` extension, it will automatically be appended.
+    file : `str`, `netcdf4.Dataset`, or `scipy.io.netcdf_file`
+        NetCDF file. If `file` is a filename and does not have the
+        :code:`.nc` or :code:`.ncdf` extension, :code:`.nc` will 
+        automatically be appended.
     
     mode : `str`
         NetCDF file access mode.
@@ -48,17 +49,17 @@ class NetCDFFile():
     """
 
     def __init__(
-            self, file: Union[str, nc.Dataset], mode: str, 
+            self, file: Union[str, "nc.Dataset", "netcdf_file"], mode: str, 
             restart: bool = False, **kwargs):
 
         if isinstance(file, str):
-            if not file.endswith(".nc") and not file.endswith(".ncdf"):
+            if not file.endswith((".nc", ".ncdf")):
                 file += ".nc"
             if FOUND_NETCDF:
                 self._nc = nc.Dataset(file, mode=mode, 
                                       format="NETCDF3_64BIT_OFFSET", **kwargs)
             else: # pragma: no cover
-                self._nc = nc(file, mode=mode, version=2, **kwargs)
+                self._nc = netcdf_file(file, mode=mode, version=2, **kwargs)
         else:
             self._nc = file
         
@@ -66,8 +67,9 @@ class NetCDFFile():
         self._restart = restart
 
     def get_dimensions(
-            self, frames: Union[int, list, slice] = None, units: bool = True
-        ) -> Union[tuple[np.ndarray, np.ndarray], 
+            self, frames: Union[int, list[int], slice] = None, 
+            units: bool = True
+        ) -> Union[tuple[np.ndarray[float], np.ndarray[float]], 
                    tuple[unit.Quantity, unit.Quantity]]:
         
         """
@@ -131,10 +133,10 @@ class NetCDFFile():
         return self._nc.dimensions["atom"].size
 
     def get_times(
-            self, frames: Union[int, list, slice] = None, units: bool = True
-        ) -> Union[np.ndarray, unit.Quantity]:
+            self, frames: Union[int, list[int], slice] = None, 
+            units: bool = True) -> Union[np.ndarray[float], unit.Quantity]:
 
-        r"""
+        """
         Get simulation times.
 
         Parameters
@@ -161,10 +163,10 @@ class NetCDFFile():
         return times
 
     def get_positions(
-            self, frames: Union[int, list, slice] = None, units: bool = True
-        ) -> Union[np.ndarray, unit.Quantity]:
+            self, frames: Union[int, list[int], slice] = None, 
+            units: bool = True) -> Union[np.ndarray[float], unit.Quantity]:
         
-        r"""
+        """
         Get the atom positions.
 
         Parameters
@@ -191,10 +193,10 @@ class NetCDFFile():
         return positions
     
     def get_velocities(
-            self, frames: Union[int, list, slice] = None, units: bool = True
-        ) -> Union[np.ndarray, unit.Quantity]:
+            self, frames: Union[int, list[int], slice] = None, 
+            units: bool = True) -> Union[np.ndarray[float], unit.Quantity]:
         
-        r"""
+        """
         Get atom velocities.
 
         Parameters
@@ -228,10 +230,10 @@ class NetCDFFile():
         return velocities
 
     def get_forces(
-            self, frames: Union[int, list, slice] = None, units: bool = True
-        ) -> Union[np.ndarray, unit.Quantity]:
+            self, frames: Union[int, list[int], slice] = None, 
+            units: bool = True) -> Union[np.ndarray[float], unit.Quantity]:
         
-        r"""
+        """
         Get the forces acting on the atoms.
 
         Parameters
@@ -267,9 +269,10 @@ class NetCDFFile():
     def write_header(
             self: Any, N: int, cell: bool, velocities: bool, forces: bool,
             restart: bool = False, *, remd: str = None, temp0: float = None,
-            remd_dimtype: ArrayLike = None, remd_indices: ArrayLike = None,
-            remd_repidx: int = -1, remd_crdidx: int = -1,
-            remd_values: ArrayLike = None) -> "NetCDFFile":
+            remd_dimtype: np.ndarray[int] = None, 
+            remd_indices: np.ndarray[int] = None, remd_repidx: int = -1, 
+            remd_crdidx: int = -1, remd_values: np.ndarray[float] = None
+        ) -> "NetCDFFile":
 
         """
         Initialize a NetCDF file according to `AMBER NetCDF
@@ -344,6 +347,12 @@ class NetCDFFile():
             Replica value the specified replica dimension has for that
             given frame. Required for a multi-dimensional REMD restart 
             file.
+
+        Returns
+        -------
+        netcdf_file : `mdhelper.openmm.file.NetCDFFile`
+            NetCDF file object. Only returned when this function is used
+            as a static method.
         """
 
         # Create NetCDF object if it doesn't already exist
@@ -489,6 +498,12 @@ class NetCDFFile():
         state : `openmm.State`
             OpenMM simulation state from which to retrieve cell 
             dimensions and atom positions, velocities, and forces.
+
+        Returns
+        -------
+        netcdf_file : `mdhelper.openmm.file.NetCDFFile`
+            NetCDF file object. Only returned when this function is used
+            as a static method.
         """
 
         # Collect all available data in the state
@@ -499,9 +514,8 @@ class NetCDFFile():
                 app.internal.unitcell.computeLengthsAndAngles(pbv)
             data["cell_lengths"] = 10 * np.array((a, b, c))
             data["cell_angles"] = 180 * np.array((alpha, beta, gamma)) / np.pi
-        data["coordinates"] = state.getPositions(asNumpy=True).value_in_unit(
-            unit.angstrom
-        )
+        data["coordinates"] = (state.getPositions(asNumpy=True)
+                               .value_in_unit(unit.angstrom))
         try:
             data["velocities"] \
                 = state.getVelocities(asNumpy=True).value_in_unit(
@@ -535,10 +549,13 @@ class NetCDFFile():
         return self
 
     def write_model(
-            self: Any, time: Union[float, np.ndarray], coordinates: np.ndarray,
-            velocities: np.ndarray = None, forces: np.ndarray = None,
-            cell_lengths: np.ndarray = None, cell_angles: np.ndarray = None, *,
-            restart: bool = False) -> "NetCDFFile":
+            self: Any, time: Union[float, np.ndarray[float]], 
+            coordinates: np.ndarray[float], 
+            velocities: np.ndarray[float] = None, 
+            forces: np.ndarray[float] = None, 
+            cell_lengths: np.ndarray[float] = None,
+            cell_angles: np.ndarray[float] = None, *, restart: bool = False
+        ) -> "NetCDFFile":
 
         """
         Write simulation state(s) to a NetCDF file.
@@ -563,30 +580,30 @@ class NetCDFFile():
             **Reference unit**: :math:`\\mathrm{ps}`.
         
         coordinates : `numpy.ndarray`
-            atom coordinates of :math:`N` atoms over :math:`N_t`
-            frames. The dimensionality depends on whether a single or 
-            multiple frames are to be written and must be compatible 
-            with that for `time`.
+            Coordinates of :math:`N` atoms over :math:`N_t` frames. The
+            dimensionality depends on whether a single or multiple 
+            frames are to be written and must be compatible with that 
+            for `time`.
 
             **Shape**: :math:`(N,\\,3)` or :math:`(N_t,\\,N,\\,3)`.
 
             **Reference unit**: :math:`\\mathrm{Å}`.
 
         velocities : `numpy.ndarray`, optional
-            atom velocities of :math:`N` atoms over :math:`N_t` 
-            frames. The dimensionality depends on whether a single or 
-            multiple frames are to be written and must be compatible 
-            with that for `time`.
+            Velocities of :math:`N` atoms over :math:`N_t` frames. The
+            dimensionality depends on whether a single or multiple 
+            frames are to be written and must be compatible with that
+            for `time`.
 
             **Shape**: :math:`(N,\\,3)` or :math:`(N_t,\\,N,\\,3)`.
 
             **Reference unit**: :math:`\\mathrm{Å/ps}`.
 
         forces : `numpy.ndarray`, optional
-            Forces exerted on :math:`N` atoms over :math:`N_t` 
-            frames. The dimensionality depends on whether a single or 
-            multiple frames are to be written and must be compatible 
-            with that for `time`.
+            Forces exerted on :math:`N` atoms over :math:`N_t` frames.
+            The dimensionality depends on whether a single or multiple 
+            frames are to be written and must be compatible with that 
+            for `time`.
 
             **Shape**: :math:`(N,\\,3)` or :math:`(N_t,\\,N,\\,3)`.
 
@@ -609,6 +626,12 @@ class NetCDFFile():
         restart : `bool`, keyword-only, default: :code:`False`
             Prevents the frame index from being incremented if writing a
             NetCDF restart file.
+
+        Returns
+        -------
+        netcdf_file : `mdhelper.openmm.file.NetCDFFile`
+            NetCDF file object. Only returned when this function is used
+            as a static method.
         """
 
         # Create NetCDF file or object if it doesn't already exist
