@@ -15,9 +15,9 @@ import numpy as np
 from scipy import fft
 
 def correlation_fft(
-        arr1: np.ndarray, arr2: np.ndarray = None, axis: int = None, *,
-        average: bool = False, double: bool = False, vector: bool = False
-    ) -> np.ndarray:
+        arr1: np.ndarray[float], arr2: np.ndarray[float] = None, 
+        axis: int = None, *, average: bool = False, double: bool = False,
+        vector: bool = False) -> np.ndarray[float]:
 
     r"""
     Evaluates the autocorrelation function (ACF) or cross-correlation
@@ -228,9 +228,9 @@ def correlation_fft(
     return corr
 
 def correlation_shift(
-        arr1: np.ndarray, arr2: np.ndarray = None, axis: int = None, 
-        vector: bool = False, *, average: bool = False, double: bool = False
-    ) -> np.ndarray:
+        arr1: np.ndarray[float], arr2: np.ndarray[float] = None, 
+        axis: int = None, *, average: bool = False, double: bool = False,
+        vector: bool = False) -> np.ndarray[float]:
 
     r"""
     Evaluates the autocorrelation function (ACF) or cross-correlation
@@ -464,8 +464,8 @@ def correlation_shift(
     return corr
 
 def msd_fft(
-        pos1: np.ndarray, pos2: np.ndarray = None, axis: int = None, *,
-        average: bool = True) -> np.ndarray:
+        pos1: np.ndarray[float], pos2: np.ndarray[float] = None, 
+        axis: int = None, *, average: bool = True) -> np.ndarray[float]:
 
     r"""
     Calculates the mean squared displacement (MSD) or the analogous 
@@ -668,8 +668,8 @@ def msd_fft(
     return ssum / np.arange(N_t, 0, -1) - s2
 
 def msd_shift(
-        pos1: np.ndarray, pos2: np.ndarray = None, axis: int = None, *,
-        average: bool = True) -> np.ndarray:
+        pos1: np.ndarray[float], pos2: np.ndarray[float] = None, 
+        axis: int = None, *, average: bool = True) -> np.ndarray[float]:
 
     r"""
     Calculates the mean squared displacement (MSD) or the analogous 
