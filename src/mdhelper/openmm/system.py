@@ -22,11 +22,11 @@ from scipy import special
 from .unit import VACUUM_PERMITTIVITY
 
 try:
-    from constvplugin import ConstVLangevinIntegrator as ICLangevinIntegrator
+    from openmm_ic import ICLangevinIntegrator
     FOUND_ICPLUGIN = True
 except ImportError:
     try:
-        from openmm_ic import ICLangevinIntegrator
+        from constvplugin import ConstVLangevinIntegrator as ICLangevinIntegrator
         FOUND_ICPLUGIN = True
     except ImportError:
         FOUND_ICPLUGIN = False
@@ -409,7 +409,7 @@ def slab_correction(
 
 def image_charges(
         system: openmm.System, topology: app.Topology,
-        positions: Union[np.ndarray, unit.Quantity],
+        positions: Union[np.ndarray[float], unit.Quantity],
         temp: Union[float, unit.Quantity], fric: Union[float, unit.Quantity],
         dt: Union[float, unit.Quantity], *, gamma: float = -1, 
         n_cells: int = 2, nbforce: openmm.NonbondedForce = None,
@@ -879,7 +879,7 @@ def image_charges(
 
 def electric_field(
         system: openmm.System, nbforce: openmm.NonbondedForce,
-        E: Union[float, unit.Quantity,], *, axis: int = 2,
+        E: Union[float, unit.Quantity], *, axis: int = 2,
         charge_index: int = 0, atom_indices: Union[int, np.ndarray[int]] = None
     ) -> None:
 
@@ -967,7 +967,7 @@ def electric_field(
 
 def estimate_pressure_tensor(
         context: openmm.Context, dh: float = 1e-5, *, diag: bool = False
-    ) -> np.ndarray:
+    ) -> np.ndarray[float]:
     
     r"""
     Computes the estimated pressure tensor using a central finite

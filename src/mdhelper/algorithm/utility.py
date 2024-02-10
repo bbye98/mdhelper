@@ -163,8 +163,8 @@ def rebin(x: np.ndarray[float], factor: int = None) -> np.ndarray[float]:
     return x.reshape((*x.shape[:-1], -1, factor)).mean(axis=-1)
 
 def unit_scaling(
-        bases: dict[str, Union[Q_, "unit.Quantity"]], 
-        other: dict[str, list] = {}) -> dict[str, Union[Q_, "unit.Quantity"]]:
+        bases: dict[str, Union["unit.Quantity", Q_]], 
+        other: dict[str, list] = {}) -> dict[str, Union["unit.Quantity", Q_]]:
 
     r"""
     Computes scaling factors for reduced units.
@@ -207,8 +207,8 @@ def unit_scaling(
     return bases
 
 def lj_scaling(
-        bases: dict[str, Union[Q_, "unit.Quantity"]], 
-        other: dict[str, list] = {}) -> dict[str, Union[Q_, "unit.Quantity"]]:
+        bases: dict[str, Union["unit.Quantity", Q_]], 
+        other: dict[str, list] = {}) -> dict[str, Union["unit.Quantity", Q_]]:
 
     r"""
     Computes scaling factors for Lennard-Jones reduced units.

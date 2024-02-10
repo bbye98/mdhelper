@@ -3,9 +3,9 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="exp" href="mdhelper.fit.exponential.exp.html" /><link rel="prev" title="weibull" href="mdhelper.fit.distribution.weibull.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="biexp" href="mdhelper.fit.exponential.biexp.html" /><link rel="prev" title="weibull" href="mdhelper.fit.distribution.weibull.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>exponential - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -176,8 +176,10 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.closest_factors.html">closest_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.lj_scaling.html">lj_scaling</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.rebin.html">rebin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.replicate.html">replicate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.unit_scaling.html">unit_scaling</a></li>
 </ul>
 </li>
 </ul>
@@ -335,6 +337,7 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.openmm.unit.html">unit</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of unit</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.unit.lj_scaling.html">lj_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.unit.unit_scaling.html">unit_scaling</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.openmm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -428,16 +431,19 @@ density function for the normal distribution is obtained.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.fit.exponential.exp.html#mdhelper.fit.exponential.exp" title="mdhelper.fit.exponential.exp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.fit.exponential.biexp.html#mdhelper.fit.exponential.biexp" title="mdhelper.fit.exponential.biexp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">biexp</span></code></a></p></td>
+<td><p>Bi-exponential function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.fit.exponential.exp.html#mdhelper.fit.exponential.exp" title="mdhelper.fit.exponential.exp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp</span></code></a></p></td>
 <td><p>General exponential model.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.fit.exponential.exp1.html#mdhelper.fit.exponential.exp1" title="mdhelper.fit.exponential.exp1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp1</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.fit.exponential.exp1.html#mdhelper.fit.exponential.exp1" title="mdhelper.fit.exponential.exp1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp1</span></code></a></p></td>
 <td><p>Convenience function for the <code class="code docutils literal notranslate"><span class="pre">exp1</span></code> model from MATLAB.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.fit.exponential.exp2.html#mdhelper.fit.exponential.exp2" title="mdhelper.fit.exponential.exp2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp2</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.fit.exponential.exp2.html#mdhelper.fit.exponential.exp2" title="mdhelper.fit.exponential.exp2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp2</span></code></a></p></td>
 <td><p>Convenience function for the <code class="code docutils literal notranslate"><span class="pre">exp2</span></code> model from MATLAB.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.fit.exponential.stretched_exp.html#mdhelper.fit.exponential.stretched_exp" title="mdhelper.fit.exponential.stretched_exp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stretched_exp</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.fit.exponential.stretched_exp.html#mdhelper.fit.exponential.stretched_exp" title="mdhelper.fit.exponential.stretched_exp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stretched_exp</span></code></a></p></td>
 <td><p>Stretched exponential function.</p></td>
 </tr>
 </tbody>
@@ -450,12 +456,12 @@ density function for the normal distribution is obtained.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="mdhelper.fit.exponential.exp.html">
+          <a class="next-page" href="mdhelper.fit.exponential.biexp.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">exp</div>
+                <div class="title">biexp</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

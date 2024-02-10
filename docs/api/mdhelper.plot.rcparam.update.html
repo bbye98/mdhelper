@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="rcparam" href="mdhelper.plot.rcparam.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>update - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -176,8 +176,10 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.closest_factors.html">closest_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.lj_scaling.html">lj_scaling</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.rebin.html">rebin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.replicate.html">replicate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.unit_scaling.html">unit_scaling</a></li>
 </ul>
 </li>
 </ul>
@@ -335,6 +337,7 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.openmm.unit.html">unit</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of unit</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.unit.lj_scaling.html">lj_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.unit.unit_scaling.html">unit_scaling</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.openmm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -397,22 +400,22 @@
 <span class="sig-prename descclassname"><span class="pre">mdhelper.plot.rcparam.</span></span><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">journal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/plot/rcparam.html#update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.plot.rcparam.update" title="Link to this definition">#</a></dt>
 <dd><p>Updates the Matplotlib rcParams at runtime. By default, this
 function overwrites the following settings:</p>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">axes.labelsize</span></code>: <code class="code docutils literal notranslate"><span class="pre">14</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">figure.autolayout</span></code>: <code class="code docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">font.size</span></code>: <code class="code docutils literal notranslate"><span class="pre">12</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">grid.color</span></code>: <code class="code docutils literal notranslate"><span class="pre">0</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">grid.linestyle</span></code>: <code class="code docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">(1,</span> <span class="pre">5))</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">legend.columnspacing</span></code>: <code class="code docutils literal notranslate"><span class="pre">1</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">legend.edgecolor</span></code>: <code class="code docutils literal notranslate"><span class="pre">1</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">legend.fontsize</span></code>: <code class="code docutils literal notranslate"><span class="pre">12</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">legend.handlelength</span></code>: <code class="code docutils literal notranslate"><span class="pre">1.25</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">legend.labelspacing</span></code>: <code class="code docutils literal notranslate"><span class="pre">0.25</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">savefig.dpi</span></code>: <code class="code docutils literal notranslate"><span class="pre">1200</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">xtick.labelsize</span></code>: <code class="code docutils literal notranslate"><span class="pre">12</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">ytick.labelsize</span></code>: <code class="code docutils literal notranslate"><span class="pre">12</span></code></p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">text.usetex</span></code>: <code class="code docutils literal notranslate"><span class="pre">True</span></code></p></li>
-</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;axes.labelsize&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="s2">&quot;figure.autolayout&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;font.size&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="s2">&quot;legend.columnspacing&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;legend.edgecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;legend.fontsize&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="s2">&quot;legend.handlelength&quot;</span><span class="p">:</span> <span class="mf">1.25</span><span class="p">,</span>
+    <span class="s2">&quot;legend.labelspacing&quot;</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span>
+    <span class="s2">&quot;savefig.dpi&quot;</span><span class="p">:</span> <span class="mi">1_200</span><span class="p">,</span>
+    <span class="s2">&quot;xtick.labelsize&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="s2">&quot;ytick.labelsize&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="s2">&quot;text.usetex&quot;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <p>If a supported journal acronym is provided as the first argument,
 the default figure size will also be updated.</p>
 <dl class="field-list">
@@ -422,12 +425,13 @@ the default figure size will also be updated.</p>
 <div class="docutils container">
 <p><strong>Valid values</strong>:</p>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">acs</span></code>: American Chemical Society.</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">rsc</span></code>: Royal Society of Chemistry.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;acs&quot;</span></code>: American Chemical Society.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;aip&quot;</span></code>: American Institute of Physics.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;rsc&quot;</span></code>: Royal Society of Chemistry.</p></li>
 </ul>
 </div>
 </dd>
-<dt><strong>**kwargs</strong><span class="classifier">…</span></dt><dd><p>Additional rcParams to update passed to
+<dt><strong>**kwargs</strong></dt><dd><p>Additional rcParams to update passed to
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.rcParams.update()</span></code>.</p>
 </dd>
 </dl>

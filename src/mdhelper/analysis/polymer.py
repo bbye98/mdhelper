@@ -13,13 +13,15 @@ import warnings
 import MDAnalysis as mda
 from MDAnalysis.lib.log import ProgressBar
 import numpy as np
-from openmm import unit
 from scipy import optimize, special
 
 from .base import SerialAnalysisBase, ParallelAnalysisBase
-from .. import ArrayLike
+from .. import FOUND_OPENMM, Q_, ureg
 from ..algorithm import correlation, molecule
 from ..fit.exponential import stretched_exp
+
+if FOUND_OPENMM:
+    from openmm import unit
 
 def correlation_fft(*args, **kwargs):
 
@@ -50,7 +52,7 @@ def correlation_shift(*args, **kwargs) -> np.ndarray[float]:
     
     return correlation.correlation_shift(*args, **kwargs)
 
-def relaxation_time(time: np.ndarray, acf: np.ndarray) -> float:
+def relaxation_time(time: np.ndarray[float], acf: np.ndarray[float]) -> float:
 
     r"""
     Estimates the orientational relaxation time :math:`\tau_\mathrm{r}`
@@ -167,10 +169,10 @@ class _PolymerAnalysisBase(SerialAnalysisBase):
     """
 
     def __init__(
-            self, groups: Union[mda.AtomGroup, ArrayLike],
-            groupings: Union[str, ArrayLike] = "atoms", 
-            n_chains: Union[int, ArrayLike] = None, 
-            n_monomers: Union[int, ArrayLike] = None, *, unwrap: bool = False,
+            self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
+            groupings: Union[str, tuple[str]] = "atoms", 
+            n_chains: Union[int, tuple[int]] = None, 
+            n_monomers: Union[int, tuple[int]] = None, *, unwrap: bool = False,
             verbose: bool = True, **kwargs):
         
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
@@ -227,7 +229,7 @@ class _PolymerAnalysisBase(SerialAnalysisBase):
         self._unwrap = unwrap
         self._verbose = verbose
 
-        self.results.units = {"_dims": unit.angstrom}
+        self.results.units = {"_dims": ureg.angstrom}
 
 class Gyradius(_PolymerAnalysisBase):
 
@@ -324,10 +326,10 @@ class Gyradius(_PolymerAnalysisBase):
     """
 
     def __init__(
-            self, groups: Union[mda.AtomGroup, ArrayLike],
-            groupings: Union[str, ArrayLike] = "atoms", 
-            n_chains: Union[int, ArrayLike] = None, 
-            n_monomers: Union[int, ArrayLike] = None, *, 
+            self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
+            groupings: Union[str, tuple[str]] = "atoms", 
+            n_chains: Union[int, tuple[int]] = None, 
+            n_monomers: Union[int, tuple[int]] = None, *, 
             components: bool = False, unwrap: bool = False, 
             verbose: bool = True, **kwargs):
         
@@ -360,7 +362,7 @@ class Gyradius(_PolymerAnalysisBase):
         self.results.gyradius = np.empty(shape, dtype=float)
         
         # Store reference units
-        self.results.units = {"results.gyradius": unit.angstrom}
+        self.results.units = {"results.gyradius": ureg.angstrom}
 
     def _single_frame(self) -> None:
 
@@ -521,11 +523,11 @@ class Relaxation(_PolymerAnalysisBase):
     """
 
     def __init__(
-            self, groups: Union[mda.AtomGroup, ArrayLike],
-            groupings: Union[str, ArrayLike] = "atoms", 
-            n_chains: Union[int, ArrayLike] = None, 
-            n_monomers: Union[int, ArrayLike] = None, *, n_blocks: int = 1,
-            fft: bool = True, dt: Union[float, unit.Quantity] = None, 
+            self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
+            groupings: Union[str, tuple[str]] = "atoms", 
+            n_chains: Union[int, tuple[int]] = None, 
+            n_monomers: Union[int, tuple[int]] = None, *, n_blocks: int = 1,
+            fft: bool = True, dt: Union[float, "unit.Quantity", Q_] = None, 
             unwrap: bool = False, verbose: bool = True, **kwargs) -> None:
 
         super().__init__(groups, groupings, n_chains, n_monomers, 
@@ -534,9 +536,12 @@ class Relaxation(_PolymerAnalysisBase):
         self._n_blocks = n_blocks
         self._fft = fft
         if dt:
-            self._dt = dt
-            if isinstance(dt, unit.Quantity):
-                self._dt = self._dt.value_in_unit(unit.picosecond)
+            if isinstance(dt, (int, np.integer, float, np.floating)):
+                self._dt = dt
+            elif isinstance(dt, Q_):
+                self._dt = dt.m_as(ureg.picosecond)
+            else:
+                self._dt = dt.value_in_unit(unit.picosecond)
         else:
             self._dt = self._trajectory.dt
 
@@ -792,6 +797,7 @@ class ParallelSingleChainStructureFactor(
     structure factor :math:`S_\mathrm{sc}(q)` of a homopolymer.
     
     .. note::
+    
        For a theoretical background and a complete list of parameters,
        attributes, and available methods, see 
        :class:`SingleChainStructureFactor`.

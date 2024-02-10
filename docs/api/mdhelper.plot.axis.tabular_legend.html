@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="rcparam" href="mdhelper.plot.rcparam.html" /><link rel="prev" title="axis" href="mdhelper.plot.axis.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>tabular_legend - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -176,8 +176,10 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.closest_factors.html">closest_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.lj_scaling.html">lj_scaling</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.rebin.html">rebin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.replicate.html">replicate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.unit_scaling.html">unit_scaling</a></li>
 </ul>
 </li>
 </ul>
@@ -335,6 +337,7 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.openmm.unit.html">unit</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of unit</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.unit.lj_scaling.html">lj_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.unit.unit_scaling.html">unit_scaling</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.openmm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -403,7 +406,7 @@
 </dd>
 <dt><strong>cols</strong><span class="classifier"><cite>tuple</cite> or <cite>list</cite></span></dt><dd><p>Raw string representations of the column values.</p>
 </dd>
-</dl>
+<dt><strong>hlabel</strong><span class="classifier"><cite>str</cite>, keyword-only, optional</span></dt><dd><p>Horizontal label for column values.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
@@ -443,7 +446,7 @@ added to the legend.</p></li>
 </ul>
 </div>
 </dd>
-<dt><strong>vla</strong><span class="classifier"><cite>str</cite>, default: <code class="code docutils literal notranslate"><span class="pre">&quot;top&quot;</span></code></span></dt><dd><p>Alignment for <cite>vlabel</cite>.</p>
+<dt><strong>vla</strong><span class="classifier"><cite>str</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">&quot;top&quot;</span></code></span></dt><dd><p>Alignment for <cite>vlabel</cite>.</p>
 <div class="docutils container">
 <p><strong>Valid values</strong>:</p>
 <ul class="simple">
@@ -452,7 +455,7 @@ added to the legend.</p></li>
 </ul>
 </div>
 </dd>
-<dt><strong>condense</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Condenses the legend by placing <cite>vlabel</cite> in the empty top-left
+<dt><strong>condense</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Condenses the legend by placing <cite>vlabel</cite> in the empty top-left
 corner. Cannot be used when no <cite>vlabel</cite> is specified or in
 conjuction with <code class="code docutils literal notranslate"><span class="pre">vla=&quot;center&quot;</span></code> (which will take priority).</p>
 </dd>

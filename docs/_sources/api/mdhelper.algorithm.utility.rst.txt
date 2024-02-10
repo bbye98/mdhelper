@@ -1,4 +1,4 @@
-utility
+﻿utility
 =======
 
 .. automodule:: mdhelper.algorithm.utility
@@ -16,8 +16,10 @@ utility
       :nosignatures:
    
       closest_factors
+      lj_scaling
       rebin
       replicate
+      unit_scaling
    
    
 

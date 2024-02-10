@@ -19,10 +19,8 @@ if FOUND_OPENMM:
     from openmm import unit
 
 def relative_permittivity(
-        M: Union[np.ndarray[float], "unit.Quantity", Q_],
-        temp: Union[float, "unit.Quantity", Q_], 
-        volume: Union[float, "unit.Quantity", Q_], *, reduced: bool = False
-    ) -> float:
+        M: np.ndarray[float], temp: float, volume: float, *, 
+        reduced: bool = False) -> float:
 
     r"""
     Computes the relative permittivity (or static dielectric constant)
@@ -34,13 +32,14 @@ def relative_permittivity(
 
     .. math::
 
-       \varepsilon_\mathrm{r}=1+\frac{\langle |\mathbf{M}|^2\rangle
-       -|\langle\mathbf{M}\rangle |^2}{3\varepsilon_0 Vk_\mathrm{B}T}
+       \varepsilon_\mathrm{r}=1+\frac{\overline{\langle\mathbf{M}^2\rangle
+       -\langle\mathbf{M}\rangle^2}}{3\varepsilon_0 Vk_\mathrm{B}T}
 
     where the angular brackets :math:`\langle\,\cdot\,\rangle` denote 
-    the ensemble average, :math:`\varepsilon_0` is the vacuum 
-    permittivity, :math:`k_\mathrm{B}` is the Boltzmann constant, and
-    :math:`T` is the system temperature.
+    the ensemble average, the overline signifies the spatial average,
+    :math:`\varepsilon_0` is the vacuum permittivity, 
+    :math:`k_\mathrm{B}` is the Boltzmann constant, and :math:`T` is
+    the system temperature.
 
     .. note::
 
@@ -50,14 +49,14 @@ def relative_permittivity(
 
     Parameters
     ----------
-    M : array-like, `openmm.unit.Quantity`, or `pint.Quantity`
+    M : array-like
         Instantaneous dipole moments over :math:`N_t` frames.
 
-        **Shape**: :math:`(N_t, 3)`.
+        **Shape**: :math:`(N_t,\,3)`.
 
         **Reference unit**: :math:`\mathrm{e\cdotÅ}`.
 
-    temp : `float`, `openmm.unit.Quantity`, or `pint.Quantity`
+    temp : `float`
         System temperature :math:`T`.
 
         .. note::
@@ -68,14 +67,13 @@ def relative_permittivity(
 
         **Reference unit**: :math:`\mathrm{K}`.
 
-    volume : `float`, `openmm.unit.Quantity`, or `pint.Quantity`
+    volume : `float`
         System volume :math:`V`.
 
         **Reference unit**: :math:`\mathrm{Å^3}`.
 
     reduced : `bool`, keyword-only, default: :code:`False`
-        Specifies whether the data is in reduced units. Affects `temp` 
-        and `volume`.
+        Specifies whether the data is in reduced units.
 
     Returns
     -------
@@ -89,48 +87,22 @@ def relative_permittivity(
        *50* (4), 841–858. https://doi.org/10.1080/00268978300102721.
     """
     
-    if isinstance(M, (int, float, np.ndarray)):
-        M *= ureg.elementary_charge * ureg.angstrom
-    elif reduced:
-        emsg = ("'M' has units, but the rest of the data is "
-                "or should be reduced.")
-        raise ValueError(emsg)
-    elif M.__module__ == "openmm.unit.quantity":
-        M = (M.value_in_unit(unit.elementary_charge * unit.angstrom) 
-             * ureg.elementary_charge * ureg.angstrom)
-
-    if isinstance(temp, (int, float)):
-        temp *= ureg.kelvin
-    elif reduced:
-        emsg = ("'temp' has units, but the rest of the data is "
-                "or should be reduced.")
-        raise ValueError(emsg)
-    elif temp.__module__ == "openmm.unit.quantity":
-        temp = temp.value_in_unit(unit.kelvin) * ureg.kelvin
-    
-    if isinstance(volume, (int, float, np.ndarray)):
-        volume *= ureg.angstrom ** 3
-    elif reduced:
-        emsg = ("'volume' has units, but the rest of the data is "
-                "or should be reduced.")
-        raise ValueError(emsg)
-    elif volume.__module__ == "openmm.unit.quantity":
-        volume = (volume.value_in_unit(unit.angstrom ** 3) 
-                  * ureg.angstrom ** 3)
-    
     if reduced:
-        return 1 + 4 * np.pi * ((M ** 2).mean(axis=0) - M.mean(axis=0) ** 2).mean() \
-               / (volume.mean() * temp)
+        return (1 + 4 * np.pi * (M ** 2 - M.mean(axis=0) ** 2).mean()
+                    / (volume.mean() * temp))
     else:
-        return (1 + ((M ** 2).mean(axis=0) - M.mean(axis=0) ** 2).mean()
-                / (ureg.vacuum_permittivity * volume.mean() * ureg.boltzmann_constant 
-                   * temp)).magnitude
+        M *= ureg.elementary_charge * ureg.angstrom
+        temp *= ureg.kelvin
+        volume *= ureg.angstrom ** 3
+        return (1 + (M ** 2 - M.mean(axis=0) ** 2).mean()
+                / (ureg.vacuum_permittivity * volume.mean() 
+                   * ureg.boltzmann_constant * temp)).magnitude
 
 class DipoleMoment(SerialAnalysisBase):
 
     r"""
     A serial implementation to calculate the instantaneous dipole moment
-    vectors :math:`\mathbf{M}`.
+    vectors :math:`\mathbf{M}(t)`.
 
     For a system with :math:`N` atoms or molecules, the dipole moment is
     given by
@@ -148,8 +120,14 @@ class DipoleMoment(SerialAnalysisBase):
 
     .. math::
 
-       \varepsilon_\mathrm{r}=1+\frac{\langle |\mathbf{M}|^2\rangle
-       -|\langle\mathbf{M}\rangle |^2}{3\varepsilon_0 Vk_\mathrm{B}T}
+       \varepsilon_\mathrm{r}=1+\frac{\overline{\langle\mathbf{M}^2\rangle
+       -\langle\mathbf{M}\rangle^2}}{3\varepsilon_0 Vk_\mathrm{B}T}
+
+    where the angular brackets :math:`\langle\,\cdot\,\rangle` denote 
+    the ensemble average, the overline signifies the spatial average,
+    :math:`\varepsilon_0` is the vacuum permittivity, 
+    :math:`k_\mathrm{B}` is the Boltzmann constant, and :math:`T` is
+    the system temperature.
 
     Parameters
     ----------
@@ -172,15 +150,25 @@ class DipoleMoment(SerialAnalysisBase):
         System dimensions. If the 
         :class:`MDAnalysis.core.universe.Universe` object that the 
         groups in `groups` belong to does not contain dimensionality 
-        information, provide it here.
+        information, provide it here. Affected by `scales`.
 
         **Shape**: :math:`(3,)`.
 
         **Reference unit**: :math:`\mathrm{Å}`.
 
+    scales : array-like, keyword-only, optional
+        Scaling factors for each system dimension. If an `int` is 
+        provided, the same value is used for all axes.
+
+        **Shape**: :math:`(3,)`.
+
     average : `bool`, keyword-only, default: :code:`False`
         Determines whether the dipole moment vectors and volumes are 
         time-averaged.
+
+    reduced : `bool`, keyword-only, default: :code:`False`
+        Specifies whether the data is in reduced units. Only affects 
+        :meth:`calculate_relative_permittivity` calls.
 
     unwrap : `bool`, keyword-only, default: :code:`False`
         Determines whether atom positions are unwrapped.
@@ -241,7 +229,8 @@ class DipoleMoment(SerialAnalysisBase):
             self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]], 
             charges: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
-            average: bool = False, unwrap: bool = False, verbose: bool = True,
+            scales: Union[float, tuple[float]] = 1, average: bool = False,
+            reduced: bool = False, unwrap: bool = False, verbose: bool = True,
             **kwargs) -> None:
         
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
@@ -256,33 +245,44 @@ class DipoleMoment(SerialAnalysisBase):
             if len(dimensions) != 3:
                 raise ValueError("'dimensions' must have length 3.")
             if not isinstance(dimensions, (list, tuple, np.ndarray)):
-                if dimensions.__module__ == "openmm.unit.quantity":
-                    dimensions = dimensions.value_in_unit(unit.angstrom)
-                else:
+                if isinstance(dimensions, Q_):
                     dimensions = dimensions.m_as(
                         self.results.units["_dimensions"]
                     )
+                else:
+                    dimensions = dimensions.value_in_unit(unit.angstrom)
             self._dimensions = np.asarray(dimensions)
         elif self.universe.dimensions is not None:
             self._dimensions = self.universe.dimensions[:3].copy()
         else:
             raise ValueError("No system dimensions found or provided.")
-
+        
+        if isinstance(scales, (int, np.integer, float, np.floating)) \
+                or len(scales) == 3 and isinstance(
+                    scales[0], (int, np.integer, float, np.floating)
+                ):
+            self._dimensions *= scales
+        else:
+            emsg = ("The scaling factor(s) must be provided as a "
+                    "floating-point number or in an array with shape (3,). ")
+            raise ValueError(emsg)
+        
         if charges is not None:
             charges = list(charges)
             if len(charges) == self._n_groups:
                 for i, (g, q) in enumerate(zip(self._groups, charges)):
-                    if isinstance(q, (int, float)):
-                        q *= np.ones(g.n_atoms, dtype=float)
+                    if isinstance(q, (int, np.integer, float, np.floating)):
+                        q *= np.ones(g.n_atoms)
                     elif not isinstance(q, (list, tuple, np.ndarray)):
-                        if q.__module__ == "openmm.unit.quantity":
-                            q = q.value_in_unit(unit.elementary_charge)
-                        else:
+                        if isinstance(q, Q_):
                             q = q.m_as(self.results.units["_charges"])
+                        else:
+                            q = q.value_in_unit(unit.elementary_charge)
                     elif g.n_atoms != len(q):
-                        emsg = (f"The number of charges in charges[{i}] "
-                                "is not equal to the number of atoms in "
-                                "the corresponding group.")
+                        emsg = ("The number of charges in "
+                                f"'charges[{i}]' is not equal to the "
+                                "number of atoms in the corresponding "
+                                "group.")
                         raise ValueError(emsg)
                     charges[i] = q
                 self._charges = charges
@@ -294,11 +294,17 @@ class DipoleMoment(SerialAnalysisBase):
             self._charges = [g.charges for g in self._groups]
         else:
             raise ValueError("The topology has no charge information.")
-        self._electroneutral = sum(np.sum(q) for q in self._charges)
-        self._electroneutral_groups = [np.isclose(np.sum(q), 0) 
-                                       for q in self._charges]
+
+        # TODO: Add support for charged molecules.
+        self._all_neutral = np.allclose(
+            self.universe.atoms.total_charge(compound="fragments"), 0, 
+            atol=1e-6
+        )
+        self._all_included = sum(g.n_atoms for g in self._groups) \
+                             == self.universe.atoms.n_atoms
 
         self._average = average
+        self._reduced = reduced
         self._unwrap = unwrap
         self._verbose = verbose
 
@@ -317,9 +323,9 @@ class DipoleMoment(SerialAnalysisBase):
             self.results.time = (self.step * self._trajectory.dt 
                                  * np.arange(self.n_frames))
             self.results.units["time"] = ureg.picosecond
-        self.results.dipole = np.zeros((self.n_frames, 3), dtype=float)
+        self.results.dipole = np.zeros((self.n_frames, 3))
+        self.results.volume = np.empty(self.n_frames)
         self.results.units["dipole"] = ureg.elementary_charge * ureg.angstrom
-        self.results.volume = np.empty(self.n_frames, dtype=float)
         self.results.units["volume"] = ureg.angstrom ** 3
 
     def _single_frame(self) -> None:
@@ -346,7 +352,7 @@ class DipoleMoment(SerialAnalysisBase):
             self.results.volume = self.results.volume.mean()
         
     def calculate_relative_permittivity(
-            self, temp: Union[float, unit.Quantity]) -> None:
+            self, temp: Union[float, "unit.Quantity", Q_]) -> None:
         
         r"""
         Computes the relative permittivity (or static dielectric 
@@ -360,9 +366,11 @@ class DipoleMoment(SerialAnalysisBase):
 
             .. note::
 
-               If :code:`reduced=True`, `temp` should be equal to the 
-               energy scale. When the Lennard-Jones potential is used, 
-               it generally means that :math:`T^* = 1`, or `temp=1`.
+               If :code:`reduced=True` was set in the 
+               :class:`DipoleMoment` constructor, `temp` should be equal
+               to the energy scale. When the Lennard-Jones potential is
+               used, it generally means that :math:`T^* = 1`, or 
+               `temp=1`.
 
             **Reference unit**: :math:`\mathrm{K}`.
         """
@@ -371,7 +379,27 @@ class DipoleMoment(SerialAnalysisBase):
             emsg = ("Cannot compute relative permittivity using the"
                     "averaged dipole moment.")
             raise RuntimeError(emsg)
-        
-        self.results.dielectric = relative_permittivity(
-            self.results.dipole, temp, self.results.volume.mean()
-        )
+        elif not self._all_neutral:
+            emsg = ("Cannot compute relative permittivity for a "
+                    "non-neutral system or a system with ions.")
+            raise RuntimeError(emsg)
+        elif not self._all_included:
+            emsg = ("Cannot compute relative permittivity when not all"
+                    "atoms in the system are accounted for in the "
+                    "groups.")
+            raise RuntimeError(emsg)
+        else:
+            if not isinstance(temp, (int, np.integer, float, np.floating)):
+                if self._reduced:
+                    emsg = ("'temp' has units, but the rest of the data is "
+                            "or should be reduced.")
+                    raise ValueError(emsg)
+                if isinstance(temp, Q_):
+                    temp = temp.m_as(ureg.kelvin)
+                else:
+                    temp = temp.value_in_unit(unit.kelvin)
+
+            self.results.dielectric = relative_permittivity(
+                self.results.dipole, temp, self.results.volume.mean(), 
+                reduced=self._reduced
+            )

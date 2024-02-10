@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="closest_factors" href="mdhelper.algorithm.utility.closest_factors.html" /><link rel="prev" title="create_atoms" href="mdhelper.algorithm.topology.create_atoms.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>utility - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -176,8 +176,10 @@
 </li>
 <li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">utility</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.closest_factors.html">closest_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.lj_scaling.html">lj_scaling</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.rebin.html">rebin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.replicate.html">replicate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.unit_scaling.html">unit_scaling</a></li>
 </ul>
 </li>
 </ul>
@@ -335,6 +337,7 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.openmm.unit.html">unit</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of unit</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.unit.lj_scaling.html">lj_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.openmm.unit.unit_scaling.html">unit_scaling</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.openmm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -404,11 +407,17 @@ other MDHelper modules.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.utility.closest_factors.html#mdhelper.algorithm.utility.closest_factors" title="mdhelper.algorithm.utility.closest_factors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">closest_factors</span></code></a></p></td>
 <td><p>Get the <span class="math notranslate nohighlight">\(n\)</span> closest factors for a given number <span class="math notranslate nohighlight">\(N\)</span>, sorted in ascending order.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.utility.rebin.html#mdhelper.algorithm.utility.rebin" title="mdhelper.algorithm.utility.rebin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebin</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.utility.lj_scaling.html#mdhelper.algorithm.utility.lj_scaling" title="mdhelper.algorithm.utility.lj_scaling"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lj_scaling</span></code></a></p></td>
+<td><p>Computes scaling factors for Lennard-Jones reduced units.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.utility.rebin.html#mdhelper.algorithm.utility.rebin" title="mdhelper.algorithm.utility.rebin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebin</span></code></a></p></td>
 <td><p>Rebin discrete data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.utility.replicate.html#mdhelper.algorithm.utility.replicate" title="mdhelper.algorithm.utility.replicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replicate</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.utility.replicate.html#mdhelper.algorithm.utility.replicate" title="mdhelper.algorithm.utility.replicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replicate</span></code></a></p></td>
 <td><p>Replicate point(s) in an unit cell along the <span class="math notranslate nohighlight">\(x\)</span>-, <span class="math notranslate nohighlight">\(y\)</span>-, and <span class="math notranslate nohighlight">\(z\)</span>-directions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.utility.unit_scaling.html#mdhelper.algorithm.utility.unit_scaling" title="mdhelper.algorithm.utility.unit_scaling"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unit_scaling</span></code></a></p></td>
+<td><p>Computes scaling factors for reduced units.</p></td>
 </tr>
 </tbody>
 </table>

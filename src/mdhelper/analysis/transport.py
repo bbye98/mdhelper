@@ -822,20 +822,21 @@ class Onsager(SerialAnalysisBase):
                     raise ValueError(emsg)
             self._groupings = groupings
 
+        self.results.units = {"_charges": ureg.elementary_charge,
+                              "_dimensions": ureg.angstrom, 
+                              "_dt": ureg.picosecond,
+                              "_rhos": ureg.angstrom ** -3,
+                              "_kBT": ureg.kilojoule / ureg.mole,
+                              "_volume": ureg.angstrom ** 3}
+
         if reduced:
-            if isinstance(temperature, (int, float)):
+            if isinstance(temperature, (int, np.integer, float, np.floating)):
                 self._kBT = temperature
             else:
                 emsg = "'temperature' cannot have units when reduced=True."
                 raise TypeError(emsg)
         else:
-            self.results.units = {"_charges": ureg.elementary_charge,
-                                  "_dimensions": ureg.angstrom, 
-                                  "_dt": ureg.picosecond,
-                                  "_rhos": ureg.angstrom ** -3,
-                                  "_kBT": ureg.kilojoule / ureg.mole,
-                                  "_volume": ureg.angstrom ** 3}
-            if isinstance(temperature, (int, float)):
+            if isinstance(temperature, (int, np.integer, float, np.floating)):
                 temperature *= ureg.kelvin
             elif temperature.__module__ == "openmm.unit.quantity":
                 temperature = (temperature.value_in_unit(unit.kelvin) 
@@ -850,12 +851,12 @@ class Onsager(SerialAnalysisBase):
                 if reduced:
                     emsg = "'dimensions' cannot have units when reduced=True."
                     raise TypeError(emsg)
-                if dimensions.__module__ == "openmm.unit.quantity":
-                    dimensions = dimensions.value_in_unit(unit.angstrom)
-                else:
+                if isinstance(dimensions, Q_):
                     dimensions = dimensions.m_as(
                         self.results.units["_dimensions"]
                     )
+                else:
+                    dimensions = dimensions.value_in_unit(unit.angstrom)
             self._dimensions = np.asarray(dimensions)
         elif self.universe.dimensions is not None:
             self._dimensions = self.universe.dimensions[:3].copy()
@@ -863,14 +864,14 @@ class Onsager(SerialAnalysisBase):
             raise ValueError("No system dimensions found or provided.")
 
         if dt:
-            if not isinstance(dt, (int, float)):
+            if not isinstance(dt, (int, np.integer, float, np.floating)):
                 if reduced:
                     emsg = "'dt' cannot have units when reduced=True."
                     raise TypeError(emsg)
-                if dt.__module__ == "openmm.unit.quantity":
-                    dt = dt.value_in_unit(unit.picosecond)
-                else:
+                if isinstance(dt, Q_):
                     dt = dt.m_as(self.results.units["_dt"])
+                else:
+                    dt = dt.value_in_unit(unit.picosecond)
             self._dt = dt
         else:
             self._dt = self._trajectory.dt
@@ -884,10 +885,11 @@ class Onsager(SerialAnalysisBase):
                 if reduced:
                     emsg = "'charges' cannot have units when reduced=True."
                     raise TypeError(emsg)
-                if charges.__module__ == "openmm.unit.quantity":
-                    charges = charges.value_in_unit(unit.elementary_charge)
-                else:
+                if isinstance(charges, Q_):
                     charges = charges.m_as(self.results.units["_charges"])
+                else:
+                    charges = charges.value_in_unit(unit.elementary_charge)
+
             self._charges = np.asarray(charges)
         elif hasattr(self.universe.atoms, "charges"):
             self._charges = np.fromiter(
@@ -972,9 +974,8 @@ class Onsager(SerialAnalysisBase):
         )
 
         # Store reference units
-        if not self._reduced:
-            self.results.units["results.time"] = ureg.picosecond
-            self.results.units["results.msd_cross"] = ureg.angstrom ** 2
+        self.results.units["results.time"] = ureg.picosecond
+        self.results.units["results.msd_cross"] = \
             self.results.units["results.msd_self"] = ureg.angstrom ** 2
     
     def _single_frame(self) -> None:
@@ -1197,10 +1198,10 @@ class Onsager(SerialAnalysisBase):
                 if self._reduced:
                     emsg = "'charges' cannot have units when reduced=True."
                     raise TypeError(emsg)
-                if charges.__module__ == "openmm.unit.quantity":
-                    charges = charges.value_in_unit(unit.elementary_charge)
-                else:
+                if isinstance(charges, Q_):
                     charges = charges.m_as(self.results.units["_charges"])
+                else:
+                    charges = charges.value_in_unit(unit.elementary_charge)
             self._charges = np.asarray(charges)
         if self._charges is None:
             raise ValueError("No charge number information available.")
@@ -1210,10 +1211,9 @@ class Onsager(SerialAnalysisBase):
             reduced=self._reduced
         )
 
-        if not self._reduced:
-            self.results.units["results.conductivity"] = \
-                ureg.coulomb ** 2 / (ureg.kilojoule * ureg.angstrom
-                                     * ureg.picosecond)
+        self.results.units["results.conductivity"] = \
+            ureg.coulomb ** 2 / (ureg.kilojoule * ureg.angstrom
+                                 * ureg.picosecond)
 
     def calculate_electrophoretic_mobility(
             self, *, 
@@ -1263,10 +1263,10 @@ class Onsager(SerialAnalysisBase):
                 if self._reduced:
                     emsg = "'charges' cannot have units when reduced=True."
                     raise TypeError(emsg)
-                if charges.__module__ == "openmm.unit.quantity":
-                    charges = charges.value_in_unit(unit.elementary_charge)
-                else:
+                if isinstance(charges, Q_):
                     charges = charges.m_as(self.results.units["_charges"])
+                else:
+                    charges = charges.value_in_unit(unit.elementary_charge)
             self._charges = np.asarray(charges)
         if self._charges is None:
             raise ValueError("No charge number information available.")
@@ -1277,10 +1277,13 @@ class Onsager(SerialAnalysisBase):
                         "equal to the number of groups.")
                 raise ValueError(emsg)
             if not isinstance(rhos, (list, tuple, np.ndarray)):
-                if rhos.__module__ == "openmm.unit.quantity":
-                    self._rhos = rhos.value_in_unit(unit.angstrom ** -3)
-                else:
+                if self._reduced:
+                    emsg = "'rhos' cannot have units when reduced=True."
+                    raise TypeError(emsg)
+                if isinstance(rhos, Q_):
                     rhos = rhos.m_as(self.results.units["_rhos"])
+                else:
+                    self._rhos = rhos.value_in_unit(unit.angstrom ** -3)
             self._rhos = np.asarray(rhos)
 
         self.results.mobility = electrophoretic_mobility(
@@ -1288,10 +1291,9 @@ class Onsager(SerialAnalysisBase):
             reduced=self._reduced
         )
         
-        if not self._reduced:
-            self.results.units["results.mobility"] = \
-                ureg.angstrom ** 2 * ureg.coulomb / (ureg.kilojoule
-                                                     * ureg.picosecond)
+        self.results.units["results.mobility"] = \
+            ureg.angstrom ** 2 * ureg.coulomb / (ureg.kilojoule
+                                                 * ureg.picosecond)
 
     def calculate_transference_number(
             self, *,
@@ -1331,10 +1333,10 @@ class Onsager(SerialAnalysisBase):
                 if self._reduced:
                     emsg = "'charges' cannot have units when reduced=True."
                     raise TypeError(emsg)
-                if charges.__module__ == "openmm.unit.quantity":
-                    charges = charges.value_in_unit(unit.elementary_charge)
-                else:
+                if isinstance(charges, Q_):
                     charges = charges.m_as(self.results.units["_charges"])
+                else:
+                    charges = charges.value_in_unit(unit.elementary_charge)
             self._charges = np.asarray(charges)
         if self._charges is None:
             raise ValueError("No charge number information available.")

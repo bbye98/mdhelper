@@ -34,8 +34,6 @@ from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.coordinates.base import ReaderBase
 import numpy as np
 
-from .. import ArrayLike
-
 class SerialAnalysisBase(AnalysisBase):
 
     """
@@ -60,8 +58,8 @@ class SerialAnalysisBase(AnalysisBase):
 
     def run(
             self, start: int = None, stop: int = None, step: int = None,
-            frames: Union[slice, ArrayLike] = None, verbose: bool = None, 
-            **kwargs) -> "SerialAnalysisBase":
+            frames: Union[slice, np.ndarray[int]] = None,
+            verbose: bool = None, **kwargs) -> "SerialAnalysisBase":
         
         """
         Perform the calculation in serial.
@@ -156,7 +154,8 @@ class ParallelAnalysisBase(SerialAnalysisBase):
         super().__init__(trajectory, verbose, **kwargs)
 
     def _dask_job_block(
-            self, frames: Union[slice, np.ndarray], indices: np.ndarray) -> list:
+            self, frames: Union[slice, np.ndarray[int]], 
+            indices: np.ndarray[int]) -> list:
         return [self._single_frame(f, i) for f, i in zip(frames, indices)]
 
     @abstractmethod
@@ -165,9 +164,10 @@ class ParallelAnalysisBase(SerialAnalysisBase):
 
     def run(
             self, start: int = None, stop: int = None, step: int = None,
-            frames: Union[slice, ArrayLike] = None, verbose: bool = None,
+            frames: Union[slice, np.ndarray[int]] = None, verbose: bool = None,
             n_jobs: int = None, module: str = "joblib", block: bool = True,
-            method: str = None, **kwargs) -> "ParallelAnalysisBase":
+            method: str = None, **kwargs
+        ) -> "ParallelAnalysisBase":
 
         """
         Perform the calculation in parallel.

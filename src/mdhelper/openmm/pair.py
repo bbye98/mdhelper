@@ -22,7 +22,8 @@ def _setup_pair(
         cutoff: Union[float, unit.Quantity],
         global_params: dict[str, Union[float, unit.Quantity]],
         per_params: list[str],
-        tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   openmm.unit.Quantity,
                                    openmm.Discrete2DFunction]],
         method: int = openmm.CustomNonbondedForce.CutoffPeriodic
     ) -> None:
@@ -75,7 +76,8 @@ def coul_gauss(
         dims: Union[np.ndarray[float], unit.Quantity] = None,
         mix: str = "default", per_params: list = None,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
-        tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   openmm.unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> tuple[openmm.CustomNonbondedForce, openmm.NonbondedForce]:
 
@@ -276,7 +278,8 @@ def dpd(
         cutoff_dpd: Union[float, unit.Quantity] = None, *,
         mix: str = None, per_params: list = None,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
-        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
@@ -380,7 +383,8 @@ def gauss(
         shift: bool = True, mix: str = "geometric",
         global_params: dict[str, Union[float, unit.Quantity]] = None,
         per_params: list = None,
-        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
@@ -544,7 +548,7 @@ def gauss(
     return pair_gauss
 
 def lj_coul(
-        cutoff: Union[float,unit.Quantity], tol: float = 1e-4, *,
+        cutoff: Union[float, unit.Quantity], tol: float = 1e-4, *,
         g_ewald: Union[float, unit.Quantity] = None,
         dims: Union[float, unit.Quantity] = None) -> openmm.NonbondedForce:
 
@@ -648,7 +652,8 @@ def ljts(
         wca: bool = False,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
         per_params: list = None,
-        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
@@ -897,7 +902,8 @@ def solvation(
         cutoff_solvation: Union[float, unit.Quantity] = None, *,
         mix: str = "arithmetic", per_params: list = None,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
-        tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   openmm.unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
@@ -1018,7 +1024,8 @@ def wca(cutoff: Union[float, unit.Quantity], *, mix: str = "arithmetic",
         powers: Union[dict[str, float], tuple[float, float]] = (12, 6),
         global_params: dict[str, Union[float, unit.Quantity]] = None,
         per_params: list = None,
-        tab_funcs: dict[str, Union[np.ndarray, unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 
@@ -1147,7 +1154,8 @@ def yukawa(
         cutoff_yukawa: Union[float, unit.Quantity] = None, *,
         shift: bool = True, mix: str = "geometric", per_params: list = None,
         global_params: dict[str, Union[float, unit.Quantity]] = None,
-        tab_funcs: dict[str, Union[np.ndarray, openmm.unit.Quantity,
+        tab_funcs: dict[str, Union[np.ndarray[Union[int, float]],
+                                   openmm.unit.Quantity,
                                    openmm.Discrete2DFunction]] = None
     ) -> openmm.CustomNonbondedForce:
 

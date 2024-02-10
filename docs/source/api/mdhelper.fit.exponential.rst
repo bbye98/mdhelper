@@ -1,4 +1,4 @@
-exponential
+﻿exponential
 ===========
 
 .. automodule:: mdhelper.fit.exponential
@@ -15,6 +15,7 @@ exponential
       :toctree:
       :nosignatures:
    
+      biexp
       exp
       exp1
       exp2

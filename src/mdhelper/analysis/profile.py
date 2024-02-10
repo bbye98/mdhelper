@@ -12,12 +12,14 @@ import warnings
 
 import MDAnalysis as mda
 import numpy as np
-from openmm import unit
 from scipy import integrate
 
 from .base import SerialAnalysisBase
-from .. import Q_, ureg
+from .. import FOUND_OPENMM, Q_, ureg
 from ..algorithm.molecule import center_of_mass
+
+if FOUND_OPENMM:
+    from openmm import unit
 
 def potential_profile(
         bins: np.ndarray[float], charge_density: np.ndarray[float], 
@@ -154,8 +156,10 @@ def potential_profile(
     if reduced:
         potential *= 4 * np.pi
     else:
-        potential = (potential * ureg.elementary_charge
-                     / (ureg.vacuum_permittivity * ureg.angstrom * ureg.volt))
+        potential = (
+            potential * ureg.elementary_charge
+            / (ureg.vacuum_permittivity * ureg.angstrom)
+        ).m_as(ureg.volt)
         
     return potential
 
@@ -252,10 +256,10 @@ class DensityProfile(SerialAnalysisBase):
         **Reference unit**: :math:`\mathrm{e}`.
 
     dimensions : array-like, keyword-only, optional
-        Raw system dimensions. Affected by `scales`. If the 
+        System dimensions. Affected by `scales`. If the 
         :class:`MDAnalysis.core.universe.Universe` object that the 
         groups in `groups` belong to does not contain dimensionality 
-        information, provide it here.
+        information, provide it here. Affected by `scales`.
 
         **Shape**: :math:`(3,)`.
 
@@ -417,10 +421,9 @@ class DensityProfile(SerialAnalysisBase):
                     "iterable object.")
             raise ValueError(emsg)
         
-        if not reduced:
-            self.results.units = {"_charges": ureg.elementary_charge,
-                                  "_dimensions": ureg.angstrom,
-                                  "_dt": ureg.picosecond}
+        self.results.units = {"_charges": ureg.elementary_charge,
+                              "_dimensions": ureg.angstrom,
+                              "_dt": ureg.picosecond}
 
         if dimensions is not None:
             if len(dimensions) != 3:
@@ -429,12 +432,12 @@ class DensityProfile(SerialAnalysisBase):
                 if reduced:
                     emsg = "'dimensions' cannot have units when reduced=True."
                     raise TypeError(emsg)
-                if dimensions.__module__ == "openmm.unit.quantity":
-                    dimensions = dimensions.value_in_unit(unit.angstrom)
-                else:
+                if isinstance(dimensions, Q_):
                     dimensions = dimensions.m_as(
                         self.results.units["_dimensions"]
                     )
+                else:
+                    dimensions = dimensions.value_in_unit(unit.angstrom)
             self._dimensions = np.asarray(dimensions)
         elif self.universe.dimensions is not None:
             self._dimensions = self.universe.dimensions[:3].copy()
@@ -454,10 +457,10 @@ class DensityProfile(SerialAnalysisBase):
                 if reduced:
                     emsg = "'dt' cannot have units when reduced=True."
                     raise TypeError(emsg)
-                if dt.__module__ == "openmm.unit.quantity":
-                    dt = dt.value_in_unit(unit.picosecond)
-                else:
+                if isinstance(dt, Q_):
                     dt = dt.m_as(self.results.units["_dt"])
+                else:
+                    dt = dt.value_in_unit(unit.picosecond)
             self._dt = dt
         else:
             self._dt = self._trajectory.dt
@@ -471,10 +474,10 @@ class DensityProfile(SerialAnalysisBase):
                 if reduced:
                     emsg = "'charges' cannot have units when reduced=True."
                     raise TypeError(emsg)
-                if charges.__module__ == "openmm.unit.quantity":
-                    charges = charges.value_in_unit(unit.elementary_charge)
-                else:
+                if isinstance(charges, Q_):
                     charges = charges.m_as(self.results.units["_charges"])
+                else:
+                    charges = charges.value_in_unit(unit.elementary_charge)
             self._charges = np.asarray(charges)
         elif hasattr(self.universe.atoms, "charges"):
             self._charges = np.fromiter(
@@ -541,7 +544,8 @@ class DensityProfile(SerialAnalysisBase):
         # Store reference units
         if not self._reduced:
             self.results.units["results.bins"] = ureg.angstrom
-            self.results.units["results.number_density"] = ureg.angstrom ** -3
+            self.results.units["results.number_density"] = \
+                self.results.units["results.bins"] ** -3
 
         # Preallocate arrays to hold charge density data, if charge
         # information is available
@@ -549,8 +553,10 @@ class DensityProfile(SerialAnalysisBase):
             self.results.charge_density = [np.zeros_like(arr, dtype=float) 
                                            for arr in self.results.number_density]
             if not self._reduced:
-                self.results.units["results.charge_density"] = \
-                    self.results.units["_charges"] / ureg.angstrom ** 3
+                self.results.units["results.charge_density"] = (
+                    self.results.units["_charges"] 
+                    * self.results.units["results.number_density"]
+                )
     
     def _single_frame(self):
 
@@ -723,30 +729,30 @@ class DensityProfile(SerialAnalysisBase):
             if self._reduced:
                 emsg = "'sigma_e' cannot have units when reduced=True."
                 raise TypeError(emsg)
-            if sigma_e.__module__ == "openmm.unit.quantity":
-                sigma_e = sigma_e.value_in_unit(unit.elementary_charge 
-                                                / unit.angstrom ** 2)
-            else:
+            if isinstance(sigma_e, Q_):
                 sigma_e = sigma_e.m_as(self.results.units["_charges"] 
                                        / self.results.units["_dimensions"] ** 2)
+            else:
+                sigma_e = sigma_e.value_in_unit(unit.elementary_charge 
+                                                / unit.angstrom ** 2)
 
         if dV is not None and not isinstance(dV, (int, float)):
             if self._reduced:
                 emsg = "'dV' cannot have units when reduced=True."
                 raise TypeError(emsg)
-            if dV.__module__ == "openmm.unit.quantity":
-                dV = dV.value_in_unit(unit.volt)
-            else:
+            if isinstance(dV, Q_):
                 dV = dV.m_as(self.results.units["results.potential"])
+            else:
+                dV = dV.value_in_unit(unit.volt)
 
         if V0 is not None and not isinstance(V0, (int, float)):
             if self._reduced:
                 emsg = "'V0' cannot have units when reduced=True."
                 raise TypeError(emsg)
-            if V0.__module__ == "openmm.unit.quantity":
-                V0 = V0.value_in_unit(unit.volt)
-            else:
+            if isinstance(V0, Q_):
                 V0 = V0.m_as(self.results.units["results.potential"])
+            else:
+                V0 = V0.value_in_unit(unit.volt)
 
         charge_density = self.results.charge_density[index]
         if charge_density.ndim == 3:

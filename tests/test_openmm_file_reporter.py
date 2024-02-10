@@ -2,7 +2,7 @@ import os
 import pathlib
 import sys
 
-import netCDF4 as nc
+# import netCDF4 as nc
 import numpy as np
 import openmm
 from openmm import app, unit

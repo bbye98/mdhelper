@@ -50,10 +50,8 @@ def weibull(x: np.ndarray, a: float, b: float, c: float = 0) -> np.ndarray:
     b : `float`
         Shape parameter :math:`b`. If specified to be a constant, the
         one-parameter Weibull distribution is used.
-    
-    Other parameters
-    ----------------
-    c : `float`, default: :code:`0`
+
+    c : `float`, keyword-only, default: :code:`0`
         Location parameter :math:`c`. If not specified as a parameter,
         the two-parameter Weibull distribution is used.
     

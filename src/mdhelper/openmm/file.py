@@ -19,7 +19,7 @@ try:
     import netCDF4 as nc
     FOUND_NETCDF = True
 except ImportError: # pragma: no cover
-    from scipy.io import netcdf_file as nc
+    from scipy.io import netcdf_file
     FOUND_NETCDF = False
 
 from .. import VERSION
@@ -32,9 +32,10 @@ class NetCDFFile():
 
     Parameters
     ----------
-    file : `str`
-        Filename of the NetCDF file. If `file` does not have the
-        :code:`.nc` extension, it will automatically be appended.
+    file : `str`, `netcdf4.Dataset`, or `scipy.io.netcdf_file`
+        NetCDF file. If `file` is a filename and does not have the
+        :code:`.nc` or :code:`.ncdf` extension, :code:`.nc` will 
+        automatically be appended.
     
     mode : `str`
         NetCDF file access mode.
@@ -48,17 +49,17 @@ class NetCDFFile():
     """
 
     def __init__(
-            self, file: Union[str, nc.Dataset], mode: str, 
+            self, file: Union[str, "nc.Dataset", "netcdf_file"], mode: str, 
             restart: bool = False, **kwargs):
 
         if isinstance(file, str):
-            if not file.endswith(".nc") and not file.endswith(".ncdf"):
+            if not file.endswith((".nc", ".ncdf")):
                 file += ".nc"
             if FOUND_NETCDF:
                 self._nc = nc.Dataset(file, mode=mode, 
                                       format="NETCDF3_64BIT_OFFSET", **kwargs)
             else: # pragma: no cover
-                self._nc = nc(file, mode=mode, version=2, **kwargs)
+                self._nc = netcdf_file(file, mode=mode, version=2, **kwargs)
         else:
             self._nc = file
         

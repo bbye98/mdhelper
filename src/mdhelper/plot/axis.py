@@ -27,15 +27,13 @@ def tabular_legend(
     cols : `tuple` or `list`
         Raw string representations of the column values.
 
-    Other parameters
-    ----------------
-    hlabel : `str`, optional
+    hlabel : `str`, keyword-only, optional
         Horizontal label for column values.
 
-    vlabel : `str`, optional
+    vlabel : `str`, keyword-only, optional
         Vertical label for row values.
 
-    hla : `str`, default: :code:`"left"`
+    hla : `str`, keyword-only, default: :code:`"left"`
         Alignment for `hlabel`.
 
         .. container::
@@ -45,7 +43,7 @@ def tabular_legend(
            * :code:`"left"`: Left-aligned text.
            * :code:`"center"`: Horizontally centered text.
 
-    vla : `str`, default: :code:`"top"`
+    vla : `str`, keyword-only, default: :code:`"top"`
         Alignment for `vlabel`.
 
         .. container::
@@ -55,7 +53,7 @@ def tabular_legend(
            * :code:`"top"`: Top-aligned text.
            * :code:`"center"`: Vertically centered text.
 
-    condense : `bool`, default: :code:`False`
+    condense : `bool`, keyword-only, default: :code:`False`
         Condenses the legend by placing `vlabel` in the empty top-left
         corner. Cannot be used when no `vlabel` is specified or in
         conjuction with :code:`vla="center"` (which will take priority).
@@ -98,21 +96,21 @@ def tabular_legend(
 
     .. code-block::
 
-        (props, nrow, start) = tabular_legend(..., handletextpad=-5/4)
-        fig, ax = plt.subplots(...)
-        for i, x in enumerate(...):
-            for j, y in enumerate(...):
-                props["handles"][start + i * nrow + j], = ax.plot(...)
-        ax.set_xlabel(...)
-        ax.set_ylabel(...)
-        lgd = ax.legend(**props)
-        fig.canvas.draw()
-        texts = lgd.get_texts()[:nrow]
-        bounds = [t.get_window_extent().bounds[2] / 2 for t in texts]
-        center = max(bounds)
-        for k, t in enumerate(texts):
-            t.set_position((center - bounds[k], 0))
-        plt.show()
+       (props, nrow, start) = tabular_legend(..., handletextpad=-5/4)
+       fig, ax = plt.subplots(...)
+       for i, x in enumerate(...):
+           for j, y in enumerate(...):
+               props["handles"][start + i * nrow + j], = ax.plot(...)
+       ax.set_xlabel(...)
+       ax.set_ylabel(...)
+       lgd = ax.legend(**props)
+       fig.canvas.draw()
+       texts = lgd.get_texts()[:nrow]
+       bounds = [t.get_window_extent().bounds[2] / 2 for t in texts]
+       center = max(bounds)
+       for k, t in enumerate(texts):
+           t.set_position((center - bounds[k], 0))
+       plt.show()
     """
 
     hpad = bool(vlabel) - condense + 1
