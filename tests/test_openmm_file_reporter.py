@@ -81,7 +81,7 @@ def test_classes_netcdffile_netcdfreporter():
 
     # TEST CASE 4: Correct headers and data for restart file 
     # (static method, NetCDF file)
-    file.NetCDFFile.write_file(NetCDF("restart.nc", "ws"), state)
+    file.NetCDFFile.write_file(NetCDF("restart.nc", "w"), state)
     ncdf = file.NetCDFFile("restart.nc", "r")
     assert ncdf._nc.Conventions == "AMBERRESTART"
     assert ncdf.get_num_frames() == 1
