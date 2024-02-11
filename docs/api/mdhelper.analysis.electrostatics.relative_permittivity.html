@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="DipoleMoment" href="mdhelper.analysis.electrostatics.DipoleMoment.html" /><link rel="prev" title="electrostatics" href="mdhelper.analysis.electrostatics.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>relative_permittivity - MDHelper documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
@@ -176,8 +176,10 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.closest_factors.html">closest_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.lj_scaling.html">lj_scaling</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.rebin.html">rebin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.replicate.html">replicate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.utility.unit_scaling.html">unit_scaling</a></li>
 </ul>
 </li>
 </ul>
@@ -245,6 +247,7 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.fit.exponential.html">exponential</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle navigation of exponential</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.biexp.html">biexp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.exp.html">exp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.exp1.html">exp1</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.exp2.html">exp2</a></li>
@@ -395,7 +398,7 @@
 <h1>relative_permittivity<a class="headerlink" href="#relative-permittivity" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="mdhelper.analysis.electrostatics.relative_permittivity">
-<span class="sig-prename descclassname"><span class="pre">mdhelper.analysis.electrostatics.</span></span><span class="sig-name descname"><span class="pre">relative_permittivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.1.0)"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://pint.readthedocs.io/en/stable/api/base.html#pint.Quantity" title="(in pint v0.23rc3.dev1+g52ac9f5)"><span class="pre">Quantity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.1.0)"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://pint.readthedocs.io/en/stable/api/base.html#pint.Quantity" title="(in pint v0.23rc3.dev1+g52ac9f5)"><span class="pre">Quantity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.1.0)"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://pint.readthedocs.io/en/stable/api/base.html#pint.Quantity" title="(in pint v0.23rc3.dev1+g52ac9f5)"><span class="pre">Quantity</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduced</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/analysis/electrostatics.html#relative_permittivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.analysis.electrostatics.relative_permittivity" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mdhelper.analysis.electrostatics.</span></span><span class="sig-name descname"><span class="pre">relative_permittivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduced</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/analysis/electrostatics.html#relative_permittivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.analysis.electrostatics.relative_permittivity" title="Link to this definition">#</a></dt>
 <dd><p>Computes the relative permittivity (or static dielectric constant)
 <span class="math notranslate nohighlight">\(\varepsilon_\mathrm{r}\)</span> of a medium using the instantaneous
 dipole moments <span class="math notranslate nohighlight">\(\mathbf{M}(t)\)</span>.</p>
@@ -403,13 +406,14 @@ dipole moments <span class="math notranslate nohighlight">\(\mathbf{M}(t)\)</spa
 permittivity to the dipole moment via</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
-\[\varepsilon_\mathrm{r}=1+\frac{\langle |\mathbf{M}|^2\rangle
--|\langle\mathbf{M}\rangle |^2}{3\varepsilon_0 Vk_\mathrm{B}T}\]</div>
+\[\varepsilon_\mathrm{r}=1+\frac{\overline{\langle\mathbf{M}^2\rangle
+-\langle\mathbf{M}\rangle^2}}{3\varepsilon_0 Vk_\mathrm{B}T}\]</div>
 </div>
 <p>where the angular brackets <span class="math notranslate nohighlight">\(\langle\,\cdot\,\rangle\)</span> denote
-the ensemble average, <span class="math notranslate nohighlight">\(\varepsilon_0\)</span> is the vacuum
-permittivity, <span class="math notranslate nohighlight">\(k_\mathrm{B}\)</span> is the Boltzmann constant, and
-<span class="math notranslate nohighlight">\(T\)</span> is the system temperature.</p>
+the ensemble average, the overline signifies the spatial average,
+<span class="math notranslate nohighlight">\(\varepsilon_0\)</span> is the vacuum permittivity,
+<span class="math notranslate nohighlight">\(k_\mathrm{B}\)</span> is the Boltzmann constant, and <span class="math notranslate nohighlight">\(T\)</span> is
+the system temperature.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If residues (molecules) in your system have net charges, the
@@ -419,11 +423,11 @@ the product of the net charge and the center of mass or geometry.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>M</strong><span class="classifier">array-like, <cite>openmm.unit.Quantity</cite>, or <cite>pint.Quantity</cite></span></dt><dd><p>Instantaneous dipole moments over <span class="math notranslate nohighlight">\(N_t\)</span> frames.</p>
-<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_t, 3)\)</span>.</p>
+<dt><strong>M</strong><span class="classifier">array-like</span></dt><dd><p>Instantaneous dipole moments over <span class="math notranslate nohighlight">\(N_t\)</span> frames.</p>
+<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_t,\,3)\)</span>.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{e\cdotÅ}\)</span>.</p>
 </dd>
-<dt><strong>temp</strong><span class="classifier"><cite>float</cite>, <cite>openmm.unit.Quantity</cite>, or <cite>pint.Quantity</cite></span></dt><dd><p>System temperature <span class="math notranslate nohighlight">\(T\)</span>.</p>
+<dt><strong>temp</strong><span class="classifier"><cite>float</cite></span></dt><dd><p>System temperature <span class="math notranslate nohighlight">\(T\)</span>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If <code class="code docutils literal notranslate"><span class="pre">reduced=True</span></code>, <cite>temp</cite> should be equal to the energy
@@ -432,11 +436,10 @@ means that <span class="math notranslate nohighlight">\(T^* = 1\)</span>, or <ci
 </div>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{K}\)</span>.</p>
 </dd>
-<dt><strong>volume</strong><span class="classifier"><cite>float</cite>, <cite>openmm.unit.Quantity</cite>, or <cite>pint.Quantity</cite></span></dt><dd><p>System volume <span class="math notranslate nohighlight">\(V\)</span>.</p>
+<dt><strong>volume</strong><span class="classifier"><cite>float</cite></span></dt><dd><p>System volume <span class="math notranslate nohighlight">\(V\)</span>.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å^3}\)</span>.</p>
 </dd>
-<dt><strong>reduced</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Specifies whether the data is in reduced units. Affects <cite>temp</cite>
-and <cite>volume</cite>.</p>
+<dt><strong>reduced</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Specifies whether the data is in reduced units.</p>
 </dd>
 </dl>
 </dd>

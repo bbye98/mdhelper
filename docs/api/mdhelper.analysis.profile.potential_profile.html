@@ -247,6 +247,7 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.fit.exponential.html">exponential</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle navigation of exponential</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.biexp.html">biexp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.exp.html">exp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.exp1.html">exp1</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.fit.exponential.exp2.html">exp2</a></li>
@@ -456,6 +457,14 @@ integral of the charge density profile to calculate
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{V}\)</span>.</p>
 </dd>
 <dt><strong>reduced</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Specifies whether the data is in reduced units.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>potential</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Potential profile <span class="math notranslate nohighlight">\(\varphi(z)\)</span>.</p>
+<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_\mathrm{bins},)\)</span>.</p>
+<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{V}\)</span>.</p>
 </dd>
 </dl>
 </dd>

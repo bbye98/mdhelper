@@ -246,6 +246,7 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.html">exponential</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle navigation of exponential</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.biexp.html">biexp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.exp.html">exp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.exp1.html">exp1</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.fit.exponential.exp2.html">exp2</a></li>
@@ -416,11 +417,11 @@
 <span class="kn">from</span> <span class="nn">.unit</span> <span class="kn">import</span> <span class="n">VACUUM_PERMITTIVITY</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">constvplugin</span> <span class="kn">import</span> <span class="n">ConstVLangevinIntegrator</span> <span class="k">as</span> <span class="n">ICLangevinIntegrator</span>
+    <span class="kn">from</span> <span class="nn">openmm_ic</span> <span class="kn">import</span> <span class="n">ICLangevinIntegrator</span>
     <span class="n">FOUND_ICPLUGIN</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">openmm_ic</span> <span class="kn">import</span> <span class="n">ICLangevinIntegrator</span>
+        <span class="kn">from</span> <span class="nn">constvplugin</span> <span class="kn">import</span> <span class="n">ConstVLangevinIntegrator</span> <span class="k">as</span> <span class="n">ICLangevinIntegrator</span>
         <span class="n">FOUND_ICPLUGIN</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="n">FOUND_ICPLUGIN</span> <span class="o">=</span> <span class="kc">False</span>
@@ -663,7 +664,7 @@
 
     <span class="c1"># Get system dimensions</span>
     <span class="n">dims</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="n">topology</span><span class="o">.</span><span class="n">getUnitCellDimensions</span><span class="p">()</span><span class="o">.</span><span class="n">value_in_units</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
+        <span class="n">topology</span><span class="o">.</span><span class="n">getUnitCellDimensions</span><span class="p">()</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span><span class="p">)</span>
     <span class="p">)</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">nanometer</span>
     <span class="n">pbv</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">getDefaultPeriodicBoxVectors</span><span class="p">()</span>
 
@@ -685,7 +686,7 @@
     <span class="n">system</span><span class="o">.</span><span class="n">setDefaultPeriodicBoxVectors</span><span class="p">(</span><span class="o">*</span><span class="n">pbv</span><span class="p">)</span>
 
     <span class="c1"># Obtain particle charge information</span>
-    <span class="k">if</span> <span class="n">nbforce</span><span class="o">.</span><span class="n">getParticleParameters</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="n">charge_index</span><span class="p">]</span> <span class="o">==</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nbforce</span><span class="o">.</span><span class="n">getParticleParameters</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="n">charge_index</span><span class="p">],</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
         <span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
             <span class="p">(</span><span class="n">nbforce</span><span class="o">.</span><span class="n">getParticleParameters</span><span class="p">(</span><span class="n">i</span><span class="p">)[</span><span class="n">charge_index</span><span class="p">]</span>
              <span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">elementary_charge</span><span class="p">)</span>
@@ -1284,7 +1285,7 @@
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.system.electric_field.html#mdhelper.openmm.system.electric_field">[docs]</a>
 <span class="k">def</span> <span class="nf">electric_field</span><span class="p">(</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">nbforce</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">,</span>
-        <span class="n">E</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,],</span> <span class="o">*</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">charge_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">atom_indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 

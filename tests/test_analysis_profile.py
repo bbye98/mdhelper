@@ -1,12 +1,3 @@
-"""
-Test cases for mdhelper.analysis.profile module
-===============================================
-The test cases for :class:`mdhelper.analysis.profile.DensityProfile` are 
-adapted from the "Computing mass and charge density on each axis" page 
-from the MDAnalysis User Guide
-(https://userguide.mdanalysis.org/stable/examples/analysis/volumetric/linear_density.html).
-"""
-
 import pathlib
 import sys
 
