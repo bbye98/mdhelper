@@ -14,7 +14,10 @@ from mdhelper.openmm import file, pair, reporter, system as s, unit as u # noqa:
 def test_classes_netcdffile_netcdfreporter():
 
     path = os.getcwd()
-    if "tests" not in path:
+    if "tests" in path:
+        path_split = path.split("/")
+        path = "/".join(path_split[:path_split.index("tests") + 1])
+    else:
         path += "/tests"
     if not os.path.isdir(f"{path}/data/netcdf"):
         os.makedirs(f"{path}/data/netcdf")

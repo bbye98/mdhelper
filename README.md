@@ -2,6 +2,7 @@
 
 [![continuous-integration](https://github.com/bbye98/mdhelper/actions/workflows/ci.yml/badge.svg)](https://github.com/bbye98/mdhelper/actions/workflows/ci.yml)
 
+
 MDHelper is a batteries-included toolkit of analysis modules and helper
 functions for molecular dynamics (MD) simulations.
 
@@ -29,8 +30,6 @@ Extensions to the high-performance OpenMM toolkit, such as custom
 bond/pair potentials, support for NetCDF trajectories, and much more.
 * [`plot`](https://github.com/bbye98/mdhelper/tree/main/src/mdhelper/plot): 
 Settings and additional functionality for Matplotlib figures.
-* [`utility`](https://github.com/bbye98/mdhelper/tree/main/src/mdhelper/utility): 
-General utility functions.
 
 ## Installation and usage
 
@@ -187,5 +186,5 @@ activate a virtual environment named `<venv_name>` using
 ### Postrequisites
 
 To use the image of method charges 
-(`mdhelper.openmm.system.image_charges()`) in your simulations, you must
+(`mdhelper.openmm.system.image_charges()`) in your OpenMM simulations, you must
 compile and install [`constvplugin`](https://github.com/scychon/openmm_constV).

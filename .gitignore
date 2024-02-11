@@ -6,6 +6,6 @@ dist/
 examples/
 paper/
 src/mdhelper.egg-info
-tests/.coverage
 tests/data/
-build.sh
+.coverage
+pre_commit.sh

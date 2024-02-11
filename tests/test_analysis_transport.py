@@ -117,7 +117,10 @@ def test_class_onsager_transport_coefficients():
     url = "https://raw.githubusercontent.com/kdfong/transport-coefficients-MSD/master/example-data"
 
     path = os.getcwd()
-    if "tests" not in path:
+    if "tests" in path:
+        path_split = path.split("/")
+        path = "/".join(path_split[:path_split.index("tests") + 1])
+    else:
         path += "/tests"
     if not os.path.isdir(f"{path}/data/onsager"):
         os.makedirs(f"{path}/data/onsager")
