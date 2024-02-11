@@ -439,7 +439,7 @@ class Onsager(SerialAnalysisBase):
     .. note::
 
        The simulation must have been run with a constant timestep
-       :math:`\Delta t` and the frames to be analyzed must be evenly
+       :math:`\\Delta t` and the frames to be analyzed must be evenly
        spaced and proceed forward in time for this analysis module to
        function correctly.
 
@@ -447,17 +447,17 @@ class Onsager(SerialAnalysisBase):
     transport properties in bulk constant-volume fluids and 
     electrolytic systems, such as those in the canonical 
     (:math:`NVT`), microcanonical (:math:`NVE`), and grand
-    canonical (:math:`\mu VT`) ensembles.
+    canonical (:math:`\\mu VT`) ensembles.
     
     The Onsager transport equation
 
     .. math::
 
-       \pmb{J}_i=-\sum_j L_{ij}\\nabla\\bar{\mu}_j
+       \pmb{J}_i=-\sum_j L_{ij}\\nabla\\bar{\\mu}_j
 
     relates the flux :math:`\pmb{J}_i` of species :math:`i` to the
     Onsager transport coefficients :math:`L_{ij}` and the
-    electrochemical potential :math:`\\bar{\mu}_j` of species :math:`j`.
+    electrochemical potential :math:`\\bar{\\mu}_j` of species :math:`j`.
     There is an Onsager transport coefficient for each pair of species
     that, unlike the Nernst–Einstein equation, captures the strong 
     cross-correlations in electrolytes.
@@ -467,13 +467,13 @@ class Onsager(SerialAnalysisBase):
 
     .. math::
 
-       L_{ij}=\\frac{1}{6k_\mathrm{B}TV}
+       L_{ij}=\\frac{1}{6k_\\mathrm{B}TV}
        \lim_{t\\rightarrow\infty}\\frac{d}{dt}\left\langle\sum_\\alpha
        \left[\pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)\\right]\cdot
        \sum_\\beta\left[\pmb{r}_{j,\\beta}(t)-\pmb{r}_{j,\\beta}(0)\\right]
        \\right\\rangle
 
-    where :math:`k_\mathrm{B}` is the Boltzmann constant, :math:`T` is
+    where :math:`k_\\mathrm{B}` is the Boltzmann constant, :math:`T` is
     the system temperature, :math:`V` is the system volume, :math:`t` is
     time, and :math:`\pmb{r}_\\alpha` and :math:`\pmb{r}_\\beta` are the 
     positions of particles :math:`\\alpha` and :math:`\\beta` belonging
@@ -488,13 +488,13 @@ class Onsager(SerialAnalysisBase):
 
     .. math::
 
-       L_{ii}=L_{ii}^\mathrm{self}+L_{ii}^\mathrm{distinct}
+       L_{ii}=L_{ii}^\\mathrm{self}+L_{ii}^\\mathrm{distinct}
 
     The self term
 
     .. math::
 
-       L_{ii}^\mathrm{self}=\\frac{1}{6k_\mathrm{B}TV} 
+       L_{ii}^\\mathrm{self}=\\frac{1}{6k_\\mathrm{B}TV} 
        \lim_{t\\rightarrow\infty}\\frac{d}{dt} 
        \sum_\\alpha\left\langle\left[ 
        \pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0) 
@@ -506,7 +506,7 @@ class Onsager(SerialAnalysisBase):
     
     .. math::
 
-       L_{ii}^\mathrm{self}=\\frac{1}{6k_\mathrm{B}TV} 
+       L_{ii}^\\mathrm{self}=\\frac{1}{6k_\\mathrm{B}TV} 
        \lim_{t\\rightarrow\infty}\\frac{d}{dt} 
        \sum_\\alpha\sum_{\\beta\\neq\\alpha}\left\langle\left[ 
        \pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)\\right]\cdot 
@@ -519,7 +519,7 @@ class Onsager(SerialAnalysisBase):
 
     .. math::
 
-       L_{ii}^\mathrm{self}=\\frac{D_i\\rho_i}{k_\mathrm{B}T}
+       L_{ii}^\\mathrm{self}=\\frac{D_i\\rho_i}{k_\\mathrm{B}T}
 
     where :math:`\\rho_i` is the number density of species :math:`i`.
 
@@ -530,7 +530,7 @@ class Onsager(SerialAnalysisBase):
 
       .. math::
 
-         \kappa=F^2\sum_i\sum_j z_iz_jL_{ij}
+         \\kappa=F^2\sum_i\sum_j z_iz_jL_{ij}
         
       :math:`F` is the Faraday constant.
 
@@ -538,7 +538,7 @@ class Onsager(SerialAnalysisBase):
 
       .. math::
 
-         \mu_i=\\frac{F}{\\rho_i}\sum_j z_jL_{ij}
+         \\mu_i=\\frac{F}{\\rho_i}\sum_j z_jL_{ij}
       
     * Transference number:
 
@@ -578,17 +578,17 @@ class Onsager(SerialAnalysisBase):
            energy scale. When the Lennard-Jones potential is used, it 
            generally means that :math:`T^* = 1`, or `temperature=1`.
 
-        **Reference unit**: :math:`\mathrm{K}`.
+        **Reference unit**: :math:`\\mathrm{K}`.
 
     charges : array-like, `openmm.unit.Quantity`, or `pint.Quantity`, \
     keyword-only, optional
         Charge numbers :math:`z_i` for the specified `groupings` in the 
-        :math:`N_\mathrm{g}` `groups`. If not provided, it will be 
+        :math:`N_\\mathrm{g}` `groups`. If not provided, it will be 
         retrieved from the topology or trajectory.
 
-        **Shape**: :math:`(N_\mathrm{g},)`.
+        **Shape**: :math:`(N_\\mathrm{g},)`.
 
-        **Reference unit**: :math:`\mathrm{e}`.
+        **Reference unit**: :math:`\\mathrm{e}`.
 
     dimensions : array-like, `openmm.unit.Quantity`, or \
     `pint.Quantity`, keyword-only, optional
@@ -608,21 +608,21 @@ class Onsager(SerialAnalysisBase):
 
         **Shape**: :math:`(3,)`.
 
-        **Reference unit**: :math:`\mathrm{Å}`.
+        **Reference unit**: :math:`\\mathrm{Å}`.
  
     dt : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
     keyword-only, optional
-        Time between frames :math:`\Delta t`. While this is normally
+        Time between frames :math:`\\Delta t`. While this is normally
         determined from the trajectory, the trajectory may not have the
         correct information if the data is in reduced units. For
         example, if your reduced timestep is :math:`0.01` and you output
-        trajectory data every :math:`10000` timesteps, then
-        :math:`\Delta t = 100`. 
+        trajectory data every :math:`10,000` timesteps, then
+        :math:`\\Delta t=100`.
         
-        **Reference unit**: :math:`\mathrm{ps}`.
+        **Reference unit**: :math:`\\mathrm{ps}`.
 
     n_blocks : `int`, keyword-only, default: :code:`1`
-        Number of blocks :math:`N_\mathrm{b}` to split the trajectory 
+        Number of blocks :math:`N_\\mathrm{b}` to split the trajectory 
         into.
 
     center : `bool`, keyword-only, default: :code:`False`
@@ -677,90 +677,90 @@ class Onsager(SerialAnalysisBase):
 
         **Shape**: :math:`(N_t,)`.
 
-        **Reference unit**: :math:`\mathrm{ps}`.
+        **Reference unit**: :math:`\\mathrm{ps}`.
 
     results.msd_cross : `numpy.ndarray`
-        MSDs (or analogs) for the :math:`N_\mathrm{g}` groups over 
-        :math:`N_\mathrm{b}` blocks of :math:`N_t` trajectory frames 
+        MSDs (or analogs) for the :math:`N_\\mathrm{g}` groups over 
+        :math:`N_\\mathrm{b}` blocks of :math:`N_t` trajectory frames 
         each. Includes the dimensionality scaling factor. See Notes 
         about what this value actually means.
 
         **Shape**: 
-        :math:`(_{N_\mathrm{g}+1}\mathrm{C}_{2},\,N_\mathrm{b},\,N_t)`.
+        :math:`(_{N_\\mathrm{g}+1}\\mathrm{C}_{2},\,N_\\mathrm{b},\,N_t)`.
 
-        **Reference unit**: :math:`\mathrm{Å}^2`.
+        **Reference unit**: :math:`\\mathrm{Å}^2`.
 
     results.msd_self : `numpy.ndarray`
-        Self MSDs (or analogs) for the :math:`N_\mathrm{g}` groups over
-        :math:`N_\mathrm{b}` blocks of :math:`N_t` trajectory frames 
+        Self MSDs (or analogs) for the :math:`N_\\mathrm{g}` groups over
+        :math:`N_\\mathrm{b}` blocks of :math:`N_t` trajectory frames 
         each. Includes the dimensionality scaling factor. See Notes
         about what this value actually means.
 
-        **Shape**: :math:`(N_\mathrm{g},\,N_\mathrm{b},\,N_t)`.
+        **Shape**: :math:`(N_\\mathrm{g},\,N_\\mathrm{b},\,N_t)`.
 
-        **Reference unit**: :math:`\mathrm{Å}^2`.
+        **Reference unit**: :math:`\\mathrm{Å}^2`.
 
     results.L_ij : `numpy.ndarray`
         Onsager transport coefficients :math:`L_{ij}`. Only available
         after running :meth:`calculate_coefficients`.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g},\,N_\\mathrm{g})`.
         
         **Reference unit**:
-        :math:`\mathrm{mol/(kJ}\cdot\mathrm{Å}\cdot\mathrm{ps)}`.
+        :math:`\\mathrm{mol/(kJ}\cdot\\mathrm{Å}\cdot\\mathrm{ps)}`.
 
     results.L_ii_self : `numpy.ndarray`
         Self Onsager transport coefficient terms 
-        :math:`L_{ii}^\mathrm{self}`. Note that
-        :math:`L_{ii}^\mathrm{self}` is related to :math:`D_i` via
+        :math:`L_{ii}^\\mathrm{self}`. Note that
+        :math:`L_{ii}^\\mathrm{self}` is related to :math:`D_i` via
 
         .. math::
 
-            L_{ii}^\mathrm{self}=\dfrac{N}{k_\mathrm{B}TV}D_i
+            L_{ii}^\\mathrm{self}=\dfrac{N}{k_\\mathrm{B}TV}D_i
 
         Only available after running :meth:`calculate_coefficients`.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g})`.
 
         **Reference unit**:
-        :math:`\mathrm{mol/(kJ}\cdot\mathrm{Å}\cdot\mathrm{ps)}`.
+        :math:`\\mathrm{mol/(kJ}\cdot\\mathrm{Å}\cdot\\mathrm{ps)}`.
 
     results.D_i : `numpy.ndarray`
         Self-diffusion coefficients :math:`D_i`. Only available after
         running :meth:`calculate_coefficients`.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g})`.
         
-        **Reference unit**: :math:`\mathrm{Å}^2/\mathrm{ps)}`.
+        **Reference unit**: :math:`\\mathrm{Å}^2/\\mathrm{ps)}`.
 
     results.conductivity : `numpy.ndarray`
-        Conductivities :math:`\kappa`. Only available after running
+        Conductivities :math:`\\kappa`. Only available after running
         :meth:`calculate_conductivity`. 
         
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g})`.
         
-        **Reference unit**: :math:`\mathrm{C}^2/(\mathrm{kJ}\cdot 
-        \mathrm{Å}\cdot\mathrm{ps})`.
+        **Reference unit**: :math:`\\mathrm{C}^2/(\\mathrm{kJ}\cdot 
+        \\mathrm{Å}\cdot\\mathrm{ps})`.
         
-        **To SI unit**: :math:`1\times10^{19}\,\mathrm{S}/\mathrm{m}`.
+        **To SI unit**: :math:`1\times10^{19}\,\\mathrm{S}/\\mathrm{m}`.
     
     results.electrophoretic_mobility : `numpy.ndarray`
-        Electrophoretic mobilities :math:`\mu_i`. Only available after 
+        Electrophoretic mobilities :math:`\\mu_i`. Only available after 
         running :meth:`calculate_electrophoretic_mobility`.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g})`.
         
         **Reference unit**:
-        :math:`\mathrm{Å}^2\cdot\mathrm{C/(kJ}\cdot\mathrm{ps)}`.
+        :math:`\\mathrm{Å}^2\cdot\\mathrm{C/(kJ}\cdot\\mathrm{ps)}`.
         
-        **To SI unit**: :math:`1\times10^{-11}\,\mathrm{m}^2/
-        (\mathrm{V}\cdot\mathrm{s})`.
+        **To SI unit**: :math:`1\times10^{-11}\,\\mathrm{m}^2/
+        (\\mathrm{V}\cdot\\mathrm{s})`.
 
     results.transference_number : `numpy.ndarray`
         Transference numbers :math:`t_i`. Only available after running
         :meth:`calculate_transference_number`.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g})`.
 
     Notes
     -----
@@ -1175,13 +1175,13 @@ class Onsager(SerialAnalysisBase):
         charges : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
             Charge numbers :math:`z_i` of the groupings in the
-            :math:`N_\mathrm{g}` groups. This argument is optional only
+            :math:`N_\\mathrm{g}` groups. This argument is optional only
             if `charges` has previously been passed to a calculation
             method belonging to this class.
 
-            **Shape**: :math:`(N_\mathrm{g},)`.
+            **Shape**: :math:`(N_\\mathrm{g},)`.
 
-            **Reference unit**: :math:`\mathrm{e}`.
+            **Reference unit**: :math:`\\mathrm{e}`.
         """
 
         if not hasattr(self.results, "L_ij"):
@@ -1222,7 +1222,7 @@ class Onsager(SerialAnalysisBase):
         ) -> None:
 
         """
-        Calculates the electrophoretic mobility :math:`\mu_i` of each
+        Calculates the electrophoretic mobility :math:`\\mu_i` of each
         species using the Onsager transport coefficients :math:`L_{ij}`.
 
         Parameters
@@ -1230,23 +1230,23 @@ class Onsager(SerialAnalysisBase):
         charges : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
             Charge numbers :math:`z_i` of the groupings in the
-            :math:`N_\mathrm{g}` groups. This argument is optional only 
+            :math:`N_\\mathrm{g}` groups. This argument is optional only 
             if charge information is present in the topology or 
             `charges` has previously been passed to a calculation 
             method belonging to this class.
 
-            **Shape**: :math:`(N_\mathrm{g},)`.
+            **Shape**: :math:`(N_\\mathrm{g},)`.
 
-            **Reference unit**: :math:`\mathrm{e}`.
+            **Reference unit**: :math:`\\mathrm{e}`.
         
         rhos : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
             Number densities :math:`n_i` of the groupings in the
-            :math:`N_\mathrm{g}` groups. 
+            :math:`N_\\mathrm{g}` groups. 
 
-            **Shape**: :math:`(N_\mathrm{g},)`.
+            **Shape**: :math:`(N_\\mathrm{g},)`.
             
-            **Reference unit**: :math:`\mathrm{Å}^{-3}`.
+            **Reference unit**: :math:`\\mathrm{Å}^{-3}`.
         """
 
         if not hasattr(self.results, "L_ij"):
@@ -1309,14 +1309,14 @@ class Onsager(SerialAnalysisBase):
         charges : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
             Charge numbers :math:`z_i` of the groupings in the
-            :math:`N_\mathrm{g}` groups. This argument is optional only 
+            :math:`N_\\mathrm{g}` groups. This argument is optional only 
             if charge information is present in the topology or 
             `charges` has previously been passed to a calculation 
             method belonging to this class.
 
-            **Shape**: :math:`(N_\mathrm{g},)`.
+            **Shape**: :math:`(N_\\mathrm{g},)`.
 
-            **Reference unit**: :math:`\mathrm{e}`.
+            **Reference unit**: :math:`\\mathrm{e}`.
         """
 
         if not hasattr(self.results, "L_ij"):

@@ -98,7 +98,7 @@ def register_particles(
 
     epsilon : `float` or `openmm.unit.Quantity`, keyword-only, \
     default: :code`0`
-        :math:`\epsilon` parameter of the Lennard-Jones potential in
+        :math:`\\epsilon` parameter of the Lennard-Jones potential in
         `nbforce`. 
         
         **Reference unit**: :math:`\\mathrm{kJ/mol}`.
@@ -631,7 +631,7 @@ def image_charges(
 
     def _ic_beta(gamma: float, x: float) -> float:
 
-        """
+        r"""
         Computes the :math:`\beta` value used in the higher-order term
         correction for the method of image charges with 
         :math:`\gamma\neq\pm1`.

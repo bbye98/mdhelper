@@ -556,7 +556,7 @@
 <span class="sd">        times : `numpy.ndarray` or `openmm.unit.Quantity`</span>
 <span class="sd">            Simulation times.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{ps}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{ps}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">times</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
@@ -589,7 +589,7 @@
 <span class="sd">        positions : `numpy.ndarray` or `openmm.unit.Quantity`</span>
 <span class="sd">            Atom positions.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{Å}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{Å}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
@@ -623,7 +623,7 @@
 <span class="sd">            Atom velocities. If the NetCDF file does not contain</span>
 <span class="sd">            this information, :code:`None` is returned.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{Å/ps}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{Å/ps}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="k">if</span> <span class="s2">&quot;velocities&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
@@ -663,7 +663,7 @@
 <span class="sd">            Forces acting on the atoms. If the NetCDF file does not</span>
 <span class="sd">            contain this information, :code:`None` is returned.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{Å/ps}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{Å/ps}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="k">if</span> <span class="s2">&quot;forces&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>

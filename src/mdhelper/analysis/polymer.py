@@ -466,7 +466,7 @@ class Relaxation(_PolymerAnalysisBase):
         determined from the trajectory, the trajectory may not have the
         correct information if the data is in reduced units. For
         example, if your reduced timestep is :math:`0.01` and you output
-        trajectory data every :math:`10000` timesteps, then
+        trajectory data every :math:`10,000` timesteps, then
         :math:`\Delta t=100`. 
         
         **Reference unit**: :math:`\mathrm{ps}`.

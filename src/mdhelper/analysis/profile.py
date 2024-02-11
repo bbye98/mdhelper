@@ -27,8 +27,8 @@ def potential_profile(
         dV: float = None, threshold: float = 1e-5, V0: float = 0,
         reduced: bool = False) -> None:
     
-    """
-    Calculates the potential profile :math:`\\varphi(z)` using the charge
+    r"""
+    Calculates the potential profile :math:`\Psi(z)` using the charge
     density profile by numerically solving Poisson's equation for 
     electrostatics.
 
@@ -36,11 +36,11 @@ def potential_profile(
 
     .. math::
 
-       \\varepsilon_0\\varepsilon_\mathrm{r}\\nabla^2\\varphi(z)=-\\rho_e(z)
+       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_e(z)
 
-    where :math:`\\varepsilon_0` is the vacuum permittivity, 
-    :math:`\\varepsilon_\mathrm{r}` is the relative permittivity, 
-    :math:`\\rho_e` is the charge density, and :math:`\\varphi` is the
+    where :math:`\varepsilon_0` is the vacuum permittivity, 
+    :math:`\varepsilon_\mathrm{r}` is the relative permittivity, 
+    :math:`\rho_e` is the charge density, and :math:`\Psi` is the
     potential.
 
     Parameters
@@ -68,7 +68,7 @@ def potential_profile(
 
     dielectric : `float`, default: :code:`1`
         Relative permittivity or static dielectric constant 
-        :math:`\\varepsilon_\mathrm{r}`.
+        :math:`\varepsilon_\mathrm{r}`.
 
     sigma_e : `float`, keyword-only, optional
         Total surface charge density :math:`\sigma_e`. Used to 
@@ -80,7 +80,7 @@ def potential_profile(
         **Reference unit**: :math:`\mathrm{e/Å^2}`.
 
     dV : `float`, keyword-only, optional
-        Potential difference :math:`\Delta\\varphi` across the system 
+        Potential difference :math:`\Delta\Psi` across the system 
         dimension specified in `axis`. Has no effect if `sigma_e` is
         provided since this value is used solely to calculate 
         `sigma_e`.
@@ -99,7 +99,7 @@ def potential_profile(
         `sigma_e` can be calculated using `dV` and `dielectric`.
 
     V0 : `float`, keyword-only, default: :code:`0`
-        Potential :math:`\\varphi_0` at the left boundary. 
+        Potential :math:`\Psi_0` at the left boundary. 
         
         **Reference unit**: :math:`\mathrm{V}`.
 
@@ -109,7 +109,7 @@ def potential_profile(
     Returns
     -------
     potential : `numpy.ndarray`
-        Potential profile :math:`\\varphi(z)`.
+        Potential profile :math:`\Psi(z)`.
 
         **Shape**: :math:`(N_\mathrm{bins},)`.
 
@@ -167,7 +167,7 @@ class DensityProfile(SerialAnalysisBase):
 
     r"""
     A serial implementation to calculate the number and charge density
-    profiles :math:`\phi_i(z)` and :math:`\phi_e(z)` of a system
+    profiles :math:`\rho_i(z)` and :math:`\rho_e(z)` of a system
     along the specified axes.
 
     The microscopic number density profile of species :math:`i` in a
@@ -198,7 +198,7 @@ class DensityProfile(SerialAnalysisBase):
 
     .. math::
        
-       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\varphi(z)=-\rho_e(z)
+       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_e(z)
 
     Parameters
     ----------
@@ -271,7 +271,7 @@ class DensityProfile(SerialAnalysisBase):
         determined from the trajectory, the trajectory may not have the
         correct information if the data is in reduced units. For
         example, if your reduced timestep is :math:`0.01` and you output
-        trajectory data every :math:`10000` timesteps, then
+        trajectory data every :math:`10,000` timesteps, then
         :math:`\Delta t = 100`. 
         
         **Reference unit**: :math:`\mathrm{ps}`.
@@ -678,11 +678,11 @@ class DensityProfile(SerialAnalysisBase):
             the charge density profile, or the average value in the 
             center of the integrated charge density profile. 
             
-            **Reference unit**: :math:`\mathrm{e/Å^2}`.
+            **Reference unit**: :math:`\\mathrm{e/Å^2}`.
 
         dV : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, optional
-            Potential difference :math:`\Delta \\varphi` across the system 
+            Potential difference :math:`\Delta\Psi` across the system 
             dimension specified in `axis`. Has no effect if `sigma_e` is
             provided since this value is used solely to calculate 
             `sigma_e`.
@@ -693,7 +693,7 @@ class DensityProfile(SerialAnalysisBase):
                law, it is assumed that the boundaries are perfectly 
                conducting.
 
-            **Reference unit**: :math:`\mathrm{V}`.
+            **Reference unit**: :math:`\\mathrm{V}`.
         
         threshold : `float`, keyword-only, default: :code:`1e-5`
             Threshold for determining the plateau region of the first
@@ -703,9 +703,9 @@ class DensityProfile(SerialAnalysisBase):
 
         V0 : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, default: :code:`0`
-            Potential :math:`\\varphi_0` at the left boundary. 
+            Potential :math:`\Psi_0` at the left boundary. 
             
-            **Reference unit**: :math:`\mathrm{V}`.
+            **Reference unit**: :math:`\\mathrm{V}`.
         """
 
         if not hasattr(self.results, "charge_density"):

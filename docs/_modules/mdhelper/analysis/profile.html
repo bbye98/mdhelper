@@ -424,8 +424,8 @@
         <span class="n">dV</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="n">V0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates the potential profile :math:`\\varphi(z)` using the charge</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the potential profile :math:`\Psi(z)` using the charge</span>
 <span class="sd">    density profile by numerically solving Poisson&#39;s equation for </span>
 <span class="sd">    electrostatics.</span>
 
@@ -433,11 +433,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \\varepsilon_0\\varepsilon_\mathrm{r}\\nabla^2\\varphi(z)=-\\rho_e(z)</span>
+<span class="sd">       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_e(z)</span>
 
-<span class="sd">    where :math:`\\varepsilon_0` is the vacuum permittivity, </span>
-<span class="sd">    :math:`\\varepsilon_\mathrm{r}` is the relative permittivity, </span>
-<span class="sd">    :math:`\\rho_e` is the charge density, and :math:`\\varphi` is the</span>
+<span class="sd">    where :math:`\varepsilon_0` is the vacuum permittivity, </span>
+<span class="sd">    :math:`\varepsilon_\mathrm{r}` is the relative permittivity, </span>
+<span class="sd">    :math:`\rho_e` is the charge density, and :math:`\Psi` is the</span>
 <span class="sd">    potential.</span>
 
 <span class="sd">    Parameters</span>
@@ -465,7 +465,7 @@
 
 <span class="sd">    dielectric : `float`, default: :code:`1`</span>
 <span class="sd">        Relative permittivity or static dielectric constant </span>
-<span class="sd">        :math:`\\varepsilon_\mathrm{r}`.</span>
+<span class="sd">        :math:`\varepsilon_\mathrm{r}`.</span>
 
 <span class="sd">    sigma_e : `float`, keyword-only, optional</span>
 <span class="sd">        Total surface charge density :math:`\sigma_e`. Used to </span>
@@ -477,7 +477,7 @@
 <span class="sd">        **Reference unit**: :math:`\mathrm{e/Å^2}`.</span>
 
 <span class="sd">    dV : `float`, keyword-only, optional</span>
-<span class="sd">        Potential difference :math:`\Delta\\varphi` across the system </span>
+<span class="sd">        Potential difference :math:`\Delta\Psi` across the system </span>
 <span class="sd">        dimension specified in `axis`. Has no effect if `sigma_e` is</span>
 <span class="sd">        provided since this value is used solely to calculate </span>
 <span class="sd">        `sigma_e`.</span>
@@ -496,7 +496,7 @@
 <span class="sd">        `sigma_e` can be calculated using `dV` and `dielectric`.</span>
 
 <span class="sd">    V0 : `float`, keyword-only, default: :code:`0`</span>
-<span class="sd">        Potential :math:`\\varphi_0` at the left boundary. </span>
+<span class="sd">        Potential :math:`\Psi_0` at the left boundary. </span>
 <span class="sd">        </span>
 <span class="sd">        **Reference unit**: :math:`\mathrm{V}`.</span>
 
@@ -506,7 +506,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    potential : `numpy.ndarray`</span>
-<span class="sd">        Potential profile :math:`\\varphi(z)`.</span>
+<span class="sd">        Potential profile :math:`\Psi(z)`.</span>
 
 <span class="sd">        **Shape**: :math:`(N_\mathrm{bins},)`.</span>
 
@@ -567,7 +567,7 @@
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A serial implementation to calculate the number and charge density</span>
-<span class="sd">    profiles :math:`\phi_i(z)` and :math:`\phi_e(z)` of a system</span>
+<span class="sd">    profiles :math:`\rho_i(z)` and :math:`\rho_e(z)` of a system</span>
 <span class="sd">    along the specified axes.</span>
 
 <span class="sd">    The microscopic number density profile of species :math:`i` in a</span>
@@ -598,7 +598,7 @@
 
 <span class="sd">    .. math::</span>
 <span class="sd">       </span>
-<span class="sd">       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\varphi(z)=-\rho_e(z)</span>
+<span class="sd">       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_e(z)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -671,7 +671,7 @@
 <span class="sd">        determined from the trajectory, the trajectory may not have the</span>
 <span class="sd">        correct information if the data is in reduced units. For</span>
 <span class="sd">        example, if your reduced timestep is :math:`0.01` and you output</span>
-<span class="sd">        trajectory data every :math:`10000` timesteps, then</span>
+<span class="sd">        trajectory data every :math:`10,000` timesteps, then</span>
 <span class="sd">        :math:`\Delta t = 100`. </span>
 <span class="sd">        </span>
 <span class="sd">        **Reference unit**: :math:`\mathrm{ps}`.</span>
@@ -1080,11 +1080,11 @@
 <span class="sd">            the charge density profile, or the average value in the </span>
 <span class="sd">            center of the integrated charge density profile. </span>
 <span class="sd">            </span>
-<span class="sd">            **Reference unit**: :math:`\mathrm{e/Å^2}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{e/Å^2}`.</span>
 
 <span class="sd">        dV : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">        keyword-only, optional</span>
-<span class="sd">            Potential difference :math:`\Delta \\varphi` across the system </span>
+<span class="sd">            Potential difference :math:`\Delta\Psi` across the system </span>
 <span class="sd">            dimension specified in `axis`. Has no effect if `sigma_e` is</span>
 <span class="sd">            provided since this value is used solely to calculate </span>
 <span class="sd">            `sigma_e`.</span>
@@ -1095,7 +1095,7 @@
 <span class="sd">               law, it is assumed that the boundaries are perfectly </span>
 <span class="sd">               conducting.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{V}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{V}`.</span>
 <span class="sd">        </span>
 <span class="sd">        threshold : `float`, keyword-only, default: :code:`1e-5`</span>
 <span class="sd">            Threshold for determining the plateau region of the first</span>
@@ -1105,9 +1105,9 @@
 
 <span class="sd">        V0 : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">        keyword-only, default: :code:`0`</span>
-<span class="sd">            Potential :math:`\\varphi_0` at the left boundary. </span>
+<span class="sd">            Potential :math:`\Psi_0` at the left boundary. </span>
 <span class="sd">            </span>
-<span class="sd">            **Reference unit**: :math:`\mathrm{V}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{V}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;charge_density&quot;</span><span class="p">):</span>

@@ -148,7 +148,7 @@ class NetCDFFile():
         times : `numpy.ndarray` or `openmm.unit.Quantity`
             Simulation times.
 
-            **Reference unit**: :math:`\mathrm{ps}`.
+            **Reference unit**: :math:`\\mathrm{ps}`.
         """
 
         times = (self._nc.variables["time"][:] if frames is None 
@@ -178,7 +178,7 @@ class NetCDFFile():
         positions : `numpy.ndarray` or `openmm.unit.Quantity`
             Atom positions.
 
-            **Reference unit**: :math:`\mathrm{Å}`.
+            **Reference unit**: :math:`\\mathrm{Å}`.
         """
 
         positions = (self._nc.variables["coordinates"][:] if frames is None 
@@ -209,7 +209,7 @@ class NetCDFFile():
             Atom velocities. If the NetCDF file does not contain
             this information, :code:`None` is returned.
 
-            **Reference unit**: :math:`\mathrm{Å/ps}`.
+            **Reference unit**: :math:`\\mathrm{Å/ps}`.
         """
         
         if "velocities" not in self._nc.variables:
@@ -246,7 +246,7 @@ class NetCDFFile():
             Forces acting on the atoms. If the NetCDF file does not
             contain this information, :code:`None` is returned.
 
-            **Reference unit**: :math:`\mathrm{Å/ps}`.
+            **Reference unit**: :math:`\\mathrm{Å/ps}`.
         """
         
         if "forces" not in self._nc.variables:
