@@ -62,8 +62,11 @@ class NetCDFFile():
                 self._nc = netcdf_file(file, mode=mode, version=2, **kwargs)
         else:
             self._nc = file
+        self._obj = self._nc.__class__.__name__
+        if self._obj == "Dataset":
+            self._nc.set_auto_mask(False)
         
-        self._frame = 0 if "w" in mode else self._nc["time"].shape[0]
+        self._frame = 0 if "w" in mode else self._nc.variables["time"].shape[0]
         self._restart = restart
 
     def get_dimensions(
@@ -97,10 +100,10 @@ class NetCDFFile():
             **Reference unit**: :math:`^\\circ`.
         """
 
-        cell_lengths = (self._nc.variables["cell_lengths"][:] if frames is None \
-                        else self._nc.variables["cell_lengths"][frames]).data
-        cell_angles = (self._nc.variables["cell_angles"][:] if frames is None \
-                       else self._nc.variables["cell_angles"][frames]).data
+        cell_lengths = (self._nc.variables["cell_lengths"][:] if frames is None
+                        else self._nc.variables["cell_lengths"][frames])
+        cell_angles = (self._nc.variables["cell_angles"][:] if frames is None
+                       else self._nc.variables["cell_angles"][frames])
         if units:
             cell_lengths *= unit.angstrom
             cell_angles *= unit.degree
@@ -117,6 +120,13 @@ class NetCDFFile():
             Number of frames.
         """
 
+        if self._obj == "netcdf_file":
+            if "coordinates" in self._nc.variables:
+                return self._nc.variables["coordinates"].shape[0]
+            wmsg = ("The number of frames is not available when the "
+                    "trajectory is loaded using scipy.io.netcdf_file. ")
+            warnings.warn(wmsg)
+            return
         return self._nc.dimensions["frame"].size
 
     def get_num_atoms(self) -> int:
@@ -130,6 +140,8 @@ class NetCDFFile():
             Number of atoms.
         """
 
+        if self._obj == "netcdf_file":
+            return self._nc.dimensions["atom"]
         return self._nc.dimensions["atom"].size
 
     def get_times(
@@ -157,7 +169,7 @@ class NetCDFFile():
         """
 
         times = (self._nc.variables["time"][:] if frames is None 
-                 else self._nc.variables["time"][frames]).data
+                 else self._nc.variables["time"][frames])
         if units:
             times *= unit.picosecond
         return times
@@ -187,7 +199,7 @@ class NetCDFFile():
         """
 
         positions = (self._nc.variables["coordinates"][:] if frames is None 
-                     else self._nc.variables["coordinates"][frames]).data
+                     else self._nc.variables["coordinates"][frames])
         if units:
             positions *= unit.angstrom
         return positions
@@ -224,7 +236,7 @@ class NetCDFFile():
             return None
 
         velocities = (self._nc.variables["velocities"][:] if frames is None 
-                      else self._nc.variables["velocities"][frames]).data
+                      else self._nc.variables["velocities"][frames])
         if units:
             velocities *= unit.angstrom / unit.picosecond
         return velocities
@@ -261,7 +273,7 @@ class NetCDFFile():
             return None
 
         forces = (self._nc.variables["forces"][:] if frames is None 
-                  else self._nc.variables["forces"][frames]).data
+                  else self._nc.variables["forces"][frames])
         if units:
             forces *= unit.kilocalorie_per_mole / unit.angstrom
         return forces
@@ -357,7 +369,7 @@ class NetCDFFile():
 
         # Create NetCDF object if it doesn't already exist
         if not isinstance(self, NetCDFFile):
-            self = NetCDFFile(self, "ws", restart=restart)
+            self = NetCDFFile(self, "w", restart=restart)
 
         self._nc.Conventions = "AMBER"
         if self._restart:
@@ -533,7 +545,7 @@ class NetCDFFile():
 
         # Create NetCDF file or object if it doesn't already exist
         if not isinstance(self, NetCDFFile):
-            self = NetCDFFile(self, "ws", restart=True)
+            self = NetCDFFile(self, "w", restart=True)
         if not hasattr(self._nc, "Conventions"):
             self.write_header(data["coordinates"].shape[0], 
                               "cell_lengths" in data or "cell_angles" in data,
@@ -636,7 +648,7 @@ class NetCDFFile():
 
         # Create NetCDF file or object if it doesn't already exist
         if not isinstance(self, NetCDFFile):
-            self = NetCDFFile(self, "ws", restart=restart)
+            self = NetCDFFile(self, "w", restart=restart)
         if not hasattr(self._nc, "Conventions"):
             self.write_header(coordinates.shape[0], 
                               cell_lengths is not None or cell_angles is not None,

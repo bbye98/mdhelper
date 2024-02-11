@@ -62,7 +62,7 @@ def test_classes_netcdffile_netcdfreporter():
 
     file.NetCDFFile.write_file("restart", state)
     ncdf = file.NetCDFFile("restart", "r")
-    assert ncdf._nc.Conventions == "AMBERRESTART"
+    assert ncdf._nc.Conventions in ("AMBERRESTART", b"AMBERRESTART")
     assert ncdf.get_num_frames() == 1
     assert np.allclose(ncdf.get_positions(), dims / 2)
 
@@ -72,10 +72,10 @@ def test_classes_netcdffile_netcdfreporter():
         ncdf.write_file(state)
 
     # TEST CASE 3: Correct headers and data for restart file (instance method)
-    ncdf = file.NetCDFFile("restart.nc", "ws", restart=True)
+    ncdf = file.NetCDFFile("restart.nc", "w", restart=True)
     ncdf.write_file(state)
     ncdf = file.NetCDFFile("restart.nc", "r")
-    assert ncdf._nc.Conventions == "AMBERRESTART"
+    assert ncdf._nc.Conventions in ("AMBERRESTART", b"AMBERRESTART")
     assert ncdf.get_num_frames() == 1
     assert np.allclose(ncdf.get_positions(), dims / 2)
 
@@ -83,7 +83,7 @@ def test_classes_netcdffile_netcdfreporter():
     # (static method, NetCDF file)
     file.NetCDFFile.write_file(NetCDF("restart.nc", "w"), state)
     ncdf = file.NetCDFFile("restart.nc", "r")
-    assert ncdf._nc.Conventions == "AMBERRESTART"
+    assert ncdf._nc.Conventions in ("AMBERRESTART", b"AMBERRESTART")
     assert ncdf.get_num_frames() == 1
     assert np.allclose(ncdf.get_positions(), dims / 2)
 
@@ -138,3 +138,5 @@ def test_classes_netcdffile_netcdfreporter():
         assert ncdf.get_velocities() is None
     with pytest.warns(UserWarning):
         assert ncdf.get_forces() is None
+
+test_classes_netcdffile_netcdfreporter()
