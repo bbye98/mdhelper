@@ -2,11 +2,15 @@ import os
 import pathlib
 import sys
 
-import netCDF4 as nc
 import numpy as np
 import openmm
 from openmm import app, unit
 import pytest
+
+try:
+    from netCDF4 import Dataset as NetCDF
+except ImportError:
+    from scipy.io import netcdf_file as NetCDF
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
 from mdhelper.openmm import file, pair, reporter, system as s, unit as u # noqa: E402
@@ -77,7 +81,7 @@ def test_classes_netcdffile_netcdfreporter():
 
     # TEST CASE 4: Correct headers and data for restart file 
     # (static method, NetCDF file)
-    file.NetCDFFile.write_file(nc.Dataset("restart.nc", "ws"), state)
+    file.NetCDFFile.write_file(NetCDF("restart.nc", "ws"), state)
     ncdf = file.NetCDFFile("restart.nc", "r")
     assert ncdf._nc.Conventions == "AMBERRESTART"
     assert ncdf.get_num_frames() == 1
