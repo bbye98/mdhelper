@@ -406,16 +406,10 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
+<span class="kn">import</span> <span class="nn">netCDF4</span> <span class="k">as</span> <span class="nn">nc</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">openmm</span>
 <span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">app</span><span class="p">,</span> <span class="n">unit</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">netCDF4</span> <span class="k">as</span> <span class="nn">nc</span>
-    <span class="n">FOUND_NETCDF</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span> <span class="c1"># pragma: no cover</span>
-    <span class="kn">from</span> <span class="nn">scipy.io</span> <span class="kn">import</span> <span class="n">netcdf_file</span>
-    <span class="n">FOUND_NETCDF</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">VERSION</span>
 
@@ -429,7 +423,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    file : `str`, `netcdf4.Dataset`, or `scipy.io.netcdf_file`</span>
+<span class="sd">    file : `str` or `netcdf4.Dataset`</span>
 <span class="sd">        NetCDF file. If `file` is a filename and does not have the</span>
 <span class="sd">        :code:`.nc` or :code:`.ncdf` extension, :code:`.nc` will </span>
 <span class="sd">        automatically be appended.</span>
@@ -441,27 +435,28 @@
 <span class="sd">        Specifies whether the NetCDF file is a trajectory or restart file.</span>
 
 <span class="sd">    **kwargs</span>
-<span class="sd">        Keyword arguments to be passed to :code:`netCDF4.Dataset` or</span>
-<span class="sd">        :code:`scipy.io.netcdf_file()`.</span>
+<span class="sd">        Keyword arguments to be passed to :code:`netCDF4.Dataset`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;nc.Dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;netcdf_file&quot;</span><span class="p">],</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">nc</span><span class="o">.</span><span class="n">Dataset</span><span class="p">],</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
             <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;.ncdf&quot;</span><span class="p">)):</span>
                 <span class="n">file</span> <span class="o">+=</span> <span class="s2">&quot;.nc&quot;</span>
-            <span class="k">if</span> <span class="n">FOUND_NETCDF</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> 
-                                      <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;NETCDF3_64BIT_OFFSET&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span> <span class="c1"># pragma: no cover</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span> <span class="o">=</span> <span class="n">netcdf_file</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> 
+                                  <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;NETCDF3_64BIT_OFFSET&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span> <span class="o">=</span> <span class="n">file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">set_always_mask</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="s2">&quot;w&quot;</span> <span class="ow">in</span> <span class="n">mode</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span> <span class="o">=</span> <span class="n">restart</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;r&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">Conventions</span> <span class="o">==</span> <span class="s2">&quot;AMBERRESTART&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span> <span class="o">=</span> <span class="n">restart</span>
 
 <div class="viewcode-block" id="NetCDFFile.get_dimensions">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_dimensions">[docs]</a>
@@ -496,10 +491,10 @@
 <span class="sd">            **Reference unit**: :math:`^\\circ`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">cell_lengths</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_lengths&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> \
-                        <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_lengths&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">cell_angles</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> \
-                       <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">cell_lengths</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_lengths&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span>
+                        <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_lengths&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span>
+        <span class="n">cell_angles</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span>
+                       <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
             <span class="n">cell_lengths</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
             <span class="n">cell_angles</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">degree</span>
@@ -565,7 +560,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">times</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
-                 <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+                 <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
             <span class="n">times</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span>
         <span class="k">return</span> <span class="n">times</span></div>
@@ -598,7 +593,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
-                     <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+                     <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
             <span class="n">positions</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
         <span class="k">return</span> <span class="n">positions</span></div>
@@ -638,7 +633,7 @@
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="n">velocities</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
-                      <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+                      <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
             <span class="n">velocities</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span>
         <span class="k">return</span> <span class="n">velocities</span></div>
@@ -678,7 +673,7 @@
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="n">forces</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
-                  <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span><span class="o">.</span><span class="n">data</span>
+                  <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
             <span class="n">forces</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">kilocalorie_per_mole</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
         <span class="k">return</span> <span class="n">forces</span></div>
@@ -706,8 +701,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        self : `str`, `netcdf4.Dataset`, `scipy.io.netcdf_file`, \</span>
-<span class="sd">        or `mdhelper.openmm.file.NetCDFFile`</span>
+<span class="sd">        self : `str`, `netcdf4.Dataset`, or `mdhelper.openmm.file.NetCDFFile`</span>
 <span class="sd">            If :meth:`write_header` is called as a static method, you </span>
 <span class="sd">            must provide a filename or a NetCDF file object. Otherwise,</span>
 <span class="sd">            the NetCDF file embedded in the current instance is used.</span>
@@ -777,7 +771,7 @@
 
         <span class="c1"># Create NetCDF object if it doesn&#39;t already exist</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NetCDFFile</span><span class="p">):</span>
-            <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ws&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">)</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">Conventions</span> <span class="o">=</span> <span class="s2">&quot;AMBER&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">:</span>
@@ -788,16 +782,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;OpenMM </span><span class="si">{</span><span class="n">openmm</span><span class="o">.</span><span class="n">Platform</span><span class="o">.</span><span class="n">getOpenMMVersion</span><span class="p">()</span><span class="si">}</span><span class="s2"> / &quot;</span>
                           <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">node</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">remd</span> <span class="o">==</span> <span class="s2">&quot;multi&quot;</span><span class="p">:</span> <span class="c1"># pragma: no cover</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s2">&quot;remd_dimension&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">remd_dimtype</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s2">&quot;spatial&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;spatial&quot;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> 
                                     <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;spatial&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s2">&quot;angstrom&quot;</span>
@@ -912,8 +909,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        self : `str`, `netcdf4.Dataset`, `scipy.io.netcdf_file`, \</span>
-<span class="sd">        or `mdhelper.openmm.file.NetCDFFile`</span>
+<span class="sd">        self : `str`, `netcdf4.Dataset`, or `mdhelper.openmm.file.NetCDFFile`</span>
 <span class="sd">            If :meth:`write_file` is called as a static method, you must </span>
 <span class="sd">            provide a filename or a NetCDF file object. Otherwise, the</span>
 <span class="sd">            NetCDF file embedded in the current instance is used.</span>
@@ -956,11 +952,12 @@
 
         <span class="c1"># Create NetCDF file or object if it doesn&#39;t already exist</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NetCDFFile</span><span class="p">):</span>
-            <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ws&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="p">,</span> <span class="s2">&quot;Conventions&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
                               <span class="s2">&quot;cell_lengths&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">or</span> <span class="s2">&quot;cell_angles&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span>
                               <span class="s2">&quot;velocities&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span> <span class="s2">&quot;forces&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">set_always_mask</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">Conventions</span> <span class="o">!=</span> <span class="s2">&quot;AMBERRESTART&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The NetCDF file must be a restart file.&quot;</span><span class="p">)</span>
             
@@ -993,8 +990,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        self : `str`, `netcdf4.Dataset`, `scipy.io.netcdf_file`, \</span>
-<span class="sd">        or `mdhelper.openmm.file.NetCDFFile`</span>
+<span class="sd">        self : `str`, `netcdf4.Dataset`, or `mdhelper.openmm.file.NetCDFFile`</span>
 <span class="sd">            If :meth:`write_model` is called as a static method, you must </span>
 <span class="sd">            provide a filename or a NetCDF file object. Otherwise, the</span>
 <span class="sd">            NetCDF file embedded in the current instance is used.</span>
@@ -1062,15 +1058,15 @@
 
         <span class="c1"># Create NetCDF file or object if it doesn&#39;t already exist</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NetCDFFile</span><span class="p">):</span>
-            <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ws&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">)</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="p">,</span> <span class="s2">&quot;Conventions&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
                               <span class="n">cell_lengths</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cell_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
                               <span class="n">velocities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">forces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">set_always_mask</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="c1"># Write model to NetCDF file</span>
-        <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> \
-                   <span class="k">else</span> <span class="mi">1</span>
+        <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="k">else</span> <span class="mi">1</span>
         <span class="n">frames</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+</span> <span class="n">n_frames</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">]</span> <span class="o">=</span> <span class="n">coordinates</span>

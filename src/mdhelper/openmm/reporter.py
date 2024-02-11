@@ -7,13 +7,12 @@ This module provides custom optimized OpenMM reporters.
 """
 
 from typing import Union
-import warnings
 
 import numpy as np
 import openmm
 from openmm import app, unit
 
-from .file import FOUND_NETCDF, NetCDFFile
+from .file import NetCDFFile
 
 class NetCDFReporter():
 
@@ -65,14 +64,6 @@ class NetCDFReporter():
             subset: Union[slice, np.ndarray[int], app.Topology] = None) -> None:
 
         self._out = NetCDFFile(file, "a" if append else "w")
-        if not FOUND_NETCDF: # pragma: no cover
-            wmsg = ("The netCDF4 package was not found, so the NetCDF "
-                    "reporter is falling back on scipy.io.netcdf_file. "
-                    "netCDF4 writes NetCDF files significantly faster than "
-                    "scipy.io.netcdf_file and can make a huge difference when "
-                    "used as an OpenMM trajectory reporter. Consider "
-                    "installing netCDF4 via pip or Conda if possible.")
-            warnings.warn(wmsg)
         self._interval = interval
         self._periodic = periodic
         self._subset = np.fromiter((a.index for a in subset.atoms()), dtype=int) \

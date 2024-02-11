@@ -2,15 +2,11 @@ import os
 import pathlib
 import sys
 
+import netCDF4 as nc
 import numpy as np
 import openmm
 from openmm import app, unit
 import pytest
-
-try:
-    from netCDF4 import Dataset as NetCDF
-except ImportError:
-    from scipy.io import netcdf_file as NetCDF
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
 from mdhelper.openmm import file, pair, reporter, system as s, unit as u # noqa: E402
@@ -74,29 +70,34 @@ def test_classes_netcdffile_netcdfreporter():
     # TEST CASE 3: Correct headers and data for restart file (instance method)
     ncdf = file.NetCDFFile("restart.nc", "w", restart=True)
     ncdf.write_file(state)
-    ncdf = file.NetCDFFile("restart.nc", "r")
     assert ncdf._nc.Conventions in ("AMBERRESTART", b"AMBERRESTART")
     assert ncdf.get_num_frames() == 1
     assert np.allclose(ncdf.get_positions(), dims / 2)
+    del ncdf
 
     # TEST CASE 4: Correct headers and data for restart file 
     # (static method, NetCDF file)
-    file.NetCDFFile.write_file(NetCDF("restart.nc", "w"), state)
+    file.NetCDFFile.write_file(
+        nc.Dataset("restart.nc", "w", format="NETCDF3_64BIT_OFFSET"),
+        state
+    )
     ncdf = file.NetCDFFile("restart.nc", "r")
     assert ncdf._nc.Conventions in ("AMBERRESTART", b"AMBERRESTART")
     assert ncdf.get_num_frames() == 1
     assert np.allclose(ncdf.get_positions(), dims / 2)
+    del ncdf
 
     # TEST CASE 5: Correct headers and data for trajectory file
+    timesteps = 5
     simulation.reporters.append(
         reporter.NetCDFReporter("traj.nc", 1, periodic=True, velocities=True, 
                                 forces=True)
     )
-    simulation.step(5)
+    simulation.step(timesteps)
 
     ncdf = file.NetCDFFile("traj.nc", "r")
     cell_lengths, cell_angles = ncdf.get_dimensions(0)
-    assert ncdf._nc.program == "MDHelper"
+    assert ncdf._nc.program in ("MDHelper", b"MDHelper")
     assert np.allclose(cell_lengths, dims)
     assert np.allclose(cell_angles, 90 * np.ones(3, dtype=float))
     assert np.allclose(
@@ -104,9 +105,9 @@ def test_classes_netcdffile_netcdfreporter():
         dims / 2, 
         atol=1e-3
     )
-    assert ncdf.get_num_frames() == 5
-    assert ncdf.get_velocities().shape == (5, 1, 3)
-    assert ncdf.get_forces().shape == (5, 1, 3)
+    assert ncdf.get_num_frames() == timesteps
+    assert ncdf.get_velocities().shape == (timesteps, 1, 3)
+    assert ncdf.get_forces().shape == (timesteps, 1, 3)
 
     # TEST CASE 6: Correct number of atoms for subset trajectory file
     s.register_particles(system, topology, 1, mass, nbforce=pair_lj, 
@@ -138,5 +139,3 @@ def test_classes_netcdffile_netcdfreporter():
         assert ncdf.get_velocities() is None
     with pytest.warns(UserWarning):
         assert ncdf.get_forces() is None
-
-test_classes_netcdffile_netcdfreporter()

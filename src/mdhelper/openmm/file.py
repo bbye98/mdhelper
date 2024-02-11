@@ -11,16 +11,10 @@ import platform
 from typing import Any, Union
 import warnings
 
+import netCDF4 as nc
 import numpy as np
 import openmm
 from openmm import app, unit
-
-try:
-    import netCDF4 as nc
-    FOUND_NETCDF = True
-except ImportError: # pragma: no cover
-    from scipy.io import netcdf_file
-    FOUND_NETCDF = False
 
 from .. import VERSION
 
@@ -32,7 +26,7 @@ class NetCDFFile():
 
     Parameters
     ----------
-    file : `str`, `netcdf4.Dataset`, or `scipy.io.netcdf_file`
+    file : `str` or `netcdf4.Dataset`
         NetCDF file. If `file` is a filename and does not have the
         :code:`.nc` or :code:`.ncdf` extension, :code:`.nc` will 
         automatically be appended.
@@ -44,30 +38,28 @@ class NetCDFFile():
         Specifies whether the NetCDF file is a trajectory or restart file.
 
     **kwargs
-        Keyword arguments to be passed to :code:`netCDF4.Dataset` or
-        :code:`scipy.io.netcdf_file()`.
+        Keyword arguments to be passed to :code:`netCDF4.Dataset`.
     """
 
     def __init__(
-            self, file: Union[str, "nc.Dataset", "netcdf_file"], mode: str, 
+            self, file: Union[str, nc.Dataset], mode: str, 
             restart: bool = False, **kwargs):
 
         if isinstance(file, str):
             if not file.endswith((".nc", ".ncdf")):
                 file += ".nc"
-            if FOUND_NETCDF:
-                self._nc = nc.Dataset(file, mode=mode, 
-                                      format="NETCDF3_64BIT_OFFSET", **kwargs)
-            else: # pragma: no cover
-                self._nc = netcdf_file(file, mode=mode, version=2, **kwargs)
+            self._nc = nc.Dataset(file, mode=mode, 
+                                  format="NETCDF3_64BIT_OFFSET", **kwargs)
         else:
             self._nc = file
-        self._obj = self._nc.__class__.__name__
-        if self._obj == "Dataset":
-            self._nc.set_auto_mask(False)
+        self._nc.set_always_mask(False)
         
-        self._frame = 0 if "w" in mode else self._nc.variables["time"].shape[0]
-        self._restart = restart
+        if mode == "r":
+            self._frame = self._nc.variables["time"].shape[0]
+            self._restart = self._nc.Conventions == "AMBERRESTART"
+        else:
+            self._frame = 0
+            self._restart = restart
 
     def get_dimensions(
             self, frames: Union[int, list[int], slice] = None, 
@@ -120,13 +112,6 @@ class NetCDFFile():
             Number of frames.
         """
 
-        if self._obj == "netcdf_file":
-            if "coordinates" in self._nc.variables:
-                return self._nc.variables["coordinates"].shape[0]
-            wmsg = ("The number of frames is not available when the "
-                    "trajectory is loaded using scipy.io.netcdf_file. ")
-            warnings.warn(wmsg)
-            return
         return self._nc.dimensions["frame"].size
 
     def get_num_atoms(self) -> int:
@@ -140,8 +125,6 @@ class NetCDFFile():
             Number of atoms.
         """
 
-        if self._obj == "netcdf_file":
-            return self._nc.dimensions["atom"]
         return self._nc.dimensions["atom"].size
 
     def get_times(
@@ -298,8 +281,7 @@ class NetCDFFile():
 
         Parameters
         ----------
-        self : `str`, `netcdf4.Dataset`, `scipy.io.netcdf_file`, \
-        or `mdhelper.openmm.file.NetCDFFile`
+        self : `str`, `netcdf4.Dataset`, or `mdhelper.openmm.file.NetCDFFile`
             If :meth:`write_header` is called as a static method, you 
             must provide a filename or a NetCDF file object. Otherwise,
             the NetCDF file embedded in the current instance is used.
@@ -380,16 +362,19 @@ class NetCDFFile():
         self._nc.title = (f"OpenMM {openmm.Platform.getOpenMMVersion()} / "
                           f"{platform.node()}")
 
+        if self._restart:
+            self._nc.createDimension("frame", 1)
+        else:
+            self._nc.createDimension("frame", None)
+
         if remd == "multi": # pragma: no cover
             self._nc.createDimension("remd_dimension", len(remd_dimtype))
         self._nc.createDimension("spatial", 3)
         self._nc.createDimension("atom", N)
 
         if self._restart:
-            self._nc.createDimension("frame", 1)
             self._nc.createVariable("coordinates", "d", ("atom", "spatial"))
         else:
-            self._nc.createDimension("frame", None)
             self._nc.createVariable("coordinates", "f", 
                                     ("frame", "atom", "spatial"))
         self._nc.variables["coordinates"].units = "angstrom"
@@ -501,8 +486,7 @@ class NetCDFFile():
 
         Parameters
         ----------
-        self : `str`, `netcdf4.Dataset`, `scipy.io.netcdf_file`, \
-        or `mdhelper.openmm.file.NetCDFFile`
+        self : `str`, `netcdf4.Dataset`, or `mdhelper.openmm.file.NetCDFFile`
             If :meth:`write_file` is called as a static method, you must 
             provide a filename or a NetCDF file object. Otherwise, the
             NetCDF file embedded in the current instance is used.
@@ -550,6 +534,7 @@ class NetCDFFile():
             self.write_header(data["coordinates"].shape[0], 
                               "cell_lengths" in data or "cell_angles" in data,
                               "velocities" in data, "forces" in data)
+            self._nc.set_always_mask(False)
         elif self._nc.Conventions != "AMBERRESTART":
             raise ValueError("The NetCDF file must be a restart file.")
             
@@ -579,8 +564,7 @@ class NetCDFFile():
 
         Parameters
         ----------
-        self : `str`, `netcdf4.Dataset`, `scipy.io.netcdf_file`, \
-        or `mdhelper.openmm.file.NetCDFFile`
+        self : `str`, `netcdf4.Dataset`, or `mdhelper.openmm.file.NetCDFFile`
             If :meth:`write_model` is called as a static method, you must 
             provide a filename or a NetCDF file object. Otherwise, the
             NetCDF file embedded in the current instance is used.
@@ -653,10 +637,10 @@ class NetCDFFile():
             self.write_header(coordinates.shape[0], 
                               cell_lengths is not None or cell_angles is not None,
                               velocities is not None, forces is not None)
+            self._nc.set_always_mask(False)
 
         # Write model to NetCDF file
-        n_frames = len(time) if isinstance(time, (tuple, list, np.ndarray)) \
-                   else 1
+        n_frames = len(time) if isinstance(time, (tuple, list, np.ndarray)) else 1
         frames = slice(self._frame, self._frame + n_frames)
         self._nc.variables["time"][frames] = time
         self._nc.variables["coordinates"][frames] = coordinates

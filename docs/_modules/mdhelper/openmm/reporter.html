@@ -402,13 +402,12 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">openmm</span>
 <span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">app</span><span class="p">,</span> <span class="n">unit</span>
 
-<span class="kn">from</span> <span class="nn">.file</span> <span class="kn">import</span> <span class="n">FOUND_NETCDF</span><span class="p">,</span> <span class="n">NetCDFFile</span>
+<span class="kn">from</span> <span class="nn">.file</span> <span class="kn">import</span> <span class="n">NetCDFFile</span>
 
 <div class="viewcode-block" id="NetCDFReporter">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.reporter.NetCDFReporter.html#mdhelper.openmm.reporter.NetCDFReporter">[docs]</a>
@@ -462,14 +461,6 @@
             <span class="n">subset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">app</span><span class="o">.</span><span class="n">Topology</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_out</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span> <span class="k">if</span> <span class="n">append</span> <span class="k">else</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">FOUND_NETCDF</span><span class="p">:</span> <span class="c1"># pragma: no cover</span>
-            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The netCDF4 package was not found, so the NetCDF &quot;</span>
-                    <span class="s2">&quot;reporter is falling back on scipy.io.netcdf_file. &quot;</span>
-                    <span class="s2">&quot;netCDF4 writes NetCDF files significantly faster than &quot;</span>
-                    <span class="s2">&quot;scipy.io.netcdf_file and can make a huge difference when &quot;</span>
-                    <span class="s2">&quot;used as an OpenMM trajectory reporter. Consider &quot;</span>
-                    <span class="s2">&quot;installing netCDF4 via pip or Conda if possible.&quot;</span><span class="p">)</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_interval</span> <span class="o">=</span> <span class="n">interval</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_periodic</span> <span class="o">=</span> <span class="n">periodic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">subset</span><span class="o">.</span><span class="n">atoms</span><span class="p">()),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> \
