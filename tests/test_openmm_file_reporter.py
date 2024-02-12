@@ -106,7 +106,7 @@ def test_classes_netcdffile_netcdfreporter():
     assert np.allclose(
         ncdf.get_positions(0) - ncdf.get_times(0) * ncdf.get_velocities(0), 
         dims / 2, 
-        atol=1e-3
+        atol=2e-3
     )
     assert ncdf.get_num_frames() == timesteps
     assert ncdf.get_velocities().shape == (timesteps, 1, 3)

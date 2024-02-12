@@ -1,7 +1,12 @@
+<picture>
+  <img alt="mdhelper logo" 
+   src="https://raw.githubusercontent.com/bbye98/mdhelper/main/assets/logo.svg">
+</picture>
+<br></br>
+
 # MDHelper
 
 [![continuous-integration](https://github.com/bbye98/mdhelper/actions/workflows/ci.yml/badge.svg)](https://github.com/bbye98/mdhelper/actions/workflows/ci.yml)
-
 
 MDHelper is a batteries-included toolkit of analysis modules and helper
 functions for molecular dynamics (MD) simulations.

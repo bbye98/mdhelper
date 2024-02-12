@@ -2,6 +2,7 @@ import pathlib
 import sys
 
 sys.path.insert(0, f"{pathlib.Path(__file__).resolve().parents[2]}/src")
+from mdhelper import VERSION # noqa: E402
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -14,6 +15,7 @@ sys.path.insert(0, f"{pathlib.Path(__file__).resolve().parents[2]}/src")
 project = 'MDHelper'
 copyright = '2023, Benjamin Ye'
 author = 'Benjamin Ye'
+version = release = VERSION
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -31,6 +33,7 @@ extensions = [
 ]
 exclude_patterns = ["_build"]
 templates_path = ["_templates"]
+toc_object_entries_show_parents = "hide"
 
 autosummary_generate = True
 intersphinx_mapping = {
@@ -50,9 +53,9 @@ toc_object_entries_show_parents = "hide"
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
+html_favicon = "../../assets/favicon.ico"
+html_logo = "../../assets/logo.svg"
 html_show_sourcelink = False
 html_static_path = ["_static"]
 html_theme = "furo"
-html_theme_options = {
-    "sidebar_hide_name": True,
-}
+html_theme_options = {"sidebar_hide_name": True}
