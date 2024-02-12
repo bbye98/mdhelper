@@ -1,8 +1,11 @@
+from datetime import datetime
 import pathlib
 import sys
 
 sys.path.insert(0, f"{pathlib.Path(__file__).resolve().parents[2]}/src")
 from mdhelper import VERSION # noqa: E402
+
+now = datetime.now()
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -13,7 +16,7 @@ from mdhelper import VERSION # noqa: E402
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'MDHelper'
-copyright = '2023, Benjamin Ye'
+copyright = f'2023–{now.year} Benjamin Ye'
 author = 'Benjamin Ye'
 version = release = VERSION
 
