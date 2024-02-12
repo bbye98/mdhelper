@@ -1,6 +1,7 @@
 <picture>
   <img alt="mdhelper logo" 
-   src="https://raw.githubusercontent.com/bbye98/mdhelper/main/assets/logo.svg">
+   src="https://raw.githubusercontent.com/bbye98/mdhelper/main/assets/logo.svg"
+   width="256">
 </picture>
 <br></br>
 
