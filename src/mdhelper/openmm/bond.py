@@ -14,7 +14,7 @@ from typing import Union
 import openmm
 from openmm import unit
 
-from .pair import ljts
+from .pair import wca as pwca
 
 def _setup_bond(
         cbforce: openmm.CustomBondForce,
@@ -42,8 +42,7 @@ def _setup_bond(
         cbforce.addPerBondParameter(param)
 
 def fene(
-        globals: dict[str, Union[float, unit.Quantity]] = {},
-        pers: list[str] = ["k", "r0"], wca: bool = True, **kwargs
+        wca: bool = True, **kwargs
     ) -> tuple[openmm.CustomBondForce, openmm.CustomNonbondedForce]:
 
     r"""
@@ -73,21 +72,13 @@ def fene(
 
     Parameters
     ----------
-    globals : `dict`, optional
-        Additional global parameters for use in the definition of
-        :math:`k_{12}` and :math:`r_{0,12}`.
-
-    pers : `array_like`, optional
-        Additional per-particle parameters for use in the definition of
-        :math:`k_{12}` and :math:`r_{0,12}`.
-
     wca : `bool`, default: :code:`True`
-        Determines whether the Weeks–Chander–Andersen (WCA) potential is
-        included.
+        Determines whether the Weeks–Chandler–Andersen (WCA) potential 
+        is included.
 
     **kwargs
         Keyword arguments to be passed to 
-        :meth:`mdhelper.openmm.pair.ljts` if :code:`wca=True`.
+        :meth:`mdhelper.openmm.pair.wca` if :code:`wca=True`.
     
     Returns
     -------
@@ -99,10 +90,10 @@ def fene(
     """
 
     bond_fene = openmm.CustomBondForce("-0.5*k*r0^2*log(1-(r/r0)^2)")
-    _setup_bond(bond_fene, globals, pers)
+    _setup_bond(bond_fene, {}, ("k", "r0"))
 
     if wca:
-        pair_wca = ljts(wca=wca, **kwargs)
+        pair_wca = pwca(**kwargs)
         return bond_fene, pair_wca
 
     return bond_fene
