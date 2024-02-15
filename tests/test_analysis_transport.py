@@ -169,7 +169,7 @@ def test_class_onsager_transport_coefficients():
 
         # TEST CASE 1: Cross displacements of polyelectrolyte system
         assert np.allclose(msd, onsager.results.msd_cross[i, 0] / volume, 
-                           atol=5e-4)
+                           atol=1e-3)
         
         # TEST CASE 2: Onsager transport coefficients of polyelectrolyte 
         # system

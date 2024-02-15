@@ -42,6 +42,7 @@ def _setup_bond(
         cbforce.addPerBondParameter(param)
 
 def fene(
+        global_args: dict[str, Union[float, unit.Quantity]] = None,
         wca: bool = True, **kwargs
     ) -> tuple[openmm.CustomBondForce, openmm.CustomNonbondedForce]:
 
@@ -65,13 +66,20 @@ def fene(
     size in :math:`\textrm{nm}`, and :math:`\epsilon_{12}` is the 
     dispersion energy in :math:`\textrm{kJ/mol}`. :math:`k_{12}`, 
     :math:`r_{0,12}`, :math:`\sigma_{12}` and :math:`\epsilon_{12}` are
-    determined from per-particle parameters `k`, `r0`, `sigma` and 
-    `epsilon`, respectively, which are set using
+    determined from per-bond and per-particle parameters `k`, `r0`,
+    `sigma` and `epsilon`, respectively, which are set using
     :meth:`openmm.openmm.CustomBondForce.addBond` and
     :meth:`openmm.openmm.NonbondedForce.addParticle`.
 
     Parameters
     ----------
+    global_args : `dict`, optional
+        Constant values :math:`k_{12}` and :math:`r_{0,12}` to use
+        instead of per-bond parameters. The corresponding per-bond
+        parameters will not be registered, but the remaining
+        per-bond parameters will still have to be provided in their
+        default order.
+
     wca : `bool`, default: :code:`True`
         Determines whether the Weeks–Chandler–Andersen (WCA) potential 
         is included.
@@ -90,7 +98,11 @@ def fene(
     """
 
     bond_fene = openmm.CustomBondForce("-0.5*k*r0^2*log(1-(r/r0)^2)")
-    _setup_bond(bond_fene, {}, ("k", "r0"))
+    per_args = ["k", "r0"]
+    for param in global_args.keys():
+        if param in per_args:
+            per_args.remove(param)
+    _setup_bond(bond_fene, global_args, per_args)
 
     if wca:
         pair_wca = pwca(**kwargs)
