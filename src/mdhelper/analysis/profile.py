@@ -484,7 +484,7 @@ class DensityProfile(SerialAnalysisBase):
                 (getattr(g, gr).charges[0] 
                  for g, gr in zip(self._groups, self._groupings)), 
                 count=self._n_groups,
-                dtype=int
+                dtype=float
             )
         else:
             self._charges = None
