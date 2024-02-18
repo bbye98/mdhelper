@@ -7,6 +7,7 @@ This module contains classes to quantify properties along axes, such as
 density profiles.
 """
 
+from numbers import Real
 from typing import Any, Union
 import warnings
 
@@ -17,19 +18,21 @@ from scipy import integrate
 from .base import SerialAnalysisBase
 from .. import FOUND_OPENMM, Q_, ureg
 from ..algorithm.molecule import center_of_mass
+from ..algorithm.topology import unwrap
+from ..algorithm.utility import strip_unit
 
 if FOUND_OPENMM:
     from openmm import unit
 
-def potential_profile(
-        bins: np.ndarray[float], charge_density: np.ndarray[float], 
+def calculate_potential_profile(
+        bins: np.ndarray[float], charge_density: np.ndarray[float],
         L: float, dielectric: float = 1, *, sigma_e: float = None,
         dV: float = None, threshold: float = 1e-5, V0: float = 0,
         reduced: bool = False) -> None:
-    
+
     r"""
     Calculates the potential profile :math:`\Psi(z)` using the charge
-    density profile by numerically solving Poisson's equation for 
+    density profile by numerically solving Poisson's equation for
     electrostatics.
 
     The Poisson's equation is
@@ -38,19 +41,19 @@ def potential_profile(
 
        \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_e(z)
 
-    where :math:`\varepsilon_0` is the vacuum permittivity, 
-    :math:`\varepsilon_\mathrm{r}` is the relative permittivity, 
+    where :math:`\varepsilon_0` is the vacuum permittivity,
+    :math:`\varepsilon_\mathrm{r}` is the relative permittivity,
     :math:`\rho_e` is the charge density, and :math:`\Psi` is the
     potential.
 
     Parameters
     ----------
     bins : array-like
-        Histogram bin centers corresponding to the charge density 
+        Histogram bin centers corresponding to the charge density
         profile in `charge_density`.
-        
+
         **Shape**: :math:`(N_\mathrm{bins},)`.
-        
+
         **Reference unit**: :math:`\mathrm{Å}`.
 
     charge_density : array-like
@@ -67,31 +70,31 @@ def potential_profile(
         **Reference unit**: :math:`\mathrm{Å}`.
 
     dielectric : `float`, default: :code:`1`
-        Relative permittivity or static dielectric constant 
+        Relative permittivity or static dielectric constant
         :math:`\varepsilon_\mathrm{r}`.
 
     sigma_e : `float`, keyword-only, optional
-        Total surface charge density :math:`\sigma_e`. Used to 
+        Total surface charge density :math:`\sigma_e`. Used to
         ensure that the electric field in the bulk of the solution
-        is zero. If not provided, it is determined using `dV` and 
-        the charge density profile, or the average value in the 
-        center of the integrated charge density profile. 
-        
+        is zero. If not provided, it is determined using `dV` and
+        the charge density profile, or the average value in the
+        center of the integrated charge density profile.
+
         **Reference unit**: :math:`\mathrm{e/Å^2}`.
 
     dV : `float`, keyword-only, optional
-        Potential difference :math:`\Delta\Psi` across the system 
+        Potential difference :math:`\Delta\Psi` across the system
         dimension specified in `axis`. Has no effect if `sigma_e` is
-        provided since this value is used solely to calculate 
+        provided since this value is used solely to calculate
         `sigma_e`.
-            
+
         .. note::
 
            By specifying `dV` to calculate `sigma_e` using Gauss's law,
            it is assumed that the boundaries are perfectly conducting.
 
         **Reference unit**: :math:`\mathrm{V}`.
-    
+
     threshold : `float`, keyword-only, default: :code:`1e-5`
         Threshold for determining the plateau region of the first
         integral of the charge density profile to calculate
@@ -99,8 +102,8 @@ def potential_profile(
         `sigma_e` can be calculated using `dV` and `dielectric`.
 
     V0 : `float`, keyword-only, default: :code:`0`
-        Potential :math:`\Psi_0` at the left boundary. 
-        
+        Potential :math:`\Psi_0` at the left boundary.
+
         **Reference unit**: :math:`\mathrm{V}`.
 
     reduced : `bool`, keyword-only, default: :code:`False`
@@ -115,20 +118,20 @@ def potential_profile(
 
         **Reference unit**: :math:`\mathrm{V}`.
     """
-  
+
     # Calculate the first integral of the charge density profile
     potential = integrate.cumulative_trapezoid(charge_density, bins, initial=0)
 
     if sigma_e is None:
-        
+
         # Calculate surface charge density for system with perfectly
         # conducting boundaries
-        if dV is not None:      
+        if dV is not None:
             sigma_e = dielectric * dV / L
             if reduced:
                 sigma_e /= 4 * np.pi
             else:
-                sigma_e = (sigma_e * ureg.vacuum_permittivity * ureg.volt 
+                sigma_e = (sigma_e * ureg.vacuum_permittivity * ureg.volt
                            * ureg.angstrom / ureg.elementary_charge).magnitude
             sigma_e -= integrate.trapezoid(bins * charge_density, bins) / L
 
@@ -151,7 +154,7 @@ def potential_profile(
             ].mean()
 
     # Calculate the second integral of the charge density profile
-    potential = -integrate.cumulative_trapezoid(potential - sigma_e, bins, 
+    potential = -integrate.cumulative_trapezoid(potential - sigma_e, bins,
                                                 initial=V0) / dielectric
     if reduced:
         potential *= 4 * np.pi
@@ -160,7 +163,7 @@ def potential_profile(
             potential * ureg.elementary_charge
             / (ureg.vacuum_permittivity * ureg.angstrom)
         ).m_as(ureg.volt)
-        
+
     return potential
 
 class DensityProfile(SerialAnalysisBase):
@@ -189,22 +192,22 @@ class DensityProfile(SerialAnalysisBase):
 
        \rho_e(z)=\sum_i z_ie\rho_i(z)
 
-    where :math:`z_i` is the charge number of species :math:`i` and 
+    where :math:`z_i` is the charge number of species :math:`i` and
     :math:`e` is the elementary charge.
 
     With the charge density profile, the potential profile can be
-    computed by numerically solving Poisson's equation for 
+    computed by numerically solving Poisson's equation for
     electrostatics:
 
     .. math::
-       
+
        \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_e(z)
 
     Parameters
     ----------
     groups : `MDAnalysis.AtomGroup` or array-like
         Groups of atoms for which density profiles are calculated.
-    
+
     groupings : `str` or array-like, default: :code:`"atoms"`
         Determines whether the centers of mass are used in lieu of
         individual atom positions. If `groupings` is a `str`, the same
@@ -214,13 +217,13 @@ class DensityProfile(SerialAnalysisBase):
 
            **Valid values**:
 
-           * :code:`"atoms"`: Atom positions (generally for 
+           * :code:`"atoms"`: Atom positions (generally for
              coarse-grained simulations).
-           * :code:`"residues"`: Residues' centers of mass (for 
+           * :code:`"residues"`: Residues' centers of mass (for
              atomistic simulations).
-           * :code:`"segments"`: Segments' centers of mass (for 
+           * :code:`"segments"`: Segments' centers of mass (for
              atomistic polymer simulations).
-    
+
     axes : `int`, `str`, or array-like, default: :code:`"xyz"`
         Axes along which to compute the density profiles.
 
@@ -231,22 +234,22 @@ class DensityProfile(SerialAnalysisBase):
            * :code:`2` for the :math:`z`-direction.
            * :code:`"xy"` for the :math:`x`- and :math:`y`-directions.
            * :code:`(0, 1)` for the :math:`x`- and :math:`y`-directions.
-    
+
     n_bins : `int` or array-like
         Number of bins for each axis. If an `int` is provided, the same
         value is used for all axes.
 
     charges : array-like, keyword-only, optional
-        Charge numbers :math:`z_i` for the specified `groupings` in the 
-        :math:`N_\mathrm{g}` `groups`. If not provided, it will be 
-        retrieved from the main 
+        Charge numbers :math:`z_i` for the specified `groupings` in the
+        :math:`N_\mathrm{g}` `groups`. If not provided, it will be
+        retrieved from the main
         :class:`MDAnalysis.core.universe.Universe` object if available.
 
         .. note::
-        
+
            Depending on the grouping for a specific group, all atoms,
            residues, or segments should have the same charge since the
-           charge density profile for the group would not make sense 
+           charge density profile for the group would not make sense
            otherwise. If this condition does not hold, change how the
            particles are grouped in `grouping` such that all entities
            share the same charge.
@@ -256,9 +259,9 @@ class DensityProfile(SerialAnalysisBase):
         **Reference unit**: :math:`\mathrm{e}`.
 
     dimensions : array-like, keyword-only, optional
-        System dimensions. Affected by `scales`. If the 
-        :class:`MDAnalysis.core.universe.Universe` object that the 
-        groups in `groups` belong to does not contain dimensionality 
+        System dimensions. If the
+        :class:`MDAnalysis.core.universe.Universe` object that the
+        groups in `groups` belong to does not contain dimensionality
         information, provide it here. Affected by `scales`.
 
         **Shape**: :math:`(3,)`.
@@ -272,12 +275,12 @@ class DensityProfile(SerialAnalysisBase):
         correct information if the data is in reduced units. For
         example, if your reduced timestep is :math:`0.01` and you output
         trajectory data every :math:`10,000` timesteps, then
-        :math:`\Delta t = 100`. 
-        
+        :math:`\Delta t = 100`.
+
         **Reference unit**: :math:`\mathrm{ps}`.
 
     scales : array-like, keyword-only, optional
-        Scaling factors for each system dimension. If an `int` is 
+        Scaling factors for each system dimension. If an `int` is
         provided, the same value is used for all axes.
 
         **Shape**: :math:`(3,)`.
@@ -290,19 +293,19 @@ class DensityProfile(SerialAnalysisBase):
         Constrains the center of mass of an atom group by adjusting the
         particle coordinates every analysis frame. Either specify an
         :class:`MDAnalysis.core.groups.AtomGroup` or a tuple containing
-        an :class:`MDAnalysis.core.groups.AtomGroup` and the fixed 
+        an :class:`MDAnalysis.core.groups.AtomGroup` and the fixed
         center of mass coordinates, in that order. If the center of mass
         is not specified, the center of the simulation box is used.
 
         **Shape**: :math:`(3,)` for the fixed center of mass.
 
     reduced : `bool`, keyword-only, default: :code:`False`
-        Specifies whether the data is in reduced units. Affects 
+        Specifies whether the data is in reduced units. Affects
         `results.number_density`, `results.charge_density`, etc.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
-        
+
     **kwargs
         Additional keyword arguments to pass to
         :class:`MDAnalysis.analysis.base.AnalysisBase`.
@@ -314,8 +317,8 @@ class DensityProfile(SerialAnalysisBase):
         information describing the simulation system.
 
     results.units : `dict`
-        Reference units for the results. For example, to get the 
-        reference units for :code:`results.bins`, call 
+        Reference units for the results. For example, to get the
+        reference units for :code:`results.bins`, call
         :code:`results.units["results.bins"]`.
 
     results.times : `numpy.ndarray`
@@ -326,37 +329,38 @@ class DensityProfile(SerialAnalysisBase):
         **Reference unit**: :math:`\mathrm{ps}`.
 
     results.bins : `list`
-        Bin centers corresponding to the density profiles in each 
+        Bin centers corresponding to the density profiles in each
         dimension.
-        
-        **Shape**: :math:`(N_\mathrm{axes},)` list of 
+
+        **Shape**: :math:`(N_\mathrm{axes},)` list of
         :math:`(N_\mathrm{bins},)` arrays.
-        
+
         **Reference unit**: :math:`\mathrm{Å}`.
 
     results.number_density : `list`
-        Number density profiles. 
+        Number density profiles.
 
-        **Shape**: :math:`(N_\mathrm{axes},)` list of 
+        **Shape**: :math:`(N_\mathrm{axes},)` list of
         :math:`(N_\mathrm{bins},)` arrays.
 
         **Reference unit**: :math:`\mathrm{Å}^{-3}`.
 
     results.charge_density : `list`
-        Charge density profiles, if charge information is available. 
+        Charge density profiles, if charge information is available.
 
-        **Shape**: :math:`(N_\mathrm{axes},)` list of 
+        **Shape**: :math:`(N_\mathrm{axes},)` list of
         :math:`(N_\mathrm{bins},)` arrays.
 
         **Reference unit**: :math:`\mathrm{e/Å}^{-3}`.
 
     results.potential : `dict`
         Potential profiles, if charge information is available, with
-        the key being the axis index. Only available after running 
+        the key being the axis index (e.g., :code:`1` for the :math:`z`-
+        direction if :code:`axes="yz"`). Only available after running
         :meth:`calculate_potential_profile`.
 
         **Shape**: :math:`(N_\mathrm{bins},)` for the potential profiles.
-            
+
         **Reference unit**: :math:`\mathrm{V}`.
     """
 
@@ -364,7 +368,7 @@ class DensityProfile(SerialAnalysisBase):
             self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
             groupings: Union[str, tuple[str]] = "atoms",
             axes: Union[int, str, tuple[Union[int, str]]] = "xyz",
-            n_bins: Union[int, tuple[int]] = 201, *, 
+            n_bins: Union[int, tuple[int]] = 201, *,
             charges: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             dt: Union[float, "unit.Quantity", Q_] = None,
@@ -376,9 +380,13 @@ class DensityProfile(SerialAnalysisBase):
         self.universe = self._groups[0].universe
         super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
 
+        self.results.units = {"_charges": ureg.elementary_charge,
+                              "_dimensions": ureg.angstrom,
+                              "_dt": ureg.picosecond}
+
         self._n_groups = len(self._groups)
         if isinstance(groupings, str):
-            if groupings not in (GROUPINGS := {"atoms", "residues", 
+            if groupings not in (GROUPINGS := {"atoms", "residues",
                                                "segments"}):
                 emsg = (f"Invalid grouping '{groupings}'. Valid values: "
                         f"{', '.join(GROUPINGS)}.")
@@ -400,7 +408,7 @@ class DensityProfile(SerialAnalysisBase):
             self._axes = np.array((axes,), dtype=int)
         else:
             self._axes = np.fromiter(
-                (ord(a.lower()) - 120 if isinstance(a, str) else a 
+                (ord(a.lower()) - 120 if isinstance(a, str) else a
                  for a in axes),
                 count=len(axes),
                 dtype=int
@@ -413,76 +421,52 @@ class DensityProfile(SerialAnalysisBase):
                 self._n_bins = n_bins
             else:
                 emsg = ("The dimension of the array of bin counts is "
-                        "incompatible with the number of axes to calculate "
-                        "density profiles along.")
+                        "incompatible with the number of axes to "
+                        "calculate density profiles along.")
                 raise ValueError(emsg)
         else:
             emsg = ("The specified bin counts must be an integer or an "
                     "iterable object.")
             raise ValueError(emsg)
-        
-        self.results.units = {"_charges": ureg.elementary_charge,
-                              "_dimensions": ureg.angstrom,
-                              "_dt": ureg.picosecond}
 
         if dimensions is not None:
             if len(dimensions) != 3:
                 raise ValueError("'dimensions' must have length 3.")
-            if not isinstance(dimensions, (list, tuple, np.ndarray)):
-                if reduced:
-                    emsg = "'dimensions' cannot have units when reduced=True."
-                    raise TypeError(emsg)
-                if isinstance(dimensions, Q_):
-                    dimensions = dimensions.m_as(
-                        self.results.units["_dimensions"]
-                    )
-                else:
-                    dimensions = dimensions.value_in_unit(unit.angstrom)
-            self._dimensions = np.asarray(dimensions)
+            self._dimensions = np.asarray(
+                strip_unit(dimensions, "angstrom")[0]
+            )
         elif self.universe.dimensions is not None:
             self._dimensions = self.universe.dimensions[:3].copy()
         else:
             raise ValueError("No system dimensions found or provided.")
 
-        if isinstance(scales, (int, float)) \
-                or len(scales) == 3 and isinstance(scales[0], (int, float)):
+        if isinstance(scales, Real) or (len(scales) == 3
+                                        and isinstance(scales[0], Real)):
             self._dimensions *= scales
         else:
             emsg = ("The scaling factor(s) must be provided as a "
-                    "floating-point number or in an array with shape (3,). ")
+                    "floating-point number or in an array with shape "
+                    "(3,).")
             raise ValueError(emsg)
 
-        if dt:
-            if not isinstance(dt, (int, float)):
-                if reduced:
-                    emsg = "'dt' cannot have units when reduced=True."
-                    raise TypeError(emsg)
-                if isinstance(dt, Q_):
-                    dt = dt.m_as(self.results.units["_dt"])
-                else:
-                    dt = dt.value_in_unit(unit.picosecond)
-            self._dt = dt
-        else:
-            self._dt = self._trajectory.dt
+        self._dt, unit_ = strip_unit(dt or self._trajectory.dt, "picosecond")
+        if reduced and not isinstance(unit_,  str):
+            raise TypeError("'dt' cannot have units when reduced=True.")
 
         if charges is not None:
             if len(charges) != self._n_groups:
                 emsg = ("The number of group charges is not equal to "
                         "the number of groups.")
                 raise ValueError(emsg)
-            if not isinstance(charges, (list, tuple, np.ndarray)):
-                if reduced:
-                    emsg = "'charges' cannot have units when reduced=True."
-                    raise TypeError(emsg)
-                if isinstance(charges, Q_):
-                    charges = charges.m_as(self.results.units["_charges"])
-                else:
-                    charges = charges.value_in_unit(unit.elementary_charge)
+            charges, unit_ = strip_unit(charges, "elementary_charge")
+            if reduced and not isinstance(unit_,  str):
+                emsg = "'charges' cannot have units when reduced=True."
+                raise TypeError(emsg)
             self._charges = np.asarray(charges)
         elif hasattr(self.universe.atoms, "charges"):
             self._charges = np.fromiter(
-                (getattr(g, gr).charges[0] 
-                 for g, gr in zip(self._groups, self._groupings)), 
+                (getattr(g, gr).charges[0]
+                 for g, gr in zip(self._groups, self._groupings)),
                 count=self._n_groups,
                 dtype=float
             )
@@ -507,14 +491,14 @@ class DensityProfile(SerialAnalysisBase):
         self._average = average
         self._reduced = reduced
         self._verbose = verbose
-    
+
     def _prepare(self) -> None:
 
         # Define the bin centers for all axes
         self.results.bins = [
             np.linspace(
                 self._dimensions[a] / (2 * self._n_bins[i]),
-                self._dimensions[a] 
+                self._dimensions[a]
                     - self._dimensions[a] / (2 * self._n_bins[i]),
                 self._n_bins[i]
             ) for i, a in enumerate(self._axes)
@@ -525,19 +509,18 @@ class DensityProfile(SerialAnalysisBase):
         if self._recenter is not None:
             self._trajectory[self.start]
             self._positions_old = self.universe.atoms.positions
-            self._images = np.zeros((self.universe.atoms.n_atoms, 3), dtype=int)
-            self._threshold = self._dimensions / 2
+            self._images = np.zeros((self.universe.atoms.n_atoms, 3), 
+                                    dtype=int)
+            self._thresholds = self._dimensions / 2
 
         # Preallocate arrays to hold number density data
         if self._average:
-            self.results.number_density = [
-                np.zeros((self._n_groups, n), dtype=float) 
-                for n in self._n_bins
-            ]
+            self.results.number_density = [np.zeros((self._n_groups, n))
+                                           for n in self._n_bins]
         else:
             self.results.time = self.step * self._dt * np.arange(self.n_frames)
             self.results.number_density = [
-                np.zeros((self._n_groups, self.n_frames, n), dtype=float) 
+                np.zeros((self._n_groups, self.n_frames, n))
                 for n in self._n_bins
             ]
 
@@ -550,26 +533,25 @@ class DensityProfile(SerialAnalysisBase):
         # Preallocate arrays to hold charge density data, if charge
         # information is available
         if self._charges is not None:
-            self.results.charge_density = [np.zeros_like(arr, dtype=float) 
-                                           for arr in self.results.number_density]
+            self.results.charge_density = [
+                np.zeros_like(arr) for arr in self.results.number_density
+            ]
             if not self._reduced:
                 self.results.units["results.charge_density"] = (
-                    self.results.units["_charges"] 
+                    self.results.units["_charges"]
                     * self.results.units["results.number_density"]
                 )
-    
+
     def _single_frame(self):
 
+        # Store atom positions in the current frame
         positions = self.universe.atoms.positions.copy()
 
         if self._recenter is not None:
 
             # Unwrap all particle positions
-            dpos = positions - self._positions_old
-            mask = np.abs(dpos) >= self._threshold
-            self._images[mask] -= np.sign(dpos[mask]).astype(int)
-            self._positions_old = self.universe.atoms.positions.copy()
-            positions += self._images * self._dimensions
+            unwrap(positions, self._positions_old, self._dimensions,
+                   thresholds=self._thresholds, images=self._images)
 
             # Calculate difference in center of mass
             scom = center_of_mass(
@@ -585,7 +567,7 @@ class DensityProfile(SerialAnalysisBase):
             indices = (positions < 0) | (positions > self._dimensions)
             positions[indices] -= (np.floor(positions / self._dimensions)
                                    * self._dimensions)[indices]
-            
+
         for i, (ag, g) in enumerate(zip(self._groups, self._groupings)):
 
             # Get particle positions
@@ -598,10 +580,10 @@ class DensityProfile(SerialAnalysisBase):
                     indices = (pos_group < 0) | (pos_group > self._dimensions)
                     pos_group[indices] -= (np.floor(pos_group / self._dimensions)
                                            * self._dimensions)[indices]
-            
+
             # Wrap particles outside of the unit cell
             pos_group += (
-                (pos_group < 0).astype(int) 
+                (pos_group < 0).astype(int)
                  - (pos_group >= self._dimensions).astype(int)
             ) * self._dimensions
 
@@ -615,11 +597,11 @@ class DensityProfile(SerialAnalysisBase):
                 else:
                     self.results.number_density[a][i, self._frame_index] \
                         = np.histogram(
-                            pos_group[:, axis], 
-                            n_bins, 
+                            pos_group[:, axis],
+                            n_bins,
                             (0, self._dimensions[axis])
                         )[0]
-        
+
     def _conclude(self):
 
         # Compute the volume of the real system
@@ -637,8 +619,8 @@ class DensityProfile(SerialAnalysisBase):
             # Compute the charge density profiles
             if self._charges is not None:
                 self.results.charge_density[a] = np.einsum(
-                    "g,g...b->...b", 
-                    self._charges, 
+                    "g,g...b->...b",
+                    self._charges,
                     self.results.number_density[a]
                 )
 
@@ -648,17 +630,17 @@ class DensityProfile(SerialAnalysisBase):
             dV: Union[float, "unit.Quantity", Q_] = None,
             threshold: float = 1e-5, V0: Union[float, "unit.Quantity", Q_] = 0
         ) -> None:
-        
+
         """
-        Calculates the average potential profile in the given dimension 
-        using the charge density profile by numerically solving Poisson's 
+        Calculates the average potential profile in the given dimension
+        using the charge density profile by numerically solving Poisson's
         equation for electrostatics.
 
         Parameters
         ----------
         dielectric : `float`
-            Relative permittivity or dielectric constant 
-            :math:`\\varepsilon_\mathrm{r}`.
+            Relative permittivity or dielectric constant
+            :math:`\\varepsilon_\\mathrm{r}`.
 
         axis : `int` or `str`
             Axis along which to compute the potential profiles.
@@ -672,29 +654,29 @@ class DensityProfile(SerialAnalysisBase):
 
         sigma_e : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, optional
-            Total surface charge density :math:`\sigma_e`. Used to 
+            Total surface charge density :math:`\sigma_e`. Used to
             ensure that the electric field in the bulk of the solution
-            is zero. If not provided, it is determined using `dV` and 
-            the charge density profile, or the average value in the 
-            center of the integrated charge density profile. 
-            
+            is zero. If not provided, it is determined using `dV` and
+            the charge density profile, or the average value in the
+            center of the integrated charge density profile.
+
             **Reference unit**: :math:`\\mathrm{e/Å^2}`.
 
         dV : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, optional
-            Potential difference :math:`\Delta\Psi` across the system 
+            Potential difference :math:`\Delta\Psi` across the system
             dimension specified in `axis`. Has no effect if `sigma_e` is
-            provided since this value is used solely to calculate 
+            provided since this value is used solely to calculate
             `sigma_e`.
-             
+
             .. note::
 
-               By specifying `dV` to calculate `sigma_e` using Gauss's 
-               law, it is assumed that the boundaries are perfectly 
+               By specifying `dV` to calculate `sigma_e` using Gauss's
+               law, it is assumed that the boundaries are perfectly
                conducting.
 
             **Reference unit**: :math:`\\mathrm{V}`.
-        
+
         threshold : `float`, keyword-only, default: :code:`1e-5`
             Threshold for determining the plateau region of the first
             integral of the charge density profile to calculate
@@ -703,8 +685,8 @@ class DensityProfile(SerialAnalysisBase):
 
         V0 : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, default: :code:`0`
-            Potential :math:`\Psi_0` at the left boundary. 
-            
+            Potential :math:`\Psi_0` at the left boundary.
+
             **Reference unit**: :math:`\\mathrm{V}`.
         """
 
@@ -713,58 +695,46 @@ class DensityProfile(SerialAnalysisBase):
                     "or provide charge information when initializing the "
                     "DensityProfile object.")
             raise RuntimeError(emsg)
-        
+
         if not hasattr(self.results, "potential"):
             self.results.potential = {}
 
             # Store reference units
-            if not self._reduced:
-                self.results.units["results.potential"] = ureg.volt
+            self.results.units["results.potential"] = ureg.volt
 
         if isinstance(axis, str):
             axis = ord(axis.lower()) - 120
         index = np.where(self._axes == axis)[0][0]
 
-        if sigma_e is not None and not isinstance(sigma_e, (int, float)):
-            if self._reduced:
+        if sigma_e is not None:
+            sigma_e, unit_ = strip_unit(sigma_e, "elementary_charge/angstrom**2")
+            if self._reduced and not isinstance(unit_, str):
                 emsg = "'sigma_e' cannot have units when reduced=True."
-                raise TypeError(emsg)
-            if isinstance(sigma_e, Q_):
-                sigma_e = sigma_e.m_as(self.results.units["_charges"] 
-                                       / self.results.units["_dimensions"] ** 2)
-            else:
-                sigma_e = sigma_e.value_in_unit(unit.elementary_charge 
-                                                / unit.angstrom ** 2)
+                raise ValueError(emsg)
 
-        if dV is not None and not isinstance(dV, (int, float)):
-            if self._reduced:
+        if dV is not None:
+            dV, unit_ = strip_unit(dV, "volt")
+            if self._reduced and not isinstance(unit_, str):
                 emsg = "'dV' cannot have units when reduced=True."
-                raise TypeError(emsg)
-            if isinstance(dV, Q_):
-                dV = dV.m_as(self.results.units["results.potential"])
-            else:
-                dV = dV.value_in_unit(unit.volt)
+                raise ValueError(emsg)
 
-        if V0 is not None and not isinstance(V0, (int, float)):
-            if self._reduced:
+        if V0 is not None:
+            V0, unit_ = strip_unit(V0, "volt")
+            if self._reduced and not isinstance(unit_, str):
                 emsg = "'V0' cannot have units when reduced=True."
-                raise TypeError(emsg)
-            if isinstance(V0, Q_):
-                V0 = V0.m_as(self.results.units["results.potential"])
-            else:
-                V0 = V0.value_in_unit(unit.volt)
+                raise ValueError(emsg)
 
         charge_density = self.results.charge_density[index]
         if charge_density.ndim == 3:
             charge_density = charge_density.mean(axis=1)
-        self.results.potential[axis] = potential_profile(
+        self.results.potential[index] = calculate_potential_profile(
             self.results.bins[index],
             charge_density,
-            self._dimensions[axis], 
-            dielectric, 
-            sigma_e=sigma_e, 
-            dV=dV, 
-            threshold=threshold, 
-            V0=V0, 
+            self._dimensions[axis],
+            dielectric,
+            sigma_e=sigma_e,
+            dV=dV,
+            threshold=threshold,
+            V0=V0,
             reduced=self._reduced
         )

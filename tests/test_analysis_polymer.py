@@ -16,7 +16,7 @@ def test_class_gyradius():
 
     """
     The reference implementation is adapted from the "Writing your own
-    trajectory analysis" section of the MDAnalysis User Guide 
+    trajectory analysis" section of the MDAnalysis User Guide
     (https://userguide.mdanalysis.org/stable/examples/analysis/custom_trajectory_analysis.html).
     """
 
@@ -27,7 +27,7 @@ def test_class_gyradius():
         r_sq = (positions - center_of_mass) ** 2
         r_ssq = np.array((r_sq.sum(axis=1),
                           (r_sq[:, [1, 2]]).sum(axis=1),
-                          (r_sq[:, [0, 2]]).sum(axis=1), 
+                          (r_sq[:, [0, 2]]).sum(axis=1),
                           (r_sq[:, [0, 1]]).sum(axis=1)))
         return np.sqrt((masses * r_ssq).sum(axis=1) / masses.sum())
     rog = AnalysisFromFunction(radius_of_gyration, universe.trajectory, protein).run()

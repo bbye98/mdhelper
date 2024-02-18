@@ -34,7 +34,7 @@ import numpy as np
 def poly(x: np.ndarray, *args: float) -> np.ndarray:
 
     r"""
-    The general polynomial model is
+    General polynomial model.
 
     .. math::
 
@@ -50,7 +50,7 @@ def poly(x: np.ndarray, *args: float) -> np.ndarray:
         :math:`x^0` term. The number of positional arguments,
         :math:`n+1`, determines the order :math:`n` of the polynomial
         model.
-    
+
     Returns
     -------
     fit : `numpy.ndarray`
@@ -98,13 +98,13 @@ def poly1(x: np.ndarray, p1: float, p2: float) -> np.ndarray:
 
     p2 : `float`
         Constant term :math:`p_2`.
-    
+
     Returns
     -------
     fit : `numpy.ndarray`
         Fitted :math:`y`-values.
     """
-    
+
     return poly(x, p2, p1)
 
 def poly2(x: np.ndarray, p1: float, p2: float, p3: float) -> np.ndarray:
@@ -129,7 +129,7 @@ def poly2(x: np.ndarray, p1: float, p2: float, p3: float) -> np.ndarray:
 
     p3 : `float`
         Constant term :math:`p_3`.
-    
+
     Returns
     -------
     fit : `numpy.ndarray`
@@ -165,7 +165,7 @@ def poly3(
 
     p4 : `float`
         Constant term :math:`p_4`.
-    
+
     Returns
     -------
     fit : `numpy.ndarray`
@@ -204,7 +204,7 @@ def poly4(
 
     p5 : `float`
         Constant term :math:`p_5`.
-    
+
     Returns
     -------
     fit : `numpy.ndarray`
@@ -246,7 +246,7 @@ def poly5(
 
     p6 : `float`
         Constant term :math:`p_6`.
-    
+
     Returns
     -------
     fit : `numpy.ndarray`
@@ -291,7 +291,7 @@ def poly6(
 
     p7 : `float`
         Constant term :math:`p_7`.
-    
+
     Returns
     -------
     fit : `numpy.ndarray`
@@ -339,7 +339,7 @@ def poly7(
 
     p8 : `float`
         Constant term :math:`p_8`.
-    
+
     Returns
     -------
     fit : `numpy.ndarray`
@@ -390,7 +390,7 @@ def poly8(
 
     p9 : `float`
         Constant term :math:`p_9`.
-    
+
     Returns
     -------
     fit : `numpy.ndarray`
@@ -444,7 +444,7 @@ def poly9(
 
     p10 : `float`
         Constant term :math:`p_{10}`.
-    
+
     Returns
     -------
     fit : `numpy.ndarray`

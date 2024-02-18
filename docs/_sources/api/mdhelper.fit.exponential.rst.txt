@@ -1,4 +1,4 @@
-﻿exponential
+exponential
 ===========
 
 .. automodule:: mdhelper.fit.exponential

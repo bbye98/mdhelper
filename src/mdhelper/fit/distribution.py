@@ -46,7 +46,7 @@ def weibull(x: np.ndarray, a: float, b: float, c: float = 0) -> np.ndarray:
 
     a : `float`
         Scale parameter :math:`a`.
-    
+
     b : `float`
         Shape parameter :math:`b`. If specified to be a constant, the
         one-parameter Weibull distribution is used.
@@ -54,7 +54,7 @@ def weibull(x: np.ndarray, a: float, b: float, c: float = 0) -> np.ndarray:
     c : `float`, keyword-only, default: :code:`0`
         Location parameter :math:`c`. If not specified as a parameter,
         the two-parameter Weibull distribution is used.
-    
+
     Returns
     -------
     fit : `numpy.ndarray`
@@ -67,12 +67,12 @@ def weibull(x: np.ndarray, a: float, b: float, c: float = 0) -> np.ndarray:
     >>> model = lambda x, a, b, c: weibull(x, a, b, c)
 
     Create a two-parameter Weibull distribution model for fitting.
-    
+
     >>> model = lambda x, a, b: weibull(x, a, b)
 
     Create a one-parameter Weibull distribution model for fitting, with
     :math:`b = 1`.
-    
+
     >>> model = lambda x, a: weibull(x, a, 1)
     """
 

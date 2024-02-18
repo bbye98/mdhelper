@@ -16,8 +16,8 @@ now = datetime.now()
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'MDHelper'
-copyright = f'2023–{now.year} Benjamin Ye'
-author = 'Benjamin Ye'
+copyright = f'2023–{now.year} Benjamin Ye, Pierre Walker'
+author = 'Benjamin Ye, Pierre Walker'
 version = release = VERSION
 
 # -- General configuration ---------------------------------------------------
@@ -43,7 +43,7 @@ intersphinx_mapping = {
     "dask": ("https://docs.dask.org/en/stable/", None),
     "joblib": ("https://joblib.readthedocs.io/en/latest/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
-    "mdhelper": ("https://docs.mdanalysis.org/stable/", None),
+    "mdanalysis": ("https://docs.mdanalysis.org/stable/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "openmm": ("http://docs.openmm.org/latest/api-python/", None),
     "pint": ("https://pint.readthedocs.io/en/stable/", None),

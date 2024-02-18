@@ -11,11 +11,11 @@ import matplotlib as mpl
 
 # Define figure size guidelines for various publications in inches
 FIGURE_SIZE_LIMITS = {
-    "acs": {"max_single_width": 3.25, "max_double_width": 7, 
+    "acs": {"max_single_width": 3.25, "max_double_width": 7,
             "max_length": 9.5},
-    "aip": {"max_single_width": 3.37, "max_double_width": 6.69, 
+    "aip": {"max_single_width": 3.37, "max_double_width": 6.69,
             "max_length": 8.25, "min_font_size": 8},
-    "rsc": {"max_single_width": 3.26771654, "max_double_width": 6.73228346, 
+    "rsc": {"max_single_width": 3.26771654, "max_double_width": 6.73228346,
             "max_length": 9.17322835}
 }
 
@@ -50,24 +50,24 @@ def update(journal: str = None, **kwargs) -> None:
     journal : `str`, optional
         Journal acronym used to update the default figure size.
 
-        .. container::    
-    
+        .. container::
+
            **Valid values**:
-        
+
            * :code:`"acs"`: American Chemical Society.
            * :code:`"aip"`: American Institute of Physics.
            * :code:`"rsc"`: Royal Society of Chemistry.
-    
+
     **kwargs
         Additional rcParams to update passed to
         :meth:`matplotlib.rcParams.update`.
     """
-    
+
     fig_size = {} if journal is None else {
         "figure.figsize": (FIGURE_SIZE_LIMITS[journal]["max_single_width"],
                            3 * FIGURE_SIZE_LIMITS[journal]["max_single_width"] / 4)
     }
-    
+
     mpl.rcParams.update(
         {
             "axes.labelsize": 9,

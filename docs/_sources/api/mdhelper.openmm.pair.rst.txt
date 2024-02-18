@@ -1,4 +1,4 @@
-﻿pair
+pair
 ====
 
 .. automodule:: mdhelper.openmm.pair

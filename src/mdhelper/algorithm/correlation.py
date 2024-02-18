@@ -3,9 +3,9 @@ Statistical correlation
 =======================
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
-This module contains algorithms for computing the correlation between 
+This module contains algorithms for computing the correlation between
 data with various shapes that evolve over time. This includes real- and
-Fourier-space evaluations of the autocorrelation and cross-correlation 
+Fourier-space evaluations of the autocorrelation and cross-correlation
 functions, and by extension, the mean squared and cross displacements.
 """
 
@@ -15,18 +15,18 @@ import numpy as np
 from scipy import fft
 
 def correlation_fft(
-        arr1: np.ndarray[float], arr2: np.ndarray[float] = None, 
+        arr1: np.ndarray[float], arr2: np.ndarray[float] = None,
         axis: int = None, *, average: bool = False, double: bool = False,
         vector: bool = False) -> np.ndarray[float]:
 
     r"""
     Evaluates the autocorrelation function (ACF) or cross-correlation
-    function (CCF) of a time series using fast Fourier transforms (FFT). 
+    function (CCF) of a time series using fast Fourier transforms (FFT).
 
     The algorithm, better known as the Fast Correlation Algorithm (FCA)
     [1]_ [2]_, is a result of the Wiener–Khinchin theorem and has a time
     complexity of :math:`\mathcal{O}(N\log{N})`. Effectively, the ACF
-    can be computed from the raw data :math:`\mathbf{r}(t)` with two 
+    can be computed from the raw data :math:`\mathbf{r}(t)` with two
     FFTs using
 
     .. math::
@@ -36,7 +36,7 @@ def correlation_fft(
          A(\tau)=\mathrm{FFT}^{-1}(\hat{\mathbf{r}}(\xi)\hat{\mathbf{r}}^*(\xi))
        \end{gather*}
 
-    where :math:`\tau` is the time lag and the asterisk (:math:`^*`) 
+    where :math:`\tau` is the time lag and the asterisk (:math:`^*`)
     denotes the complex conjugate.
 
     Similarly, the CCF for species :math:`i` and :math:`j` is evaluated
@@ -51,34 +51,34 @@ def correlation_fft(
     ----------
     arr1 : `numpy.ndarray`
         Time evolution of :math:`N` entities over :math:`N_\mathrm{b}`
-        blocks of :math:`N_t` frames each. 
+        blocks of :math:`N_t` frames each.
 
         .. container::
 
-           **Shape**: 
-           
+           **Shape**:
+
            * Scalar: :math:`(N_t,)`, :math:`(N_t,\,N)`,
              :math:`(N_\mathrm{b},\,N_t)`, or
              :math:`(N_\mathrm{b},\,N_t,\,N)`.
-           * Vector: :math:`(N_t,\,d)`, 
+           * Vector: :math:`(N_t,\,d)`,
              :math:`(N_t,\,N,\,N_\mathrm{d})`,
-             :math:`(N_\mathrm{b},\,N_t,\,N_\mathrm{d})`, or 
-             :math:`(N_\mathrm{b},\,N_t,\,N,\,N_\mathrm{d})`, where 
-             :math:`N_\mathrm{d}` is the number of dimensions each 
+             :math:`(N_\mathrm{b},\,N_t,\,N_\mathrm{d})`, or
+             :math:`(N_\mathrm{b},\,N_t,\,N,\,N_\mathrm{d})`, where
+             :math:`N_\mathrm{d}` is the number of dimensions each
              vector has.
 
     arr2 : `numpy.ndarray`, optional
         Time evolution of another :math:`N` entities. If provided, the
-        CCF for `arr1` and `arr2` is calculated. Otherwise, the ACF for 
+        CCF for `arr1` and `arr2` is calculated. Otherwise, the ACF for
         `arr1` is calculated.
-        
+
         **Shape**: Same as `arr1`.
 
     axis : `int`, optional
         Axis along which to evaluate the ACF/CCF. If `arr1` contains a
         full, unsplit trajectory, the ACF/CCF should be evaluated along
-        the first axis (:code:`axis=0`). If `arr1` contains a 
-        trajectory split into multiple blocks, the ACF/CCF should be 
+        the first axis (:code:`axis=0`). If `arr1` contains a
+        trajectory split into multiple blocks, the ACF/CCF should be
         evaluated along the second axis (:code:`axis=1`). If not
         specified, the axis is determined automatically using the shape
         of `arr1`.
@@ -89,13 +89,13 @@ def correlation_fft(
 
     double : `bool`, keyword-only, default: :code:`False`
         If :code:`True`, the ACF is doubled or the CCFs for the negative
-        and positive time lags are combined. Useful for evaluating the 
+        and positive time lags are combined. Useful for evaluating the
         mean squared or cross displacement. See
-        :func:`mdhelper.algorithm.correlation.msd_fft` for more 
+        :func:`mdhelper.algorithm.correlation.msd_fft` for more
         information.
 
     vector : `bool`, keyword-only, default: :code:`False`
-        Specifies whether `arr1` and `arr2` contain vectors. If 
+        Specifies whether `arr1` and `arr2` contain vectors. If
         :code:`True`, the ACF/CCF is summed over the last dimension.
 
     Returns
@@ -119,17 +119,17 @@ def correlation_fft(
 
            * If :code:`average=True`, the axis containing the :math:`N`
              entities is removed.
-           * If :code:`double=False`, the axis containing the 
+           * If :code:`double=False`, the axis containing the
              :math:`N_t` times now has a length of :math:`2N_t-1` to
              accomodate negative and positive time lags.
            * If :code:`vector=True`, the last dimension is removed.
 
     References
     ----------
-    .. [1] Kneller, G. R.; Keiner, V.; Kneller, M.; Schiller, M. 
-       NMOLDYN: A Program Package for a Neutron Scattering Oriented 
+    .. [1] Kneller, G. R.; Keiner, V.; Kneller, M.; Schiller, M.
+       NMOLDYN: A Program Package for a Neutron Scattering Oriented
        Analysis of Molecular Dynamics Simulations. *Computer Physics
-       Communications* **1995**, *91* (1–3), 191–214. 
+       Communications* **1995**, *91* (1–3), 191–214.
        https://doi.org/10.1016/0010-4655(95)00048-K.
 
     .. [2] Calandrini, V.; Pellegrini, E.; Calligari, P.; Hinsen, K.;
@@ -140,8 +140,7 @@ def correlation_fft(
     """
 
     # Ensure arrays have valid dimensionality
-    if not isinstance(arr1, np.ndarray):
-        arr1 = np.array(arr1)
+    arr1 = np.asarray(arr1)
     if arr1.size == 0:
         raise ValueError("The arrays must not be empty.")
     ndim = arr1.ndim
@@ -150,8 +149,7 @@ def correlation_fft(
                 "dimensional.")
         raise ValueError(emsg)
     if arr2 is not None:
-        if not isinstance(arr2, np.ndarray):
-            arr2 = np.array(arr2)
+        arr2 = np.asarray(arr2)
         if arr1.shape != arr2.shape:
             emsg = "The arrays must have the same dimensions."
             raise ValueError(emsg)
@@ -219,7 +217,7 @@ def correlation_fft(
         if corr.shape[axis] != N_t:
             corr[1 - N_t:] /= np.expand_dims(range(1, N_t), axes)
             corr = np.concatenate((corr[1 - N_t:], corr[:N_t]))
-    
+
     # Average over all entities, if desired
     if average:
         axis_avg = ndim - 1 - vector
@@ -228,7 +226,7 @@ def correlation_fft(
     return corr
 
 def correlation_shift(
-        arr1: np.ndarray[float], arr2: np.ndarray[float] = None, 
+        arr1: np.ndarray[float], arr2: np.ndarray[float] = None,
         axis: int = None, *, average: bool = False, double: bool = False,
         vector: bool = False) -> np.ndarray[float]:
 
@@ -237,7 +235,7 @@ def correlation_shift(
     function (CCF) of a time series directly by using sliding windows
     along the time axis.
 
-    For scalars :math:`r` or vectors :math:`\mathbf{r}`, the ACF is 
+    For scalars :math:`r` or vectors :math:`\mathbf{r}`, the ACF is
     defined as
 
     .. math::
@@ -245,9 +243,9 @@ def correlation_shift(
         A(\tau)=\langle\textbf{r}(t_0+\tau)\cdot\textbf{r}(t_0)\rangle
         =\dfrac{1}{N}\sum_{\alpha=1}^N
         \textbf{r}_\alpha(t_0+\tau)\cdot\textbf{r}_\alpha(t_0)
-        
+
     while the CCF for species :math:`i` and :math:`j` is given by
-    
+
     .. math::
 
         C_{ij}(\tau)=\langle\textbf{r}_i(t_0+\tau)\cdot
@@ -255,14 +253,14 @@ def correlation_shift(
         =\dfrac{1}{N}\sum_{\alpha=1}^N\textbf{r}_{i,\alpha}(t_0+\tau)\cdot
         \textbf{r}_{j,\alpha}(t_0)
 
-    where :math:`\tau` is the time lag, :math:`t_0` is an arbitrary 
+    where :math:`\tau` is the time lag, :math:`t_0` is an arbitrary
     reference time, and :math:`N` is the number of entities. To reduce
     statistical noise, the ACF/CCF is calculated for and averaged over
-    all possible reference times :math:`t_0`. As such, this algorithm 
+    all possible reference times :math:`t_0`. As such, this algorithm
     has a time complexity of :math:`\mathcal{O}(N^2)`.
 
-    With large data sets, this approach is too slow to be useful. If 
-    your machine supports the fast Fourier transform (FFT), consider 
+    With large data sets, this approach is too slow to be useful. If
+    your machine supports the fast Fourier transform (FFT), consider
     using the much more performant FFT-based algorithm implemented in
     :func:`mdhelper.algorithm.correlation.correlation_fft` instead.
 
@@ -270,34 +268,34 @@ def correlation_shift(
     ----------
     arr1 : `numpy.ndarray`
         Time evolution of :math:`N` entities over :math:`N_\mathrm{b}`
-        blocks of :math:`N_t` frames each. 
+        blocks of :math:`N_t` frames each.
 
         .. container::
 
-           **Shape**: 
-           
+           **Shape**:
+
            * Scalar: :math:`(N_t,)`, :math:`(N_t,\,N)`,
              :math:`(N_\mathrm{b},\,N_t)`, or
              :math:`(N_\mathrm{b},\,N_t,\,N)`.
-           * Vector: :math:`(N_t,\,d)`, 
+           * Vector: :math:`(N_t,\,d)`,
              :math:`(N_t,\,N,\,N_\mathrm{d})`,
-             :math:`(N_\mathrm{b},\,N_t,\,N_\mathrm{d})`, or 
-             :math:`(N_\mathrm{b},\,N_t,\,N,\,N_\mathrm{d})`, where 
-             :math:`N_\mathrm{d}` is the number of dimensions each 
+             :math:`(N_\mathrm{b},\,N_t,\,N_\mathrm{d})`, or
+             :math:`(N_\mathrm{b},\,N_t,\,N,\,N_\mathrm{d})`, where
+             :math:`N_\mathrm{d}` is the number of dimensions each
              vector has.
 
     arr2 : `numpy.ndarray`, optional
         Time evolution of another :math:`N` entities. If provided, the
-        CCF for `arr1` and `arr2` is calculated. Otherwise, the ACF for 
+        CCF for `arr1` and `arr2` is calculated. Otherwise, the ACF for
         `arr1` is calculated.
-        
+
         **Shape**: Same as `arr1`.
 
     axis : `int`, optional
         Axis along which to evaluate the ACF/CCF. If `arr1` contains a
         full, unsplit trajectory, the ACF/CCF should be evaluated along
-        the first axis (:code:`axis=0`). If `arr1` contains a 
-        trajectory split into multiple blocks, the ACF/CCF should be 
+        the first axis (:code:`axis=0`). If `arr1` contains a
+        trajectory split into multiple blocks, the ACF/CCF should be
         evaluated along the second axis (:code:`axis=1`). If not
         specified, the axis is determined automatically using the shape
         of `arr1`.
@@ -308,13 +306,13 @@ def correlation_shift(
 
     double : `bool`, keyword-only, default: :code:`False`
         If :code:`True`, the ACF is doubled or the CCFs for the negative
-        and positive time lags are combined. Useful for evaluating the 
+        and positive time lags are combined. Useful for evaluating the
         mean squared or cross displacement. See
-        :func:`mdhelper.algorithm.correlation.msd_shift` for more 
+        :func:`mdhelper.algorithm.correlation.msd_shift` for more
         information.
 
     vector : `bool`, keyword-only, default: :code:`False`
-        Specifies whether `arr1` and `arr2` contain vectors. If 
+        Specifies whether `arr1` and `arr2` contain vectors. If
         :code:`True`, the ACF/CCF is summed over the last dimension.
 
     Returns
@@ -338,15 +336,14 @@ def correlation_shift(
 
            * If :code:`average=True`, the axis containing the :math:`N`
              entities is removed.
-           * If :code:`double=False`, the axis containing the 
+           * If :code:`double=False`, the axis containing the
              :math:`N_t` times now has a length of :math:`2N_t-1` to
              accomodate negative and positive time lags.
            * If :code:`vector=True`, the last dimension is removed.
     """
 
     # Ensure arrays have valid dimensionality
-    if not isinstance(arr1, np.ndarray):
-        arr1 = np.array(arr1)
+    arr1 = np.asarray(arr1)
     if arr1.size == 0:
         raise ValueError("The arrays must not be empty.")
     ndim = arr1.ndim
@@ -355,8 +352,7 @@ def correlation_shift(
                 "dimensional.")
         raise ValueError(emsg)
     if arr2 is not None:
-        if not isinstance(arr2, np.ndarray):
-            arr2 = np.array(arr2)
+        arr2 = np.asarray(arr2)
         if arr1.shape != arr2.shape:
             emsg = "The arrays must have the same dimensions."
             raise ValueError(emsg)
@@ -385,23 +381,23 @@ def correlation_shift(
     if arr2 is None:
         if ndim == 1:
             corr = np.fromiter(
-                (np.dot(arr1[i:], arr1[:-i if i else None]) 
+                (np.dot(arr1[i:], arr1[:-i if i else None])
                  for i in range(N_t)),
                 count=N_t, dtype=float
             )
         elif axis:
             axes = f"bt...{'d' * vector}"
             corr = np.stack(
-                [np.einsum(f"{axes},{axes}->b...", 
-                           arr1[:, i:], arr1[:, :-i if i else None]) 
+                [np.einsum(f"{axes},{axes}->b...",
+                           arr1[:, i:], arr1[:, :-i if i else None])
                  for i in range(N_t)],
                 axis=1
             )
         else:
             axes = f"t...{'d' * vector}"
             corr = np.stack(
-                [np.einsum(f"{axes},{axes}->...", 
-                           arr1[i:], arr1[:-i if i else None]) 
+                [np.einsum(f"{axes},{axes}->...",
+                           arr1[i:], arr1[:-i if i else None])
                  for i in range(N_t)]
             )
     else:
@@ -409,7 +405,7 @@ def correlation_shift(
         stop = np.r_[1:N_t + 1, N_t * np.ones(N_t - 1, dtype=int)]
         if ndim == 1:
             corr = np.fromiter(
-                (np.dot(arr1[i:j], arr2[k:m]) 
+                (np.dot(arr1[i:j], arr2[k:m])
                  for i, j, k, m in zip(start[::-1], stop[::-1], start, stop)),
                 count=2 * N_t - 1, dtype=float
             )
@@ -417,17 +413,17 @@ def correlation_shift(
             axes = f"bt...{'d' * vector}"
             corr = np.stack(
                 [np.einsum(f"{axes},{axes}->b...", arr1[:, i:j], arr2[:, k:m])
-                 for i, j, k, m in zip(start[::-1], stop[::-1], start, stop)], 
+                 for i, j, k, m in zip(start[::-1], stop[::-1], start, stop)],
                 axis=1
             )
         else:
             axes = f"t...{'d' * vector}"
             corr = np.stack(
-                [np.einsum(f"{axes},{axes}->...", arr1[i:j], arr2[k:m]) 
+                [np.einsum(f"{axes},{axes}->...", arr1[i:j], arr2[k:m])
                  for i, j, k, m in zip(start[::-1], stop[::-1], start, stop)]
             )
 
-    # Doubles the ACF or overlaps the CCF for negative and positive 
+    # Doubles the ACF or overlaps the CCF for negative and positive
     # lags, if desired
     if double:
         if arr2 is None:
@@ -464,15 +460,15 @@ def correlation_shift(
     return corr
 
 def msd_fft(
-        pos1: np.ndarray[float], pos2: np.ndarray[float] = None, 
+        pos1: np.ndarray[float], pos2: np.ndarray[float] = None,
         axis: int = None, *, average: bool = True) -> np.ndarray[float]:
 
     r"""
-    Calculates the mean squared displacement (MSD) or the analogous 
+    Evaluates the mean squared displacement (MSD) or the analogous
     cross displacement (CD) using fast Fourier transforms (FFT).
-    
+
     The algorithm [1]_ [2]_ is
-    
+
     .. math::
 
         \mathrm{MSD}_m&=\frac{1}{N_t-m}\sum_{k=0}^{N_t-m-1}
@@ -498,24 +494,24 @@ def msd_fft(
           S_m=\dfrac{Q_m}{N_t-m}
         \end{gather*}
 
-    Similarly, when two distinct sets of positions are provided, the CD 
+    Similarly, when two distinct sets of positions are provided, the CD
     is computed using
 
     .. math::
 
        \mathrm{CD}_{ij,m}=S_m-2C_{ij,m}
 
-    where :math:`C_{ij,m}` is the cross-correlation of the two sets of 
+    where :math:`C_{ij,m}` is the cross-correlation of the two sets of
     positions and :math:`D_k` in :math:`S_m` is replaced with the
     analogous :math:`D_{ij,k} = \textbf{r}_{i,k}\cdot\textbf{r}_{j,k}`.
 
     .. note::
-    
-       To evaluate the sum in the expression used to calculate the 
+
+       To evaluate the sum in the expression used to calculate the
        Onsager transport coefficients [3]_
 
        .. math::
-            
+
           L_{ij}=\frac{1}{6k_\mathrm{B}T}\lim_{t\rightarrow\infty}
           \frac{d}{dt}\left\langle\sum_{\alpha=1}^{N_i}
           [\mathrm{r}_\alpha(t_0+t)-\mathrm{r}_\alpha(t_0)]\cdot
@@ -530,17 +526,17 @@ def msd_fft(
     pos1 : `numpy.ndarray`
         Individual or averaged position(s) of the :math:`N` particles
         in the first particle group over :math:`N_\mathrm{b}`
-        blocks of :math:`N_t` frames each. 
-        
+        blocks of :math:`N_t` frames each.
+
         **Shape**: :math:`(N_t,\,3)`, :math:`(N_t,\,N,\,3)`, or
         :math:`(N_\mathrm{b},\,N_t,\,N,\,3)`.
-        
+
         **Reference unit**: :math:`\mathrm{Å}`.
 
     pos2 : `numpy.ndarray`, optional
         Individual or averaged position(s) of the :math:`N` particles
-        in the second particle group over :math:`N_t` frames. 
-        
+        in the second particle group over :math:`N_t` frames.
+
         **Shape**: Same as `pos1`.
 
         **Reference unit**: :math:`\mathrm{Å}`.
@@ -550,8 +546,8 @@ def msd_fft(
         contain a full, unsplit trajectory, the MSD/CD should be
         evaluated along the first axis (:code:`axis=0`). If `pos1`
         and/or `pos2` contain a trajectory split into multiple blocks,
-        the MSD should be evaluated along the second axis 
-        (:code:`axis=1`). If not provided, the axis is selected 
+        the MSD should be evaluated along the second axis
+        (:code:`axis=1`). If not provided, the axis is selected
         automatically using the shape of `pos1`.
 
     average : `bool`, keyword-only, default: :code:`True`
@@ -562,19 +558,19 @@ def msd_fft(
     -------
     disp : `numpy.ndarray`
         Mean-squared or cross displacement.
-        
-        **Shape**: The shape of `pos`, except with the last dimension 
-        removed. If :code:`average=True`, the axis containing the 
+
+        **Shape**: The shape of `pos`, except with the last dimension
+        removed. If :code:`average=True`, the axis containing the
         :math:`N` entities is also removed.
-        
+
         **Reference unit**: :math:`\text{Å}^2`.
 
     References
     ----------
-    .. [1] Kneller, G. R.; Keiner, V.; Kneller, M.; Schiller, M. 
-       NMOLDYN: A Program Package for a Neutron Scattering Oriented 
+    .. [1] Kneller, G. R.; Keiner, V.; Kneller, M.; Schiller, M.
+       NMOLDYN: A Program Package for a Neutron Scattering Oriented
        Analysis of Molecular Dynamics Simulations. *Computer Physics
-       Communications* **1995**, *91* (1–3), 191–214. 
+       Communications* **1995**, *91* (1–3), 191–214.
        https://doi.org/10.1016/0010-4655(95)00048-K.
 
     .. [2] Calandrini, V.; Pellegrini, E.; Calligari, P.; Hinsen, K.;
@@ -591,8 +587,7 @@ def msd_fft(
     """
 
     # Ensure arrays have valid dimensionality
-    if not isinstance(pos1, np.ndarray):
-        pos1 = np.array(pos1)
+    pos1 = np.asarray(pos1)
     if pos1.size == 0:
         raise ValueError("The position arrays must not be empty.")
     ndim = pos1.ndim
@@ -601,8 +596,7 @@ def msd_fft(
                 "dimensional.")
         raise ValueError(emsg)
     if pos2 is not None:
-        if not isinstance(pos2, np.ndarray):
-            pos2 = np.array(pos2)
+        pos2 = np.asarray(pos2)
         if pos1.shape != pos2.shape:
             emsg = "The position arrays must have the same dimensions."
             raise ValueError(emsg)
@@ -628,7 +622,7 @@ def msd_fft(
     N_t = pos1.shape[axis]
 
     # Get intermediate quantities required for the MSD/CD calculation
-    s2 = correlation_fft(pos1, pos2, axis, average=False, double=True, 
+    s2 = correlation_fft(pos1, pos2, axis, average=False, double=True,
                          vector=True)
     r1r2 = (pos1 * (pos1 if pos2 is None else pos2)).sum(axis=-1)
 
@@ -643,13 +637,17 @@ def msd_fft(
             zeros = np.expand_dims(np.zeros(shape[mask]), (axis,))
             D = stack((r1r2, zeros))
             if axis:
-                ssum = 2 * D.sum(axis=axis)[:, None] * np.ones((1, N_t, 1)) \
-                       - np.cumsum(D[:, range(-1, N_t - 1)] + D[:, N_t:0:-1],
-                                   axis=axis)
+                ssum = (
+                    2 * D.sum(axis=axis)[:, None] * np.ones((1, N_t, 1))
+                    - np.cumsum(D[:, range(-1, N_t - 1)] + D[:, N_t:0:-1],
+                                axis=axis)
+                )
             else:
-                ssum = 2 * D.sum(axis=axis) * np.ones((N_t, 1)) \
-                       - np.cumsum(D[range(-1, N_t - 1)] + D[N_t:0:-1],
-                                   axis=axis)
+                ssum = (
+                    2 * D.sum(axis=axis) * np.ones((N_t, 1))
+                    - np.cumsum(D[range(-1, N_t - 1)] + D[N_t:0:-1], 
+                                axis=axis)
+                )
             return ssum / np.arange(N_t, 0, -1)[:, None] - s2
 
         # Average the intermediate quantities over all particles
@@ -658,21 +656,26 @@ def msd_fft(
 
     # Calculate the averaged MSD/CD
     if axis:
-        ssum = 2 * r1r2.sum(axis=axis)[:, None] * np.ones((1, N_t)) \
-               - np.insert(np.cumsum(r1r2[:, :N_t - 1] + r1r2[:, N_t - 1:0:-1],
-                                     axis=axis),
-                           0, 0, axis=axis)
+        ssum = (
+            2 * r1r2.sum(axis=axis)[:, None] * np.ones((1, N_t))
+            - np.insert(
+                np.cumsum(r1r2[:, :N_t - 1] + r1r2[:, N_t - 1:0:-1], axis=axis),
+                0, 0, axis=axis
+            )
+        )
     else:
-        ssum = 2 * r1r2.sum() * np.ones(N_t) \
-               - np.insert(np.cumsum(r1r2[:N_t - 1] + r1r2[N_t - 1:0:-1]), 0, 0)
+        ssum = (
+            2 * r1r2.sum() * np.ones(N_t)
+            - np.insert(np.cumsum(r1r2[:N_t - 1] + r1r2[N_t - 1:0:-1]), 0, 0)
+        )
     return ssum / np.arange(N_t, 0, -1) - s2
 
 def msd_shift(
-        pos1: np.ndarray[float], pos2: np.ndarray[float] = None, 
+        pos1: np.ndarray[float], pos2: np.ndarray[float] = None,
         axis: int = None, *, average: bool = True) -> np.ndarray[float]:
 
     r"""
-    Calculates the mean squared displacement (MSD) or the analogous 
+    Evaluates the mean squared displacement (MSD) or the analogous
     cross displacement (CD) using the Einstein relation.
 
     The MSD is defined as
@@ -695,18 +698,18 @@ def msd_shift(
         (\textbf{r}_{i,\alpha}(t_0+\tau)-\textbf{r}_{i,\alpha}(t_0))\cdot
         (\textbf{r}_{j,\alpha}(t_0+\tau)-\textbf{r}_{j,\alpha}(t_0))
 
-    where :math:`\tau` is the time lag, :math:`t_0` is an arbitrary 
+    where :math:`\tau` is the time lag, :math:`t_0` is an arbitrary
     reference time, and :math:`N` is the number of entities. To reduce
     statistical noise, the MSD/CD is calculated for and averaged over
     all possible reference times :math:`t_0`.
 
     .. note::
-    
-       To evaluate the sum in the expression used to calculate the 
+
+       To evaluate the sum in the expression used to calculate the
        Onsager transport coefficients [1]_,
 
        .. math::
-        
+
           L_{ij}=\frac{1}{6k_\mathrm{B}T}\lim_{t\rightarrow\infty}
           \frac{d}{dt}\left\langle\sum_{\alpha=1}^{N_i}
           [\mathrm{r}_\alpha(t_0+t)-\mathrm{r}_\alpha(t_0)]\cdot
@@ -720,17 +723,17 @@ def msd_shift(
     ----------
     pos1 : `numpy.ndarray`
         Individual or averaged position(s) of the :math:`N` particles
-        in the first particle group over :math:`N_t` frames. 
-        
+        in the first particle group over :math:`N_t` frames.
+
         **Shape**: :math:`(N_t,\,3)`, :math:`(N_t,\,N,\,3)`, or
         :math:`(N_\mathrm{b},\,N_t,\,N,\,3)`.
-        
+
         **Reference unit**: :math:`\mathrm{Å}`.
 
     pos2 : `numpy.ndarray`, optional
         Individual or averaged position(s) of the :math:`N` particles
-        in the second particle group over :math:`N_t` frames. 
-        
+        in the second particle group over :math:`N_t` frames.
+
         **Shape**: Same as `pos1`.
 
         **Reference unit**: :math:`\mathrm{Å}`.
@@ -740,8 +743,8 @@ def msd_shift(
         contain a full, unsplit trajectory, the MSD/CD should be
         evaluated along the first axis (:code:`axis=0`). If `pos1`
         and/or `pos2` contain a trajectory split into multiple blocks,
-        the MSD should be evaluated along the second axis 
-        (:code:`axis=1`). If not provided, the axis is selected 
+        the MSD should be evaluated along the second axis
+        (:code:`axis=1`). If not provided, the axis is selected
         automatically using the shape of `pos1`.
 
     average : `bool`, keyword-only, default: :code:`True`
@@ -752,11 +755,11 @@ def msd_shift(
     -------
     disp : `numpy.ndarray`
         Mean-squared or cross displacement.
-        
-        **Shape**: The shape of `pos`, except with the last dimension 
-        removed. If :code:`average=True`, the axis containing the 
+
+        **Shape**: The shape of `pos`, except with the last dimension
+        removed. If :code:`average=True`, the axis containing the
         :math:`N` entities is also removed.
-        
+
         **Reference unit**: :math:`\text{Å}^2`.
 
     References
@@ -769,8 +772,7 @@ def msd_shift(
     """
 
     # Ensure arrays have valid dimensionality
-    if not isinstance(pos1, np.ndarray):
-        pos1 = np.array(pos1)
+    pos1 = np.asarray(pos1)
     if pos1.size == 0:
         raise ValueError("The position arrays must not be empty.")
     ndim = pos1.ndim
@@ -779,8 +781,7 @@ def msd_shift(
                 "dimensional.")
         raise ValueError(emsg)
     if pos2 is not None:
-        if not isinstance(pos2, np.ndarray):
-            pos2 = np.array(pos2)
+        pos2 = np.asarray(pos2)
         if pos1.shape != pos2.shape:
             emsg = "The position arrays must have the same dimensions."
             raise ValueError(emsg)
@@ -804,7 +805,7 @@ def msd_shift(
 
     # Get number of frames
     N_t = pos1.shape[axis]
-    
+
     # Calculate the MSD/CD for each atom
     if pos2 is None:
         if axis:
@@ -829,8 +830,8 @@ def msd_shift(
             disp = np.stack(
                 [
                     np.einsum(
-                        "bt...d,bt...d->bt...", 
-                        pos1[:, :-i if i else None] - pos1[:, i:], 
+                        "bt...d,bt...d->bt...",
+                        pos1[:, :-i if i else None] - pos1[:, i:],
                         pos2[:, :-i if i else None] - pos2[:, i:]
                     ).mean(axis=axis) for i in range(N_t)
                 ],
@@ -840,13 +841,13 @@ def msd_shift(
             disp = np.stack(
                 [
                     np.einsum(
-                        "t...d,t...d->t...", 
-                        pos1[:-i if i else None] - pos1[i:], 
+                        "t...d,t...d->t...",
+                        pos1[:-i if i else None] - pos1[i:],
                         pos2[:-i if i else None] - pos2[i:]
                     ).mean(axis=axis) for i in range(N_t)
                 ]
             )
-    
+
     # Average over all particles, if desired
     if ndim - axis == 3 and average:
         disp = disp.mean(axis=ndim - 2)

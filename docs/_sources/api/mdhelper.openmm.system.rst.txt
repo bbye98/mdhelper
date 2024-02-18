@@ -15,11 +15,11 @@ system
       :toctree:
       :nosignatures:
    
-      electric_field
+      add_electric_field
+      add_image_charges
+      add_slab_correction
       estimate_pressure_tensor
-      image_charges
       register_particles
-      slab_correction
    
    
 

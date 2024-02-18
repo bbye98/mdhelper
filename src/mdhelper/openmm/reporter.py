@@ -30,7 +30,7 @@ class NetCDFReporter():
 
     interval : `int`
         Interval (in timesteps) at which to write frames.
-    
+
     append : `bool`, keyword-only, default: :code:`False`
         If :code:`True`, the existing NetCDF file is opened for data to
         be appended to. If :code:`False`, a new NetCDF file is opened
@@ -98,7 +98,7 @@ class NetCDFReporter():
                3. whether the report will require velocities,
                4. whether the report will require forces,
                5. whether the report will require energies, and
-               6. whether coordinates should be wrapped to lie in a 
+               6. whether coordinates should be wrapped to lie in a
                   single periodic box.
         """
 
@@ -168,5 +168,5 @@ class NetCDFReporter():
             data["cell_angles"] = 180 * np.array((alpha, beta, gamma)) / np.pi
 
         # Write current frame
-        self._out.write_model(state.getTime().value_in_unit(unit.picosecond), 
+        self._out.write_model(state.getTime().value_in_unit(unit.picosecond),
                               **data)

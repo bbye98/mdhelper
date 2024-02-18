@@ -13,7 +13,7 @@ where :math:`a` is the amplitude, :math:`b` is the centroid (location),
 :math:`c` is related to the peak width, and :math:`n` is the number of
 peaks to fit.
 
-This module provides the general Gaussian model above for any number of 
+This module provides the general Gaussian model above for any number of
 terms :math:`k`, as well as convenience functions for Gaussian models
 with :math:`1\leq n\leq8` analogous to MATLAB's :code:`gauss1`,
 :code:`gauss2`, etc.
@@ -69,7 +69,7 @@ def gauss(x: np.ndarray, *args: float) -> np.ndarray:
     array([0.06157175, 0.19415629, 0.45650326, 0.80031095, 1.04615509,
            1.01966105, 0.74103382, 0.40155281, 0.16224441, 0.04887866])
     """
-    
+
     n = len(args)
     assert n >= 3 and n % 3 == 0, \
         "Number of fitting parameters must be greater than and divisible by 3."

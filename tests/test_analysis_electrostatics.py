@@ -12,7 +12,7 @@ from mdhelper.analysis import electrostatics # noqa: E402
 def test_class_dipole_moment():
 
     """
-    The test cases are adapted from the "Dielectric — 
+    The test cases are adapted from the "Dielectric —
     :code:`MDAnalysis.analysis.dielectric`" page from the MDAnalysis
     User Guide (https://docs.mdanalysis.org/stable/documentation_pages/analysis/dielectric.html).
     """

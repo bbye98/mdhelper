@@ -15,12 +15,12 @@ transport
       :toctree:
       :nosignatures:
    
-      coefficients
-      conductivity
-      electrophoretic_mobility
+      calculate_conductivity
+      calculate_electrophoretic_mobility
+      calculate_transference_number
+      calculate_transport_coefficients
       msd_fft
       msd_shift
-      transference_number
    
    
 

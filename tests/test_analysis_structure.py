@@ -26,10 +26,10 @@ def test_func_radial_histogram():
     neighbors += dims[:3] / 2
 
     # TEST CASE 1: Correct radial histogram for randomly placed particles
-    assert np.array_equal(counts, 
-                          structure.radial_histogram(origin, neighbors, 
-                                                     n_bins=half_L, 
-                                                     range=(0, half_L + 1), 
+    assert np.array_equal(counts,
+                          structure.radial_histogram(origin, neighbors,
+                                                     n_bins=half_L,
+                                                     range=(0, half_L + 1),
                                                      dims=dims))
 
 def test_func_radial_fourier_transform():
@@ -40,13 +40,13 @@ def test_func_radial_fourier_transform():
     f = np.exp(-alpha * r) / r
     F = 4 * np.pi / (alpha ** 2 + q ** 2)
 
-    # TEST CASE 1: Radial Fourier transform of function exp(-ar)/r, 
+    # TEST CASE 1: Radial Fourier transform of function exp(-ar)/r,
     # which has analytical form 4*pi/(a^2+q^2)
-    assert np.allclose(F, structure.radial_fourier_transform(r, f, q), 
+    assert np.allclose(F, structure.radial_fourier_transform(r, f, q),
                        atol=4e-5)
 
 """
-The following test cases are adapted from the "Average radial 
+The following test cases are adapted from the "Average radial
 distribution functions" page from the MDAnalysis User Guide
 (https://userguide.mdanalysis.org/stable/examples/analysis/structure/average_rdf.html).
 """
@@ -58,7 +58,7 @@ thr = universe.select_atoms("resname THR")
 n_bins = 75
 
 def test_class_rdf_residue60_water():
-    
+
     rdf = InterRDF(res60, water, nbins=n_bins).run()
 
     # TEST CASE 1: Batched serial RDF calculation
@@ -84,7 +84,7 @@ def test_class_rdf_residue60_exclusion_self():
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
     # TEST CASE 2: Parallel RDF calculation
-    parallel_rdf = structure.ParallelRDF(res60, n_bins=n_bins, 
+    parallel_rdf = structure.ParallelRDF(res60, n_bins=n_bins,
                                          exclusion=exclusion).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)
@@ -100,7 +100,7 @@ def test_class_rdf_threonine_exclusion_self():
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
     # TEST CASE 2: Parallel RDF calculation
-    parallel_rdf = structure.ParallelRDF(thr, n_bins=n_bins, 
+    parallel_rdf = structure.ParallelRDF(thr, n_bins=n_bins,
                                          exclusion=exclusion).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)
@@ -116,7 +116,7 @@ def test_class_rdf_threonine_exclusion_carbon():
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
     # TEST CASE 2: Parallel RDF calculation
-    parallel_rdf = structure.ParallelRDF(thr, n_bins=n_bins, 
+    parallel_rdf = structure.ParallelRDF(thr, n_bins=n_bins,
                                          exclusion=exclusion).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)

@@ -1,4 +1,4 @@
-﻿utility
+utility
 =======
 
 .. automodule:: mdhelper.algorithm.utility
@@ -15,11 +15,12 @@
       :toctree:
       :nosignatures:
    
-      closest_factors
-      lj_scaling
+      get_closest_factors
+      get_lj_scaling_factors
+      get_scaling_factors
       rebin
       replicate
-      unit_scaling
+      strip_unit
    
    
 

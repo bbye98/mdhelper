@@ -34,8 +34,8 @@ function.
 This model is generally meaningful only for :math:`x>0`. The graph of
 :math:`\log{(y)}` vs. :math:`x` is characteristically stretched when
 :math:`0\leq\beta\leq 1` and compressed when :math:`\beta>1` (the latter
-case has less practical importance). When :math:`\beta=1`, the one-term 
-exponential model is recovered. When :math:`\beta=2`, the probability 
+case has less practical importance). When :math:`\beta=1`, the one-term
+exponential model is recovered. When :math:`\beta=2`, the probability
 density function for the normal distribution is obtained.
 """
 
@@ -49,7 +49,7 @@ def exp(x: np.ndarray, *args: float) -> np.ndarray:
     .. math::
 
        y=\sum_{k=1}^na_k\exp{(b_kx)}
-    
+
     Parameters
     ----------
     x : `numpy.ndarray`
@@ -57,8 +57,8 @@ def exp(x: np.ndarray, *args: float) -> np.ndarray:
 
     *args : `float`
         Fitting parameters for the exponential term(s), ordered as
-        :math:`a_1,\,b_1,\,a_2,\,b_2,\ldots,\,a_n,\,b_n`, where 
-        :math:`n` is the number of terms in the model. As such, the 
+        :math:`a_1,\,b_1,\,a_2,\,b_2,\ldots,\,a_n,\,b_n`, where
+        :math:`n` is the number of terms in the model. As such, the
         number of variable positional arguments must be even.
 
     Returns
@@ -104,7 +104,7 @@ def exp1(x: np.ndarray, a: float, b: float) -> np.ndarray:
     .. math::
 
        y=a\exp{(bx)}
-    
+
     Parameters
     ----------
     x : `numpy.ndarray`
@@ -133,7 +133,7 @@ def exp2(x: np.ndarray, a: float, b: float, c: float, d: float) -> np.ndarray:
     .. math::
 
        y=a\exp{(bx)}+c\exp{(dx)}
-    
+
     Parameters
     ----------
     x : `numpy.ndarray`

@@ -30,7 +30,7 @@ def test_func_create_atoms_error():
         topology.create_atoms(dims, N=10, N_p=3)
 
 def test_func_create_atoms_random():
-    
+
     # TEST CASE 1: Random melt in reduced units
     N = rng.integers(1, 1000)
     pos = topology.create_atoms(dims, N)
@@ -61,7 +61,7 @@ def test_func_create_atoms_polymer():
 
     # TEST CASE 2: Random polymer melt with bond information and wrapped
     # positions
-    pos, bonds = topology.create_atoms(dims, N, N_p, connectivity=True, 
+    pos, bonds = topology.create_atoms(dims, N, N_p, connectivity=True,
                                        randomize=True, wrap=True)
     assert pos.shape == (N, 3)
     assert bonds.shape[0] == N - M
@@ -76,7 +76,7 @@ def test_func_create_atoms_lattice():
                                           flexible=True)
     assert np.allclose(pos[4], 0.8 * np.array((0, np.sqrt(3) / 3, 2 * np.sqrt(6) / 3)))
     assert np.allclose(dims, new_dims, atol=1)
-    
+
     # TEST CASE 2: HCP lattice with flexible dimensions
     pos, new_dims = topology.create_atoms(dims, lattice="hcp", length=0.8,
                                           flexible=True)

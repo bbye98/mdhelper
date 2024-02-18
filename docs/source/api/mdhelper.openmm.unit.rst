@@ -1,4 +1,4 @@
-﻿unit
+unit
 ====
 
 .. automodule:: mdhelper.openmm.unit
@@ -15,8 +15,8 @@
       :toctree:
       :nosignatures:
    
-      lj_scaling
-      unit_scaling
+      get_lj_scaling_factors
+      get_scaling_factors
    
    
 

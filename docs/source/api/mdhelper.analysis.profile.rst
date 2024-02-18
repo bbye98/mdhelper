@@ -15,7 +15,7 @@ profile
       :toctree:
       :nosignatures:
    
-      potential_profile
+      calculate_potential_profile
    
    
 

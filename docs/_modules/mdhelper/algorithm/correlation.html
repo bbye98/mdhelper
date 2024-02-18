@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>mdhelper.algorithm.correlation - MDHelper documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>mdhelper.algorithm.correlation - MDHelper 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">MDHelper  documentation</div></a>
+      <a href="../../../index.html"><div class="brand">MDHelper 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,6 +145,9 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+  </div>
   
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -171,14 +174,16 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.closest_factors.html">closest_factors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.lj_scaling.html">lj_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.get_closest_factors.html">get_closest_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.get_lj_scaling_factors.html">get_lj_scaling_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.get_scaling_factors.html">get_scaling_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.rebin.html">rebin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.replicate.html">replicate</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.unit_scaling.html">unit_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.strip_unit.html">strip_unit</a></li>
 </ul>
 </li>
 </ul>
@@ -190,14 +195,14 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.html">electrostatics</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of electrostatics</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.relative_permittivity.html">relative_permittivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.calculate_relative_permittivity.html">calculate_relative_permittivity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.DipoleMoment.html">DipoleMoment</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.html">polymer</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of polymer</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.relaxation_time.html">relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.ParallelSingleChainStructureFactor.html">ParallelSingleChainStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
@@ -205,15 +210,15 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.html">profile</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of profile</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.potential_profile.html">potential_profile</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.calculate_potential_profile.html">calculate_potential_profile</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.DensityProfile.html">DensityProfile</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.html">structure</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.coordination_numbers.html">coordination_numbers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_coordination_numbers.html">calculate_coordination_numbers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_structure_factor.html">calculate_structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
@@ -229,12 +234,12 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.html">transport</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of transport</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.coefficients.html">coefficients</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.conductivity.html">conductivity</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.electrophoretic_mobility.html">electrophoretic_mobility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_conductivity.html">calculate_conductivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_electrophoretic_mobility.html">calculate_electrophoretic_mobility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_transference_number.html">calculate_transference_number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_transport_coefficients.html">calculate_transport_coefficients</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.msd_fft.html">msd_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.msd_shift.html">msd_shift</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.transference_number.html">transference_number</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.Onsager.html">Onsager</a></li>
 </ul>
 </li>
@@ -323,21 +328,21 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.system.html">system</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle navigation of system</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.electric_field.html">electric_field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.add_electric_field.html">add_electric_field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.add_image_charges.html">add_image_charges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.add_slab_correction.html">add_slab_correction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.estimate_pressure_tensor.html">estimate_pressure_tensor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.image_charges.html">image_charges</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.register_particles.html">register_particles</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.slab_correction.html">slab_correction</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" role="switch" type="checkbox"/><label for="toctree-checkbox-28"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.create_atoms.html">create_atoms</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.subset.html">subset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.get_subset.html">get_subset</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.html">unit</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of unit</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.lj_scaling.html">lj_scaling</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.unit_scaling.html">unit_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.get_lj_scaling_factors.html">get_lj_scaling_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.get_scaling_factors.html">get_scaling_factors</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -348,7 +353,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.html">plot</a><input class="toctree-checkbox" id="toctree-checkbox-31" name="toctree-checkbox-31" role="switch" type="checkbox"/><label for="toctree-checkbox-31"><div class="visually-hidden">Toggle navigation of plot</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.axis.html">axis</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle navigation of axis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.plot.axis.tabular_legend.html">tabular_legend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.plot.axis.set_up_tabular_legend.html">set_up_tabular_legend</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.rcparam.html">rcparam</a><input class="toctree-checkbox" id="toctree-checkbox-33" name="toctree-checkbox-33" role="switch" type="checkbox"/><label for="toctree-checkbox-33"><div class="visually-hidden">Toggle navigation of rcparam</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -398,9 +403,9 @@
 <span class="sd">=======================</span>
 <span class="sd">.. moduleauthor:: Benjamin Ye &lt;GitHub: @bbye98&gt;</span>
 
-<span class="sd">This module contains algorithms for computing the correlation between </span>
+<span class="sd">This module contains algorithms for computing the correlation between</span>
 <span class="sd">data with various shapes that evolve over time. This includes real- and</span>
-<span class="sd">Fourier-space evaluations of the autocorrelation and cross-correlation </span>
+<span class="sd">Fourier-space evaluations of the autocorrelation and cross-correlation</span>
 <span class="sd">functions, and by extension, the mean squared and cross displacements.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -412,18 +417,18 @@
 <div class="viewcode-block" id="correlation_fft">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.correlation.correlation_fft.html#mdhelper.algorithm.correlation.correlation_fft">[docs]</a>
 <span class="k">def</span> <span class="nf">correlation_fft</span><span class="p">(</span>
-        <span class="n">arr1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">arr2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">arr1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">arr2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">double</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">vector</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Evaluates the autocorrelation function (ACF) or cross-correlation</span>
-<span class="sd">    function (CCF) of a time series using fast Fourier transforms (FFT). </span>
+<span class="sd">    function (CCF) of a time series using fast Fourier transforms (FFT).</span>
 
 <span class="sd">    The algorithm, better known as the Fast Correlation Algorithm (FCA)</span>
 <span class="sd">    [1]_ [2]_, is a result of the Wiener–Khinchin theorem and has a time</span>
 <span class="sd">    complexity of :math:`\mathcal{O}(N\log{N})`. Effectively, the ACF</span>
-<span class="sd">    can be computed from the raw data :math:`\mathbf{r}(t)` with two </span>
+<span class="sd">    can be computed from the raw data :math:`\mathbf{r}(t)` with two</span>
 <span class="sd">    FFTs using</span>
 
 <span class="sd">    .. math::</span>
@@ -433,7 +438,7 @@
 <span class="sd">         A(\tau)=\mathrm{FFT}^{-1}(\hat{\mathbf{r}}(\xi)\hat{\mathbf{r}}^*(\xi))</span>
 <span class="sd">       \end{gather*}</span>
 
-<span class="sd">    where :math:`\tau` is the time lag and the asterisk (:math:`^*`) </span>
+<span class="sd">    where :math:`\tau` is the time lag and the asterisk (:math:`^*`)</span>
 <span class="sd">    denotes the complex conjugate.</span>
 
 <span class="sd">    Similarly, the CCF for species :math:`i` and :math:`j` is evaluated</span>
@@ -448,34 +453,34 @@
 <span class="sd">    ----------</span>
 <span class="sd">    arr1 : `numpy.ndarray`</span>
 <span class="sd">        Time evolution of :math:`N` entities over :math:`N_\mathrm{b}`</span>
-<span class="sd">        blocks of :math:`N_t` frames each. </span>
+<span class="sd">        blocks of :math:`N_t` frames each.</span>
 
 <span class="sd">        .. container::</span>
 
-<span class="sd">           **Shape**: </span>
-<span class="sd">           </span>
+<span class="sd">           **Shape**:</span>
+
 <span class="sd">           * Scalar: :math:`(N_t,)`, :math:`(N_t,\,N)`,</span>
 <span class="sd">             :math:`(N_\mathrm{b},\,N_t)`, or</span>
 <span class="sd">             :math:`(N_\mathrm{b},\,N_t,\,N)`.</span>
-<span class="sd">           * Vector: :math:`(N_t,\,d)`, </span>
+<span class="sd">           * Vector: :math:`(N_t,\,d)`,</span>
 <span class="sd">             :math:`(N_t,\,N,\,N_\mathrm{d})`,</span>
-<span class="sd">             :math:`(N_\mathrm{b},\,N_t,\,N_\mathrm{d})`, or </span>
-<span class="sd">             :math:`(N_\mathrm{b},\,N_t,\,N,\,N_\mathrm{d})`, where </span>
-<span class="sd">             :math:`N_\mathrm{d}` is the number of dimensions each </span>
+<span class="sd">             :math:`(N_\mathrm{b},\,N_t,\,N_\mathrm{d})`, or</span>
+<span class="sd">             :math:`(N_\mathrm{b},\,N_t,\,N,\,N_\mathrm{d})`, where</span>
+<span class="sd">             :math:`N_\mathrm{d}` is the number of dimensions each</span>
 <span class="sd">             vector has.</span>
 
 <span class="sd">    arr2 : `numpy.ndarray`, optional</span>
 <span class="sd">        Time evolution of another :math:`N` entities. If provided, the</span>
-<span class="sd">        CCF for `arr1` and `arr2` is calculated. Otherwise, the ACF for </span>
+<span class="sd">        CCF for `arr1` and `arr2` is calculated. Otherwise, the ACF for</span>
 <span class="sd">        `arr1` is calculated.</span>
-<span class="sd">        </span>
+
 <span class="sd">        **Shape**: Same as `arr1`.</span>
 
 <span class="sd">    axis : `int`, optional</span>
 <span class="sd">        Axis along which to evaluate the ACF/CCF. If `arr1` contains a</span>
 <span class="sd">        full, unsplit trajectory, the ACF/CCF should be evaluated along</span>
-<span class="sd">        the first axis (:code:`axis=0`). If `arr1` contains a </span>
-<span class="sd">        trajectory split into multiple blocks, the ACF/CCF should be </span>
+<span class="sd">        the first axis (:code:`axis=0`). If `arr1` contains a</span>
+<span class="sd">        trajectory split into multiple blocks, the ACF/CCF should be</span>
 <span class="sd">        evaluated along the second axis (:code:`axis=1`). If not</span>
 <span class="sd">        specified, the axis is determined automatically using the shape</span>
 <span class="sd">        of `arr1`.</span>
@@ -486,13 +491,13 @@
 
 <span class="sd">    double : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        If :code:`True`, the ACF is doubled or the CCFs for the negative</span>
-<span class="sd">        and positive time lags are combined. Useful for evaluating the </span>
+<span class="sd">        and positive time lags are combined. Useful for evaluating the</span>
 <span class="sd">        mean squared or cross displacement. See</span>
-<span class="sd">        :func:`mdhelper.algorithm.correlation.msd_fft` for more </span>
+<span class="sd">        :func:`mdhelper.algorithm.correlation.msd_fft` for more</span>
 <span class="sd">        information.</span>
 
 <span class="sd">    vector : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Specifies whether `arr1` and `arr2` contain vectors. If </span>
+<span class="sd">        Specifies whether `arr1` and `arr2` contain vectors. If</span>
 <span class="sd">        :code:`True`, the ACF/CCF is summed over the last dimension.</span>
 
 <span class="sd">    Returns</span>
@@ -516,17 +521,17 @@
 
 <span class="sd">           * If :code:`average=True`, the axis containing the :math:`N`</span>
 <span class="sd">             entities is removed.</span>
-<span class="sd">           * If :code:`double=False`, the axis containing the </span>
+<span class="sd">           * If :code:`double=False`, the axis containing the</span>
 <span class="sd">             :math:`N_t` times now has a length of :math:`2N_t-1` to</span>
 <span class="sd">             accomodate negative and positive time lags.</span>
 <span class="sd">           * If :code:`vector=True`, the last dimension is removed.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    .. [1] Kneller, G. R.; Keiner, V.; Kneller, M.; Schiller, M. </span>
-<span class="sd">       NMOLDYN: A Program Package for a Neutron Scattering Oriented </span>
+<span class="sd">    .. [1] Kneller, G. R.; Keiner, V.; Kneller, M.; Schiller, M.</span>
+<span class="sd">       NMOLDYN: A Program Package for a Neutron Scattering Oriented</span>
 <span class="sd">       Analysis of Molecular Dynamics Simulations. *Computer Physics</span>
-<span class="sd">       Communications* **1995**, *91* (1–3), 191–214. </span>
+<span class="sd">       Communications* **1995**, *91* (1–3), 191–214.</span>
 <span class="sd">       https://doi.org/10.1016/0010-4655(95)00048-K.</span>
 
 <span class="sd">    .. [2] Calandrini, V.; Pellegrini, E.; Calligari, P.; Hinsen, K.;</span>
@@ -537,8 +542,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Ensure arrays have valid dimensionality</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">arr1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr1</span><span class="p">)</span>
+    <span class="n">arr1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">arr1</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The arrays must not be empty.&quot;</span><span class="p">)</span>
     <span class="n">ndim</span> <span class="o">=</span> <span class="n">arr1</span><span class="o">.</span><span class="n">ndim</span>
@@ -547,8 +551,7 @@
                 <span class="s2">&quot;dimensional.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">arr2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">arr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr2</span><span class="p">)</span>
+        <span class="n">arr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr2</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">arr1</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">arr2</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="s2">&quot;The arrays must have the same dimensions.&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
@@ -616,7 +619,7 @@
         <span class="k">if</span> <span class="n">corr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">!=</span> <span class="n">N_t</span><span class="p">:</span>
             <span class="n">corr</span><span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">N_t</span><span class="p">:]</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span><span class="p">),</span> <span class="n">axes</span><span class="p">)</span>
             <span class="n">corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">corr</span><span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">N_t</span><span class="p">:],</span> <span class="n">corr</span><span class="p">[:</span><span class="n">N_t</span><span class="p">]))</span>
-    
+
     <span class="c1"># Average over all entities, if desired</span>
     <span class="k">if</span> <span class="n">average</span><span class="p">:</span>
         <span class="n">axis_avg</span> <span class="o">=</span> <span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">vector</span>
@@ -628,7 +631,7 @@
 <div class="viewcode-block" id="correlation_shift">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.correlation.correlation_shift.html#mdhelper.algorithm.correlation.correlation_shift">[docs]</a>
 <span class="k">def</span> <span class="nf">correlation_shift</span><span class="p">(</span>
-        <span class="n">arr1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">arr2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">arr1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">arr2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">double</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">vector</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
@@ -637,7 +640,7 @@
 <span class="sd">    function (CCF) of a time series directly by using sliding windows</span>
 <span class="sd">    along the time axis.</span>
 
-<span class="sd">    For scalars :math:`r` or vectors :math:`\mathbf{r}`, the ACF is </span>
+<span class="sd">    For scalars :math:`r` or vectors :math:`\mathbf{r}`, the ACF is</span>
 <span class="sd">    defined as</span>
 
 <span class="sd">    .. math::</span>
@@ -645,9 +648,9 @@
 <span class="sd">        A(\tau)=\langle\textbf{r}(t_0+\tau)\cdot\textbf{r}(t_0)\rangle</span>
 <span class="sd">        =\dfrac{1}{N}\sum_{\alpha=1}^N</span>
 <span class="sd">        \textbf{r}_\alpha(t_0+\tau)\cdot\textbf{r}_\alpha(t_0)</span>
-<span class="sd">        </span>
+
 <span class="sd">    while the CCF for species :math:`i` and :math:`j` is given by</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. math::</span>
 
 <span class="sd">        C_{ij}(\tau)=\langle\textbf{r}_i(t_0+\tau)\cdot</span>
@@ -655,14 +658,14 @@
 <span class="sd">        =\dfrac{1}{N}\sum_{\alpha=1}^N\textbf{r}_{i,\alpha}(t_0+\tau)\cdot</span>
 <span class="sd">        \textbf{r}_{j,\alpha}(t_0)</span>
 
-<span class="sd">    where :math:`\tau` is the time lag, :math:`t_0` is an arbitrary </span>
+<span class="sd">    where :math:`\tau` is the time lag, :math:`t_0` is an arbitrary</span>
 <span class="sd">    reference time, and :math:`N` is the number of entities. To reduce</span>
 <span class="sd">    statistical noise, the ACF/CCF is calculated for and averaged over</span>
-<span class="sd">    all possible reference times :math:`t_0`. As such, this algorithm </span>
+<span class="sd">    all possible reference times :math:`t_0`. As such, this algorithm</span>
 <span class="sd">    has a time complexity of :math:`\mathcal{O}(N^2)`.</span>
 
-<span class="sd">    With large data sets, this approach is too slow to be useful. If </span>
-<span class="sd">    your machine supports the fast Fourier transform (FFT), consider </span>
+<span class="sd">    With large data sets, this approach is too slow to be useful. If</span>
+<span class="sd">    your machine supports the fast Fourier transform (FFT), consider</span>
 <span class="sd">    using the much more performant FFT-based algorithm implemented in</span>
 <span class="sd">    :func:`mdhelper.algorithm.correlation.correlation_fft` instead.</span>
 
@@ -670,34 +673,34 @@
 <span class="sd">    ----------</span>
 <span class="sd">    arr1 : `numpy.ndarray`</span>
 <span class="sd">        Time evolution of :math:`N` entities over :math:`N_\mathrm{b}`</span>
-<span class="sd">        blocks of :math:`N_t` frames each. </span>
+<span class="sd">        blocks of :math:`N_t` frames each.</span>
 
 <span class="sd">        .. container::</span>
 
-<span class="sd">           **Shape**: </span>
-<span class="sd">           </span>
+<span class="sd">           **Shape**:</span>
+
 <span class="sd">           * Scalar: :math:`(N_t,)`, :math:`(N_t,\,N)`,</span>
 <span class="sd">             :math:`(N_\mathrm{b},\,N_t)`, or</span>
 <span class="sd">             :math:`(N_\mathrm{b},\,N_t,\,N)`.</span>
-<span class="sd">           * Vector: :math:`(N_t,\,d)`, </span>
+<span class="sd">           * Vector: :math:`(N_t,\,d)`,</span>
 <span class="sd">             :math:`(N_t,\,N,\,N_\mathrm{d})`,</span>
-<span class="sd">             :math:`(N_\mathrm{b},\,N_t,\,N_\mathrm{d})`, or </span>
-<span class="sd">             :math:`(N_\mathrm{b},\,N_t,\,N,\,N_\mathrm{d})`, where </span>
-<span class="sd">             :math:`N_\mathrm{d}` is the number of dimensions each </span>
+<span class="sd">             :math:`(N_\mathrm{b},\,N_t,\,N_\mathrm{d})`, or</span>
+<span class="sd">             :math:`(N_\mathrm{b},\,N_t,\,N,\,N_\mathrm{d})`, where</span>
+<span class="sd">             :math:`N_\mathrm{d}` is the number of dimensions each</span>
 <span class="sd">             vector has.</span>
 
 <span class="sd">    arr2 : `numpy.ndarray`, optional</span>
 <span class="sd">        Time evolution of another :math:`N` entities. If provided, the</span>
-<span class="sd">        CCF for `arr1` and `arr2` is calculated. Otherwise, the ACF for </span>
+<span class="sd">        CCF for `arr1` and `arr2` is calculated. Otherwise, the ACF for</span>
 <span class="sd">        `arr1` is calculated.</span>
-<span class="sd">        </span>
+
 <span class="sd">        **Shape**: Same as `arr1`.</span>
 
 <span class="sd">    axis : `int`, optional</span>
 <span class="sd">        Axis along which to evaluate the ACF/CCF. If `arr1` contains a</span>
 <span class="sd">        full, unsplit trajectory, the ACF/CCF should be evaluated along</span>
-<span class="sd">        the first axis (:code:`axis=0`). If `arr1` contains a </span>
-<span class="sd">        trajectory split into multiple blocks, the ACF/CCF should be </span>
+<span class="sd">        the first axis (:code:`axis=0`). If `arr1` contains a</span>
+<span class="sd">        trajectory split into multiple blocks, the ACF/CCF should be</span>
 <span class="sd">        evaluated along the second axis (:code:`axis=1`). If not</span>
 <span class="sd">        specified, the axis is determined automatically using the shape</span>
 <span class="sd">        of `arr1`.</span>
@@ -708,13 +711,13 @@
 
 <span class="sd">    double : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        If :code:`True`, the ACF is doubled or the CCFs for the negative</span>
-<span class="sd">        and positive time lags are combined. Useful for evaluating the </span>
+<span class="sd">        and positive time lags are combined. Useful for evaluating the</span>
 <span class="sd">        mean squared or cross displacement. See</span>
-<span class="sd">        :func:`mdhelper.algorithm.correlation.msd_shift` for more </span>
+<span class="sd">        :func:`mdhelper.algorithm.correlation.msd_shift` for more</span>
 <span class="sd">        information.</span>
 
 <span class="sd">    vector : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Specifies whether `arr1` and `arr2` contain vectors. If </span>
+<span class="sd">        Specifies whether `arr1` and `arr2` contain vectors. If</span>
 <span class="sd">        :code:`True`, the ACF/CCF is summed over the last dimension.</span>
 
 <span class="sd">    Returns</span>
@@ -738,15 +741,14 @@
 
 <span class="sd">           * If :code:`average=True`, the axis containing the :math:`N`</span>
 <span class="sd">             entities is removed.</span>
-<span class="sd">           * If :code:`double=False`, the axis containing the </span>
+<span class="sd">           * If :code:`double=False`, the axis containing the</span>
 <span class="sd">             :math:`N_t` times now has a length of :math:`2N_t-1` to</span>
 <span class="sd">             accomodate negative and positive time lags.</span>
 <span class="sd">           * If :code:`vector=True`, the last dimension is removed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Ensure arrays have valid dimensionality</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">arr1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr1</span><span class="p">)</span>
+    <span class="n">arr1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">arr1</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The arrays must not be empty.&quot;</span><span class="p">)</span>
     <span class="n">ndim</span> <span class="o">=</span> <span class="n">arr1</span><span class="o">.</span><span class="n">ndim</span>
@@ -755,8 +757,7 @@
                 <span class="s2">&quot;dimensional.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">arr2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">arr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr2</span><span class="p">)</span>
+        <span class="n">arr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr2</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">arr1</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">arr2</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="s2">&quot;The arrays must have the same dimensions.&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
@@ -785,23 +786,23 @@
     <span class="k">if</span> <span class="n">arr2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">arr1</span><span class="p">[</span><span class="n">i</span><span class="p">:],</span> <span class="n">arr1</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">])</span> 
+                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">arr1</span><span class="p">[</span><span class="n">i</span><span class="p">:],</span> <span class="n">arr1</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">])</span>
                  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_t</span><span class="p">)),</span>
                 <span class="n">count</span><span class="o">=</span><span class="n">N_t</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">axis</span><span class="p">:</span>
             <span class="n">axes</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bt...</span><span class="si">{</span><span class="s1">&#39;d&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">vector</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="n">corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">-&gt;b...&quot;</span><span class="p">,</span> 
-                           <span class="n">arr1</span><span class="p">[:,</span> <span class="n">i</span><span class="p">:],</span> <span class="n">arr1</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">])</span> 
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">-&gt;b...&quot;</span><span class="p">,</span>
+                           <span class="n">arr1</span><span class="p">[:,</span> <span class="n">i</span><span class="p">:],</span> <span class="n">arr1</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">])</span>
                  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_t</span><span class="p">)],</span>
                 <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">axes</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;t...</span><span class="si">{</span><span class="s1">&#39;d&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">vector</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="n">corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">-&gt;...&quot;</span><span class="p">,</span> 
-                           <span class="n">arr1</span><span class="p">[</span><span class="n">i</span><span class="p">:],</span> <span class="n">arr1</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">])</span> 
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">-&gt;...&quot;</span><span class="p">,</span>
+                           <span class="n">arr1</span><span class="p">[</span><span class="n">i</span><span class="p">:],</span> <span class="n">arr1</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">])</span>
                  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_t</span><span class="p">)]</span>
             <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -809,7 +810,7 @@
         <span class="n">stop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">N_t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)]</span>
         <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">arr1</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">],</span> <span class="n">arr2</span><span class="p">[</span><span class="n">k</span><span class="p">:</span><span class="n">m</span><span class="p">])</span> 
+                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">arr1</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">],</span> <span class="n">arr2</span><span class="p">[</span><span class="n">k</span><span class="p">:</span><span class="n">m</span><span class="p">])</span>
                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">start</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">stop</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)),</span>
                 <span class="n">count</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
             <span class="p">)</span>
@@ -817,17 +818,17 @@
             <span class="n">axes</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bt...</span><span class="si">{</span><span class="s1">&#39;d&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">vector</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="n">corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
                 <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">-&gt;b...&quot;</span><span class="p">,</span> <span class="n">arr1</span><span class="p">[:,</span> <span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">],</span> <span class="n">arr2</span><span class="p">[:,</span> <span class="n">k</span><span class="p">:</span><span class="n">m</span><span class="p">])</span>
-                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">start</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">stop</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)],</span> 
+                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">start</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">stop</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)],</span>
                 <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">axes</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;t...</span><span class="si">{</span><span class="s1">&#39;d&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">vector</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="n">corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">-&gt;...&quot;</span><span class="p">,</span> <span class="n">arr1</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">],</span> <span class="n">arr2</span><span class="p">[</span><span class="n">k</span><span class="p">:</span><span class="n">m</span><span class="p">])</span> 
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">axes</span><span class="si">}</span><span class="s2">-&gt;...&quot;</span><span class="p">,</span> <span class="n">arr1</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">],</span> <span class="n">arr2</span><span class="p">[</span><span class="n">k</span><span class="p">:</span><span class="n">m</span><span class="p">])</span>
                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">start</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">stop</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)]</span>
             <span class="p">)</span>
 
-    <span class="c1"># Doubles the ACF or overlaps the CCF for negative and positive </span>
+    <span class="c1"># Doubles the ACF or overlaps the CCF for negative and positive</span>
     <span class="c1"># lags, if desired</span>
     <span class="k">if</span> <span class="n">double</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">arr2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -867,15 +868,15 @@
 <div class="viewcode-block" id="msd_fft">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.correlation.msd_fft.html#mdhelper.algorithm.correlation.msd_fft">[docs]</a>
 <span class="k">def</span> <span class="nf">msd_fft</span><span class="p">(</span>
-        <span class="n">pos1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">pos2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">pos1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">pos2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates the mean squared displacement (MSD) or the analogous </span>
+<span class="sd">    Evaluates the mean squared displacement (MSD) or the analogous</span>
 <span class="sd">    cross displacement (CD) using fast Fourier transforms (FFT).</span>
-<span class="sd">    </span>
+
 <span class="sd">    The algorithm [1]_ [2]_ is</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. math::</span>
 
 <span class="sd">        \mathrm{MSD}_m&amp;=\frac{1}{N_t-m}\sum_{k=0}^{N_t-m-1}</span>
@@ -901,24 +902,24 @@
 <span class="sd">          S_m=\dfrac{Q_m}{N_t-m}</span>
 <span class="sd">        \end{gather*}</span>
 
-<span class="sd">    Similarly, when two distinct sets of positions are provided, the CD </span>
+<span class="sd">    Similarly, when two distinct sets of positions are provided, the CD</span>
 <span class="sd">    is computed using</span>
 
 <span class="sd">    .. math::</span>
 
 <span class="sd">       \mathrm{CD}_{ij,m}=S_m-2C_{ij,m}</span>
 
-<span class="sd">    where :math:`C_{ij,m}` is the cross-correlation of the two sets of </span>
+<span class="sd">    where :math:`C_{ij,m}` is the cross-correlation of the two sets of</span>
 <span class="sd">    positions and :math:`D_k` in :math:`S_m` is replaced with the</span>
 <span class="sd">    analogous :math:`D_{ij,k} = \textbf{r}_{i,k}\cdot\textbf{r}_{j,k}`.</span>
 
 <span class="sd">    .. note::</span>
-<span class="sd">    </span>
-<span class="sd">       To evaluate the sum in the expression used to calculate the </span>
+
+<span class="sd">       To evaluate the sum in the expression used to calculate the</span>
 <span class="sd">       Onsager transport coefficients [3]_</span>
 
 <span class="sd">       .. math::</span>
-<span class="sd">            </span>
+
 <span class="sd">          L_{ij}=\frac{1}{6k_\mathrm{B}T}\lim_{t\rightarrow\infty}</span>
 <span class="sd">          \frac{d}{dt}\left\langle\sum_{\alpha=1}^{N_i}</span>
 <span class="sd">          [\mathrm{r}_\alpha(t_0+t)-\mathrm{r}_\alpha(t_0)]\cdot</span>
@@ -933,17 +934,17 @@
 <span class="sd">    pos1 : `numpy.ndarray`</span>
 <span class="sd">        Individual or averaged position(s) of the :math:`N` particles</span>
 <span class="sd">        in the first particle group over :math:`N_\mathrm{b}`</span>
-<span class="sd">        blocks of :math:`N_t` frames each. </span>
-<span class="sd">        </span>
+<span class="sd">        blocks of :math:`N_t` frames each.</span>
+
 <span class="sd">        **Shape**: :math:`(N_t,\,3)`, :math:`(N_t,\,N,\,3)`, or</span>
 <span class="sd">        :math:`(N_\mathrm{b},\,N_t,\,N,\,3)`.</span>
-<span class="sd">        </span>
+
 <span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
 
 <span class="sd">    pos2 : `numpy.ndarray`, optional</span>
 <span class="sd">        Individual or averaged position(s) of the :math:`N` particles</span>
-<span class="sd">        in the second particle group over :math:`N_t` frames. </span>
-<span class="sd">        </span>
+<span class="sd">        in the second particle group over :math:`N_t` frames.</span>
+
 <span class="sd">        **Shape**: Same as `pos1`.</span>
 
 <span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
@@ -953,8 +954,8 @@
 <span class="sd">        contain a full, unsplit trajectory, the MSD/CD should be</span>
 <span class="sd">        evaluated along the first axis (:code:`axis=0`). If `pos1`</span>
 <span class="sd">        and/or `pos2` contain a trajectory split into multiple blocks,</span>
-<span class="sd">        the MSD should be evaluated along the second axis </span>
-<span class="sd">        (:code:`axis=1`). If not provided, the axis is selected </span>
+<span class="sd">        the MSD should be evaluated along the second axis</span>
+<span class="sd">        (:code:`axis=1`). If not provided, the axis is selected</span>
 <span class="sd">        automatically using the shape of `pos1`.</span>
 
 <span class="sd">    average : `bool`, keyword-only, default: :code:`True`</span>
@@ -965,19 +966,19 @@
 <span class="sd">    -------</span>
 <span class="sd">    disp : `numpy.ndarray`</span>
 <span class="sd">        Mean-squared or cross displacement.</span>
-<span class="sd">        </span>
-<span class="sd">        **Shape**: The shape of `pos`, except with the last dimension </span>
-<span class="sd">        removed. If :code:`average=True`, the axis containing the </span>
+
+<span class="sd">        **Shape**: The shape of `pos`, except with the last dimension</span>
+<span class="sd">        removed. If :code:`average=True`, the axis containing the</span>
 <span class="sd">        :math:`N` entities is also removed.</span>
-<span class="sd">        </span>
+
 <span class="sd">        **Reference unit**: :math:`\text{Å}^2`.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    .. [1] Kneller, G. R.; Keiner, V.; Kneller, M.; Schiller, M. </span>
-<span class="sd">       NMOLDYN: A Program Package for a Neutron Scattering Oriented </span>
+<span class="sd">    .. [1] Kneller, G. R.; Keiner, V.; Kneller, M.; Schiller, M.</span>
+<span class="sd">       NMOLDYN: A Program Package for a Neutron Scattering Oriented</span>
 <span class="sd">       Analysis of Molecular Dynamics Simulations. *Computer Physics</span>
-<span class="sd">       Communications* **1995**, *91* (1–3), 191–214. </span>
+<span class="sd">       Communications* **1995**, *91* (1–3), 191–214.</span>
 <span class="sd">       https://doi.org/10.1016/0010-4655(95)00048-K.</span>
 
 <span class="sd">    .. [2] Calandrini, V.; Pellegrini, E.; Calligari, P.; Hinsen, K.;</span>
@@ -994,8 +995,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Ensure arrays have valid dimensionality</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pos1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">pos1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pos1</span><span class="p">)</span>
+    <span class="n">pos1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pos1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">pos1</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The position arrays must not be empty.&quot;</span><span class="p">)</span>
     <span class="n">ndim</span> <span class="o">=</span> <span class="n">pos1</span><span class="o">.</span><span class="n">ndim</span>
@@ -1004,8 +1004,7 @@
                 <span class="s2">&quot;dimensional.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">pos2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pos2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">pos2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pos2</span><span class="p">)</span>
+        <span class="n">pos2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pos2</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pos1</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">pos2</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="s2">&quot;The position arrays must have the same dimensions.&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
@@ -1031,7 +1030,7 @@
     <span class="n">N_t</span> <span class="o">=</span> <span class="n">pos1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
 
     <span class="c1"># Get intermediate quantities required for the MSD/CD calculation</span>
-    <span class="n">s2</span> <span class="o">=</span> <span class="n">correlation_fft</span><span class="p">(</span><span class="n">pos1</span><span class="p">,</span> <span class="n">pos2</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">double</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+    <span class="n">s2</span> <span class="o">=</span> <span class="n">correlation_fft</span><span class="p">(</span><span class="n">pos1</span><span class="p">,</span> <span class="n">pos2</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">double</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                          <span class="n">vector</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">r1r2</span> <span class="o">=</span> <span class="p">(</span><span class="n">pos1</span> <span class="o">*</span> <span class="p">(</span><span class="n">pos1</span> <span class="k">if</span> <span class="n">pos2</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">pos2</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
@@ -1046,13 +1045,17 @@
             <span class="n">zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="n">mask</span><span class="p">]),</span> <span class="p">(</span><span class="n">axis</span><span class="p">,))</span>
             <span class="n">D</span> <span class="o">=</span> <span class="n">stack</span><span class="p">((</span><span class="n">r1r2</span><span class="p">,</span> <span class="n">zeros</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">axis</span><span class="p">:</span>
-                <span class="n">ssum</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> \
-                       <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="n">D</span><span class="p">[:,</span> <span class="n">N_t</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                   <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+                <span class="n">ssum</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="n">D</span><span class="p">[:,</span> <span class="n">N_t</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">ssum</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> \
-                       <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="n">D</span><span class="p">[</span><span class="n">N_t</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                   <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+                <span class="n">ssum</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="n">D</span><span class="p">[</span><span class="n">N_t</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> 
+                                <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+                <span class="p">)</span>
             <span class="k">return</span> <span class="n">ssum</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">s2</span>
 
         <span class="c1"># Average the intermediate quantities over all particles</span>
@@ -1061,24 +1064,29 @@
 
     <span class="c1"># Calculate the averaged MSD/CD</span>
     <span class="k">if</span> <span class="n">axis</span><span class="p">:</span>
-        <span class="n">ssum</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r1r2</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span><span class="p">))</span> \
-               <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">r1r2</span><span class="p">[:,</span> <span class="p">:</span><span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">r1r2</span><span class="p">[:,</span> <span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                     <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span>
-                           <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">ssum</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mi">2</span> <span class="o">*</span> <span class="n">r1r2</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span><span class="p">))</span>
+            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">r1r2</span><span class="p">[:,</span> <span class="p">:</span><span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">r1r2</span><span class="p">[:,</span> <span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span>
+                <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ssum</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r1r2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N_t</span><span class="p">)</span> \
-               <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">r1r2</span><span class="p">[:</span><span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">r1r2</span><span class="p">[</span><span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">ssum</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mi">2</span> <span class="o">*</span> <span class="n">r1r2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N_t</span><span class="p">)</span>
+            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">r1r2</span><span class="p">[:</span><span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">r1r2</span><span class="p">[</span><span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">ssum</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">s2</span></div>
 
 
 <div class="viewcode-block" id="msd_shift">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.correlation.msd_shift.html#mdhelper.algorithm.correlation.msd_shift">[docs]</a>
 <span class="k">def</span> <span class="nf">msd_shift</span><span class="p">(</span>
-        <span class="n">pos1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">pos2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">pos1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">pos2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates the mean squared displacement (MSD) or the analogous </span>
+<span class="sd">    Evaluates the mean squared displacement (MSD) or the analogous</span>
 <span class="sd">    cross displacement (CD) using the Einstein relation.</span>
 
 <span class="sd">    The MSD is defined as</span>
@@ -1101,18 +1109,18 @@
 <span class="sd">        (\textbf{r}_{i,\alpha}(t_0+\tau)-\textbf{r}_{i,\alpha}(t_0))\cdot</span>
 <span class="sd">        (\textbf{r}_{j,\alpha}(t_0+\tau)-\textbf{r}_{j,\alpha}(t_0))</span>
 
-<span class="sd">    where :math:`\tau` is the time lag, :math:`t_0` is an arbitrary </span>
+<span class="sd">    where :math:`\tau` is the time lag, :math:`t_0` is an arbitrary</span>
 <span class="sd">    reference time, and :math:`N` is the number of entities. To reduce</span>
 <span class="sd">    statistical noise, the MSD/CD is calculated for and averaged over</span>
 <span class="sd">    all possible reference times :math:`t_0`.</span>
 
 <span class="sd">    .. note::</span>
-<span class="sd">    </span>
-<span class="sd">       To evaluate the sum in the expression used to calculate the </span>
+
+<span class="sd">       To evaluate the sum in the expression used to calculate the</span>
 <span class="sd">       Onsager transport coefficients [1]_,</span>
 
 <span class="sd">       .. math::</span>
-<span class="sd">        </span>
+
 <span class="sd">          L_{ij}=\frac{1}{6k_\mathrm{B}T}\lim_{t\rightarrow\infty}</span>
 <span class="sd">          \frac{d}{dt}\left\langle\sum_{\alpha=1}^{N_i}</span>
 <span class="sd">          [\mathrm{r}_\alpha(t_0+t)-\mathrm{r}_\alpha(t_0)]\cdot</span>
@@ -1126,17 +1134,17 @@
 <span class="sd">    ----------</span>
 <span class="sd">    pos1 : `numpy.ndarray`</span>
 <span class="sd">        Individual or averaged position(s) of the :math:`N` particles</span>
-<span class="sd">        in the first particle group over :math:`N_t` frames. </span>
-<span class="sd">        </span>
+<span class="sd">        in the first particle group over :math:`N_t` frames.</span>
+
 <span class="sd">        **Shape**: :math:`(N_t,\,3)`, :math:`(N_t,\,N,\,3)`, or</span>
 <span class="sd">        :math:`(N_\mathrm{b},\,N_t,\,N,\,3)`.</span>
-<span class="sd">        </span>
+
 <span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
 
 <span class="sd">    pos2 : `numpy.ndarray`, optional</span>
 <span class="sd">        Individual or averaged position(s) of the :math:`N` particles</span>
-<span class="sd">        in the second particle group over :math:`N_t` frames. </span>
-<span class="sd">        </span>
+<span class="sd">        in the second particle group over :math:`N_t` frames.</span>
+
 <span class="sd">        **Shape**: Same as `pos1`.</span>
 
 <span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
@@ -1146,8 +1154,8 @@
 <span class="sd">        contain a full, unsplit trajectory, the MSD/CD should be</span>
 <span class="sd">        evaluated along the first axis (:code:`axis=0`). If `pos1`</span>
 <span class="sd">        and/or `pos2` contain a trajectory split into multiple blocks,</span>
-<span class="sd">        the MSD should be evaluated along the second axis </span>
-<span class="sd">        (:code:`axis=1`). If not provided, the axis is selected </span>
+<span class="sd">        the MSD should be evaluated along the second axis</span>
+<span class="sd">        (:code:`axis=1`). If not provided, the axis is selected</span>
 <span class="sd">        automatically using the shape of `pos1`.</span>
 
 <span class="sd">    average : `bool`, keyword-only, default: :code:`True`</span>
@@ -1158,11 +1166,11 @@
 <span class="sd">    -------</span>
 <span class="sd">    disp : `numpy.ndarray`</span>
 <span class="sd">        Mean-squared or cross displacement.</span>
-<span class="sd">        </span>
-<span class="sd">        **Shape**: The shape of `pos`, except with the last dimension </span>
-<span class="sd">        removed. If :code:`average=True`, the axis containing the </span>
+
+<span class="sd">        **Shape**: The shape of `pos`, except with the last dimension</span>
+<span class="sd">        removed. If :code:`average=True`, the axis containing the</span>
 <span class="sd">        :math:`N` entities is also removed.</span>
-<span class="sd">        </span>
+
 <span class="sd">        **Reference unit**: :math:`\text{Å}^2`.</span>
 
 <span class="sd">    References</span>
@@ -1175,8 +1183,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Ensure arrays have valid dimensionality</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pos1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">pos1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pos1</span><span class="p">)</span>
+    <span class="n">pos1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pos1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">pos1</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The position arrays must not be empty.&quot;</span><span class="p">)</span>
     <span class="n">ndim</span> <span class="o">=</span> <span class="n">pos1</span><span class="o">.</span><span class="n">ndim</span>
@@ -1185,8 +1192,7 @@
                 <span class="s2">&quot;dimensional.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">pos2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pos2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">pos2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pos2</span><span class="p">)</span>
+        <span class="n">pos2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pos2</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pos1</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">pos2</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="s2">&quot;The position arrays must have the same dimensions.&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
@@ -1210,7 +1216,7 @@
 
     <span class="c1"># Get number of frames</span>
     <span class="n">N_t</span> <span class="o">=</span> <span class="n">pos1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
-    
+
     <span class="c1"># Calculate the MSD/CD for each atom</span>
     <span class="k">if</span> <span class="n">pos2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">axis</span><span class="p">:</span>
@@ -1235,8 +1241,8 @@
             <span class="n">disp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
-                        <span class="s2">&quot;bt...d,bt...d-&gt;bt...&quot;</span><span class="p">,</span> 
-                        <span class="n">pos1</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos1</span><span class="p">[:,</span> <span class="n">i</span><span class="p">:],</span> 
+                        <span class="s2">&quot;bt...d,bt...d-&gt;bt...&quot;</span><span class="p">,</span>
+                        <span class="n">pos1</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos1</span><span class="p">[:,</span> <span class="n">i</span><span class="p">:],</span>
                         <span class="n">pos2</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos2</span><span class="p">[:,</span> <span class="n">i</span><span class="p">:]</span>
                     <span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_t</span><span class="p">)</span>
                 <span class="p">],</span>
@@ -1246,13 +1252,13 @@
             <span class="n">disp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
-                        <span class="s2">&quot;t...d,t...d-&gt;t...&quot;</span><span class="p">,</span> 
-                        <span class="n">pos1</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos1</span><span class="p">[</span><span class="n">i</span><span class="p">:],</span> 
+                        <span class="s2">&quot;t...d,t...d-&gt;t...&quot;</span><span class="p">,</span>
+                        <span class="n">pos1</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos1</span><span class="p">[</span><span class="n">i</span><span class="p">:],</span>
                         <span class="n">pos2</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos2</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
                     <span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_t</span><span class="p">)</span>
                 <span class="p">]</span>
             <span class="p">)</span>
-    
+
     <span class="c1"># Average over all particles, if desired</span>
     <span class="k">if</span> <span class="n">ndim</span> <span class="o">-</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">average</span><span class="p">:</span>
         <span class="n">disp</span> <span class="o">=</span> <span class="n">disp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
@@ -1271,7 +1277,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2023, Benjamin Ye
+                Copyright &#169; 2023–2024 Benjamin Ye, Pierre Walker
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1291,7 +1297,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../../_static/documentation_options.js?v=8d563738"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>

@@ -14,7 +14,7 @@ universe = mda.Universe(waterPSF, waterDCD)
 def test_class_density_profile():
 
     """
-    The test cases are adapted from the "Computing mass and charge 
+    The test cases are adapted from the "Computing mass and charge
     density on each axis" page from the MDAnalysis User Guide
     (https://userguide.mdanalysis.org/stable/examples/analysis/volumetric/linear_density.html).
     """
@@ -24,16 +24,16 @@ def test_class_density_profile():
                                              n_bins=200).run()
 
     for i, axis in enumerate("xyz"):
-        
+
         # TEST CASE 1: Number density profiles
         assert(
             np.allclose(
-                0.602214076 * getattr(density.results, axis).mass_density 
+                0.602214076 * getattr(density.results, axis).mass_density
                 / universe.residues.masses[0],
                 density_profile.results["number_density"][i]
             )
         )
-        
+
         # TEST CASE 2: Charge density profiles
         assert(
             np.allclose(

@@ -3,7 +3,7 @@ Curve fitting
 =============
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
-This module provides a library of curve fitting models, such as 
+This module provides a library of curve fitting models, such as
 exponential, Fourier series, polynomial, and power law models, for use
 with :func:`scipy.optimize.curve_fit`.
 """

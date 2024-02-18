@@ -11,15 +11,15 @@ rng = np.random.default_rng()
 def test_func_closest_factors():
 
     # TEST CASE 1: Cube root of perfect cube
-    factors = utility.closest_factors(1000, 3)
+    factors = utility.get_closest_factors(1000, 3)
     assert np.allclose(factors, 10 * np.ones(3, dtype=int))
 
     # TEST CASE 2: Three closest factors in ascending order
-    factors = utility.closest_factors(35904, 3)
+    factors = utility.get_closest_factors(35904, 3)
     assert factors.tolist() == [32, 33, 34] 
 
     # TEST CASE 3: Four closest factors in descending order
-    factors = utility.closest_factors(73440, 4, reverse=True)
+    factors = utility.get_closest_factors(73440, 4, reverse=True)
     assert factors.tolist() == [18, 17, 16, 15]
 
 def test_func_replicate():

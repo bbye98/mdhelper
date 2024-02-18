@@ -28,7 +28,7 @@ def test_class_onsager_msd():
     universe.dimensions = np.array((np.inf, np.inf, np.inf, 90, 90, 90), 
                                    dtype=float)
     onsager_shift = transport.Onsager(universe.atoms, fft=False, reduced=True).run()
-    onsager_shift.calculate_coefficients(start, stop, scale="linear")
+    onsager_shift.calculate_transport_coefficients(start, stop, scale="linear")
     assert np.allclose(onsager_shift.results.msd_self[0, 0], msd)
     assert np.isclose(diff, onsager_shift.results.D_i[0, 0])
 
@@ -37,7 +37,7 @@ def test_class_onsager_msd():
     universe.dimensions = np.array((np.inf, np.inf, np.inf, 90, 90, 90), 
                                    dtype=float)
     onsager_fft = transport.Onsager(universe.atoms, reduced=True).run()
-    onsager_fft.calculate_coefficients(start, stop, scale="linear")
+    onsager_fft.calculate_transport_coefficients(start, stop, scale="linear")
     assert np.allclose(onsager_fft.results.msd_self[0, 0], msd)
     assert np.isclose(diff, onsager_fft.results.D_i[0, 0])
 
@@ -159,7 +159,7 @@ def test_class_onsager_transport_coefficients():
 
     onsager = transport.Onsager(groups, temperature=1, center=True, com_wrap=True, 
                                 reduced=True, dt=dt).run(start=40)
-    onsager.calculate_coefficients(fit_start, fit_stop, 
+    onsager.calculate_transport_coefficients(fit_start, fit_stop, 
                                    start_self=fit_start_self, 
                                    stop_self=fit_stop_self,
                                    scale="linear", enforce_linear=False)

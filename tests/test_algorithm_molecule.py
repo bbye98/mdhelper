@@ -29,13 +29,13 @@ def test_center_of_mass_errors():
     # TEST CASE 3: No system dimension information when number of periodic
     # boundary crossings is provided
     with pytest.raises(ValueError):
-        molecule.center_of_mass(universe.atoms, 
+        molecule.center_of_mass(universe.atoms,
                                 images=np.zeros((universe.atoms.n_atoms, 3)))
-        
+
     # TEST CASE 4: Incompatible mass and position arrays
     with pytest.raises(ValueError):
         molecule.center_of_mass(
-            masses=universe.atoms.masses, 
+            masses=universe.atoms.masses,
             positions=[r.atoms.positions for r in universe.residues]
         )
 
@@ -43,7 +43,7 @@ def test_center_of_mass_mda():
 
     """
     Test case 1 is inspired by the example in the "Working with
-    AtomGroups" section of the MDAnalysis Tutorial 
+    AtomGroups" section of the MDAnalysis Tutorial
     (https://www.mdanalysis.org/MDAnalysisTutorial/atomgroups.html).
     """
 
@@ -59,7 +59,7 @@ def test_center_of_mass_mda():
     # TEST CASE 3: Center of mass of all particles using AtomGroup, but
     # with the masses and unwrapped positions returned
     c, m, p = molecule.center_of_mass(
-        universe.atoms, 
+        universe.atoms,
         images=np.zeros((universe.atoms.n_atoms, 3), dtype=int),
         dims=np.array((0, 0, 0), dtype=float),
         raw=True
@@ -67,13 +67,13 @@ def test_center_of_mass_mda():
     assert np.allclose(c, com)
     assert np.allclose(m, universe.atoms.masses)
     assert np.allclose(p, universe.atoms.positions)
-    
+
     # TEST CASE 4: Centers of mass of different residues using AtomGroup
-    res_coms = np.array([r.atoms.center_of_mass() 
+    res_coms = np.array([r.atoms.center_of_mass()
                         for r in universe.residues])
     assert np.allclose(molecule.center_of_mass(universe.atoms, "residues"),
                        res_coms)
-    
+
     # TEST CASE 5: Centers of mass of different residues using raw masses
     # and positions from AtomGroup
     assert np.allclose(
@@ -84,11 +84,11 @@ def test_center_of_mass_mda():
         res_coms
     )
 
-    # TEST CASE 6: Centers of mass of different residues using raw masses 
+    # TEST CASE 6: Centers of mass of different residues using raw masses
     # and positions
     assert np.allclose(
         molecule.center_of_mass(
-            masses=[r.atoms.masses for r in universe.residues], 
+            masses=[r.atoms.masses for r in universe.residues],
             positions=[r.atoms.positions for r in universe.residues]
         ),
         res_coms
@@ -104,21 +104,21 @@ def test_center_of_mass_mda():
 
     # TEST CASE 9: Centers of mass of arginine residues using raw masses
     # and positions
-    assert np.allclose(molecule.center_of_mass(masses=arg.masses, 
-                                               positions=arg.positions, 
+    assert np.allclose(molecule.center_of_mass(masses=arg.masses,
+                                               positions=arg.positions,
                                                n_groups=13),
                        arg_coms)
-    
+
     # TEST CASE 10: Centers of mass of only segment in AtomGroup
     assert np.allclose(molecule.center_of_mass(universe.atoms, "segments"), com)
 
-    # TEST CASE 11: Centers of mass of only segment in AtomGroup 
+    # TEST CASE 11: Centers of mass of only segment in AtomGroup
     # containing the arginine residues
-    assert np.allclose(molecule.center_of_mass(arg, "segments"), 
+    assert np.allclose(molecule.center_of_mass(arg, "segments"),
                        arg.center_of_mass())
-    
+
 def test_radius_of_gyration_errors():
-    
+
     # TEST CASE 1: Invalid grouping
     with pytest.raises(ValueError):
         molecule.radius_of_gyration(universe.atoms, "atoms")
@@ -127,10 +127,10 @@ def test_radius_of_gyration_mda():
 
     """
     The reference implementation is adapted from the "Writing your own
-    trajectory analysis" section of the MDAnalysis User Guide 
+    trajectory analysis" section of the MDAnalysis User Guide
     (https://userguide.mdanalysis.org/stable/examples/analysis/custom_trajectory_analysis.html).
     """
-    
+
     def radius_of_gyration(group):
         positions = group.positions
         masses = group.masses
@@ -138,29 +138,29 @@ def test_radius_of_gyration_mda():
         r_sq = (positions - center_of_mass) ** 2
         r_ssq = np.array((r_sq.sum(axis=1),
                           (r_sq[:, [1, 2]]).sum(axis=1),
-                          (r_sq[:, [0, 2]]).sum(axis=1), 
+                          (r_sq[:, [0, 2]]).sum(axis=1),
                           (r_sq[:, [0, 1]]).sum(axis=1)))
         return np.sqrt((masses * r_ssq).sum(axis=1) / masses.sum())
-    
+
     # TEST CASE 1: Overall radius of gyration
     ref = radius_of_gyration(universe.atoms)
     assert np.isclose(molecule.radius_of_gyration(universe.atoms), ref[0])
-    assert np.allclose(molecule.radius_of_gyration(universe.atoms, 
+    assert np.allclose(molecule.radius_of_gyration(universe.atoms,
                                                    components=True),
                        ref[1:])
-    
+
     # TEST CASE 2: Radii of gyration of arginine residues
     ref = np.array([radius_of_gyration(g.atoms) for g in arg.residues])
     assert np.allclose(molecule.radius_of_gyration(arg, "residues"),
                        ref[:, 0])
-    assert np.allclose(molecule.radius_of_gyration(arg, "residues", 
+    assert np.allclose(molecule.radius_of_gyration(arg, "residues",
                                                    components=True),
                        ref[:, 1:])
-    
+
     # TEST CASE 3: Radii of gyration of different residues
     ref = np.array([radius_of_gyration(g.atoms) for g in universe.residues])
     assert np.allclose(molecule.radius_of_gyration(universe.atoms, "residues"),
                        ref[:, 0])
-    assert np.allclose(molecule.radius_of_gyration(universe.atoms, "residues", 
+    assert np.allclose(molecule.radius_of_gyration(universe.atoms, "residues",
                                                    components=True),
                        ref[:, 1:])

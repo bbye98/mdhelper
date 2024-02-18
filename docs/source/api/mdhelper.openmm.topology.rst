@@ -16,7 +16,7 @@ topology
       :nosignatures:
    
       create_atoms
-      subset
+      get_subset
    
    
 

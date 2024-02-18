@@ -3,7 +3,7 @@ OpenMM topology transformations
 ===============================
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
-This module contains implementations of common OpenMM topology 
+This module contains implementations of common OpenMM topology
 transformations, like the generation of initial particle positions and
 subsetting existing topology objects.
 """
@@ -104,7 +104,7 @@ def _is_topology_object(obj: Any):
     ----------
     obj : `Any`
         Any object.
-    
+
     Returns
     -------
     is_topology_object : `bool`
@@ -112,14 +112,14 @@ def _is_topology_object(obj: Any):
     """
     return isinstance(obj, (app.Atom, app.topology.Bond, app.Residue, app.Chain))
 
-def subset(
+def get_subset(
         topology: app.Topology, positions: np.ndarray[float], *,
         delete: list[Any] = None, keep: list[Any] = None,
         types: Union[str, Iterable[str]] = None
     ) -> Union[app.Topology, np.ndarray[float]]:
 
     r"""
-    Creates a topology subset and get its corresponding particle positions.
+    Creates a topology subset and gets its corresponding particle positions.
 
     Parameters
     ----------
@@ -132,31 +132,31 @@ def subset(
         **Shape**: :math:`(N,\,3)`.
 
     delete : array-like, keyword-only, optional
-        `openmm.app.Atom`, `openmm.app.Bond`, `openmm.app.Residue`, 
-        and/or `openmm.app.Chain` objects, or the indices of those 
-        objects. If indices are provided, their corresponding object 
+        `openmm.app.Atom`, `openmm.app.Bond`, `openmm.app.Residue`,
+        and/or `openmm.app.Chain` objects, or the indices of those
+        objects. If indices are provided, their corresponding object
         types (:code:`"atom"`, :code:`"residue"`, :code:`"chain"`) must
         be provided in `types`. The specified items will be deleted from
-        the model. 
-        
+        the model.
+
         .. note::
-        
+
            Only one of `delete` and `keep` can be specified.
-    
+
     keep : array-like, keyword-only, optional
-        `openmm.app.Atom`, `openmm.app.Bond`, `openmm.app.Residue`, 
-        and/or `openmm.app.Chain` objects, or the indices of those 
+        `openmm.app.Atom`, `openmm.app.Bond`, `openmm.app.Residue`,
+        and/or `openmm.app.Chain` objects, or the indices of those
         objects. If indices are provided, their corresponding object
         types (:code:`"atom"`, :code:`"residue"`, :code:`"chain"`) must
         be provided in `types`. The specified items will be kept in the
         model.
 
         .. note::
-        
+
            Only one of `delete` and `keep` can be specified.
 
     types : `str` or array-like, keyword-only, optional
-        Object types corresponding to the indices provided in `delete` 
+        Object types corresponding to the indices provided in `delete`
         or `keep`. If a `str` is provided, all items in the array are
         assumed to have the same object type. Must be provided if not
         all items in `delete` or `keep` are OpenMM topology objects.
@@ -183,12 +183,12 @@ def subset(
                 "residues, and/or chains to be removed from the topology "
                 "become ambiguous.")
         raise ValueError(emsg)
-    
+
     # Return original topology and positions if no items are specified
     elif not any(found):
         return topology, positions
-    
-    # Ensure object type(s) are provided if not all items are topology 
+
+    # Ensure object type(s) are provided if not all items are topology
     # objects
     elif types is None \
             and not all(_is_topology_object(i) for i in
@@ -196,7 +196,7 @@ def subset(
         emsg = ("Object types must be specified for the topology items "
                 f"to be {'kept' if found[0] else 'deleted'}.")
         raise ValueError(emsg)
-    
+
     # Create a generator of types if a string is provided
     elif isinstance(types, str):
         same = True
@@ -224,7 +224,7 @@ def subset(
             delete = (i if _is_topology_object(i) else model[t][i]
                     for i, t in zip(delete, types))
         else:
-            
+
             # Preallocate sets to store indices of atoms, residues, and
             # chains to keep
             atoms = set()

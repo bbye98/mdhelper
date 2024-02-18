@@ -3,7 +3,7 @@ Topology transformations
 ========================
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
-This module contains implementations of common topology 
+This module contains implementations of common topology
 transformations, like the generation of initial particle positions.
 """
 
@@ -18,11 +18,11 @@ if FOUND_OPENMM:
     from openmm import app, unit
 
 def create_atoms(
-        dims: Union[np.ndarray[float], "unit.Quantity", "app.Topology"], 
-        N: int = None, N_p: int = 1, *, lattice: str = None, 
+        dims: Union[np.ndarray[float], "unit.Quantity", "app.Topology"],
+        N: int = None, N_p: int = 1, *, lattice: str = None,
         length: Union[float, "unit.Quantity"] = 0.34,
-        flexible: bool = False, connectivity: bool = False, 
-        randomize: bool = False, length_unit: "unit.Unit" = None, 
+        flexible: bool = False, connectivity: bool = False,
+        randomize: bool = False, length_unit: "unit.Unit" = None,
         wrap: bool = False) -> Any:
 
     r"""
@@ -32,36 +32,36 @@ def create_atoms(
     ----------
     dims : `numpy.ndarray`, `openmm.unit.Quantity`, or `openmm.app.Topology`
         System dimensions, provided as an array or obtained from an
-        OpenMM topology. 
-        
+        OpenMM topology.
+
         **Reference unit**: :math:`\mathrm{nm}`.
-    
+
     N : `int`, optional
         Total number of particles (monomers). Must be provided for
         random melts or polymers.
 
     N_p : `int`, default: :code:`1`
         Number of particles (monomers) :math:`N_p` in each
-        segment (polymer chain). 
-        
-        **Valid values**: :math:`1\leq N_\mathrm{p}\leq N`, with 
+        segment (polymer chain).
+
+        **Valid values**: :math:`1\leq N_\mathrm{p}\leq N`, with
         :math:`N` divisible by :math:`N_\mathrm{p}`.
 
     lattice : `str`, keyword-only, optional
-        Lattice type, with the relevant length scale specified in 
+        Lattice type, with the relevant length scale specified in
         `length`. If `lattice` is not specified, particle positions will
         be assigned randomly.
 
         .. tip::
 
-           To build walls with the correct periodicity, set the 
-           :math:`z`-dimension to :code:`0` in `dims` and 
+           To build walls with the correct periodicity, set the
+           :math:`z`-dimension to :code:`0` in `dims` and
            :code:`flexible=True`. This function will then return
-           the wall particle positions and the :math:`x`- and 
+           the wall particle positions and the :math:`x`- and
            :math:`y`-dimensions closest to those specified in `dims`
            that also satisfy the lattice periodicity.
 
-           Keep in mind that walls should only be built in the 
+           Keep in mind that walls should only be built in the
            :math:`z`-direction.
 
         .. container::
@@ -80,7 +80,7 @@ def create_atoms(
         the random walk. For lattice systems, `length` is either the
         particle size or the bond length, depending on the lattice type.
         Has no effect if :code:`N_p=1` or :code:`lattice=None`.
-        
+
         **Reference unit**: :math:`\mathrm{nm}`.
 
     flexible : `bool`, default: :code:`False`
@@ -88,7 +88,7 @@ def create_atoms(
         changed to satisfy the lattice periodicity, if applicable.
         For example, if the provided :math:`z`-dimension can hold a
         non-integer 19.7 replicas of a lattice, then it is updated
-        to reflect the width of 20 replicas. To ignore a direction (and 
+        to reflect the width of 20 replicas. To ignore a direction (and
         make that dimension constant), such as when creating walls, set
         that dimension to :code:`0` in `dims`.
 
@@ -111,39 +111,30 @@ def create_atoms(
     Returns
     -------
     positions : `numpy.ndarray` or `openmm.unit.Quantity`
-        Generated particle positions. 
+        Generated particle positions.
 
         **Shape**: :math:`(N,\,3)`.
-        
+
         **Reference unit**: :math:`\mathrm{nm}`.
 
     bonds : `numpy.ndarray`
-        Pairs of all bonded particle indices. Only returned if 
+        Pairs of all bonded particle indices. Only returned if
         :code:`connectivity=True`.
-    
+
     dims : `numpy.ndarray` or `openmm.unit.Quantity`
-        Dimensions for lattice systems. Only returned if `lattice` is 
+        Dimensions for lattice systems. Only returned if `lattice` is
         not :code:`None`.
-        
+
         **Shape**: :math:`(3,)`.
 
         **Reference unit**: :math:`\mathrm{nm}`.
     """
 
-    # Remove units, if necessary
-    if not isinstance(dims, np.ndarray):
-        
-        # Assume that the user has OpenMM installed if 'dims' is a
-        # openmm.app.Topology or openmm.unit.Quantity object
-        if isinstance(dims, app.Topology):
-            dims = dims.getUnitCellDimensions()
-        if length_unit is None:
-            length_unit = dims.unit
-        dims = dims.value_in_unit(length_unit)
-    if not isinstance(length, (int, np.integer, float, np.floating)):
-        if length_unit is None:
-            length_unit = length.unit
-        length = length.value_in_unit(length_unit)
+    # Get raw numerical dimensions and length
+    if isinstance(dims, app.Topology):
+        dims = dims.getUnitCellDimensions()
+    dims, length_unit = utility.strip_unit(dims, length_unit)
+    length, length_unit = utility.strip_unit(length, length_unit)
 
     if lattice is None:
 
@@ -160,7 +151,7 @@ def create_atoms(
             emsg = (f"{N=} particles cannot be evenly divided into segments "
                     f"with {N_p=} particles.")
             raise ValueError(emsg)
-        
+
         if N_p == 1:
 
             # Generate particle positions for a random melt
@@ -170,11 +161,10 @@ def create_atoms(
 
             # Determine the total number of segments
             segments = N // N_p
-            
-            # Determine unit cell information for each segment
-            n_cells = utility.closest_factors(segments, 3)
-            cell_dims = dims / n_cells
 
+            # Determine unit cell information for each segment
+            n_cells = utility.get_closest_factors(segments, 3)
+            cell_dims = dims / n_cells
 
             # Randomly generate a segment within the unit cell
             cell_pos = np.zeros((N_p, 3))
@@ -183,7 +173,7 @@ def create_atoms(
             for i in range(1, N_p):
                 vec = rng.random(3) * 2 - 1
                 cell_pos[i] = cell_pos[i - 1] + length * vec / np.linalg.norm(vec)
-            
+
             # Replicate unit cell in x-, y-, and z-directions
             pos = utility.replicate(cell_dims, cell_pos, n_cells)
 
@@ -249,7 +239,89 @@ def create_atoms(
             pos = pos[~np.any(pos[:, dims == 0] > 0, axis=1)]
         else:
             pos = pos[~np.any(pos > dims, axis=1)]
-    
+
     if length_unit is None:
         return pos, n_cells * cell_dims
     return pos * length_unit, n_cells * cell_dims * length_unit
+
+def unwrap(
+        positions: np.ndarray[float], positions_old: np.ndarray[float],
+        dimensions: np.ndarray[float], *, thresholds: float = None,
+        images: np.ndarray[int] = None, in_place: bool = True
+    ) -> Union[None, tuple[np.ndarray[float], np.ndarray[int]]]:
+
+    """
+    Unwraps particle positions.
+
+    Parameters
+    ----------
+    positions : `numpy.ndarray`
+        Particle positions.
+
+        **Shape**: :math:`(N,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    positions_old : `numpy.ndarray`
+        Previous particle positions.
+
+        **Shape**: :math:`(N,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    dimensions : `numpy.ndarray`
+        System dimensions.
+
+        **Shape**: :math:`(3,)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    thresholds : `float`, keyword-only, optional
+        Maximum distances in each direction a particle can move before
+        it is considered to have crossed a boundary.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    images : `numpy.ndarray`, keyword-only, optional
+        Current image flags (or number of boundary crossings).
+
+        **Shape**: :math:`(N,\,3)`.
+
+    in_place : `bool`, keyword-only, default: :code:`False`
+        Determines whether the input array is modified in-place.
+
+    Returns
+    -------
+    positions : `numpy.ndarray`
+        Unwrapped particle positions. Only returned if
+        :code:`in_place=False`.
+
+        **Shape**: :math:`(N,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    images : `numpy.ndarray`
+        Updated image flags (or number of boundary crossings). Only
+        returned if :code:`in_place=False`.
+
+        **Shape**: :math:`(N,\,3)`.
+    """
+
+    if thresholds is None:
+        thresholds = np.min(dimensions) / 2
+    if images is None:
+        images = np.zeros_like(positions, dtype=int)
+
+    dpos = positions - positions_old
+    mask = np.abs(dpos) >= thresholds
+    if in_place:
+        images[mask] -= np.sign(dpos[mask]).astype(int)
+        positions_old[:] = positions[:]
+        positions += images * dimensions
+    else:
+        positions = positions.copy()
+        positions_old = positions.copy()
+        images = images.copy()
+        images[mask] -= np.sign(dpos[mask]).astype(int)
+        positions += images * dimensions
+        return positions, positions_old, images

@@ -11,9 +11,9 @@ def test_func_lj_scaling():
     temp = 300 * unit.kelvin
 
     # TEST CASE 1: Correct units for complex scaling factors
-    scales = u.lj_scaling(
-        {"mass": 18.0153 * unit.amu, 
-         "length": 0.275 * unit.nanometer, 
+    scales = u.get_lj_scaling_factors(
+        {"mass": 18.0153 * unit.amu,
+         "length": 0.275 * unit.nanometer,
          "energy": (unit.BOLTZMANN_CONSTANT_kB * temp).in_units_of(unit.kilojoule)}
     )
     assert scales["molar_energy"].unit == unit.kilojoule_per_mole
@@ -22,9 +22,9 @@ def test_func_lj_scaling():
            == unit.kilojoule_per_mole / (unit.nanometer * unit.elementary_charge)
 
     # TEST CASE 2: No default scaling factors
-    scales = u.unit_scaling(
-        {"mass": 18.0153 * unit.amu, 
-         "length": 0.275 * unit.nanometer, 
+    scales = u.get_scaling_factors(
+        {"mass": 18.0153 * unit.amu,
+         "length": 0.275 * unit.nanometer,
          "energy": (unit.BOLTZMANN_CONSTANT_kB * temp).in_units_of(unit.kilojoule),
          "charge": 1 * unit.elementary_charge},
         {"surface_charge_density": (("charge", 1), ("length", -2))}

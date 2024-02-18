@@ -62,9 +62,9 @@ def fene(
     where :math:`k_{12}` is the bond coefficient in
     :math:`\textrm{kJ}/(\textrm{nm}^2\cdot\textrm{mol})`,
     :math:`r_{0,12}` is the equilibrium bond length in
-    :math:`\textrm{nm}`, :math:`\sigma_{12}` is the average particle 
-    size in :math:`\textrm{nm}`, and :math:`\epsilon_{12}` is the 
-    dispersion energy in :math:`\textrm{kJ/mol}`. :math:`k_{12}`, 
+    :math:`\textrm{nm}`, :math:`\sigma_{12}` is the average particle
+    size in :math:`\textrm{nm}`, and :math:`\epsilon_{12}` is the
+    dispersion energy in :math:`\textrm{kJ/mol}`. :math:`k_{12}`,
     :math:`r_{0,12}`, :math:`\sigma_{12}` and :math:`\epsilon_{12}` are
     determined from per-bond and per-particle parameters `k`, `r0`,
     `sigma` and `epsilon`, respectively, which are set using
@@ -81,18 +81,18 @@ def fene(
         default order.
 
     wca : `bool`, default: :code:`True`
-        Determines whether the Weeks–Chandler–Andersen (WCA) potential 
+        Determines whether the Weeks–Chandler–Andersen (WCA) potential
         is included.
 
     **kwargs
-        Keyword arguments to be passed to 
+        Keyword arguments to be passed to
         :meth:`mdhelper.openmm.pair.wca` if :code:`wca=True`.
-    
+
     Returns
     -------
     bond_fene : `openmm.CustomBondForce`
         FENE bond potential.
-    
+
     pair_wca : `openmm.CustomNonbondedForce`
         WCA pair potential, if :code:`wca=True`.
     """

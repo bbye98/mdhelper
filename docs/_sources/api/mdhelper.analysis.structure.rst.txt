@@ -15,10 +15,10 @@ structure
       :toctree:
       :nosignatures:
    
-      coordination_numbers
+      calculate_coordination_numbers
+      calculate_structure_factor
       radial_fourier_transform
       radial_histogram
-      structure_factor
    
    
 

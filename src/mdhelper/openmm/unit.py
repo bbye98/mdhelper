@@ -13,7 +13,7 @@ from ..algorithm import utility
 
 VACUUM_PERMITTIVITY = 8.854187812813e-12 * unit.farad / unit.meter
 
-def unit_scaling(
+def get_scaling_factors(
         bases: dict[str, unit.Quantity], other: dict[str, list] = {}
     ) -> dict[str, unit.Quantity]:
 
@@ -26,20 +26,20 @@ def unit_scaling(
         Fundamental quantities: molar mass (:math:`m`), length
         (:math:`\sigma`), and energy (:math:`\epsilon`).
 
-        **Format**: :code:`{"mass": <openmm.unit.Quantity>, 
-        "length": <openmm.unit.Quantity>, 
+        **Format**: :code:`{"mass": <openmm.unit.Quantity>,
+        "length": <openmm.unit.Quantity>,
         "energy": <openmm.unit.Quantity>}`.
 
         **Reference units**: :math:`\mathrm{g/mol}`, :math:`\mathrm{nm}`,
         and :math:`\mathrm{kJ/mol}`.
-   
+
     other : `dict`, optional
         Other scaling factors to compute. The key should be the name of
         the scaling factor, and the value should contain `tuple`
         objects with the names of bases or default scaling factors and
         their powers.
 
-        **Example**: 
+        **Example**:
         :code:`{"diffusivity": (("length", 2), ("time", -1))}`.
 
     Returns
@@ -47,10 +47,10 @@ def unit_scaling(
     scales : `dict`
         Scaling factors.
     """
-    
-    return utility.unit_scaling(bases, other)
 
-def lj_scaling(
+    return utility.get_scaling_factors(bases, other)
+
+def get_lj_scaling_factors(
         bases: dict[str, unit.Quantity], other: dict[str, list] = {}
     ) -> dict[str, unit.Quantity]:
 
@@ -77,20 +77,20 @@ def lj_scaling(
         Fundamental quantities: molar mass (:math:`m`), length
         (:math:`\sigma`), and energy (:math:`\epsilon`).
 
-        **Format**: :code:`{"mass": <openmm.unit.Quantity>, 
-        "length": <openmm.unit.Quantity>, 
+        **Format**: :code:`{"mass": <openmm.unit.Quantity>,
+        "length": <openmm.unit.Quantity>,
         "energy": <openmm.unit.Quantity>}`.
 
         **Reference units**: :math:`\mathrm{g/mol}`, :math:`\mathrm{nm}`,
         and :math:`\mathrm{kJ/mol}`.
-   
+
     other : `dict`, optional
         Other scaling factors to compute. The key should be the name of
         the scaling factor, and the value should contain `tuple`
         objects with the names of bases or default scaling factors and
         their powers.
 
-        **Example**: 
+        **Example**:
         :code:`{"diffusivity": (("length", 2), ("time", -1))}`.
 
     Returns
@@ -99,4 +99,4 @@ def lj_scaling(
         Scaling factors.
     """
 
-    return utility.lj_scaling(bases, other)
+    return utility.get_lj_scaling_factors(bases, other)

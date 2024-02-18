@@ -14,13 +14,13 @@ import numpy as np
 
 def center_of_mass(
         group: mda.AtomGroup = None, grouping: str = None, *,
-        masses: Union[list[float], np.ndarray[float]] = None, 
+        masses: Union[list[float], np.ndarray[float]] = None,
         positions: Union[list[float], np.ndarray[float]] = None,
         images: np.ndarray[int] = None, dims: np.ndarray[float] = None,
         n_groups: int = None, raw: bool = False
-    ) -> Union[np.ndarray[float], 
+    ) -> Union[np.ndarray[float],
                tuple[np.ndarray[float], np.ndarray[float], np.ndarray[float]]]:
-    
+
     r"""
     Computes the center(s) of mass for a collection of particles.
 
@@ -34,44 +34,44 @@ def center_of_mass(
 
     .. note::
 
-       This function supports a wide variety of inputs, depending on 
-       how the particle information is provided and what should be 
+       This function supports a wide variety of inputs, depending on
+       how the particle information is provided and what should be
        calculated.
 
-       When an :class:`MDAnalysis.core.groups.AtomGroup` object is 
-       provided, the particle masses and positions are extracted from 
-       it. If the :code:`AtomGroup` abides by the standard topological 
-       heirarchy, you can specify the desired grouping and the 
+       When an :class:`MDAnalysis.core.groups.AtomGroup` object is
+       provided, the particle masses and positions are extracted from
+       it. If the :code:`AtomGroup` abides by the standard topological
+       heirarchy, you can specify the desired grouping and the
        appropriate center(s) of mass will be calculated. Otherwise, if
        and only if the :code:`AtomGroup` contains equisized or identical
-       groups corresponding to the desired grouping (i.e., the 
-       :code:`AtomGroup` has particles that are or can be treated as 
+       groups corresponding to the desired grouping (i.e., the
+       :code:`AtomGroup` has particles that are or can be treated as
        nonbonded entities or topological groups with the same number of
-       but not necessarily identical constituents), you can provide the 
+       but not necessarily identical constituents), you can provide the
        total number of groups and the particle masses and positions will
-       be distributed accordingly. If the :code:`AtomGroup` does not 
-       have the correct structural information and the residues or 
-       segments do not contain the same number of atoms, see the 
+       be distributed accordingly. If the :code:`AtomGroup` does not
+       have the correct structural information and the residues or
+       segments do not contain the same number of atoms, see the
        second-to-last paragraph.
 
-       If the trajectory is not unwrapped, the number of periodic 
+       If the trajectory is not unwrapped, the number of periodic
        boundary crossings (and optionally, the system dimensions if they
        are not embedded in the :code:`AtomGroup`) can be provided.
 
-       Alternatively, the *unwrapped* particle masses and positions can 
+       Alternatively, the *unwrapped* particle masses and positions can
        be provided directly as a :class:`numpy.ndarray`, list, or tuple.
        To calculate the overall center of mass, the array-like object
-       holding the masses should be one-dimensional, while that 
+       holding the masses should be one-dimensional, while that
        containing the positions should be two-dimensional. To calculate
        center(s) of mass for group(s), the array-like object holding the
-       masses should be two-dimensional (order: group, particle mass), 
+       masses should be two-dimensional (order: group, particle mass),
        while that containing the positions should be three-dimensional
-       (order: group, particle position, axis). When a list or tuple is 
-       used, the inner arrays do not have to be homogeneously shaped, 
+       (order: group, particle position, axis). When a list or tuple is
+       used, the inner arrays do not have to be homogeneously shaped,
        thus allowing you to calculate the centers of mass for residues
        or segments with different numbers of atoms.
 
-       You may also provide only one of the particle masses or 
+       You may also provide only one of the particle masses or
        positions, in which case the missing information will be
        retrieved from the :code:`AtomGroup`. This is generally not
        recommended since the shapes of the provided and retrieved
@@ -85,7 +85,7 @@ def center_of_mass(
         directly in `masses` and `positions`.
 
     grouping : `str`, optional
-        Determines which center of mass is calculated if particle 
+        Determines which center of mass is calculated if particle
         massses and positions are retrieved from `group`.
 
         .. container::
@@ -95,7 +95,7 @@ def center_of_mass(
            * :code:`None`: Center of mass of all particles in `group`.
            * :code:`"residues"`: Centers of mass for each residue in
              `group`.
-           * :code:`"segments"`: Centers of mass for each chain in 
+           * :code:`"segments"`: Centers of mass for each chain in
              `group`.
 
     masses : array-like, keyword-only, optional
@@ -119,7 +119,7 @@ def center_of_mass(
 
            For groups with different numbers of atoms, the array-like
            object should contain inner lists or tuples holding the
-           masses of the particles in each group. 
+           masses of the particles in each group.
 
         **Reference unit**: :math:`\mathrm{g/mol}`.
 
@@ -135,19 +135,19 @@ def center_of_mass(
            For equisized or identical groups,
 
            * :math:`(N,\,3)` for the overall center of mass,
-           * :math:`(N_\mathrm{res},\,N/N_\mathrm{res},\,3)` for the 
+           * :math:`(N_\mathrm{res},\,N/N_\mathrm{res},\,3)` for the
              residue center(s) of mass, or
-           * :math:`(N_\mathrm{seg},\,N/N_\mathrm{seg},\,3)` for the 
+           * :math:`(N_\mathrm{seg},\,N/N_\mathrm{seg},\,3)` for the
              segment center(s) of mass.
 
            For groups with different numbers of atoms, the array-like
            object should contain inner lists or tuples holding the
-           coordinates of the particles in each group. 
+           coordinates of the particles in each group.
 
         **Reference unit**: :math:`\mathrm{Å}`.
 
     images : `numpy.ndarray`, keyword-only, optional
-        Image flags for the particles in `group`. Must be provided for 
+        Image flags for the particles in `group`. Must be provided for
         correct results if particle positions are wrapped.
 
         **Shape**: :math:`(N,\,3)`.
@@ -157,14 +157,14 @@ def center_of_mass(
         `group` does not contain the system dimensions.
 
         **Shape**: :math:`(3,)`.
-        
+
         **Reference unit**: :math:`\mathrm{Å}`.
 
     n_groups : `int`, keyword-only, optional
         Number of residues or segments. Must be provided if `group` has
-        an irregular topological heirarchy or the `masses` and 
+        an irregular topological heirarchy or the `masses` and
         `positions` arrays have the generic shapes.
-    
+
     raw : `bool`, keyword-only, default: :code:`False`
         Determines whether particle masses and positions are returned if
         they were retrieved from `group`.
@@ -179,14 +179,14 @@ def center_of_mass(
            **Shape**:
 
            * :math:`(3,)` for :code:`grouping=None`.
-           * :math:`(N_\mathrm{res},\,3)` for 
+           * :math:`(N_\mathrm{res},\,3)` for
              :code:`grouping="residues"`.
-           * :math:`(N_\mathrm{seg},\,3)` for 
+           * :math:`(N_\mathrm{seg},\,3)` for
              :code:`grouping="segments"`.
 
     masses : `numpy.ndarray`
         Particle masses. Only returned if `group` was provided
-        and contains equisized or identical groups, and 
+        and contains equisized or identical groups, and
         :code:`raw=True`.
 
         .. container::
@@ -194,16 +194,16 @@ def center_of_mass(
            **Shape**:
 
            * :math:`(N,)` for :code:`grouping=None`.
-           * :math:`(N_\mathrm{res},\,N/N_\mathrm{res})` for 
+           * :math:`(N_\mathrm{res},\,N/N_\mathrm{res})` for
              :code:`grouping="residues"`.
-           * :math:`(N_\mathrm{seg},\,N/N_\mathrm{seg})` for 
+           * :math:`(N_\mathrm{seg},\,N/N_\mathrm{seg})` for
              :code:`grouping="segments"`.
 
         **Reference unit**: :math:`\mathrm{g/mol}`.
 
     positions : `numpy.ndarray`
-        Unwrapped particle positions. Only returned if `group` was 
-        provided and contains equisized or identical groups, and 
+        Unwrapped particle positions. Only returned if `group` was
+        provided and contains equisized or identical groups, and
         :code:`raw=True`.
 
         .. container::
@@ -211,20 +211,20 @@ def center_of_mass(
            **Shape**:
 
            * :math:`(N,\,3)` for :code:`grouping=None`.
-           * :math:`(N_\mathrm{res},\,N/N_\mathrm{res},\,3)` for 
+           * :math:`(N_\mathrm{res},\,N/N_\mathrm{res},\,3)` for
              :code:`grouping="residues"`.
-           * :math:`(N_\mathrm{seg},\,N/N_\mathrm{seg},\,3)` for 
+           * :math:`(N_\mathrm{seg},\,N/N_\mathrm{seg},\,3)` for
              :code:`grouping="segments"`.
 
         **Reference unit**: :math:`\mathrm{Å}`.
     """
-    
+
     # Check whether grouping is valid
     if grouping not in {None, "residues", "segments"}:
         emsg = (f"Invalid grouping: '{grouping}'. Valid options are "
                 "None, 'residues', and 'segments'.")
         raise ValueError(emsg)
-    
+
     # Get particle masses and positions from the trajectory, if necessary
     missing = (masses is None, positions is None)
     if any(missing):
@@ -238,13 +238,13 @@ def center_of_mass(
         # Check whether the groups are identical
         if grouping:
             groups = getattr(group, grouping)
-            same = all(r.atoms.n_atoms == groups[0].atoms.n_atoms 
+            same = all(r.atoms.n_atoms == groups[0].atoms.n_atoms
                         for r in groups)
         else:
             same = True
 
         # Calculate and return the centers of mass for different groups
-        # here if unwrapping and the mass and position arrays are not 
+        # here if unwrapping and the mass and position arrays are not
         # needed
         if not same and images is None and not raw:
             return np.array([g.atoms.center_of_mass() for g in groups])
@@ -274,8 +274,8 @@ def center_of_mass(
 
             # Reshape the mass and position arrays, if necessary
             if grouping or n_groups:
-                shape = (n_groups, -1, 3) if n_groups \
-                        else (getattr(group, f"n_{grouping}"), -1, 3)
+                shape = ((n_groups, -1, 3) if n_groups
+                         else (getattr(group, f"n_{grouping}"), -1, 3))
                 masses = masses.reshape(shape[:-1])
                 positions = positions.reshape(shape)
         else:
@@ -315,12 +315,12 @@ def center_of_mass(
 
     # Calculate the center(s) of mass for the specified grouping
     if isinstance(positions, np.ndarray):
-        com = np.einsum("...a,...ad->...d", masses, positions) \
-                  / masses.sum(axis=-1, keepdims=True)
+        com = (np.einsum("...a,...ad->...d", masses, positions)
+               / masses.sum(axis=-1, keepdims=True))
     else:
-        com = np.array([np.dot(m, p) / m.sum() 
-                       for m, p in zip(masses, positions)])
-    
+        com = np.array([np.dot(m, p) / m.sum()
+                        for m, p in zip(masses, positions)])
+
     # Return the center(s) of mass
     if raw and any(missing):
 
@@ -332,10 +332,10 @@ def radius_of_gyration(
         group: mda.AtomGroup = None, grouping: str = None, *,
         positions: Union[list[tuple[tuple[float]]], np.ndarray[float]] = None,
         masses: Union[list[tuple[float]], np.ndarray[float]] = None,
-        com: np.ndarray[float] = None, images: np.ndarray[int] = None, 
-        dims: np.ndarray[float] = None, n_groups: int = None, 
+        com: np.ndarray[float] = None, images: np.ndarray[int] = None,
+        dims: np.ndarray[float] = None, n_groups: int = None,
         components: bool = False) -> Union[float, np.ndarray[float]]:
-    
+
     r"""
     Computes the radii of gyration for a collection of particles.
 
@@ -350,57 +350,57 @@ def radius_of_gyration(
 
     where :math:`\mathbf{R}_\mathrm{com}` is the center of mass.
 
-    Alternatively, the radii of gyration around the coordinate axes can 
+    Alternatively, the radii of gyration around the coordinate axes can
     be calculated by only summing the radii components orthogonal to
-    each axis. For example, the radius of gyration around the 
+    each axis. For example, the radius of gyration around the
     :math:`x`-axis is
 
     .. math::
-     
+
        R_{\mathrm{g},x}=\sqrt{
        \frac{\sum_i^N m_i[(\mathbf{r}_{i,y}-\mathbf{R}_{\mathrm{com},y})^2
        +(\mathbf{r}_{i,z}-\mathbf{R}_{\mathrm{com},z})^2]}{\sum_i^N m_i}}
 
     .. note::
 
-       This function supports a wide variety of inputs, depending on 
-       how the particle information is provided and what should be 
+       This function supports a wide variety of inputs, depending on
+       how the particle information is provided and what should be
        calculated.
 
-       When an :class:`MDAnalysis.core.groups.AtomGroup` object is 
-       provided, the particle masses and positions are extracted from 
-       it. If the :code:`AtomGroup` abides by the standard topological 
-       heirarchy, you can specify the desired grouping and the 
+       When an :class:`MDAnalysis.core.groups.AtomGroup` object is
+       provided, the particle masses and positions are extracted from
+       it. If the :code:`AtomGroup` abides by the standard topological
+       heirarchy, you can specify the desired grouping and the
        appropriate radii of gyration will be calculated. Otherwise, if
        and only if the :code:`AtomGroup` contains equisized or identical
-       groups corresponding to the desired grouping (i.e., the 
-       :code:`AtomGroup` has particles that are or can be treated as 
+       groups corresponding to the desired grouping (i.e., the
+       :code:`AtomGroup` has particles that are or can be treated as
        nonbonded entities or topological groups with the same number of
-       but not necessarily identical constituents), you can provide the 
+       but not necessarily identical constituents), you can provide the
        total number of groups and the particle masses and positions will
-       be distributed accordingly. If the :code:`AtomGroup` does not 
-       have the correct structural information and the residues or 
-       segments do not contain the same number of atoms, see the 
+       be distributed accordingly. If the :code:`AtomGroup` does not
+       have the correct structural information and the residues or
+       segments do not contain the same number of atoms, see the
        second-to-last paragraph.
 
-       If the trajectory is not unwrapped, the number of periodic 
+       If the trajectory is not unwrapped, the number of periodic
        boundary crossings (and optionally, the system dimensions if they
        are not embedded in the :code:`AtomGroup`) can be provided.
 
-       Alternatively, the *unwrapped* particle masses and positions can 
+       Alternatively, the *unwrapped* particle masses and positions can
        be provided directly as a :class:`numpy.ndarray`, list, or tuple.
-       To calculate the overall radius of gyration, the array-like 
-       object holding the masses should be one-dimensional, while that 
+       To calculate the overall radius of gyration, the array-like
+       object holding the masses should be one-dimensional, while that
        containing the positions should be two-dimensional. To calculate
        radii of gyration for group(s), the array-like object holding the
-       masses should be two-dimensional (order: group, particle mass), 
+       masses should be two-dimensional (order: group, particle mass),
        while that containing the positions should be three-dimensional
-       (order: group, particle position, axis). When a list or tuple is 
-       used, the inner arrays do not have to be homogeneously shaped, 
+       (order: group, particle position, axis). When a list or tuple is
+       used, the inner arrays do not have to be homogeneously shaped,
        thus allowing you to calculate the radii of gyration for residues
        or segments with different numbers of atoms.
 
-       You may also provide only one of the particle masses or 
+       You may also provide only one of the particle masses or
        positions, in which case the missing information will be
        retrieved from the :code:`AtomGroup`. This is generally not
        recommended since the shapes of the provided and retrieved
@@ -414,20 +414,20 @@ def radius_of_gyration(
         directly in `masses` and `positions`.
 
     grouping : `str`, optional
-        Determines which radius of gyration is calculated if particle 
+        Determines which radius of gyration is calculated if particle
         massses and positions are retrieved from `group`.
 
         .. container::
 
            **Valid values**:
 
-           * :code:`None`: Radius of gyration of all particles in 
+           * :code:`None`: Radius of gyration of all particles in
              `group`.
            * :code:`"residues"`: Radius of gyration for each residue in
              `group`.
-           * :code:`"segments"`: Radius of gyration for each chain in 
+           * :code:`"segments"`: Radius of gyration for each chain in
              `group`.
-    
+
     masses : array-like, keyword-only, optional
         Particle masses.
 
@@ -449,7 +449,7 @@ def radius_of_gyration(
 
            For groups with different numbers of atoms, the array-like
            object should contain inner lists or tuples holding the
-           masses of the particles in each group. 
+           masses of the particles in each group.
 
         **Reference unit**: :math:`\mathrm{g/mol}`.
 
@@ -465,14 +465,14 @@ def radius_of_gyration(
            For equisized or identical groups,
 
            * :math:`(N,\,3)` for the overall radius of gyration,
-           * :math:`(N_\mathrm{res},\,N/N_\mathrm{res},\,3)` for the 
+           * :math:`(N_\mathrm{res},\,N/N_\mathrm{res},\,3)` for the
              residue radii of gyration, or
-           * :math:`(N_\mathrm{seg},\,N/N_\mathrm{seg},\,3)` for the 
+           * :math:`(N_\mathrm{seg},\,N/N_\mathrm{seg},\,3)` for the
              segment radii of gyration.
 
            For groups with different numbers of atoms, the array-like
            object should contain inner lists or tuples holding the
-           coordinates of the particles in each group. 
+           coordinates of the particles in each group.
 
         **Reference unit**: :math:`\mathrm{Å}`.
 
@@ -484,13 +484,13 @@ def radius_of_gyration(
            **Shape**:
 
            * :math:`(3,)` for the overall radius of gyration.
-           * :math:`(N_\mathrm{res},\,3)` for the residue radii of 
+           * :math:`(N_\mathrm{res},\,3)` for the residue radii of
              gyration.
            * :math:`(N_\mathrm{seg},\,3)` for the segment radii of
              gyration.
 
     images : `numpy.ndarray`, keyword-only, optional
-        Image flags for the particles in `group`. Must be provided for 
+        Image flags for the particles in `group`. Must be provided for
         correct results if particle positions are wrapped.
 
         **Shape**: :math:`(N,\,3)`.
@@ -500,12 +500,12 @@ def radius_of_gyration(
         `group` does not contain the system dimensions.
 
         **Shape**: :math:`(3,)`.
-        
+
         **Reference unit**: :math:`\mathrm{Å}`.
 
     n_groups : `int`, keyword-only, optional
         Number of residues or segments. Must be provided if `group` has
-        an irregular topological heirarchy or the `masses` and 
+        an irregular topological heirarchy or the `masses` and
         `positions` arrays have the generic shapes.
 
     components : `bool`, keyword-only, default: :code:`False`
@@ -538,47 +538,53 @@ def radius_of_gyration(
     # center(s) of mass, if necessary
     missing = (masses is None, positions is None, com is None)
     if any(missing[:2]):
-        com, masses, positions = center_of_mass(group, grouping, masses=masses, 
+        com, masses, positions = center_of_mass(group, grouping, masses=masses,
                                                 positions=positions, raw=True,
                                                 images=images, dims=dims)
     elif missing[2]:
-        com = center_of_mass(masses=masses, positions=positions, n_groups=n_groups)
+        com = center_of_mass(masses=masses, positions=positions,
+                             n_groups=n_groups)
 
     if isinstance(positions, np.ndarray):
         if components:
-            cpos = (positions - np.expand_dims(com, axis=positions.ndim - 2)) ** 2
+            cpos = (positions
+                    - np.expand_dims(com, axis=positions.ndim - 2)) ** 2
             if grouping or n_groups:
 
-                # Compute the radii of gyration in each direction for 
+                # Compute the radii of gyration in each direction for
                 # equisized or identical group(s)
                 return np.sqrt(
-                    np.einsum("ga,gad->gd", masses, 
-                              np.stack((cpos[:, :, (1, 2)].sum(axis=2), 
-                                        cpos[:, :, (0, 2)].sum(axis=2), 
-                                        cpos[:, :, (0, 1)].sum(axis=2)), axis=2))
+                    np.einsum("ga,gad->gd", masses,
+                              np.stack((cpos[:, :, (1, 2)].sum(axis=2),
+                                        cpos[:, :, (0, 2)].sum(axis=2),
+                                        cpos[:, :, (0, 1)].sum(axis=2)),
+                                       axis=2))
                     / masses.sum(axis=1, keepdims=True)
                 )
-            
+
             # Compute the radius of gyration in each direction for all
             # atoms
             return np.sqrt(
-                np.dot(masses, np.hstack(
-                    (cpos[:, (1, 2)].sum(axis=1, keepdims=True), 
-                     cpos[:, (0, 2)].sum(axis=1, keepdims=True), 
-                     cpos[:, (0, 1)].sum(axis=1, keepdims=True))
-                )) / masses.sum()
+                np.dot(
+                    masses,
+                    np.hstack((cpos[:, (1, 2)].sum(axis=1, keepdims=True),
+                               cpos[:, (0, 2)].sum(axis=1, keepdims=True),
+                               cpos[:, (0, 1)].sum(axis=1, keepdims=True)))
+                ) / masses.sum()
             )
         elif grouping or n_groups:
 
-            # Compute the overall radii of gyration for equisized or 
+            # Compute the overall radii of gyration for equisized or
             # identical group(s)
-            return np.sqrt(np.einsum("ga,gad->gd", masses,
-                                     (positions - com[:, None]) ** 2).sum(axis=1) \
-                   / masses.sum(axis=1))
-        
+            return np.sqrt(
+                np.einsum("ga,gad->gd", masses,
+                          (positions - com[:, None]) ** 2).sum(axis=1)
+                / masses.sum(axis=1)
+            )
+
         # Compute the overall radius of gyration for all atoms
-        return np.sqrt(np.dot(masses, (positions - com) ** 2).sum() \
-               / masses.sum())
+        return np.sqrt(np.dot(masses, (positions - com) ** 2).sum()
+                       / masses.sum())
     if components:
 
         # Compute the radii of gyration in each direction for asymmetric
@@ -592,10 +598,9 @@ def radius_of_gyration(
                  np.dot(m, cpos[:, (0, 1)].sum(axis=1)))
             ) / m.sum()
         return np.sqrt(gyradii)
-    
+
     # Compute the overall radii of gyration for asymmetric groups
     return np.sqrt(
-        [np.einsum("a,ad->d", m, (p - c) ** 2).sum() / m.sum() 
-            for m, p, c in zip(masses, positions, com)]
+        [np.einsum("a,ad->d", m, (p - c) ** 2).sum() / m.sum()
+         for m, p, c in zip(masses, positions, com)]
     )
-                

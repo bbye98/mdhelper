@@ -15,7 +15,7 @@ axis
       :toctree:
       :nosignatures:
    
-      tabular_legend
+      set_up_tabular_legend
    
    
 

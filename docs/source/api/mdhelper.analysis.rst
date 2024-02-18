@@ -1,4 +1,4 @@
-﻿analysis
+analysis
 ========
 
 .. automodule:: mdhelper.analysis

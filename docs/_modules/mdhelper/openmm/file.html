@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>mdhelper.openmm.file - MDHelper documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>mdhelper.openmm.file - MDHelper 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">MDHelper  documentation</div></a>
+      <a href="../../../index.html"><div class="brand">MDHelper 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,6 +145,9 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+  </div>
   
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -171,14 +174,16 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.closest_factors.html">closest_factors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.lj_scaling.html">lj_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.get_closest_factors.html">get_closest_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.get_lj_scaling_factors.html">get_lj_scaling_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.get_scaling_factors.html">get_scaling_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.rebin.html">rebin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.replicate.html">replicate</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.unit_scaling.html">unit_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.strip_unit.html">strip_unit</a></li>
 </ul>
 </li>
 </ul>
@@ -190,14 +195,14 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.html">electrostatics</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of electrostatics</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.relative_permittivity.html">relative_permittivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.calculate_relative_permittivity.html">calculate_relative_permittivity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.DipoleMoment.html">DipoleMoment</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.html">polymer</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of polymer</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.relaxation_time.html">relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.ParallelSingleChainStructureFactor.html">ParallelSingleChainStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
@@ -205,15 +210,15 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.html">profile</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of profile</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.potential_profile.html">potential_profile</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.calculate_potential_profile.html">calculate_potential_profile</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.DensityProfile.html">DensityProfile</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.html">structure</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.coordination_numbers.html">coordination_numbers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_coordination_numbers.html">calculate_coordination_numbers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_structure_factor.html">calculate_structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
@@ -229,12 +234,12 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.html">transport</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of transport</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.coefficients.html">coefficients</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.conductivity.html">conductivity</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.electrophoretic_mobility.html">electrophoretic_mobility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_conductivity.html">calculate_conductivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_electrophoretic_mobility.html">calculate_electrophoretic_mobility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_transference_number.html">calculate_transference_number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_transport_coefficients.html">calculate_transport_coefficients</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.msd_fft.html">msd_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.msd_shift.html">msd_shift</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.transference_number.html">transference_number</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.Onsager.html">Onsager</a></li>
 </ul>
 </li>
@@ -323,21 +328,21 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.system.html">system</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle navigation of system</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.electric_field.html">electric_field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.add_electric_field.html">add_electric_field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.add_image_charges.html">add_image_charges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.add_slab_correction.html">add_slab_correction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.estimate_pressure_tensor.html">estimate_pressure_tensor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.image_charges.html">image_charges</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.register_particles.html">register_particles</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.slab_correction.html">slab_correction</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" role="switch" type="checkbox"/><label for="toctree-checkbox-28"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.create_atoms.html">create_atoms</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.subset.html">subset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.get_subset.html">get_subset</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.html">unit</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of unit</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.lj_scaling.html">lj_scaling</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.unit_scaling.html">unit_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.get_lj_scaling_factors.html">get_lj_scaling_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.get_scaling_factors.html">get_scaling_factors</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -348,7 +353,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.html">plot</a><input class="toctree-checkbox" id="toctree-checkbox-31" name="toctree-checkbox-31" role="switch" type="checkbox"/><label for="toctree-checkbox-31"><div class="visually-hidden">Toggle navigation of plot</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.axis.html">axis</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle navigation of axis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.plot.axis.tabular_legend.html">tabular_legend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.plot.axis.set_up_tabular_legend.html">set_up_tabular_legend</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.rcparam.html">rcparam</a><input class="toctree-checkbox" id="toctree-checkbox-33" name="toctree-checkbox-33" role="switch" type="checkbox"/><label for="toctree-checkbox-33"><div class="visually-hidden">Toggle navigation of rcparam</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -418,16 +423,16 @@
 <span class="k">class</span> <span class="nc">NetCDFFile</span><span class="p">():</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Interface for reading and writing AMBER NetCDF trajectory and </span>
+<span class="sd">    Interface for reading and writing AMBER NetCDF trajectory and</span>
 <span class="sd">    restart files.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    file : `str` or `netcdf4.Dataset`</span>
 <span class="sd">        NetCDF file. If `file` is a filename and does not have the</span>
-<span class="sd">        :code:`.nc` or :code:`.ncdf` extension, :code:`.nc` will </span>
+<span class="sd">        :code:`.nc` or :code:`.ncdf` extension, :code:`.nc` will</span>
 <span class="sd">        automatically be appended.</span>
-<span class="sd">    </span>
+
 <span class="sd">    mode : `str`</span>
 <span class="sd">        NetCDF file access mode.</span>
 
@@ -439,18 +444,18 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">nc</span><span class="o">.</span><span class="n">Dataset</span><span class="p">],</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">nc</span><span class="o">.</span><span class="n">Dataset</span><span class="p">],</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;.ncdf&quot;</span><span class="p">)):</span>
                 <span class="n">file</span> <span class="o">+=</span> <span class="s2">&quot;.nc&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
                                   <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;NETCDF3_64BIT_OFFSET&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span> <span class="o">=</span> <span class="n">file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">set_always_mask</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;r&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">Conventions</span> <span class="o">==</span> <span class="s2">&quot;AMBERRESTART&quot;</span>
@@ -461,18 +466,18 @@
 <div class="viewcode-block" id="NetCDFFile.get_dimensions">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_dimensions">[docs]</a>
     <span class="k">def</span> <span class="nf">get_dimensions</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> 
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
                    <span class="nb">tuple</span><span class="p">[</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]:</span>
-<span class="w">        </span>
+
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the simulation box dimensions.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        frames : `int`, `list`, or `slice`, optional</span>
-<span class="sd">            Frame indices. If :code:`None`, the dimensions across all </span>
+<span class="sd">            Frame indices. If :code:`None`, the dimensions across all</span>
 <span class="sd">            frames are returned.</span>
 
 <span class="sd">        units : `bool`, default: :code:`True`</span>
@@ -500,7 +505,7 @@
             <span class="n">cell_angles</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">degree</span>
         <span class="k">return</span> <span class="n">cell_lengths</span><span class="p">,</span> <span class="n">cell_angles</span></div>
 
-    
+
 <div class="viewcode-block" id="NetCDFFile.get_num_frames">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_num_frames">[docs]</a>
     <span class="k">def</span> <span class="nf">get_num_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -536,7 +541,7 @@
 <div class="viewcode-block" id="NetCDFFile.get_times">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_times">[docs]</a>
     <span class="k">def</span> <span class="nf">get_times</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -545,7 +550,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        frames : `int`, `list`, or `slice`, optional</span>
-<span class="sd">            Frame indices. If :code:`None`, the times across all </span>
+<span class="sd">            Frame indices. If :code:`None`, the times across all</span>
 <span class="sd">            frames are returned.</span>
 
 <span class="sd">        units : `bool`, default: :code:`True`</span>
@@ -559,7 +564,7 @@
 <span class="sd">            **Reference unit**: :math:`\\mathrm{ps}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">times</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
+        <span class="n">times</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span>
                  <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
             <span class="n">times</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span>
@@ -569,16 +574,16 @@
 <div class="viewcode-block" id="NetCDFFile.get_positions">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_positions">[docs]</a>
     <span class="k">def</span> <span class="nf">get_positions</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
-<span class="w">        </span>
+
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the atom positions.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        frames : `int`, `list`, or `slice`, optional</span>
-<span class="sd">            Frame indices. If :code:`None`, the positions across all </span>
+<span class="sd">            Frame indices. If :code:`None`, the positions across all</span>
 <span class="sd">            frames are returned.</span>
 
 <span class="sd">        units : `bool`, default: :code:`True`</span>
@@ -592,26 +597,26 @@
 <span class="sd">            **Reference unit**: :math:`\\mathrm{Å}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
+        <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span>
                      <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
             <span class="n">positions</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
         <span class="k">return</span> <span class="n">positions</span></div>
 
-    
+
 <div class="viewcode-block" id="NetCDFFile.get_velocities">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_velocities">[docs]</a>
     <span class="k">def</span> <span class="nf">get_velocities</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
-<span class="w">        </span>
+
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get atom velocities.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        frames : `int`, `list`, or `slice`, optional</span>
-<span class="sd">            Frame indices. If :code:`None`, the velocities across all </span>
+<span class="sd">            Frame indices. If :code:`None`, the velocities across all</span>
 <span class="sd">            frames are returned.</span>
 
 <span class="sd">        units : `bool`, default: :code:`True`</span>
@@ -625,14 +630,14 @@
 
 <span class="sd">            **Reference unit**: :math:`\\mathrm{Å/ps}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="k">if</span> <span class="s2">&quot;velocities&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
             <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The NetCDF file does not contain information about &quot;</span>
                     <span class="s2">&quot;the atom velocities.&quot;</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="n">velocities</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
+        <span class="n">velocities</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span>
                       <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
             <span class="n">velocities</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">picosecond</span>
@@ -642,18 +647,18 @@
 <div class="viewcode-block" id="NetCDFFile.get_forces">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.get_forces">[docs]</a>
     <span class="k">def</span> <span class="nf">get_forces</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
-<span class="w">        </span>
+
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the forces acting on the atoms.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        frames : `int`, `list`, or `slice`, optional</span>
-<span class="sd">            Frame indices. If :code:`None`, the forces across all frames </span>
+<span class="sd">            Frame indices. If :code:`None`, the forces across all frames</span>
 <span class="sd">            are returned.</span>
-<span class="sd">    </span>
+
 <span class="sd">        units : `bool`, default: :code:`True`</span>
 <span class="sd">            Determines whether the forces are returned with units.</span>
 
@@ -665,14 +670,14 @@
 
 <span class="sd">            **Reference unit**: :math:`\\mathrm{Å/ps}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="k">if</span> <span class="s2">&quot;forces&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
             <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The NetCDF file does not contain information about &quot;</span>
                     <span class="s2">&quot;the forces acting on the atoms.&quot;</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="n">forces</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span> 
+        <span class="n">forces</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">][:]</span> <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span>
                   <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">][</span><span class="n">frames</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">units</span><span class="p">:</span>
             <span class="n">forces</span> <span class="o">*=</span> <span class="n">unit</span><span class="o">.</span><span class="n">kilocalorie_per_mole</span> <span class="o">/</span> <span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span>
@@ -684,8 +689,8 @@
     <span class="k">def</span> <span class="nf">write_header</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">velocities</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">forces</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
             <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">remd</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">temp0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">remd_dimtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
-            <span class="n">remd_indices</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">remd_repidx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> 
+            <span class="n">remd_dimtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">remd_indices</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">remd_repidx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">remd_crdidx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">remd_values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NetCDFFile&quot;</span><span class="p">:</span>
 
@@ -696,49 +701,49 @@
 
 <span class="sd">        .. note::</span>
 
-<span class="sd">           This function can be used as either a static or instance </span>
-<span class="sd">           method. </span>
+<span class="sd">           This function can be used as either a static or instance</span>
+<span class="sd">           method.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self : `str`, `netcdf4.Dataset`, or `mdhelper.openmm.file.NetCDFFile`</span>
-<span class="sd">            If :meth:`write_header` is called as a static method, you </span>
+<span class="sd">            If :meth:`write_header` is called as a static method, you</span>
 <span class="sd">            must provide a filename or a NetCDF file object. Otherwise,</span>
 <span class="sd">            the NetCDF file embedded in the current instance is used.</span>
 
 <span class="sd">        N : `int`</span>
 <span class="sd">            Number of atoms.</span>
-<span class="sd">        </span>
+
 <span class="sd">        cell : `bool`</span>
 <span class="sd">            Specifies whether simulation box length and angle</span>
 <span class="sd">            information is available.</span>
-<span class="sd">        </span>
+
 <span class="sd">        velocities : `bool`</span>
 <span class="sd">            Specifies whether atom velocities should be written.</span>
 
 <span class="sd">        forces : `bool`</span>
 <span class="sd">            Specifies whether forces exerted on atoms should be</span>
 <span class="sd">            written.</span>
-<span class="sd">        </span>
+
 <span class="sd">        restart : `bool`, default: :code:`False`</span>
 <span class="sd">            Specifies whether the NetCDF file is a trajectory or restart</span>
 <span class="sd">            file.</span>
-<span class="sd">            </span>
+
 <span class="sd">        remd : `str`, keyword-only, optional</span>
 <span class="sd">            Specifies whether information about a replica exchange</span>
-<span class="sd">            molecular dynamics (REMD) simulation is written. </span>
-<span class="sd">            </span>
+<span class="sd">            molecular dynamics (REMD) simulation is written.</span>
+
 <span class="sd">            .. container::</span>
 
 <span class="sd">               **Valid values**:</span>
 
 <span class="sd">               * :code:`&quot;temp&quot;` for regular REMD.</span>
 <span class="sd">               * :code:`&quot;multi&quot;` for multi-dimensional REMD.</span>
-<span class="sd">        </span>
+
 <span class="sd">        temp0 : `float`, keyword-only, optional</span>
 <span class="sd">            Temperature that the thermostat is set to maintain for a</span>
-<span class="sd">            REMD restart file only. </span>
-<span class="sd">            </span>
+<span class="sd">            REMD restart file only.</span>
+
 <span class="sd">            **Reference unit**: :math:`\\mathrm{K}`.</span>
 
 <span class="sd">        remd_dimtype : array-like, keyword-only, optional</span>
@@ -750,16 +755,16 @@
 <span class="sd">            Array specifying the position in all dimensions that each</span>
 <span class="sd">            frame is in. Required for a multi-dimensional REMD restart</span>
 <span class="sd">            file.</span>
-<span class="sd">        </span>
+
 <span class="sd">        remd_repidx : `int`, keyword-only, optional</span>
 <span class="sd">            Overall index of the frame in replica space.</span>
-<span class="sd">        </span>
+
 <span class="sd">        remd_crdidx : `int`, keyword-only, optional</span>
 <span class="sd">            Overall index of the frame in coordinate space.</span>
-<span class="sd">        </span>
+
 <span class="sd">        remd_values : array-like, keyword-only, optional</span>
 <span class="sd">            Replica value the specified replica dimension has for that</span>
-<span class="sd">            given frame. Required for a multi-dimensional REMD restart </span>
+<span class="sd">            given frame. Required for a multi-dimensional REMD restart</span>
 <span class="sd">            file.</span>
 
 <span class="sd">        Returns</span>
@@ -795,7 +800,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;spatial&quot;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span>
                                     <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;spatial&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s2">&quot;angstrom&quot;</span>
 
@@ -810,28 +815,28 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;spatial&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;cell_spatial&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;cell_spatial&quot;</span><span class="p">,))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_spatial&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;cell_angular&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;cell_angular&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span>
                                     <span class="p">(</span><span class="s2">&quot;cell_angular&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_angular&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">),</span> 
-                                                     <span class="nb">list</span><span class="p">(</span><span class="s2">&quot;beta &quot;</span><span class="p">),</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_angular&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">),</span>
+                                                     <span class="nb">list</span><span class="p">(</span><span class="s2">&quot;beta &quot;</span><span class="p">),</span>
                                                      <span class="nb">list</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">)]</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;cell_lengths&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;cell_spatial&quot;</span><span class="p">,))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;cell_angular&quot;</span><span class="p">,))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;cell_lengths&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;cell_lengths&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span>
                                         <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_spatial&quot;</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span>
                                         <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_angular&quot;</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_lengths&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s2">&quot;angstrom&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;cell_angles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s2">&quot;degree&quot;</span>
-        
+
         <span class="k">if</span> <span class="n">velocities</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;velocities&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;spatial&quot;</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;velocities&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;velocities&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span>
                                         <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;spatial&quot;</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s2">&quot;angstrom/picosecond&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;velocities&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="mf">20.455</span>
@@ -840,10 +845,10 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;spatial&quot;</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span>
                                         <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;spatial&quot;</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;forces&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s2">&quot;kilocalorie/mole/angstrom&quot;</span>
-        
+
         <span class="k">if</span> <span class="n">remd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># pragma: no cover</span>
             <span class="k">if</span> <span class="n">remd</span> <span class="o">==</span> <span class="s2">&quot;temp&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;temp0&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,))</span>
@@ -856,7 +861,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;temp0&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s2">&quot;kelvin&quot;</span>
 
             <span class="k">elif</span> <span class="n">remd</span> <span class="o">==</span> <span class="s2">&quot;multi&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_dimtype&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_dimtype&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span>
                                         <span class="p">(</span><span class="s2">&quot;remd_dimension&quot;</span><span class="p">,))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_repidx&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_crdidx&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,))</span>
@@ -867,7 +872,7 @@
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;remd_dimtype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">remd_dimtype</span>
 
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_indices&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> 
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_indices&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span>
                                             <span class="p">(</span><span class="s2">&quot;remd_dimension&quot;</span><span class="p">,))</span>
                     <span class="k">if</span> <span class="n">remd_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Dimension indices must be provided for a &quot;</span>
@@ -878,7 +883,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;remd_repidx&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">remd_repidx</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;remd_crdidx&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">remd_crdidx</span>
 
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_values&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> 
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_values&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span>
                                             <span class="p">(</span><span class="s2">&quot;remd_dimension&quot;</span><span class="p">,))</span>
                     <span class="k">if</span> <span class="n">remd_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Replica values must be provided for a &quot;</span>
@@ -887,35 +892,35 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;remd_values&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">remd_values</span>
 
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_indices&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> 
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_indices&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span>
                                             <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;remd_dimension&quot;</span><span class="p">))</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_values&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> 
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s2">&quot;remd_values&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span>
                                             <span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;remd_dimension&quot;</span><span class="p">))</span>
-        
+
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
 <div class="viewcode-block" id="NetCDFFile.write_file">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.write_file">[docs]</a>
     <span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NetCDFFile&quot;</span><span class="p">:</span>
-<span class="w">        </span>
+
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write a single simulation state to a restart NetCDF file.</span>
 
 <span class="sd">        .. note::</span>
 
-<span class="sd">           This function can be used as either a static or instance </span>
+<span class="sd">           This function can be used as either a static or instance</span>
 <span class="sd">           method.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self : `str`, `netcdf4.Dataset`, or `mdhelper.openmm.file.NetCDFFile`</span>
-<span class="sd">            If :meth:`write_file` is called as a static method, you must </span>
+<span class="sd">            If :meth:`write_file` is called as a static method, you must</span>
 <span class="sd">            provide a filename or a NetCDF file object. Otherwise, the</span>
 <span class="sd">            NetCDF file embedded in the current instance is used.</span>
 
 <span class="sd">        state : `openmm.State`</span>
-<span class="sd">            OpenMM simulation state from which to retrieve cell </span>
+<span class="sd">            OpenMM simulation state from which to retrieve cell</span>
 <span class="sd">            dimensions and atom positions, velocities, and forces.</span>
 
 <span class="sd">        Returns</span>
@@ -954,13 +959,13 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NetCDFFile</span><span class="p">):</span>
             <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="p">,</span> <span class="s2">&quot;Conventions&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                               <span class="s2">&quot;cell_lengths&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">or</span> <span class="s2">&quot;cell_angles&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span>
                               <span class="s2">&quot;velocities&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span> <span class="s2">&quot;forces&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">set_always_mask</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">Conventions</span> <span class="o">!=</span> <span class="s2">&quot;AMBERRESTART&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The NetCDF file must be a restart file.&quot;</span><span class="p">)</span>
-            
+
         <span class="c1"># Write data to NetCDF file</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">k</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">v</span>
@@ -972,10 +977,10 @@
 <div class="viewcode-block" id="NetCDFFile.write_model">
 <a class="viewcode-back" href="../../../api/mdhelper.openmm.file.NetCDFFile.html#mdhelper.openmm.file.NetCDFFile.write_model">[docs]</a>
     <span class="k">def</span> <span class="nf">write_model</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> 
-            <span class="n">coordinates</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> 
-            <span class="n">velocities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
-            <span class="n">forces</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+            <span class="n">coordinates</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+            <span class="n">velocities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">forces</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">cell_lengths</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">cell_angles</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">restart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NetCDFFile&quot;</span><span class="p">:</span>
@@ -985,26 +990,26 @@
 
 <span class="sd">        .. note::</span>
 
-<span class="sd">           This function can be used as either a static or instance </span>
+<span class="sd">           This function can be used as either a static or instance</span>
 <span class="sd">           method.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self : `str`, `netcdf4.Dataset`, or `mdhelper.openmm.file.NetCDFFile`</span>
-<span class="sd">            If :meth:`write_model` is called as a static method, you must </span>
+<span class="sd">            If :meth:`write_model` is called as a static method, you must</span>
 <span class="sd">            provide a filename or a NetCDF file object. Otherwise, the</span>
 <span class="sd">            NetCDF file embedded in the current instance is used.</span>
 
 <span class="sd">        time : `float` or `numpy.ndarray`</span>
 <span class="sd">            Time(s). The dimensionality determines whether a single or</span>
-<span class="sd">            multiple frames are written. </span>
-<span class="sd">            </span>
+<span class="sd">            multiple frames are written.</span>
+
 <span class="sd">            **Reference unit**: :math:`\\mathrm{ps}`.</span>
-<span class="sd">        </span>
+
 <span class="sd">        coordinates : `numpy.ndarray`</span>
 <span class="sd">            Coordinates of :math:`N` atoms over :math:`N_t` frames. The</span>
-<span class="sd">            dimensionality depends on whether a single or multiple </span>
-<span class="sd">            frames are to be written and must be compatible with that </span>
+<span class="sd">            dimensionality depends on whether a single or multiple</span>
+<span class="sd">            frames are to be written and must be compatible with that</span>
 <span class="sd">            for `time`.</span>
 
 <span class="sd">            **Shape**: :math:`(N,\\,3)` or :math:`(N_t,\\,N,\\,3)`.</span>
@@ -1013,7 +1018,7 @@
 
 <span class="sd">        velocities : `numpy.ndarray`, optional</span>
 <span class="sd">            Velocities of :math:`N` atoms over :math:`N_t` frames. The</span>
-<span class="sd">            dimensionality depends on whether a single or multiple </span>
+<span class="sd">            dimensionality depends on whether a single or multiple</span>
 <span class="sd">            frames are to be written and must be compatible with that</span>
 <span class="sd">            for `time`.</span>
 
@@ -1023,8 +1028,8 @@
 
 <span class="sd">        forces : `numpy.ndarray`, optional</span>
 <span class="sd">            Forces exerted on :math:`N` atoms over :math:`N_t` frames.</span>
-<span class="sd">            The dimensionality depends on whether a single or multiple </span>
-<span class="sd">            frames are to be written and must be compatible with that </span>
+<span class="sd">            The dimensionality depends on whether a single or multiple</span>
+<span class="sd">            frames are to be written and must be compatible with that</span>
 <span class="sd">            for `time`.</span>
 
 <span class="sd">            **Shape**: :math:`(N,\\,3)` or :math:`(N_t,\\,N,\\,3)`.</span>
@@ -1060,7 +1065,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NetCDFFile</span><span class="p">):</span>
             <span class="bp">self</span> <span class="o">=</span> <span class="n">NetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="n">restart</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="p">,</span> <span class="s2">&quot;Conventions&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                               <span class="n">cell_lengths</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cell_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
                               <span class="n">velocities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">forces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">set_always_mask</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -1097,7 +1102,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2023, Benjamin Ye
+                Copyright &#169; 2023–2024 Benjamin Ye, Pierre Walker
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1117,7 +1122,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../../_static/documentation_options.js?v=8d563738"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>

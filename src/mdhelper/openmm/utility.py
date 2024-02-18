@@ -17,7 +17,7 @@ from openmm import unit
 
 def _create_context(
         system: openmm.System, integrator: openmm.Integrator,
-        positions: np.ndarray[float], platform: openmm.Platform, 
+        positions: np.ndarray[float], platform: openmm.Platform,
         properties: dict) -> openmm.Context:
 
     r"""
@@ -38,13 +38,13 @@ def _create_context(
         **Shape**: :math:`(N,\,3)`.
 
         **Reference unit**: :math:`\mathrm{nm}`.
-    
+
     platform : `openmm.Platform`
         OpenMM platform.
 
     properties : `dict`
         Dictionary of platform-specific properties.
-    
+
     Returns
     -------
     context : `openmm.Context`
@@ -65,13 +65,13 @@ def _benchmark_integrator(context: openmm.Context, steps: int) -> float:
     ----------
     context : `openmm.Context`
         OpenMM simulation context.
-    
+
     Returns
     -------
     time : `float`
         Elapsed time, in seconds.
     """
-    
+
     start = datetime.now()
     context.getIntegrator().step(steps)
     return (datetime.now() - start).total_seconds()
@@ -86,7 +86,7 @@ def optimize_pme(
         target: float = 10, target_std: float = None, window: int = 3,
         fastest: int = 5, rerun: int = 2, verbose: bool = True
     ) -> tuple[unit.Quantity, bool]:
-    
+
     """
     Run a series of simulations using different parameters to determine
     the optimal configuration for evaluating electrostatic interactions
@@ -96,7 +96,7 @@ def optimize_pme(
     with no accuracy penalty since OpenMM automatically selects internal
     parameters to satisfy the specified error tolerance. However, it may
     affect the accuracy of other nonbonded interactions, so care must be
-    taken to ensure the optimal Coulomb potential cutoff is compatible 
+    taken to ensure the optimal Coulomb potential cutoff is compatible
     with the other pair potentials in the system.
 
     In certain cases, OpenMM can perform better with the reciprocal
@@ -117,13 +117,13 @@ def optimize_pme(
         **Shape**: :math:`(N,\\,3)`.
 
         **Reference unit**: :math:`\\mathrm{nm}`.
-    
+
     platform : `openmm.Platform`
         OpenMM platform.
 
     properties : `dict`
         Dictionary of platform-specific properties.
-    
+
     min_cutoff : `float` or `unit.Quantity`
         Minimum cutoff distance to test.
 
@@ -143,12 +143,12 @@ def optimize_pme(
         Determines whether CPU PME should be benchmarked.
 
     target : `float`, keyword-only, default: :code:`10`
-        Target simulation time for each test run, in seconds. 
+        Target simulation time for each test run, in seconds.
 
     target_std : `float`, keyword-only, optional
         Allowed variability for `target`, in seconds. If set to a value
-        that is too small, the target simulation time may never be 
-        satisfied. If not specified, it is set to 10% of `target`. 
+        that is too small, the target simulation time may never be
+        satisfied. If not specified, it is set to 10% of `target`.
 
     window : `int`, keyword-only, default: :code:`3`
         Number of previous runs to look at before deciding whether to
@@ -170,15 +170,15 @@ def optimize_pme(
         Optimal cutoff distance.
 
         **Reference unit**: :math:`\\mathrm{nm}`.
-    
+
     cpu_pme : `bool`
-        Specifies whether to use the CPU to perform reciprocal space 
+        Specifies whether to use the CPU to perform reciprocal space
         calculations.
     """
 
     # Set up logger
-    logging.basicConfig(format="{asctime} | {levelname:^8s} | {message}", 
-                        style="{", 
+    logging.basicConfig(format="{asctime} | {levelname:^8s} | {message}",
+                        style="{",
                         level=logging.INFO if verbose else logging.WARNING)
 
     # Get information about the pair potential of interest
@@ -264,7 +264,7 @@ def optimize_pme(
                     cutoffs["cpu"].add(cutoff)
                 if check == 1:
                     cutoffs["gpu"].add(cutoff)
-    
+
     # Get preliminary times for the different architectures and cutoffs
     cutoff_width = max(7, np.ceil(
         np.log10(max(max(v) for v in cutoffs.values()))
@@ -284,12 +284,12 @@ def optimize_pme(
                          f"===> {times[arch][i]:{time_width}.5f} s elapsed")
 
             # Stop iteration if simulation is continuously getting slower
-            if i > window and np.all(times[arch][i - window:i] > 
+            if i > window and np.all(times[arch][i - window:i] >
                                      times[arch][i - window - 1:i - 1]):
                 break
     best = sorted([t, c, a] for a in times.keys()
                             for c, t in zip(cutoffs[a], times[a]))[:fastest]
-    
+
     # Rerun the fastest configurations to ensure correct results
     for i, (time, cutoff, arch) in enumerate(best):
         pmeforce.setCutoffDistance(cutoff)

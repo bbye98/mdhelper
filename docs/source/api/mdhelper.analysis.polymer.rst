@@ -15,9 +15,9 @@ polymer
       :toctree:
       :nosignatures:
    
+      calculate_relaxation_time
       correlation_fft
       correlation_shift
-      relaxation_time
    
    
 

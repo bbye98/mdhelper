@@ -11,14 +11,14 @@ from typing import Any
 import matplotlib as mpl
 import numpy as np
 
-def tabular_legend(
-        rows: list[str], cols: list[str], *, hlabel: str = None, 
-        vlabel: str = None, hla: str = "left", vla: str = "top", 
+def set_up_tabular_legend(
+        rows: list[str], cols: list[str], *, hlabel: str = None,
+        vlabel: str = None, hla: str = "left", vla: str = "top",
         condense: bool = False, **kwargs) -> tuple[dict[str, Any], int, int]:
 
     r"""
     Sets up a tabular legend for a :class:`matplotlib.axes.Axes` object.
-    
+
     Parameters
     ----------
     rows : `tuple` or `list`
@@ -69,9 +69,9 @@ def tabular_legend(
 
         .. container::
 
-           * handles (`list`): :obj:`matplotlib.artist` objects to be 
+           * handles (`list`): :obj:`matplotlib.artist` objects to be
              added to the legend.
-           * labels (`list`): Labels to be shown next to the 
+           * labels (`list`): Labels to be shown next to the
              :obj:`matplotlib.artist` objects in the legend.
            * ncol (`int`): Number of columns in the legend.
            * kwargs (`dict`): Keyword arguments passed to
@@ -130,9 +130,9 @@ def tabular_legend(
     labels[hpad * nrow + bool(hlabel)::nrow] = cols
 
     return {
-        "handles": [mpl.patches.Rectangle((0, 0), 0.1, 0.1, ec="none", fill=False) 
+        "handles": [mpl.patches.Rectangle((0, 0), 0.1, 0.1, ec="none", fill=False)
                     for _ in range(len(labels))],
-        "labels": labels, 
+        "labels": labels,
         "ncol": ncol,
         **kwargs
     }, nrow, iv + nrow

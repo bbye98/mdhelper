@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>mdhelper.analysis.electrostatics - MDHelper documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>mdhelper.analysis.electrostatics - MDHelper 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">MDHelper  documentation</div></a>
+      <a href="../../../index.html"><div class="brand">MDHelper 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,6 +145,9 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+  </div>
   
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -171,14 +174,16 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.closest_factors.html">closest_factors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.lj_scaling.html">lj_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.get_closest_factors.html">get_closest_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.get_lj_scaling_factors.html">get_lj_scaling_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.get_scaling_factors.html">get_scaling_factors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.rebin.html">rebin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.replicate.html">replicate</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.unit_scaling.html">unit_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.strip_unit.html">strip_unit</a></li>
 </ul>
 </li>
 </ul>
@@ -190,14 +195,14 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.html">electrostatics</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of electrostatics</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.relative_permittivity.html">relative_permittivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.calculate_relative_permittivity.html">calculate_relative_permittivity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.electrostatics.DipoleMoment.html">DipoleMoment</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.html">polymer</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of polymer</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.relaxation_time.html">relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.ParallelSingleChainStructureFactor.html">ParallelSingleChainStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
@@ -205,15 +210,15 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.html">profile</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of profile</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.potential_profile.html">potential_profile</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.calculate_potential_profile.html">calculate_potential_profile</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.profile.DensityProfile.html">DensityProfile</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.html">structure</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.coordination_numbers.html">coordination_numbers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_coordination_numbers.html">calculate_coordination_numbers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_structure_factor.html">calculate_structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.structure_factor.html">structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
@@ -229,12 +234,12 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.html">transport</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of transport</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.coefficients.html">coefficients</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.conductivity.html">conductivity</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.electrophoretic_mobility.html">electrophoretic_mobility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_conductivity.html">calculate_conductivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_electrophoretic_mobility.html">calculate_electrophoretic_mobility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_transference_number.html">calculate_transference_number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.calculate_transport_coefficients.html">calculate_transport_coefficients</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.msd_fft.html">msd_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.msd_shift.html">msd_shift</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.transference_number.html">transference_number</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.transport.Onsager.html">Onsager</a></li>
 </ul>
 </li>
@@ -323,21 +328,21 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.system.html">system</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle navigation of system</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.electric_field.html">electric_field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.add_electric_field.html">add_electric_field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.add_image_charges.html">add_image_charges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.add_slab_correction.html">add_slab_correction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.estimate_pressure_tensor.html">estimate_pressure_tensor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.image_charges.html">image_charges</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.register_particles.html">register_particles</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.system.slab_correction.html">slab_correction</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" role="switch" type="checkbox"/><label for="toctree-checkbox-28"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.create_atoms.html">create_atoms</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.subset.html">subset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.topology.get_subset.html">get_subset</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.html">unit</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of unit</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.lj_scaling.html">lj_scaling</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.unit_scaling.html">unit_scaling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.get_lj_scaling_factors.html">get_lj_scaling_factors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.openmm.unit.get_scaling_factors.html">get_scaling_factors</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.openmm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -348,7 +353,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.html">plot</a><input class="toctree-checkbox" id="toctree-checkbox-31" name="toctree-checkbox-31" role="switch" type="checkbox"/><label for="toctree-checkbox-31"><div class="visually-hidden">Toggle navigation of plot</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.axis.html">axis</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle navigation of axis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.plot.axis.tabular_legend.html">tabular_legend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.plot.axis.set_up_tabular_legend.html">set_up_tabular_legend</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.plot.rcparam.html">rcparam</a><input class="toctree-checkbox" id="toctree-checkbox-33" name="toctree-checkbox-33" role="switch" type="checkbox"/><label for="toctree-checkbox-33"><div class="visually-hidden">Toggle navigation of rcparam</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -402,6 +407,7 @@
 <span class="sd">as the instantaneous dipole moment.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Real</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
@@ -409,22 +415,24 @@
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">SerialAnalysisBase</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">FOUND_OPENMM</span><span class="p">,</span> <span class="n">Q_</span><span class="p">,</span> <span class="n">ureg</span>
+<span class="kn">from</span> <span class="nn">..algorithm.topology</span> <span class="kn">import</span> <span class="n">unwrap</span>
+<span class="kn">from</span> <span class="nn">..algorithm.utility</span> <span class="kn">import</span> <span class="n">strip_unit</span>
 
 <span class="k">if</span> <span class="n">FOUND_OPENMM</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">unit</span>
 
-<div class="viewcode-block" id="relative_permittivity">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.electrostatics.relative_permittivity.html#mdhelper.analysis.electrostatics.relative_permittivity">[docs]</a>
-<span class="k">def</span> <span class="nf">relative_permittivity</span><span class="p">(</span>
-        <span class="n">M</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">temp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> 
+<div class="viewcode-block" id="calculate_relative_permittivity">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.electrostatics.calculate_relative_permittivity.html#mdhelper.analysis.electrostatics.calculate_relative_permittivity">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_relative_permittivity</span><span class="p">(</span>
+        <span class="n">M</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
         <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the relative permittivity (or static dielectric constant)</span>
+<span class="sd">    Calculates the relative permittivity (or static dielectric constant)</span>
 <span class="sd">    :math:`\varepsilon_\mathrm{r}` of a medium using the instantaneous</span>
 <span class="sd">    dipole moments :math:`\mathbf{M}(t)`.</span>
 
-<span class="sd">    The dipole moment fluctuation formula [1]_ relates the relative </span>
+<span class="sd">    The dipole moment fluctuation formula [1]_ relates the relative</span>
 <span class="sd">    permittivity to the dipole moment via</span>
 
 <span class="sd">    .. math::</span>
@@ -432,9 +440,9 @@
 <span class="sd">       \varepsilon_\mathrm{r}=1+\frac{\overline{\langle\mathbf{M}^2\rangle</span>
 <span class="sd">       -\langle\mathbf{M}\rangle^2}}{3\varepsilon_0 Vk_\mathrm{B}T}</span>
 
-<span class="sd">    where the angular brackets :math:`\langle\,\cdot\,\rangle` denote </span>
+<span class="sd">    where the angular brackets :math:`\langle\,\cdot\,\rangle` denote</span>
 <span class="sd">    the ensemble average, the overline signifies the spatial average,</span>
-<span class="sd">    :math:`\varepsilon_0` is the vacuum permittivity, </span>
+<span class="sd">    :math:`\varepsilon_0` is the vacuum permittivity,</span>
 <span class="sd">    :math:`k_\mathrm{B}` is the Boltzmann constant, and :math:`T` is</span>
 <span class="sd">    the system temperature.</span>
 
@@ -453,14 +461,14 @@
 
 <span class="sd">        **Reference unit**: :math:`\mathrm{e\cdotÅ}`.</span>
 
-<span class="sd">    temp : `float`</span>
+<span class="sd">    temperature : `float`</span>
 <span class="sd">        System temperature :math:`T`.</span>
 
 <span class="sd">        .. note::</span>
 
-<span class="sd">           If :code:`reduced=True`, `temp` should be equal to the energy</span>
-<span class="sd">           scale. When the Lennard-Jones potential is used, it generally</span>
-<span class="sd">           means that :math:`T^* = 1`, or `temp=1`.</span>
+<span class="sd">           If :code:`reduced=True`, `temperature` should be equal to the</span>
+<span class="sd">           energy scale. When the Lennard-Jones potential is used, it</span>
+<span class="sd">           generally means that :math:`T^* = 1`, or `temperature=1`.</span>
 
 <span class="sd">        **Reference unit**: :math:`\mathrm{K}`.</span>
 
@@ -480,20 +488,20 @@
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    .. [1] Neumann, M. Dipole Moment Fluctuation Formulas in Computer</span>
-<span class="sd">       Simulations of Polar Systems. *Molecular Physics* **1983**, </span>
+<span class="sd">       Simulations of Polar Systems. *Molecular Physics* **1983**,</span>
 <span class="sd">       *50* (4), 841–858. https://doi.org/10.1080/00268978300102721.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="k">if</span> <span class="n">reduced</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">M</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-                    <span class="o">/</span> <span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="n">temp</span><span class="p">))</span>
+                    <span class="o">/</span> <span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="n">temperature</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">M</span> <span class="o">*=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">elementary_charge</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span>
-        <span class="n">temp</span> <span class="o">*=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span>
+        <span class="n">temperature</span> <span class="o">*=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span>
         <span class="n">volume</span> <span class="o">*=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="mi">3</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">M</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">M</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-                <span class="o">/</span> <span class="p">(</span><span class="n">ureg</span><span class="o">.</span><span class="n">vacuum_permittivity</span> <span class="o">*</span> <span class="n">volume</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> 
-                   <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">boltzmann_constant</span> <span class="o">*</span> <span class="n">temp</span><span class="p">))</span><span class="o">.</span><span class="n">magnitude</span></div>
+                <span class="o">/</span> <span class="p">(</span><span class="n">ureg</span><span class="o">.</span><span class="n">vacuum_permittivity</span> <span class="o">*</span> <span class="n">volume</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                   <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">boltzmann_constant</span> <span class="o">*</span> <span class="n">temperature</span><span class="p">))</span><span class="o">.</span><span class="n">magnitude</span></div>
 
 
 <div class="viewcode-block" id="DipoleMoment">
@@ -523,9 +531,9 @@
 <span class="sd">       \varepsilon_\mathrm{r}=1+\frac{\overline{\langle\mathbf{M}^2\rangle</span>
 <span class="sd">       -\langle\mathbf{M}\rangle^2}}{3\varepsilon_0 Vk_\mathrm{B}T}</span>
 
-<span class="sd">    where the angular brackets :math:`\langle\,\cdot\,\rangle` denote </span>
+<span class="sd">    where the angular brackets :math:`\langle\,\cdot\,\rangle` denote</span>
 <span class="sd">    the ensemble average, the overline signifies the spatial average,</span>
-<span class="sd">    :math:`\varepsilon_0` is the vacuum permittivity, </span>
+<span class="sd">    :math:`\varepsilon_0` is the vacuum permittivity,</span>
 <span class="sd">    :math:`k_\mathrm{B}` is the Boltzmann constant, and :math:`T` is</span>
 <span class="sd">    the system temperature.</span>
 
@@ -535,21 +543,21 @@
 <span class="sd">        Group(s) of atoms for which the dipole moments are calculated.</span>
 
 <span class="sd">    charges : array-like, keyword-only, optional</span>
-<span class="sd">        Charge information for the atoms in the :math:`N_\mathrm{g}` </span>
-<span class="sd">        groups in `groups`. If not provided, it should be available in </span>
-<span class="sd">        and will be retrieved from the main </span>
+<span class="sd">        Charge information for the atoms in the :math:`N_\mathrm{g}`</span>
+<span class="sd">        groups in `groups`. If not provided, it should be available in</span>
+<span class="sd">        and will be retrieved from the main</span>
 <span class="sd">        :class:`MDAnalysis.core.universe.Universe` object.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{g},)` array of :math:`(N_i,)` </span>
-<span class="sd">        arrays, where :math:`N_i` is the number of atoms in group </span>
+<span class="sd">        **Shape**: :math:`(N_\mathrm{g},)` array of :math:`(N_i,)`</span>
+<span class="sd">        arrays, where :math:`N_i` is the number of atoms in group</span>
 <span class="sd">        :math:`i`.</span>
 
 <span class="sd">        **Reference unit**: :math:`\mathrm{e}`.</span>
 
 <span class="sd">    dimensions : array-like, keyword-only, optional</span>
-<span class="sd">        System dimensions. If the </span>
-<span class="sd">        :class:`MDAnalysis.core.universe.Universe` object that the </span>
-<span class="sd">        groups in `groups` belong to does not contain dimensionality </span>
+<span class="sd">        System dimensions. If the</span>
+<span class="sd">        :class:`MDAnalysis.core.universe.Universe` object that the</span>
+<span class="sd">        groups in `groups` belong to does not contain dimensionality</span>
 <span class="sd">        information, provide it here. Affected by `scales`.</span>
 
 <span class="sd">        **Shape**: :math:`(3,)`.</span>
@@ -557,17 +565,17 @@
 <span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
 
 <span class="sd">    scales : array-like, keyword-only, optional</span>
-<span class="sd">        Scaling factors for each system dimension. If an `int` is </span>
+<span class="sd">        Scaling factors for each system dimension. If an `int` is</span>
 <span class="sd">        provided, the same value is used for all axes.</span>
 
 <span class="sd">        **Shape**: :math:`(3,)`.</span>
 
 <span class="sd">    average : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the dipole moment vectors and volumes are </span>
+<span class="sd">        Determines whether the dipole moment vectors and volumes are</span>
 <span class="sd">        time-averaged.</span>
 
 <span class="sd">    reduced : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Specifies whether the data is in reduced units. Only affects </span>
+<span class="sd">        Specifies whether the data is in reduced units. Only affects</span>
 <span class="sd">        :meth:`calculate_relative_permittivity` calls.</span>
 
 <span class="sd">    unwrap : `bool`, keyword-only, default: :code:`False`</span>
@@ -587,8 +595,8 @@
 <span class="sd">        information describing the system.</span>
 
 <span class="sd">    results.units : `dict`</span>
-<span class="sd">        Reference units for the results. For example, to get the </span>
-<span class="sd">        reference units for :code:`results.time`, call </span>
+<span class="sd">        Reference units for the results. For example, to get the</span>
+<span class="sd">        reference units for :code:`results.time`, call</span>
 <span class="sd">        :code:`results.units[&quot;results.time&quot;]`.</span>
 
 <span class="sd">    results.time : `numpy.ndarray`</span>
@@ -617,22 +625,22 @@
 <span class="sd">        :math:`\varepsilon_\mathrm{r}` in each dimension.</span>
 
 <span class="sd">        **Shape**: :math:`(3,)`.</span>
-<span class="sd">    </span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    .. [1] Neumann, M. Dipole Moment Fluctuation Formulas in Computer</span>
-<span class="sd">       Simulations of Polar Systems. *Molecular Physics* **1983**, </span>
+<span class="sd">       Simulations of Polar Systems. *Molecular Physics* **1983**,</span>
 <span class="sd">       *50* (4), 841–858. https://doi.org/10.1080/00268978300102721.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]],</span> 
+            <span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]],</span>
             <span class="n">charges</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">dimensions</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">scales</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">)</span> <span class="k">else</span> <span class="n">groups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
@@ -644,47 +652,33 @@
         <span class="k">if</span> <span class="n">dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dimensions</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;dimensions&#39; must have length 3.&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dimensions</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">Q_</span><span class="p">):</span>
-                    <span class="n">dimensions</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;_dimensions&quot;</span><span class="p">]</span>
-                    <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">dimensions</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">angstrom</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dimensions</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">strip_unit</span><span class="p">(</span><span class="n">dimensions</span><span class="p">,</span> <span class="s2">&quot;angstrom&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No system dimensions found or provided.&quot;</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scales</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">))</span> \
-                <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">scales</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
-                    <span class="n">scales</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
-                <span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scales</span><span class="p">,</span> <span class="n">Real</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scales</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+                                        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scales</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Real</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">*=</span> <span class="n">scales</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The scaling factor(s) must be provided as a &quot;</span>
                     <span class="s2">&quot;floating-point number or in an array with shape (3,). &quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">charges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">charges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">charges</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">charges</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="n">charges</span><span class="p">)):</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)):</span>
-                        <span class="n">q</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">Q_</span><span class="p">):</span>
-                            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;_charges&quot;</span><span class="p">])</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">elementary_charge</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+                    <span class="n">charges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="s2">&quot;elementary_charge&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">charges</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Real</span><span class="p">):</span>
+                        <span class="n">charges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">charges</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
                         <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The number of charges in &quot;</span>
                                 <span class="sa">f</span><span class="s2">&quot;&#39;charges[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">]&#39; is not equal to the &quot;</span>
                                 <span class="s2">&quot;number of atoms in the corresponding &quot;</span>
                                 <span class="s2">&quot;group.&quot;</span><span class="p">)</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
-                    <span class="n">charges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_charges</span> <span class="o">=</span> <span class="n">charges</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The number of group charge arrays is not &quot;</span>
@@ -697,7 +691,7 @@
 
         <span class="c1"># TODO: Add support for charged molecules.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_all_neutral</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">total_charge</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="s2">&quot;fragments&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">total_charge</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="s2">&quot;fragments&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span>
             <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_all_included</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">)</span> \
@@ -710,17 +704,17 @@
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Preallocate arrays to number of boundary crossings for each </span>
+        <span class="c1"># Preallocate arrays to number of boundary crossings for each</span>
         <span class="c1"># atom</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">/</span> <span class="mi">2</span>
 
         <span class="c1"># Preallocate arrays to store results and store reference units</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_average</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">dt</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">dt</span>
                                  <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picosecond</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dipole</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
@@ -730,14 +724,18 @@
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Unwrap all particle positions, if necessary</span>
+        <span class="c1"># Store atom positions in the current frame</span>
         <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Unwrap all particle positions, if necessary</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
-            <span class="n">dpos</span> <span class="o">=</span> <span class="n">positions</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span>
-            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dpos</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threshold</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">dpos</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">positions</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span>
+            <span class="n">unwrap</span><span class="p">(</span>
+                <span class="n">positions</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
+                <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
+                <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
+            <span class="p">)</span>
 
         <span class="c1"># Compute dipole moment vectors and store per-frame volume</span>
         <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_charges</span><span class="p">):</span>
@@ -745,34 +743,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">volume</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">volume</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        
+
         <span class="c1"># Average results, if requested</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_average</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dipole</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dipole</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        
+
 <div class="viewcode-block" id="DipoleMoment.calculate_relative_permittivity">
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.electrostatics.DipoleMoment.html#mdhelper.analysis.electrostatics.DipoleMoment.calculate_relative_permittivity">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_relative_permittivity</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">temp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Computes the relative permittivity (or static dielectric </span>
+<span class="sd">        Calculates the relative permittivity (or static dielectric</span>
 <span class="sd">        constant) :math:`\varepsilon_\mathrm{r}` of a medium using the</span>
 <span class="sd">        instantaneous dipole moments :math:`\mathbf{M}(t)`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        temp : `float`, `openmm.unit.Quantity`, or `pint.Quantity`</span>
+<span class="sd">        temperature : `float`, `openmm.unit.Quantity`, or `pint.Quantity`</span>
 <span class="sd">            System temperature :math:`T`.</span>
 
 <span class="sd">            .. note::</span>
 
-<span class="sd">               If :code:`reduced=True` was set in the </span>
-<span class="sd">               :class:`DipoleMoment` constructor, `temp` should be equal</span>
-<span class="sd">               to the energy scale. When the Lennard-Jones potential is</span>
-<span class="sd">               used, it generally means that :math:`T^* = 1`, or </span>
-<span class="sd">               `temp=1`.</span>
+<span class="sd">               If :code:`reduced=True` was set in the</span>
+<span class="sd">               :class:`DipoleMoment` constructor, `temperature` should </span>
+<span class="sd">               be equal to the energy scale. When the Lennard-Jones </span>
+<span class="sd">               potential is used, it generally means that </span>
+<span class="sd">               :math:`T^* = 1`, or `temperature=1`.</span>
 
 <span class="sd">            **Reference unit**: :math:`\mathrm{K}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -791,18 +789,13 @@
                     <span class="s2">&quot;groups.&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)):</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span><span class="p">:</span>
-                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&#39;temp&#39; has units, but the rest of the data is &quot;</span>
-                            <span class="s2">&quot;or should be reduced.&quot;</span><span class="p">)</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">Q_</span><span class="p">):</span>
-                    <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kelvin</span><span class="p">)</span>
+            <span class="n">temperature</span><span class="p">,</span> <span class="n">unit_</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="s2">&quot;kelvin&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&#39;temperature&#39; cannot have units when reduced=True.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dielectric</span> <span class="o">=</span> <span class="n">relative_permittivity</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dipole</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dielectric</span> <span class="o">=</span> <span class="n">calculate_relative_permittivity</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dipole</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
                 <span class="n">reduced</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span>
             <span class="p">)</span></div>
 </div>
@@ -819,7 +812,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2023, Benjamin Ye
+                Copyright &#169; 2023–2024 Benjamin Ye, Pierre Walker
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -839,7 +832,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../../_static/documentation_options.js?v=8d563738"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>

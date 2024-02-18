@@ -32,7 +32,7 @@ def fourier(
     .. math::
 
        y=a_0+\sum_{k=1}^na_i\cos{(k\omega x)}+b_i\sin{(k\omega x)}
-    
+
     Parameters
     ----------
     x : `numpy.ndarray`
@@ -122,7 +122,7 @@ def fourier1(
     fit : `numpy.ndarray`
         Fitted :math:`y`-values.
     """
-    
+
     return fourier(x, omega, a0, a1, b1)
 
 def fourier2(
@@ -166,7 +166,7 @@ def fourier2(
     fit : `numpy.ndarray`
         Fitted :math:`y`-values.
     """
-    
+
     return fourier(x, omega, a0, a1, b1, a2, b2)
 
 def fourier3(
@@ -217,7 +217,7 @@ def fourier3(
     fit : `numpy.ndarray`
         Fitted :math:`y`-values.
     """
-    
+
     return fourier(x, omega, a0, a1, b1, a2, b2, a3, b3)
 
 def fourier4(
@@ -276,7 +276,7 @@ def fourier4(
     fit : `numpy.ndarray`
         Fitted :math:`y`-values.
     """
-    
+
     return fourier(x, omega, a0, a1, b1, a2, b2, a3, b3, a4, b4)
 
 def fourier5(
@@ -340,7 +340,7 @@ def fourier5(
     fit : `numpy.ndarray`
         Fitted :math:`y`-values.
     """
-    
+
     return fourier(x, omega, a0, a1, b1, a2, b2, a3, b3, a4, b4, a5, b5)
 
 def fourier6(
@@ -411,7 +411,7 @@ def fourier6(
     fit : `numpy.ndarray`
         Fitted :math:`y`-values.
     """
-    
+
     return fourier(x, omega, a0, a1, b1, a2, b2, a3, b3, a4, b4, a5, b5,
                    a6, b6)
 
@@ -489,7 +489,7 @@ def fourier7(
     fit : `numpy.ndarray`
         Fitted :math:`y`-values.
     """
-    
+
     return fourier(x, omega, a0, a1, b1, a2, b2, a3, b3, a4, b4, a5, b5,
                    a6, b6, a7, b7)
 
@@ -573,6 +573,6 @@ def fourier8(
     fit : `numpy.ndarray`
         Fitted :math:`y`-values.
     """
-    
+
     return fourier(x, omega, a0, a1, b1, a2, b2, a3, b3, a4, b4, a5, b5,
                    a6, b6, a7, b7, a8, b8)

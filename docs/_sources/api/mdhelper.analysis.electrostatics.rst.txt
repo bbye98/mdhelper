@@ -1,4 +1,4 @@
-﻿electrostatics
+electrostatics
 ==============
 
 .. automodule:: mdhelper.analysis.electrostatics
@@ -15,7 +15,7 @@
       :toctree:
       :nosignatures:
    
-      relative_permittivity
+      calculate_relative_permittivity
    
    
 
