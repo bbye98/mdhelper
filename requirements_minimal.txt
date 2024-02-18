@@ -2,6 +2,7 @@ matplotlib
 mdanalysis
 netcdf4
 numpy
+pandas
 pint
 scipy
 sympy
