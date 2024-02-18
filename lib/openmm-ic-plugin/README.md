@@ -32,7 +32,8 @@ To build it, follow these steps:
 7. Make sure that `CUDA_TOOLKIT_ROOT_DIR` is set correctly and that 
    `IC_BUILD_CUDA_LIB` is enabled.
 8. Press "Configure" again if necessary, then press "Generate".
-9. Use the build system you selected to build and install the plugin using
+9. Use the build system you selected to build and install the plugin 
+   using
 
        make -j
        make install
