@@ -880,7 +880,8 @@ def add_image_charges(
 def add_electric_field(
         system: openmm.System, nbforce: openmm.NonbondedForce,
         E: Union[float, unit.Quantity], *, axis: int = 2,
-        charge_index: int = 0, atom_indices: Union[int, np.ndarray[int]] = None
+        dielectric: float = 1, charge_index: int = 0, 
+        atom_indices: Union[int, np.ndarray[int]] = None
     ) -> None:
 
     r"""
@@ -930,6 +931,12 @@ def add_electric_field(
         :code:`2` correspond to :math:`x`, :math:`y`, and :math:`z`,
         respectively.
 
+    dielectric : `float`, keyword-only, default: :code:`1`
+        Relative permittivity :math:`\varepsilon_\mathrm{r}` of the 
+        medium. Used to scale the particle charges by 
+        :math:`\sqrt{\varepsilon_\mathrm{r}}` and recover the original
+        values.
+
     charge_index : `int`, keyword-only, default: :code:`0`
         Index of charge :math:`q` information in the per-particle
         parameters stored in `nbforce`.
@@ -954,14 +961,14 @@ def add_electric_field(
     # Create and register particles to the electric field
     efield = openmm.CustomExternalForce(f"-q*E*{z}")
     efield.addGlobalParameter("E", E)
-    efield.addPerParticleParameter('q')
+    efield.addPerParticleParameter("q")
 
     for i in atom_indices:
         q = nbforce.getParticleParameters(i)[charge_index]
         if isinstance(q, unit.Quantity):
             q = q.value_in_unit(unit.elementary_charge)
         if not np.isclose(q, 0):
-            efield.addParticle(i, (q,))
+            efield.addParticle(i, (q * np.sqrt(dielectric),))
 
     system.addForce(efield)
 

@@ -1291,7 +1291,8 @@
 <span class="k">def</span> <span class="nf">add_electric_field</span><span class="p">(</span>
         <span class="n">system</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">System</span><span class="p">,</span> <span class="n">nbforce</span><span class="p">:</span> <span class="n">openmm</span><span class="o">.</span><span class="n">NonbondedForce</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="n">charge_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">atom_indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">dielectric</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">charge_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> 
+        <span class="n">atom_indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1341,6 +1342,12 @@
 <span class="sd">        :code:`2` correspond to :math:`x`, :math:`y`, and :math:`z`,</span>
 <span class="sd">        respectively.</span>
 
+<span class="sd">    dielectric : `float`, keyword-only, default: :code:`1`</span>
+<span class="sd">        Relative permittivity :math:`\varepsilon_\mathrm{r}` of the </span>
+<span class="sd">        medium. Used to scale the particle charges by </span>
+<span class="sd">        :math:`\sqrt{\varepsilon_\mathrm{r}}` and recover the original</span>
+<span class="sd">        values.</span>
+
 <span class="sd">    charge_index : `int`, keyword-only, default: :code:`0`</span>
 <span class="sd">        Index of charge :math:`q` information in the per-particle</span>
 <span class="sd">        parameters stored in `nbforce`.</span>
@@ -1365,14 +1372,14 @@
     <span class="c1"># Create and register particles to the electric field</span>
     <span class="n">efield</span> <span class="o">=</span> <span class="n">openmm</span><span class="o">.</span><span class="n">CustomExternalForce</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-q*E*</span><span class="si">{</span><span class="n">z</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">efield</span><span class="o">.</span><span class="n">addGlobalParameter</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
-    <span class="n">efield</span><span class="o">.</span><span class="n">addPerParticleParameter</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">)</span>
+    <span class="n">efield</span><span class="o">.</span><span class="n">addPerParticleParameter</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">atom_indices</span><span class="p">:</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">nbforce</span><span class="o">.</span><span class="n">getParticleParameters</span><span class="p">(</span><span class="n">i</span><span class="p">)[</span><span class="n">charge_index</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
             <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">elementary_charge</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="n">efield</span><span class="o">.</span><span class="n">addParticle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">q</span><span class="p">,))</span>
+            <span class="n">efield</span><span class="o">.</span><span class="n">addParticle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">q</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dielectric</span><span class="p">),))</span>
 
     <span class="n">system</span><span class="o">.</span><span class="n">addForce</span><span class="p">(</span><span class="n">efield</span><span class="p">)</span></div>
 
