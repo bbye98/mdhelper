@@ -33,7 +33,7 @@ def radial_histogram(
         exclusion: tuple[int] = None) -> np.ndarray[float]:
 
     r"""
-    Calculates the radial histogram of distances between particles of
+    Computes the radial histogram of distances between particles of
     the same type or two different types.
 
     Parameters
@@ -286,7 +286,7 @@ def calculate_structure_factor(
     ) -> tuple[np.ndarray[float], np.ndarray[float]]:
 
     r"""
-    Computes the (partial) static structure factor :math:`S_{ij}(q)`
+    Calculates the (partial) static structure factor :math:`S_{ij}(q)`
     using the radial histogram bins :math:`r` and the radial
     distribution function :math:`g_{ij}(r)` for an isotropic fluid.
 
@@ -850,7 +850,7 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
         ) -> Union[SerialAnalysisBase, ParallelAnalysisBase]:
 
         """
-        Perform the calculation.
+        Performs the calculation.
 
         Parameters
         ----------
@@ -1072,8 +1072,8 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
         \sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2+\left[
         \sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2\\right\\rangle
 
-    where :math:`N` is the number of particles, :math:`\mathbf{q}` is
-    the scattering wavevector, and :math:`\mathbf{r}_i` is the position
+    where :math:`N` is the number of particles, :math:`\\mathbf{q}` is
+    the scattering wavevector, and :math:`\\mathbf{r}_i` is the position
     of the :math:`i`-th particle.
 
     For multicomponent systems, the equation above can be generalized to
@@ -1081,11 +1081,11 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
     .. math::
 
-       S_{\\alpha\\beta}(\mathbf{q})=\\frac{1}{\sqrt{N_\\alpha N_\\beta}}
-       \left\langle\sum_{j=1}^{N_\\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
-       \sum_{k=1}^{N_\\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}
-       +\sum_{j=1}^{N_\\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}
-       \sum_{k=1}^{N_\\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}\\right\\rangle
+       S_{\\alpha\\beta}(\\mathbf{q})=\\frac{1}{\sqrt{N_\\alpha N_\\beta}}
+       \left\langle\sum_{j=1}^{N_\\alpha}\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}
+       \sum_{k=1}^{N_\\beta}\cos{(\\mathbf{q}\cdot\\mathbf{r}_k)}
+       +\sum_{j=1}^{N_\\alpha}\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}
+       \sum_{k=1}^{N_\\beta}\sin{(\\mathbf{q}\cdot\\mathbf{r}_k)}\\right\\rangle
 
     where :math:`N_\\alpha` and :math:`N_\\beta` are the numbers of
     particles for species :math:`\\alpha` and :math:`\\beta`.
@@ -1121,7 +1121,7 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
         **Shape**: :math:`(3,)`.
 
-        **Reference unit**: :math:`\mathrm{Å}`.
+        **Reference unit**: :math:`\\mathrm{Å}`.
 
     n_points : `int`, default: :code:`32`
         Number of points in the scattering wavevector grid. Additional
@@ -1189,16 +1189,16 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
         `results.ssf`.
 
     results.wavenumbers : `numpy.ndarray`
-        :math:`N_\mathrm{w}` unique scattering wavenumbers :math:`q`.
+        :math:`N_\\mathrm{w}` unique scattering wavenumbers :math:`q`.
 
-        **Shape**: :math:`(N_\mathrm{w},)`.
+        **Shape**: :math:`(N_\\mathrm{w},)`.
 
     results.ssf : `numpy.ndarray`
         Static structure factor :math:`S(q)` or partial structure
         factor(s) :math:`S_{\\alpha\\beta}(q)`.
 
-        **Shape**: :math:`(N_\mathrm{w},)`, :math:`(1,\,N_\mathrm{w})`,
-        or :math:`(C(N_\mathrm{g}+1,\,2),\,N_\mathrm{w})`.
+        **Shape**: :math:`(N_\\mathrm{w},)`, :math:`(1,\,N_\\mathrm{w})`,
+        or :math:`(C(N_\\mathrm{g}+1,\,2),\,N_\\mathrm{w})`.
     """
 
     def __init__(
@@ -1507,7 +1507,7 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
         ) -> Union[SerialAnalysisBase, ParallelAnalysisBase]:
 
         """
-        Perform the calculation.
+        Performs the calculation.
 
         Parameters
         ----------
@@ -1547,7 +1547,7 @@ class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase,
 
     """
     Serial and parallel implementations to calculate the incoherent (or
-    self) intermediate scattering function :math:`F_\mathrm{s}(q,\,t)`.
+    self) intermediate scattering function :math:`F_\\mathrm{s}(q,\,t)`.
 
     The incoherent intermediate scattering function characterizes the
     mean relaxation time of a system, and its spatial fluctuations
@@ -1555,13 +1555,13 @@ class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase,
 
     .. math::
 
-        F_\mathrm{s}(\mathbf{q},t)=\\frac{1}{N}\left\langle\sum_{j=1}^N
-        \exp\left[i\mathbf{q}\cdot\left(\mathbf{r}_j(t_0+t)
-        -\mathbf{r}_j(t_0)\\right)\\right]\\right\\rangle
+        F_\\mathrm{s}(\\mathbf{q},t)=\\frac{1}{N}\left\langle\sum_{j=1}^N
+        \exp\left[i\\mathbf{q}\cdot\left(\\mathbf{r}_j(t_0+t)
+        -\\mathbf{r}_j(t_0)\\right)\\right]\\right\\rangle
 
-    where :math:`N` is the number of particles, :math:`\mathbf{q}` is
+    where :math:`N` is the number of particles, :math:`\\mathbf{q}` is
     the wavevector, :math:`t_0` and :math:`t` are the initial and lag
-    times, and :math:`\mathbf{r}_j` is the position of particle
+    times, and :math:`\\mathbf{r}_j` is the position of particle
     :math:`j`.
 
     .. note::
@@ -1600,7 +1600,7 @@ class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase,
 
         **Shape**: :math:`(3,)`.
 
-        **Reference unit**: :math:`\mathrm{Å}`.
+        **Reference unit**: :math:`\\mathrm{Å}`.
 
     n_points : `int`, default: :code:`32`
         Number of points in the scattering wavevector grid. Additional
@@ -1658,22 +1658,22 @@ class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase,
     results.times : `numpy.ndarray`
         Lag times :math:`t`.
 
-        **Shape**: :math:`(N_\mathrm{t},)`.
+        **Shape**: :math:`(N_\\mathrm{t},)`.
 
-        **Reference units**: :math:`\mathrm{ps}`.
+        **Reference units**: :math:`\\mathrm{ps}`.
 
     results.wavenumbers : `numpy.ndarray`
         Scattering wavenumbers :math:`q`.
 
-        **Shape**: :math:`(N_\mathrm{w},)`.
+        **Shape**: :math:`(N_\\mathrm{w},)`.
 
-        **Reference units**: :math:`\mathrm{Å}^{-1}`.
+        **Reference units**: :math:`\\mathrm{Å}^{-1}`.
 
     results.isf : `numpy.ndarray`
         Incoherent (self) intermediate scattering function
-        :math:`F_\mathrm{s}(q,\,t)`.
+        :math:`F_\\mathrm{s}(q,\,t)`.
 
-        **Shape**: :math:`(N_\mathrm{t},\,N_\mathrm{w})`.
+        **Shape**: :math:`(N_\\mathrm{t},\,N_\\mathrm{w})`.
     """
 
     def __init__(
@@ -1879,3 +1879,45 @@ class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase,
             .mean(axis=1, keepdims=True)
             for q in self.results.wavenumbers
         ])
+
+    def run(
+            self, start: int = None, stop: int = None, step: int = None,
+            frames: Union[slice, np.ndarray[int]] = None,
+            verbose: bool = None, **kwargs
+        ) -> Union[SerialAnalysisBase, ParallelAnalysisBase]:
+
+        """
+        Performs the calculation.
+
+        Parameters
+        ----------
+        start : `int`, optional
+            Starting frame for analysis.
+        
+        stop : `int`, optional
+            Ending frame for analysis.
+
+        step : `int`, optional
+            Number of frames to skip between each analyzed frame.
+
+        frames : `slice` or array-like, optional
+            Index or logical array of the desired trajectory frames.
+
+        verbose : `bool`, optional
+            Determines whether detailed progress is shown.
+        
+        **kwargs
+            Additional keyword arguments to pass to
+            :class:`MDAnalysis.lib.log.ProgressBar`.
+
+        Returns
+        -------
+        self : `SerialAnalysisBase` or `ParallelAnalysisBase`
+            Analysis object with results.
+        """
+
+        return (ParallelAnalysisBase if self._parallel 
+                else SerialAnalysisBase).run(
+            self, start=start, stop=stop, step=step, frames=frames,
+            verbose=verbose, **kwargs
+        )

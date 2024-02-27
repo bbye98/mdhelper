@@ -430,7 +430,7 @@
         <span class="n">exclusion</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates the radial histogram of distances between particles of</span>
+<span class="sd">    Computes the radial histogram of distances between particles of</span>
 <span class="sd">    the same type or two different types.</span>
 
 <span class="sd">    Parameters</span>
@@ -695,7 +695,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the (partial) static structure factor :math:`S_{ij}(q)`</span>
+<span class="sd">    Calculates the (partial) static structure factor :math:`S_{ij}(q)`</span>
 <span class="sd">    using the radial histogram bins :math:`r` and the radial</span>
 <span class="sd">    distribution function :math:`g_{ij}(r)` for an isotropic fluid.</span>
 
@@ -1264,7 +1264,7 @@
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SerialAnalysisBase</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">]:</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Perform the calculation.</span>
+<span class="sd">        Performs the calculation.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1499,8 +1499,8 @@
 <span class="sd">        \sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2+\left[</span>
 <span class="sd">        \sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2\\right\\rangle</span>
 
-<span class="sd">    where :math:`N` is the number of particles, :math:`\mathbf{q}` is</span>
-<span class="sd">    the scattering wavevector, and :math:`\mathbf{r}_i` is the position</span>
+<span class="sd">    where :math:`N` is the number of particles, :math:`\\mathbf{q}` is</span>
+<span class="sd">    the scattering wavevector, and :math:`\\mathbf{r}_i` is the position</span>
 <span class="sd">    of the :math:`i`-th particle.</span>
 
 <span class="sd">    For multicomponent systems, the equation above can be generalized to</span>
@@ -1508,11 +1508,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       S_{\\alpha\\beta}(\mathbf{q})=\\frac{1}{\sqrt{N_\\alpha N_\\beta}}</span>
-<span class="sd">       \left\langle\sum_{j=1}^{N_\\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}</span>
-<span class="sd">       \sum_{k=1}^{N_\\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}</span>
-<span class="sd">       +\sum_{j=1}^{N_\\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}</span>
-<span class="sd">       \sum_{k=1}^{N_\\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}\\right\\rangle</span>
+<span class="sd">       S_{\\alpha\\beta}(\\mathbf{q})=\\frac{1}{\sqrt{N_\\alpha N_\\beta}}</span>
+<span class="sd">       \left\langle\sum_{j=1}^{N_\\alpha}\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}</span>
+<span class="sd">       \sum_{k=1}^{N_\\beta}\cos{(\\mathbf{q}\cdot\\mathbf{r}_k)}</span>
+<span class="sd">       +\sum_{j=1}^{N_\\alpha}\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}</span>
+<span class="sd">       \sum_{k=1}^{N_\\beta}\sin{(\\mathbf{q}\cdot\\mathbf{r}_k)}\\right\\rangle</span>
 
 <span class="sd">    where :math:`N_\\alpha` and :math:`N_\\beta` are the numbers of</span>
 <span class="sd">    particles for species :math:`\\alpha` and :math:`\\beta`.</span>
@@ -1548,7 +1548,7 @@
 
 <span class="sd">        **Shape**: :math:`(3,)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}`.</span>
 
 <span class="sd">    n_points : `int`, default: :code:`32`</span>
 <span class="sd">        Number of points in the scattering wavevector grid. Additional</span>
@@ -1616,16 +1616,16 @@
 <span class="sd">        `results.ssf`.</span>
 
 <span class="sd">    results.wavenumbers : `numpy.ndarray`</span>
-<span class="sd">        :math:`N_\mathrm{w}` unique scattering wavenumbers :math:`q`.</span>
+<span class="sd">        :math:`N_\\mathrm{w}` unique scattering wavenumbers :math:`q`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{w},)`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{w},)`.</span>
 
 <span class="sd">    results.ssf : `numpy.ndarray`</span>
 <span class="sd">        Static structure factor :math:`S(q)` or partial structure</span>
 <span class="sd">        factor(s) :math:`S_{\\alpha\\beta}(q)`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{w},)`, :math:`(1,\,N_\mathrm{w})`,</span>
-<span class="sd">        or :math:`(C(N_\mathrm{g}+1,\,2),\,N_\mathrm{w})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{w},)`, :math:`(1,\,N_\\mathrm{w})`,</span>
+<span class="sd">        or :math:`(C(N_\\mathrm{g}+1,\,2),\,N_\\mathrm{w})`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1936,7 +1936,7 @@
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SerialAnalysisBase</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">]:</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Perform the calculation.</span>
+<span class="sd">        Performs the calculation.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1980,7 +1980,7 @@
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Serial and parallel implementations to calculate the incoherent (or</span>
-<span class="sd">    self) intermediate scattering function :math:`F_\mathrm{s}(q,\,t)`.</span>
+<span class="sd">    self) intermediate scattering function :math:`F_\\mathrm{s}(q,\,t)`.</span>
 
 <span class="sd">    The incoherent intermediate scattering function characterizes the</span>
 <span class="sd">    mean relaxation time of a system, and its spatial fluctuations</span>
@@ -1988,13 +1988,13 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        F_\mathrm{s}(\mathbf{q},t)=\\frac{1}{N}\left\langle\sum_{j=1}^N</span>
-<span class="sd">        \exp\left[i\mathbf{q}\cdot\left(\mathbf{r}_j(t_0+t)</span>
-<span class="sd">        -\mathbf{r}_j(t_0)\\right)\\right]\\right\\rangle</span>
+<span class="sd">        F_\\mathrm{s}(\\mathbf{q},t)=\\frac{1}{N}\left\langle\sum_{j=1}^N</span>
+<span class="sd">        \exp\left[i\\mathbf{q}\cdot\left(\\mathbf{r}_j(t_0+t)</span>
+<span class="sd">        -\\mathbf{r}_j(t_0)\\right)\\right]\\right\\rangle</span>
 
-<span class="sd">    where :math:`N` is the number of particles, :math:`\mathbf{q}` is</span>
+<span class="sd">    where :math:`N` is the number of particles, :math:`\\mathbf{q}` is</span>
 <span class="sd">    the wavevector, :math:`t_0` and :math:`t` are the initial and lag</span>
-<span class="sd">    times, and :math:`\mathbf{r}_j` is the position of particle</span>
+<span class="sd">    times, and :math:`\\mathbf{r}_j` is the position of particle</span>
 <span class="sd">    :math:`j`.</span>
 
 <span class="sd">    .. note::</span>
@@ -2033,7 +2033,7 @@
 
 <span class="sd">        **Shape**: :math:`(3,)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}`.</span>
 
 <span class="sd">    n_points : `int`, default: :code:`32`</span>
 <span class="sd">        Number of points in the scattering wavevector grid. Additional</span>
@@ -2091,22 +2091,22 @@
 <span class="sd">    results.times : `numpy.ndarray`</span>
 <span class="sd">        Lag times :math:`t`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{t},)`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{t},)`.</span>
 
-<span class="sd">        **Reference units**: :math:`\mathrm{ps}`.</span>
+<span class="sd">        **Reference units**: :math:`\\mathrm{ps}`.</span>
 
 <span class="sd">    results.wavenumbers : `numpy.ndarray`</span>
 <span class="sd">        Scattering wavenumbers :math:`q`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{w},)`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{w},)`.</span>
 
-<span class="sd">        **Reference units**: :math:`\mathrm{Å}^{-1}`.</span>
+<span class="sd">        **Reference units**: :math:`\\mathrm{Å}^{-1}`.</span>
 
 <span class="sd">    results.isf : `numpy.ndarray`</span>
 <span class="sd">        Incoherent (self) intermediate scattering function</span>
-<span class="sd">        :math:`F_\mathrm{s}(q,\,t)`.</span>
+<span class="sd">        :math:`F_\\mathrm{s}(q,\,t)`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{t},\,N_\mathrm{w})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{t},\,N_\\mathrm{w})`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -2311,7 +2311,52 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">isf</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)]</span>
             <span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span>
-        <span class="p">])</span></div>
+        <span class="p">])</span>
+
+<div class="viewcode-block" id="IncoherentIntermediateScatteringFunction.run">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SerialAnalysisBase</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">]:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs the calculation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : `int`, optional</span>
+<span class="sd">            Starting frame for analysis.</span>
+<span class="sd">        </span>
+<span class="sd">        stop : `int`, optional</span>
+<span class="sd">            Ending frame for analysis.</span>
+
+<span class="sd">        step : `int`, optional</span>
+<span class="sd">            Number of frames to skip between each analyzed frame.</span>
+
+<span class="sd">        frames : `slice` or array-like, optional</span>
+<span class="sd">            Index or logical array of the desired trajectory frames.</span>
+
+<span class="sd">        verbose : `bool`, optional</span>
+<span class="sd">            Determines whether detailed progress is shown.</span>
+<span class="sd">        </span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments to pass to</span>
+<span class="sd">            :class:`MDAnalysis.lib.log.ProgressBar`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : `SerialAnalysisBase` or `ParallelAnalysisBase`</span>
+<span class="sd">            Analysis object with results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> 
+                <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+</div>
 
 </pre></div>
         </article>

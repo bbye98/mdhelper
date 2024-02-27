@@ -935,7 +935,7 @@ class SingleChainStructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
         ) -> Union[SerialAnalysisBase, ParallelAnalysisBase]:
 
         """
-        Perform the calculation.
+        Performs the calculation.
 
         Parameters
         ----------

@@ -62,7 +62,7 @@ class SerialAnalysisBase(AnalysisBase):
             verbose: bool = None, **kwargs) -> "SerialAnalysisBase":
         
         """
-        Perform the calculation in serial.
+        Performs the calculation in serial.
 
         Parameters
         ----------
@@ -170,7 +170,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
         ) -> "ParallelAnalysisBase":
 
         """
-        Perform the calculation in parallel.
+        Performs the calculation in parallel.
 
         Parameters
         ----------

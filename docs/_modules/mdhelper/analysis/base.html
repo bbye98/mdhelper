@@ -218,12 +218,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_structure_factor.html">calculate_structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.zeroth_order_hankel_transform.html">zeroth_order_hankel_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF2D.html">ParallelRDF2D</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -433,7 +430,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="SerialAnalysisBase">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.polymer.SerialAnalysisBase">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.base.SerialAnalysisBase">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialAnalysisBase</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -457,14 +454,14 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SerialAnalysisBase.run">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.polymer.SerialAnalysisBase.run">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.base.SerialAnalysisBase.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SerialAnalysisBase&quot;</span><span class="p">:</span>
 <span class="w">        </span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Perform the calculation in serial.</span>
+<span class="sd">        Performs the calculation in serial.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -497,7 +494,7 @@
 
 
 <div class="viewcode-block" id="SerialAnalysisBase.save">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.polymer.SerialAnalysisBase.save">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.base.SerialAnalysisBase.save">[docs]</a>
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">],</span> <span class="n">archive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">compress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -539,7 +536,7 @@
 
 
 <div class="viewcode-block" id="ParallelAnalysisBase">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html#mdhelper.analysis.polymer.ParallelAnalysisBase">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html#mdhelper.analysis.base.ParallelAnalysisBase">[docs]</a>
 <span class="k">class</span> <span class="nc">ParallelAnalysisBase</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -572,7 +569,7 @@
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="ParallelAnalysisBase.run">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html#mdhelper.analysis.polymer.ParallelAnalysisBase.run">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html#mdhelper.analysis.base.ParallelAnalysisBase.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -581,7 +578,7 @@
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ParallelAnalysisBase&quot;</span><span class="p">:</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Perform the calculation in parallel.</span>
+<span class="sd">        Performs the calculation in parallel.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
