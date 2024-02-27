@@ -74,8 +74,8 @@ class ConstantVolumeHeatCapacity:
 
     _COLUMNS = {
         "lammps": {
-            "energy": ["TotEng", "KinEng", "PotEng", "E_angle", "E_bond", "E_coul",
-                       "E_dihed", "E_impro", "E_long", "E_vdwl"],
+            "energy": ["TotEng", "KinEng", "PotEng", "E_angle", "E_bond", 
+                       "E_coul", "E_dihed", "E_impro", "E_long", "E_vdwl"],
             "temperature": "Temp"
         },
         "openmm": {

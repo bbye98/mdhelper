@@ -218,12 +218,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_structure_factor.html">calculate_structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.zeroth_order_hankel_transform.html">zeroth_order_hankel_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF2D.html">ParallelRDF2D</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -868,17 +865,17 @@
 <span class="sd">    transport properties in bulk constant-volume fluids and</span>
 <span class="sd">    electrolytic systems, such as those in the canonical</span>
 <span class="sd">    (:math:`NVT`), microcanonical (:math:`NVE`), and grand</span>
-<span class="sd">    canonical (:math:`\\mu VT`) ensembles.</span>
+<span class="sd">    canonical (:math:`\mu VT`) ensembles.</span>
 
 <span class="sd">    The Onsager transport equation</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \pmb{J}_i=-\sum_j L_{ij}\\nabla\\bar{\\mu}_j</span>
+<span class="sd">       \pmb{J}_i=-\sum_j L_{ij}\\nabla\\bar{\mu}_j</span>
 
 <span class="sd">    relates the flux :math:`\\pmb{J}_i` of species :math:`i` to the</span>
 <span class="sd">    Onsager transport coefficients :math:`L_{ij}` and the</span>
-<span class="sd">    electrochemical potential :math:`\\bar{\\mu}_j` of species :math:`j`.</span>
+<span class="sd">    electrochemical potential :math:`\\bar{\mu}_j` of species :math:`j`.</span>
 <span class="sd">    There is an Onsager transport coefficient for each pair of species</span>
 <span class="sd">    that, unlike the Nernst–Einstein equation, captures the strong</span>
 <span class="sd">    cross-correlations in electrolytes.</span>
@@ -888,13 +885,13 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       L_{ij}=\\frac{1}{6k_\\mathrm{B}TV}</span>
+<span class="sd">       L_{ij}=\\frac{1}{6k_\mathrm{B}TV}</span>
 <span class="sd">       \lim_{t\\rightarrow\infty}\\frac{d}{dt}\left\langle\sum_\\alpha</span>
 <span class="sd">       \left[\pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)\\right]\cdot</span>
 <span class="sd">       \sum_\\beta\left[\pmb{r}_{j,\\beta}(t)-\pmb{r}_{j,\\beta}(0)\\right]</span>
 <span class="sd">       \\right\\rangle</span>
 
-<span class="sd">    where :math:`k_\\mathrm{B}` is the Boltzmann constant, :math:`T` is</span>
+<span class="sd">    where :math:`k_\mathrm{B}` is the Boltzmann constant, :math:`T` is</span>
 <span class="sd">    the system temperature, :math:`V` is the system volume, :math:`t` is</span>
 <span class="sd">    time, and :math:`\pmb{r}_\\alpha` and :math:`\pmb{r}_\\beta` are the</span>
 <span class="sd">    positions of particles :math:`\\alpha` and :math:`\\beta` belonging</span>
@@ -909,13 +906,13 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       L_{ii}=L_{ii}^\\mathrm{self}+L_{ii}^\\mathrm{distinct}</span>
+<span class="sd">       L_{ii}=L_{ii}^\mathrm{self}+L_{ii}^\mathrm{distinct}</span>
 
 <span class="sd">    The self term</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       L_{ii}^\\mathrm{self}=\\frac{1}{6k_\\mathrm{B}TV}</span>
+<span class="sd">       L_{ii}^\mathrm{self}=\\frac{1}{6k_\mathrm{B}TV}</span>
 <span class="sd">       \lim_{t\\rightarrow\infty}\\frac{d}{dt}</span>
 <span class="sd">       \sum_\\alpha\left\langle\left[</span>
 <span class="sd">       \pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)</span>
@@ -927,7 +924,7 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       L_{ii}^\\mathrm{self}=\\frac{1}{6k_\\mathrm{B}TV}</span>
+<span class="sd">       L_{ii}^\mathrm{self}=\\frac{1}{6k_\mathrm{B}TV}</span>
 <span class="sd">       \lim_{t\\rightarrow\infty}\\frac{d}{dt}</span>
 <span class="sd">       \sum_\\alpha\sum_{\\beta\\neq\\alpha}\left\langle\left[</span>
 <span class="sd">       \pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)\\right]\cdot</span>
@@ -940,7 +937,7 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       L_{ii}^\\mathrm{self}=\\frac{D_i\\rho_i}{k_\\mathrm{B}T}</span>
+<span class="sd">       L_{ii}^\mathrm{self}=\\frac{D_i\\rho_i}{k_\mathrm{B}T}</span>
 
 <span class="sd">    where :math:`\\rho_i` is the number density of species :math:`i`.</span>
 
@@ -959,7 +956,7 @@
 
 <span class="sd">      .. math::</span>
 
-<span class="sd">         \\mu_i=\\frac{F}{\\rho_i}\sum_j z_jL_{ij}</span>
+<span class="sd">         \mu_i=\\frac{F}{\\rho_i}\sum_j z_jL_{ij}</span>
 
 <span class="sd">    * Transference number:</span>
 
@@ -999,17 +996,17 @@
 <span class="sd">           energy scale. When the Lennard-Jones potential is used, it</span>
 <span class="sd">           generally means that :math:`T^* = 1`, or `temperature=1`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\\mathrm{K}`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{K}`.</span>
 
 <span class="sd">    charges : array-like, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">    keyword-only, optional</span>
 <span class="sd">        Charge numbers :math:`z_i` for the specified `groupings` in the</span>
-<span class="sd">        :math:`N_\\mathrm{g}` `groups`. If not provided, it will be</span>
+<span class="sd">        :math:`N_\mathrm{g}` `groups`. If not provided, it will be</span>
 <span class="sd">        retrieved from the topology or trajectory.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{g},)`.</span>
+<span class="sd">        **Shape**: :math:`(N_\mathrm{g},)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\\mathrm{e}`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{e}`.</span>
 
 <span class="sd">    dimensions : array-like, `openmm.unit.Quantity`, or \</span>
 <span class="sd">    `pint.Quantity`, keyword-only, optional</span>
@@ -1029,7 +1026,7 @@
 
 <span class="sd">        **Shape**: :math:`(3,)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
 
 <span class="sd">    dt : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">    keyword-only, optional</span>
@@ -1040,10 +1037,10 @@
 <span class="sd">        trajectory data every :math:`10,000` timesteps, then</span>
 <span class="sd">        :math:`\\Delta t=100`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\\mathrm{ps}`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{ps}`.</span>
 
 <span class="sd">    n_blocks : `int`, keyword-only, default: :code:`1`</span>
-<span class="sd">        Number of blocks :math:`N_\\mathrm{b}` to split the trajectory</span>
+<span class="sd">        Number of blocks :math:`N_\mathrm{b}` to split the trajectory</span>
 <span class="sd">        into.</span>
 
 <span class="sd">    center : `bool`, keyword-only, default: :code:`False`</span>
@@ -1098,90 +1095,90 @@
 
 <span class="sd">        **Shape**: :math:`(N_t,)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\\mathrm{ps}`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{ps}`.</span>
 
 <span class="sd">    results.msd_cross : `numpy.ndarray`</span>
-<span class="sd">        MSDs (or analogs) for the :math:`N_\\mathrm{g}` groups over</span>
-<span class="sd">        :math:`N_\\mathrm{b}` blocks of :math:`N_t` trajectory frames</span>
+<span class="sd">        MSDs (or analogs) for the :math:`N_\mathrm{g}` groups over</span>
+<span class="sd">        :math:`N_\mathrm{b}` blocks of :math:`N_t` trajectory frames</span>
 <span class="sd">        each. Includes the dimensionality scaling factor. See Notes</span>
 <span class="sd">        about what this value actually means.</span>
 
 <span class="sd">        **Shape**:</span>
-<span class="sd">        :math:`(_{N_\\mathrm{g}+1}\\mathrm{C}_{2},\,N_\\mathrm{b},\,N_t)`.</span>
+<span class="sd">        :math:`(_{N_\mathrm{g}+1}\mathrm{C}_{2},\,N_\mathrm{b},\,N_t)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}^2`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^2`.</span>
 
 <span class="sd">    results.msd_self : `numpy.ndarray`</span>
-<span class="sd">        Self MSDs (or analogs) for the :math:`N_\\mathrm{g}` groups over</span>
-<span class="sd">        :math:`N_\\mathrm{b}` blocks of :math:`N_t` trajectory frames</span>
+<span class="sd">        Self MSDs (or analogs) for the :math:`N_\mathrm{g}` groups over</span>
+<span class="sd">        :math:`N_\mathrm{b}` blocks of :math:`N_t` trajectory frames</span>
 <span class="sd">        each. Includes the dimensionality scaling factor. See Notes</span>
 <span class="sd">        about what this value actually means.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{g},\,N_\\mathrm{b},\,N_t)`.</span>
+<span class="sd">        **Shape**: :math:`(N_\mathrm{g},\,N_\mathrm{b},\,N_t)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}^2`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^2`.</span>
 
 <span class="sd">    results.L_ij : `numpy.ndarray`</span>
 <span class="sd">        Onsager transport coefficients :math:`L_{ij}`. Only available</span>
 <span class="sd">        after running :meth:`calculate_transport_coefficients`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g},\,N_\\mathrm{g})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g},\,N_\mathrm{g})`.</span>
 
 <span class="sd">        **Reference unit**:</span>
-<span class="sd">        :math:`\\mathrm{mol/(kJ}\cdot\\mathrm{Å}\cdot\\mathrm{ps)}`.</span>
+<span class="sd">        :math:`\mathrm{mol/(kJ}\cdot\mathrm{Å}\cdot\mathrm{ps)}`.</span>
 
 <span class="sd">    results.L_ii_self : `numpy.ndarray`</span>
 <span class="sd">        Self Onsager transport coefficient terms</span>
-<span class="sd">        :math:`L_{ii}^\\mathrm{self}`. Note that</span>
-<span class="sd">        :math:`L_{ii}^\\mathrm{self}` is related to :math:`D_i` via</span>
+<span class="sd">        :math:`L_{ii}^\mathrm{self}`. Note that</span>
+<span class="sd">        :math:`L_{ii}^\mathrm{self}` is related to :math:`D_i` via</span>
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">            L_{ii}^\\mathrm{self}=\dfrac{N}{k_\\mathrm{B}TV}D_i</span>
+<span class="sd">            L_{ii}^\mathrm{self}=\dfrac{N}{k_\mathrm{B}TV}D_i</span>
 
 <span class="sd">        Only available after running :meth:`calculate_transport_coefficients`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.</span>
 
 <span class="sd">        **Reference unit**:</span>
-<span class="sd">        :math:`\\mathrm{mol/(kJ}\cdot\\mathrm{Å}\cdot\\mathrm{ps)}`.</span>
+<span class="sd">        :math:`\mathrm{mol/(kJ}\cdot\mathrm{Å}\cdot\mathrm{ps)}`.</span>
 
 <span class="sd">    results.D_i : `numpy.ndarray`</span>
 <span class="sd">        Self-diffusion coefficients :math:`D_i`. Only available after</span>
 <span class="sd">        running :meth:`calculate_transport_coefficients`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}^2/\\mathrm{ps)}`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^2/\mathrm{ps)}`.</span>
 
 <span class="sd">    results.conductivities : `numpy.ndarray`</span>
 <span class="sd">        Conductivities :math:`\\kappa`. Only available after running</span>
 <span class="sd">        :meth:`calculate_conductivity`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\\mathrm{C}^2/(\\mathrm{kJ}\cdot</span>
-<span class="sd">        \\mathrm{Å}\cdot\\mathrm{ps})`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{C}^2/(\mathrm{kJ}\cdot</span>
+<span class="sd">        \mathrm{Å}\cdot\mathrm{ps})`.</span>
 
-<span class="sd">        **To SI unit**: :math:`1\times10^{19}\,\\mathrm{S}/\\mathrm{m}`.</span>
+<span class="sd">        **To SI unit**: :math:`1\times10^{19}\,\mathrm{S}/\mathrm{m}`.</span>
 
 <span class="sd">    results.electrophoretic_mobilities : `numpy.ndarray`</span>
-<span class="sd">        Electrophoretic mobilities :math:`\\mu_i`. Only available after</span>
+<span class="sd">        Electrophoretic mobilities :math:`\mu_i`. Only available after</span>
 <span class="sd">        running :meth:`calculate_electrophoretic_mobility`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.</span>
 
 <span class="sd">        **Reference unit**:</span>
-<span class="sd">        :math:`\\mathrm{Å}^2\cdot\\mathrm{C/(kJ}\cdot\\mathrm{ps)}`.</span>
+<span class="sd">        :math:`\mathrm{Å}^2\cdot\mathrm{C/(kJ}\cdot\mathrm{ps)}`.</span>
 
-<span class="sd">        **To SI unit**: :math:`1\times10^{-11}\,\\mathrm{m}^2/</span>
-<span class="sd">        (\\mathrm{V}\cdot\\mathrm{s})`.</span>
+<span class="sd">        **To SI unit**: :math:`1\times10^{-11}\,\mathrm{m}^2/</span>
+<span class="sd">        (\mathrm{V}\cdot\mathrm{s})`.</span>
 
 <span class="sd">    results.transference_numbers : `numpy.ndarray`</span>
 <span class="sd">        Transference numbers :math:`t_i`. Only available after running</span>
 <span class="sd">        :meth:`calculate_transference_number`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\,N_\\mathrm{g})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -1573,13 +1570,13 @@
 <span class="sd">        charges : array-like, `openmm.unit.Quantity`, or \</span>
 <span class="sd">        `pint.Quantity`, keyword-only, optional</span>
 <span class="sd">            Charge numbers :math:`z_i` of the groupings in the</span>
-<span class="sd">            :math:`N_\\mathrm{g}` groups. This argument is optional only</span>
+<span class="sd">            :math:`N_\mathrm{g}` groups. This argument is optional only</span>
 <span class="sd">            if `charges` has previously been passed to a calculation</span>
 <span class="sd">            method belonging to this class.</span>
 
-<span class="sd">            **Shape**: :math:`(N_\\mathrm{g},)`.</span>
+<span class="sd">            **Shape**: :math:`(N_\mathrm{g},)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\\mathrm{e}`.</span>
+<span class="sd">            **Reference unit**: :math:`\mathrm{e}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;L_ij&quot;</span><span class="p">):</span>
@@ -1619,7 +1616,7 @@
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculates the electrophoretic mobility :math:`\\mu_i` of each</span>
+<span class="sd">        Calculates the electrophoretic mobility :math:`\mu_i` of each</span>
 <span class="sd">        species using the Onsager transport coefficients :math:`L_{ij}`.</span>
 
 <span class="sd">        Parameters</span>
@@ -1627,23 +1624,23 @@
 <span class="sd">        charges : array-like, `openmm.unit.Quantity`, or \</span>
 <span class="sd">        `pint.Quantity`, keyword-only, optional</span>
 <span class="sd">            Charge numbers :math:`z_i` of the groupings in the</span>
-<span class="sd">            :math:`N_\\mathrm{g}` groups. This argument is optional only</span>
+<span class="sd">            :math:`N_\mathrm{g}` groups. This argument is optional only</span>
 <span class="sd">            if charge information is present in the topology or</span>
 <span class="sd">            `charges` has previously been passed to a calculation</span>
 <span class="sd">            method belonging to this class.</span>
 
-<span class="sd">            **Shape**: :math:`(N_\\mathrm{g},)`.</span>
+<span class="sd">            **Shape**: :math:`(N_\mathrm{g},)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\\mathrm{e}`.</span>
+<span class="sd">            **Reference unit**: :math:`\mathrm{e}`.</span>
 
 <span class="sd">        rhos : array-like, `openmm.unit.Quantity`, or \</span>
 <span class="sd">        `pint.Quantity`, keyword-only, optional</span>
 <span class="sd">            Number densities :math:`n_i` of the groupings in the</span>
-<span class="sd">            :math:`N_\\mathrm{g}` groups.</span>
+<span class="sd">            :math:`N_\mathrm{g}` groups.</span>
 
-<span class="sd">            **Shape**: :math:`(N_\\mathrm{g},)`.</span>
+<span class="sd">            **Shape**: :math:`(N_\mathrm{g},)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\\mathrm{Å}^{-3}`.</span>
+<span class="sd">            **Reference unit**: :math:`\mathrm{Å}^{-3}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;L_ij&quot;</span><span class="p">):</span>
@@ -1701,14 +1698,14 @@
 <span class="sd">        charges : array-like, `openmm.unit.Quantity`, or \</span>
 <span class="sd">        `pint.Quantity`, keyword-only, optional</span>
 <span class="sd">            Charge numbers :math:`z_i` of the groupings in the</span>
-<span class="sd">            :math:`N_\\mathrm{g}` groups. This argument is optional only</span>
+<span class="sd">            :math:`N_\mathrm{g}` groups. This argument is optional only</span>
 <span class="sd">            if charge information is present in the topology or</span>
 <span class="sd">            `charges` has previously been passed to a calculation</span>
 <span class="sd">            method belonging to this class.</span>
 
-<span class="sd">            **Shape**: :math:`(N_\\mathrm{g},)`.</span>
+<span class="sd">            **Shape**: :math:`(N_\mathrm{g},)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\\mathrm{e}`.</span>
+<span class="sd">            **Reference unit**: :math:`\mathrm{e}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;L_ij&quot;</span><span class="p">):</span>

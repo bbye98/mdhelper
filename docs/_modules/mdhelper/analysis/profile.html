@@ -218,10 +218,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_structure_factor.html">calculate_structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.zeroth_order_hankel_transform.html">zeroth_order_hankel_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF2D.html">ParallelRDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -424,7 +423,7 @@
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.profile.calculate_potential_profile.html#mdhelper.analysis.profile.calculate_potential_profile">[docs]</a>
 <span class="k">def</span> <span class="nf">calculate_potential_profile</span><span class="p">(</span>
         <span class="n">bins</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">charge_density</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-        <span class="n">L</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dielectric</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sigma_e</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">L</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dielectric</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sigma_q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dV</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="n">V0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -471,8 +470,8 @@
 <span class="sd">        Relative permittivity or static dielectric constant</span>
 <span class="sd">        :math:`\varepsilon_\mathrm{r}`.</span>
 
-<span class="sd">    sigma_e : `float`, keyword-only, optional</span>
-<span class="sd">        Total surface charge density :math:`\sigma_e`. Used to</span>
+<span class="sd">    sigma_q : `float`, keyword-only, optional</span>
+<span class="sd">        Total surface charge density :math:`\sigma_q`. Used to</span>
 <span class="sd">        ensure that the electric field in the bulk of the solution</span>
 <span class="sd">        is zero. If not provided, it is determined using `dV` and</span>
 <span class="sd">        the charge density profile, or the average value in the</span>
@@ -482,13 +481,13 @@
 
 <span class="sd">    dV : `float`, keyword-only, optional</span>
 <span class="sd">        Potential difference :math:`\Delta\Psi` across the system</span>
-<span class="sd">        dimension specified in `axis`. Has no effect if `sigma_e` is</span>
+<span class="sd">        dimension specified in `axis`. Has no effect if `sigma_q` is</span>
 <span class="sd">        provided since this value is used solely to calculate</span>
-<span class="sd">        `sigma_e`.</span>
+<span class="sd">        `sigma_q`.</span>
 
 <span class="sd">        .. note::</span>
 
-<span class="sd">           By specifying `dV` to calculate `sigma_e` using Gauss&#39;s law,</span>
+<span class="sd">           By specifying `dV` to calculate `sigma_q` using Gauss&#39;s law,</span>
 <span class="sd">           it is assumed that the boundaries are perfectly conducting.</span>
 
 <span class="sd">        **Reference unit**: :math:`\mathrm{V}`.</span>
@@ -496,8 +495,8 @@
 <span class="sd">    threshold : `float`, keyword-only, default: :code:`1e-5`</span>
 <span class="sd">        Threshold for determining the plateau region of the first</span>
 <span class="sd">        integral of the charge density profile to calculate</span>
-<span class="sd">        `sigma_e`. Has no effect if `sigma_e` is provided or if</span>
-<span class="sd">        `sigma_e` can be calculated using `dV` and `dielectric`.</span>
+<span class="sd">        `sigma_q`. Has no effect if `sigma_q` is provided or if</span>
+<span class="sd">        `sigma_q` can be calculated using `dV` and `dielectric`.</span>
 
 <span class="sd">    V0 : `float`, keyword-only, default: :code:`0`</span>
 <span class="sd">        Potential :math:`\Psi_0` at the left boundary.</span>
@@ -520,18 +519,18 @@
     <span class="c1"># Calculate the first integral of the charge density profile</span>
     <span class="n">potential</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">cumulative_trapezoid</span><span class="p">(</span><span class="n">charge_density</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">sigma_e</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">sigma_q</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="c1"># Calculate surface charge density for system with perfectly</span>
         <span class="c1"># conducting boundaries</span>
         <span class="k">if</span> <span class="n">dV</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">sigma_e</span> <span class="o">=</span> <span class="n">dielectric</span> <span class="o">*</span> <span class="n">dV</span> <span class="o">/</span> <span class="n">L</span>
+            <span class="n">sigma_q</span> <span class="o">=</span> <span class="n">dielectric</span> <span class="o">*</span> <span class="n">dV</span> <span class="o">/</span> <span class="n">L</span>
             <span class="k">if</span> <span class="n">reduced</span><span class="p">:</span>
-                <span class="n">sigma_e</span> <span class="o">/=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                <span class="n">sigma_q</span> <span class="o">/=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">sigma_e</span> <span class="o">=</span> <span class="p">(</span><span class="n">sigma_e</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">vacuum_permittivity</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">volt</span>
+                <span class="n">sigma_q</span> <span class="o">=</span> <span class="p">(</span><span class="n">sigma_q</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">vacuum_permittivity</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">volt</span>
                            <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">elementary_charge</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span>
-            <span class="n">sigma_e</span> <span class="o">-=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="n">bins</span> <span class="o">*</span> <span class="n">charge_density</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span> <span class="o">/</span> <span class="n">L</span>
+            <span class="n">sigma_q</span> <span class="o">-=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="n">bins</span> <span class="o">*</span> <span class="n">charge_density</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span> <span class="o">/</span> <span class="n">L</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;No surface charge density information. The value will &quot;</span>
@@ -546,13 +545,13 @@
                 <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">potential</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">)</span>
             <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="n">target_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">potential</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
-            <span class="n">sigma_e</span> <span class="o">=</span> <span class="n">potential</span><span class="p">[</span>
+            <span class="n">sigma_q</span> <span class="o">=</span> <span class="n">potential</span><span class="p">[</span>
                 <span class="n">cut_indices</span><span class="p">[</span><span class="n">cut_indices</span> <span class="o">&lt;=</span> <span class="n">target_index</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="n">cut_indices</span><span class="p">[</span><span class="n">cut_indices</span> <span class="o">&gt;=</span> <span class="n">target_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
     <span class="c1"># Calculate the second integral of the charge density profile</span>
-    <span class="n">potential</span> <span class="o">=</span> <span class="o">-</span><span class="n">integrate</span><span class="o">.</span><span class="n">cumulative_trapezoid</span><span class="p">(</span><span class="n">potential</span> <span class="o">-</span> <span class="n">sigma_e</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span>
+    <span class="n">potential</span> <span class="o">=</span> <span class="o">-</span><span class="n">integrate</span><span class="o">.</span><span class="n">cumulative_trapezoid</span><span class="p">(</span><span class="n">potential</span> <span class="o">-</span> <span class="n">sigma_q</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span>
                                                 <span class="n">initial</span><span class="o">=</span><span class="n">V0</span><span class="p">)</span> <span class="o">/</span> <span class="n">dielectric</span>
     <span class="k">if</span> <span class="n">reduced</span><span class="p">:</span>
         <span class="n">potential</span> <span class="o">*=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
@@ -1029,7 +1028,7 @@
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.profile.DensityProfile.html#mdhelper.analysis.profile.DensityProfile.calculate_potential_profile">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_potential_profile</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">dielectric</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span>
-            <span class="n">sigma_e</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">sigma_q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">dV</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="n">V0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1043,7 +1042,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        dielectric : `float`</span>
 <span class="sd">            Relative permittivity or dielectric constant</span>
-<span class="sd">            :math:`\\varepsilon_\\mathrm{r}`.</span>
+<span class="sd">            :math:`\\varepsilon_\mathrm{r}`.</span>
 
 <span class="sd">        axis : `int` or `str`</span>
 <span class="sd">            Axis along which to compute the potential profiles.</span>
@@ -1055,42 +1054,42 @@
 <span class="sd">               * :code:`2` for the :math:`z`-direction.</span>
 <span class="sd">               * :code:`&quot;x&quot;` for the :math:`x`-direction.</span>
 
-<span class="sd">        sigma_e : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
+<span class="sd">        sigma_q : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">        keyword-only, optional</span>
-<span class="sd">            Total surface charge density :math:`\sigma_e`. Used to</span>
+<span class="sd">            Total surface charge density :math:`\sigma_q`. Used to</span>
 <span class="sd">            ensure that the electric field in the bulk of the solution</span>
 <span class="sd">            is zero. If not provided, it is determined using `dV` and</span>
 <span class="sd">            the charge density profile, or the average value in the</span>
 <span class="sd">            center of the integrated charge density profile.</span>
 
-<span class="sd">            **Reference unit**: :math:`\\mathrm{e/Å^2}`.</span>
+<span class="sd">            **Reference unit**: :math:`\mathrm{e/Å^2}`.</span>
 
 <span class="sd">        dV : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">        keyword-only, optional</span>
 <span class="sd">            Potential difference :math:`\Delta\Psi` across the system</span>
-<span class="sd">            dimension specified in `axis`. Has no effect if `sigma_e` is</span>
+<span class="sd">            dimension specified in `axis`. Has no effect if `sigma_q` is</span>
 <span class="sd">            provided since this value is used solely to calculate</span>
-<span class="sd">            `sigma_e`.</span>
+<span class="sd">            `sigma_q`.</span>
 
 <span class="sd">            .. note::</span>
 
-<span class="sd">               By specifying `dV` to calculate `sigma_e` using Gauss&#39;s</span>
+<span class="sd">               By specifying `dV` to calculate `sigma_q` using Gauss&#39;s</span>
 <span class="sd">               law, it is assumed that the boundaries are perfectly</span>
 <span class="sd">               conducting.</span>
 
-<span class="sd">            **Reference unit**: :math:`\\mathrm{V}`.</span>
+<span class="sd">            **Reference unit**: :math:`\mathrm{V}`.</span>
 
 <span class="sd">        threshold : `float`, keyword-only, default: :code:`1e-5`</span>
 <span class="sd">            Threshold for determining the plateau region of the first</span>
 <span class="sd">            integral of the charge density profile to calculate</span>
-<span class="sd">            `sigma_e`. Has no effect if `sigma_e` is provided, or if</span>
-<span class="sd">            `sigma_e` can be calculated using `dV` and `dielectric`.</span>
+<span class="sd">            `sigma_q`. Has no effect if `sigma_q` is provided, or if</span>
+<span class="sd">            `sigma_q` can be calculated using `dV` and `dielectric`.</span>
 
 <span class="sd">        V0 : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">        keyword-only, default: :code:`0`</span>
 <span class="sd">            Potential :math:`\Psi_0` at the left boundary.</span>
 
-<span class="sd">            **Reference unit**: :math:`\\mathrm{V}`.</span>
+<span class="sd">            **Reference unit**: :math:`\mathrm{V}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;charge_densities&quot;</span><span class="p">):</span>
@@ -1109,10 +1108,10 @@
             <span class="n">axis</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">axis</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="o">-</span> <span class="mi">120</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">==</span> <span class="n">axis</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">sigma_e</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">sigma_e</span><span class="p">,</span> <span class="n">unit_</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">sigma_e</span><span class="p">,</span> <span class="s2">&quot;elementary_charge/angstrom**2&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sigma_q</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sigma_q</span><span class="p">,</span> <span class="n">unit_</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">sigma_q</span><span class="p">,</span> <span class="s2">&quot;elementary_charge/angstrom**2&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="n">emsg</span> <span class="o">=</span> <span class="s2">&quot;&#39;sigma_e&#39; cannot have units when reduced=True.&quot;</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="s2">&quot;&#39;sigma_q&#39; cannot have units when reduced=True.&quot;</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">dV</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1135,7 +1134,7 @@
             <span class="n">charge_density</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">[</span><span class="n">axis</span><span class="p">],</span>
             <span class="n">dielectric</span><span class="p">,</span>
-            <span class="n">sigma_e</span><span class="o">=</span><span class="n">sigma_e</span><span class="p">,</span>
+            <span class="n">sigma_q</span><span class="o">=</span><span class="n">sigma_q</span><span class="p">,</span>
             <span class="n">dV</span><span class="o">=</span><span class="n">dV</span><span class="p">,</span>
             <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
             <span class="n">V0</span><span class="o">=</span><span class="n">V0</span><span class="p">,</span>

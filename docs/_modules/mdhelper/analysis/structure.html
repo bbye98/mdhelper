@@ -495,6 +495,96 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="nb">range</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
+<div class="viewcode-block" id="zeroth_order_hankel_transform">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.zeroth_order_hankel_transform.html#mdhelper.analysis.structure.zeroth_order_hankel_transform">[docs]</a>
+<span class="k">def</span> <span class="nf">zeroth_order_hankel_transform</span><span class="p">(</span>
+        <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the Hankel transform :math:`F_0(q)` of discrete data </span>
+<span class="sd">    :math:`f(r)` using the zeroth-order Bessel function :math:`J_0`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       F_0(q)=\int_0^\infty f(r)J_0(qr)r\,dr</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    r : `numpy.ndarray`</span>
+<span class="sd">        Radii :math:`r`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
+
+<span class="sd">    f : `numpy.ndarray`</span>
+<span class="sd">        Discrete data :math:`f(r)` to Hankel transform.</span>
+
+<span class="sd">        **Shape**: Same as `r`.</span>
+
+<span class="sd">    q : `numpy.ndarray`</span>
+<span class="sd">        Wavenumbers :math:`q` to evaluate the Hankel transforms at.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^{-1}`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ht : `numpy.ndarray`</span>
+<span class="sd">        Hankel transform of the discrete data.</span>
+
+<span class="sd">        **Shape**: Same as `q`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ht</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">simpson</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">jv</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span> <span class="o">*</span> <span class="n">r</span><span class="p">),</span> <span class="n">r</span><span class="p">)</span>
+    <span class="k">if</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">ht</span><span class="p">[</span><span class="n">q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">simpson</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">r</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ht</span></div>
+
+
+<div class="viewcode-block" id="radial_fourier_transform">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html#mdhelper.analysis.structure.radial_fourier_transform">[docs]</a>
+<span class="k">def</span> <span class="nf">radial_fourier_transform</span><span class="p">(</span>
+        <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the radial Fourier transform :math:`\hat{f}(q)` of</span>
+<span class="sd">    discrete data :math:`f(r)`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \hat{f}(q)=\frac{4\pi}{q}\int_0^\infty f(r)r\sin(qr)\,dr</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    r : `numpy.ndarray`</span>
+<span class="sd">        Radii :math:`r`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
+
+<span class="sd">    f : `numpy.ndarray`</span>
+<span class="sd">        Discrete data :math:`f(r)` to Fourier transform.</span>
+
+<span class="sd">        **Shape**: Same as `r`.</span>
+
+<span class="sd">    q : `numpy.ndarray`</span>
+<span class="sd">        Wavenumbers :math:`q` to evaluate the Fourier transforms at.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^{-1}`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rft : `numpy.ndarray`</span>
+<span class="sd">        Radial Fourier transform of the discrete data.</span>
+
+<span class="sd">        **Shape**: Same as `q`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rft</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">simpson</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">)),</span> <span class="n">r</span><span class="p">),</span> <span class="n">q</span><span class="p">)</span>
+    <span class="k">if</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">rft</span><span class="p">[</span><span class="n">q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">simpson</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">r</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rft</span></div>
+
+
 <div class="viewcode-block" id="calculate_coordination_numbers">
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.calculate_coordination_numbers.html#mdhelper.analysis.structure.calculate_coordination_numbers">[docs]</a>
 <span class="k">def</span> <span class="nf">calculate_coordination_numbers</span><span class="p">(</span>
@@ -593,97 +683,6 @@
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No local minima found.&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">coord_nums</span></div>
-
-
-<div class="viewcode-block" id="zeroth_order_hankel_transform">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.zeroth_order_hankel_transform.html#mdhelper.analysis.structure.zeroth_order_hankel_transform">[docs]</a>
-<span class="k">def</span> <span class="nf">zeroth_order_hankel_transform</span><span class="p">(</span>
-        <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the zeroth-order Hankel transform :math:`F_0(q)` of</span>
-<span class="sd">    discrete data :math:`f(r)` using the zeroth-order Bessel function</span>
-<span class="sd">    :math:`J_0`.</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       F_0(q)=\int_0^\infty f(r)J_0(qr)r\,dr</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    r : `numpy.ndarray`</span>
-<span class="sd">        Radii :math:`r`.</span>
-
-<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
-
-<span class="sd">    f : `numpy.ndarray`</span>
-<span class="sd">        Discrete data :math:`f(r)` to Hankel transform.</span>
-
-<span class="sd">        **Shape**: Same as `r`.</span>
-
-<span class="sd">    q : `numpy.ndarray`</span>
-<span class="sd">        Wavenumbers :math:`q` to evaluate the Hankel transforms at.</span>
-
-<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^{-1}`.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ht : `numpy.ndarray`</span>
-<span class="sd">        Hankel transform of the discrete data.</span>
-
-<span class="sd">        **Shape**: Same as `q`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">ht</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">simpson</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">jv</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span> <span class="o">*</span> <span class="n">r</span><span class="p">),</span> <span class="n">r</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">q</span><span class="p">:</span>
-        <span class="n">ht</span><span class="p">[</span><span class="n">q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">simpson</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">r</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ht</span></div>
-
-
-<div class="viewcode-block" id="radial_fourier_transform">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html#mdhelper.analysis.structure.radial_fourier_transform">[docs]</a>
-<span class="k">def</span> <span class="nf">radial_fourier_transform</span><span class="p">(</span>
-        <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the radial Fourier transform :math:`\hat{f}(q)` of</span>
-<span class="sd">    discrete data :math:`f(r)`.</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       \hat{f}(q)=\frac{4\pi}{q}\int_0^\infty f(r)r\sin(qr)\,dr</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    r : `numpy.ndarray`</span>
-<span class="sd">        Radii :math:`r`.</span>
-
-<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
-
-<span class="sd">    f : `numpy.ndarray`</span>
-<span class="sd">        Discrete data :math:`f(r)` to Fourier transform.</span>
-
-<span class="sd">        **Shape**: Same as `r`.</span>
-
-<span class="sd">    q : `numpy.ndarray`</span>
-<span class="sd">        Wavenumbers :math:`q` to evaluate the Fourier transforms at.</span>
-
-<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^{-1}`.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    rft : `numpy.ndarray`</span>
-<span class="sd">        Radial Fourier transform of the discrete data.</span>
-
-<span class="sd">        **Shape**: Same as `q`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">rft</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">simpson</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">)),</span> <span class="n">r</span><span class="p">),</span> <span class="n">q</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">q</span><span class="p">:</span>
-        <span class="n">rft</span><span class="p">[</span><span class="n">q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">simpson</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">r</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">rft</span></div>
 
 
 <div class="viewcode-block" id="calculate_structure_factor">
@@ -853,17 +852,24 @@
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Serial and parallel implementations to calculate the radial </span>
 <span class="sd">    distribution function (RDF) :math:`g_{ij}(r)` between types </span>
-<span class="sd">    :math:`i` and :math:`j` and its related properties.</span>
+<span class="sd">    :math:`i` and :math:`j` and its related properties for two-</span>
+<span class="sd">    and three-dimensional systems.</span>
 
-<span class="sd">    It is given by</span>
+<span class="sd">    The RDF is given by</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       g_{ij}(r)=\frac{1}{N_iN_j}\sum_\alpha\sum_\beta \left\langle</span>
+<span class="sd">       g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}\sum_{\alpha=1}^{N_i}</span>
+<span class="sd">       \sum_{\beta=1}^{N_j}\left\langle</span>
+<span class="sd">       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)</span>
+<span class="sd">       \right\rangle\\</span>
+<span class="sd">       g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}\sum_{\alpha=1}^{N_i}</span>
+<span class="sd">       \sum_{\beta=1}^{N_j}\left\langle</span>
 <span class="sd">       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)</span>
 <span class="sd">       \right\rangle</span>
 
-<span class="sd">    where :math:`N_i` and :math:`N_j` are the number of particles, and</span>
+<span class="sd">    where :math:`V` and :math:`A` are the system volume and area,</span>
+<span class="sd">    :math:`N_i` and :math:`N_j` are the number of particles, and</span>
 <span class="sd">    :math:`\mathbf{r}_\alpha` and :math:`\mathbf{r}_\beta` are the</span>
 <span class="sd">    positions of particles :math:`\alpha` and :math:`\beta` belonging</span>
 <span class="sd">    to species :math:`i` and :math:`j`, respectively. The RDF is</span>
@@ -878,7 +884,8 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       G_{ij}(r)=4\pi\int_0^rR^2g_{ij}(R)\,dR</span>
+<span class="sd">       G_{ij}^\mathrm{3D}(r)=4\pi\int_0^rR^2g_{ij}(R)\,dR\\</span>
+<span class="sd">       G_{ij}^\mathrm{2D}(r)=2\pi\int_0^rRg_{ij}(R)\,dR</span>
 
 <span class="sd">    and the average number of :math:`j` particles found within radius</span>
 <span class="sd">    :math:`r` is</span>
@@ -890,7 +897,7 @@
 <span class="sd">    The expression above can be used to compute the coordination numbers</span>
 <span class="sd">    (number of neighbors in each solvation shell) by setting :math:`r`</span>
 <span class="sd">    to the :math:`r`-values where :math:`g_{ij}(r)` is locally</span>
-<span class="sd">    maximized, which signify the solvation shell boundaries.</span>
+<span class="sd">    minimized, which signify the solvation shell boundaries.</span>
 
 <span class="sd">    .. container::</span>
 
@@ -909,17 +916,6 @@
 <span class="sd">       * the (partial) static structure factor (see</span>
 <span class="sd">         :func:`calculate_structure_factor` for the possible</span>
 <span class="sd">         definitions).</span>
-
-<span class="sd">    This class can be used for a two-dimension system by specifying the</span>
-<span class="sd">    axis to drop in `drop_axis`. Then, the radial distribution function</span>
-<span class="sd">    is normalized for circular rings and the average number of :math:`j`</span>
-<span class="sd">    particles found within radius :math:`r` becomes</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       N_{ij}(r)=2\pi\sigma_j\int_0^rRg_{ij}(R)\,dR</span>
-
-<span class="sd">    where :math:`\sigma_j` is the area density of species :math:`j`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1485,11 +1481,11 @@
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.StructureFactor.html#mdhelper.analysis.structure.StructureFactor">[docs]</a>
 <span class="k">class</span> <span class="nc">StructureFactor</span><span class="p">(</span><span class="n">ParallelAnalysisBase</span><span class="p">,</span> <span class="n">SerialAnalysisBase</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Serial and parallel implementations to calculate the static </span>
 <span class="sd">    structure factor :math:`S(q)` or partial structure factor </span>
-<span class="sd">    :math:`S_{\alpha\beta}(q)` for species :math:`\alpha` and </span>
-<span class="sd">    :math:`\beta`.</span>
+<span class="sd">    :math:`S_{\\alpha\\beta}(q)` for species :math:`\\alpha` and </span>
+<span class="sd">    :math:`\\beta`.</span>
 
 <span class="sd">    The static structure factor is a measure of how a material scatters</span>
 <span class="sd">    incident radiation, and can be computed directly from a molecular</span>
@@ -1497,11 +1493,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        S(\mathbf{q})&amp;=\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N</span>
-<span class="sd">        \exp{[-i\mathbf{q}\cdot(\mathbf{r}_j-\mathbf{r}_k)]}\right\rangle\\</span>
-<span class="sd">        &amp;=\frac{1}{N}\left\langle\left[</span>
-<span class="sd">        \sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\right]^2+\left[</span>
-<span class="sd">        \sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}\right]^2\right\rangle</span>
+<span class="sd">        S(\mathbf{q})&amp;=\\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N</span>
+<span class="sd">        \exp{[-i\mathbf{q}\cdot(\mathbf{r}_j-\mathbf{r}_k)]}\\right\\rangle\\\\</span>
+<span class="sd">        &amp;=\\frac{1}{N}\left\langle\left[</span>
+<span class="sd">        \sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2+\left[</span>
+<span class="sd">        \sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2\\right\\rangle</span>
 
 <span class="sd">    where :math:`N` is the number of particles, :math:`\mathbf{q}` is</span>
 <span class="sd">    the scattering wavevector, and :math:`\mathbf{r}_i` is the position</span>
@@ -1512,14 +1508,14 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       S_{\alpha\beta}(\mathbf{q})=\frac{1}{\sqrt{N_\alpha N_\beta}}</span>
-<span class="sd">       \left\langle\sum_{j=1}^{N_\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}</span>
-<span class="sd">       \sum_{k=1}^{N_\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}</span>
-<span class="sd">       +\sum_{j=1}^{N_\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}</span>
-<span class="sd">       \sum_{k=1}^{N_\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}\right\rangle</span>
+<span class="sd">       S_{\\alpha\\beta}(\mathbf{q})=\\frac{1}{\sqrt{N_\\alpha N_\\beta}}</span>
+<span class="sd">       \left\langle\sum_{j=1}^{N_\\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}</span>
+<span class="sd">       \sum_{k=1}^{N_\\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}</span>
+<span class="sd">       +\sum_{j=1}^{N_\\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}</span>
+<span class="sd">       \sum_{k=1}^{N_\\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}\\right\\rangle</span>
 
-<span class="sd">    where :math:`N_\alpha` and :math:`N_\beta` are the numbers of</span>
-<span class="sd">    particles for species :math:`\alpha` and :math:`\beta`.</span>
+<span class="sd">    where :math:`N_\\alpha` and :math:`N_\\beta` are the numbers of</span>
+<span class="sd">    particles for species :math:`\\alpha` and :math:`\\beta`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1552,7 +1548,7 @@
 
 <span class="sd">        **Shape**: :math:`(3,)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
 
 <span class="sd">    n_points : `int`, default: :code:`32`</span>
 <span class="sd">        Number of points in the scattering wavevector grid. Additional</span>
@@ -1626,7 +1622,7 @@
 
 <span class="sd">    results.ssf : `numpy.ndarray`</span>
 <span class="sd">        Static structure factor :math:`S(q)` or partial structure</span>
-<span class="sd">        factor(s) :math:`S_{\alpha\beta}(q)`.</span>
+<span class="sd">        factor(s) :math:`S_{\\alpha\\beta}(q)`.</span>
 
 <span class="sd">        **Shape**: :math:`(N_\mathrm{w},)`, :math:`(1,\,N_\mathrm{w})`,</span>
 <span class="sd">        or :math:`(C(N_\mathrm{g}+1,\,2),\,N_\mathrm{w})`.</span>
@@ -1982,7 +1978,7 @@
 <span class="k">class</span> <span class="nc">IncoherentIntermediateScatteringFunction</span><span class="p">(</span><span class="n">ParallelAnalysisBase</span><span class="p">,</span> 
                                                <span class="n">SerialAnalysisBase</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Serial and parallel implementations to calculate the incoherent (or</span>
 <span class="sd">    self) intermediate scattering function :math:`F_\mathrm{s}(q,\,t)`.</span>
 
@@ -1992,9 +1988,9 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        F_\mathrm{s}(\mathbf{q},t)=\frac{1}{N}\left\langle\sum_{j=1}^N</span>
+<span class="sd">        F_\mathrm{s}(\mathbf{q},t)=\\frac{1}{N}\left\langle\sum_{j=1}^N</span>
 <span class="sd">        \exp\left[i\mathbf{q}\cdot\left(\mathbf{r}_j(t_0+t)</span>
-<span class="sd">        -\mathbf{r}_j(t_0)\right)\right]\right\rangle</span>
+<span class="sd">        -\mathbf{r}_j(t_0)\\right)\\right]\\right\\rangle</span>
 
 <span class="sd">    where :math:`N` is the number of particles, :math:`\mathbf{q}` is</span>
 <span class="sd">    the wavevector, :math:`t_0` and :math:`t` are the initial and lag</span>
@@ -2037,7 +2033,7 @@
 
 <span class="sd">        **Shape**: :math:`(3,)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
 
 <span class="sd">    n_points : `int`, default: :code:`32`</span>
 <span class="sd">        Number of points in the scattering wavevector grid. Additional</span>

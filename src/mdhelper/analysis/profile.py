@@ -26,7 +26,7 @@ if FOUND_OPENMM:
 
 def calculate_potential_profile(
         bins: np.ndarray[float], charge_density: np.ndarray[float],
-        L: float, dielectric: float = 1, *, sigma_e: float = None,
+        L: float, dielectric: float = 1, *, sigma_q: float = None,
         dV: float = None, threshold: float = 1e-5, V0: float = 0,
         reduced: bool = False) -> None:
 
@@ -73,8 +73,8 @@ def calculate_potential_profile(
         Relative permittivity or static dielectric constant
         :math:`\varepsilon_\mathrm{r}`.
 
-    sigma_e : `float`, keyword-only, optional
-        Total surface charge density :math:`\sigma_e`. Used to
+    sigma_q : `float`, keyword-only, optional
+        Total surface charge density :math:`\sigma_q`. Used to
         ensure that the electric field in the bulk of the solution
         is zero. If not provided, it is determined using `dV` and
         the charge density profile, or the average value in the
@@ -84,13 +84,13 @@ def calculate_potential_profile(
 
     dV : `float`, keyword-only, optional
         Potential difference :math:`\Delta\Psi` across the system
-        dimension specified in `axis`. Has no effect if `sigma_e` is
+        dimension specified in `axis`. Has no effect if `sigma_q` is
         provided since this value is used solely to calculate
-        `sigma_e`.
+        `sigma_q`.
 
         .. note::
 
-           By specifying `dV` to calculate `sigma_e` using Gauss's law,
+           By specifying `dV` to calculate `sigma_q` using Gauss's law,
            it is assumed that the boundaries are perfectly conducting.
 
         **Reference unit**: :math:`\mathrm{V}`.
@@ -98,8 +98,8 @@ def calculate_potential_profile(
     threshold : `float`, keyword-only, default: :code:`1e-5`
         Threshold for determining the plateau region of the first
         integral of the charge density profile to calculate
-        `sigma_e`. Has no effect if `sigma_e` is provided or if
-        `sigma_e` can be calculated using `dV` and `dielectric`.
+        `sigma_q`. Has no effect if `sigma_q` is provided or if
+        `sigma_q` can be calculated using `dV` and `dielectric`.
 
     V0 : `float`, keyword-only, default: :code:`0`
         Potential :math:`\Psi_0` at the left boundary.
@@ -122,18 +122,18 @@ def calculate_potential_profile(
     # Calculate the first integral of the charge density profile
     potential = integrate.cumulative_trapezoid(charge_density, bins, initial=0)
 
-    if sigma_e is None:
+    if sigma_q is None:
 
         # Calculate surface charge density for system with perfectly
         # conducting boundaries
         if dV is not None:
-            sigma_e = dielectric * dV / L
+            sigma_q = dielectric * dV / L
             if reduced:
-                sigma_e /= 4 * np.pi
+                sigma_q /= 4 * np.pi
             else:
-                sigma_e = (sigma_e * ureg.vacuum_permittivity * ureg.volt
+                sigma_q = (sigma_q * ureg.vacuum_permittivity * ureg.volt
                            * ureg.angstrom / ureg.elementary_charge).magnitude
-            sigma_e -= integrate.trapezoid(bins * charge_density, bins) / L
+            sigma_q -= integrate.trapezoid(bins * charge_density, bins) / L
 
         else:
             wmsg = ("No surface charge density information. The value will "
@@ -148,13 +148,13 @@ def calculate_potential_profile(
                 np.diff(np.abs(np.gradient(potential)) < threshold)
             )[0] + 1
             target_index = len(potential) // 2
-            sigma_e = potential[
+            sigma_q = potential[
                 cut_indices[cut_indices <= target_index][-1]:
                 cut_indices[cut_indices >= target_index][0]
             ].mean()
 
     # Calculate the second integral of the charge density profile
-    potential = -integrate.cumulative_trapezoid(potential - sigma_e, bins,
+    potential = -integrate.cumulative_trapezoid(potential - sigma_q, bins,
                                                 initial=V0) / dielectric
     if reduced:
         potential *= 4 * np.pi
@@ -626,7 +626,7 @@ class DensityProfile(SerialAnalysisBase):
 
     def calculate_potential_profile(
             self, dielectric: float, axis: Union[int, str], *,
-            sigma_e: Union[float, "unit.Quantity", Q_] = None,
+            sigma_q: Union[float, "unit.Quantity", Q_] = None,
             dV: Union[float, "unit.Quantity", Q_] = None,
             threshold: float = 1e-5, V0: Union[float, "unit.Quantity", Q_] = 0
         ) -> None:
@@ -640,7 +640,7 @@ class DensityProfile(SerialAnalysisBase):
         ----------
         dielectric : `float`
             Relative permittivity or dielectric constant
-            :math:`\\varepsilon_\\mathrm{r}`.
+            :math:`\\varepsilon_\mathrm{r}`.
 
         axis : `int` or `str`
             Axis along which to compute the potential profiles.
@@ -652,42 +652,42 @@ class DensityProfile(SerialAnalysisBase):
                * :code:`2` for the :math:`z`-direction.
                * :code:`"x"` for the :math:`x`-direction.
 
-        sigma_e : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
+        sigma_q : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, optional
-            Total surface charge density :math:`\sigma_e`. Used to
+            Total surface charge density :math:`\sigma_q`. Used to
             ensure that the electric field in the bulk of the solution
             is zero. If not provided, it is determined using `dV` and
             the charge density profile, or the average value in the
             center of the integrated charge density profile.
 
-            **Reference unit**: :math:`\\mathrm{e/Å^2}`.
+            **Reference unit**: :math:`\mathrm{e/Å^2}`.
 
         dV : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, optional
             Potential difference :math:`\Delta\Psi` across the system
-            dimension specified in `axis`. Has no effect if `sigma_e` is
+            dimension specified in `axis`. Has no effect if `sigma_q` is
             provided since this value is used solely to calculate
-            `sigma_e`.
+            `sigma_q`.
 
             .. note::
 
-               By specifying `dV` to calculate `sigma_e` using Gauss's
+               By specifying `dV` to calculate `sigma_q` using Gauss's
                law, it is assumed that the boundaries are perfectly
                conducting.
 
-            **Reference unit**: :math:`\\mathrm{V}`.
+            **Reference unit**: :math:`\mathrm{V}`.
 
         threshold : `float`, keyword-only, default: :code:`1e-5`
             Threshold for determining the plateau region of the first
             integral of the charge density profile to calculate
-            `sigma_e`. Has no effect if `sigma_e` is provided, or if
-            `sigma_e` can be calculated using `dV` and `dielectric`.
+            `sigma_q`. Has no effect if `sigma_q` is provided, or if
+            `sigma_q` can be calculated using `dV` and `dielectric`.
 
         V0 : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, default: :code:`0`
             Potential :math:`\Psi_0` at the left boundary.
 
-            **Reference unit**: :math:`\\mathrm{V}`.
+            **Reference unit**: :math:`\mathrm{V}`.
         """
 
         if not hasattr(self.results, "charge_densities"):
@@ -706,10 +706,10 @@ class DensityProfile(SerialAnalysisBase):
             axis = ord(axis.lower()) - 120
         index = np.where(self._axes == axis)[0][0]
 
-        if sigma_e is not None:
-            sigma_e, unit_ = strip_unit(sigma_e, "elementary_charge/angstrom**2")
+        if sigma_q is not None:
+            sigma_q, unit_ = strip_unit(sigma_q, "elementary_charge/angstrom**2")
             if self._reduced and not isinstance(unit_, str):
-                emsg = "'sigma_e' cannot have units when reduced=True."
+                emsg = "'sigma_q' cannot have units when reduced=True."
                 raise ValueError(emsg)
 
         if dV is not None:
@@ -732,7 +732,7 @@ class DensityProfile(SerialAnalysisBase):
             charge_density,
             self._dimensions[axis],
             dielectric,
-            sigma_e=sigma_e,
+            sigma_q=sigma_q,
             dV=dV,
             threshold=threshold,
             V0=V0,

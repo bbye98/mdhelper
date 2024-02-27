@@ -97,6 +97,90 @@ def radial_histogram(
 
     return np.histogram(dist, bins=n_bins, range=range)[0]
 
+def zeroth_order_hankel_transform(
+        r: np.ndarray[float], f: np.ndarray[float], q: np.ndarray[float]
+    ) -> np.ndarray[float]:
+
+    r"""
+    Computes the Hankel transform :math:`F_0(q)` of discrete data 
+    :math:`f(r)` using the zeroth-order Bessel function :math:`J_0`.
+
+    .. math::
+
+       F_0(q)=\int_0^\infty f(r)J_0(qr)r\,dr
+
+    Parameters
+    ----------
+    r : `numpy.ndarray`
+        Radii :math:`r`.
+
+        **Reference unit**: :math:`\mathrm{Å}`.
+
+    f : `numpy.ndarray`
+        Discrete data :math:`f(r)` to Hankel transform.
+
+        **Shape**: Same as `r`.
+
+    q : `numpy.ndarray`
+        Wavenumbers :math:`q` to evaluate the Hankel transforms at.
+
+        **Reference unit**: :math:`\mathrm{Å}^{-1}`.
+
+    Returns
+    -------
+    ht : `numpy.ndarray`
+        Hankel transform of the discrete data.
+
+        **Shape**: Same as `q`.
+    """
+
+    ht = 2 * np.pi * simpson(f * r * jv(0, q * r), r)
+    if 0 in q:
+        ht[q == 0] = 2 * np.pi * simpson(f * r, r)
+    return ht
+
+def radial_fourier_transform(
+        r: np.ndarray[float], f: np.ndarray[float], q: np.ndarray[float]
+    ) -> np.ndarray[float]:
+
+    r"""
+    Computes the radial Fourier transform :math:`\hat{f}(q)` of
+    discrete data :math:`f(r)`.
+
+    .. math::
+
+       \hat{f}(q)=\frac{4\pi}{q}\int_0^\infty f(r)r\sin(qr)\,dr
+
+    Parameters
+    ----------
+    r : `numpy.ndarray`
+        Radii :math:`r`.
+
+        **Reference unit**: :math:`\mathrm{Å}`.
+
+    f : `numpy.ndarray`
+        Discrete data :math:`f(r)` to Fourier transform.
+
+        **Shape**: Same as `r`.
+
+    q : `numpy.ndarray`
+        Wavenumbers :math:`q` to evaluate the Fourier transforms at.
+
+        **Reference unit**: :math:`\mathrm{Å}^{-1}`.
+
+    Returns
+    -------
+    rft : `numpy.ndarray`
+        Radial Fourier transform of the discrete data.
+
+        **Shape**: Same as `q`.
+    """
+
+    rft = 4 * np.pi * np.divide(simpson(f * r * np.sin(np.outer(q, r)), r), q)
+    if 0 in q:
+        rft[q == 0] = 4 * np.pi * simpson(f * r ** 2, r)
+    return rft
+
 def calculate_coordination_numbers(
         bins: np.ndarray[float], rdf: np.ndarray[float], rho: float, *,
         n_coord_nums: int = 2, n_dims: int = 3, threshold: float = 0.1
@@ -193,91 +277,6 @@ def calculate_coordination_numbers(
         warnings.warn("No local minima found.")
 
     return coord_nums
-
-def zeroth_order_hankel_transform(
-        r: np.ndarray[float], f: np.ndarray[float], q: np.ndarray[float]
-    ) -> np.ndarray[float]:
-
-    r"""
-    Computes the zeroth-order Hankel transform :math:`F_0(q)` of
-    discrete data :math:`f(r)` using the zeroth-order Bessel function
-    :math:`J_0`.
-
-    .. math::
-
-       F_0(q)=\int_0^\infty f(r)J_0(qr)r\,dr
-
-    Parameters
-    ----------
-    r : `numpy.ndarray`
-        Radii :math:`r`.
-
-        **Reference unit**: :math:`\mathrm{Å}`.
-
-    f : `numpy.ndarray`
-        Discrete data :math:`f(r)` to Hankel transform.
-
-        **Shape**: Same as `r`.
-
-    q : `numpy.ndarray`
-        Wavenumbers :math:`q` to evaluate the Hankel transforms at.
-
-        **Reference unit**: :math:`\mathrm{Å}^{-1}`.
-
-    Returns
-    -------
-    ht : `numpy.ndarray`
-        Hankel transform of the discrete data.
-
-        **Shape**: Same as `q`.
-    """
-
-    ht = 2 * np.pi * simpson(f * r * jv(0, q * r), r)
-    if 0 in q:
-        ht[q == 0] = 2 * np.pi * simpson(f * r, r)
-    return ht
-
-def radial_fourier_transform(
-        r: np.ndarray[float], f: np.ndarray[float], q: np.ndarray[float]
-    ) -> np.ndarray[float]:
-
-    r"""
-    Computes the radial Fourier transform :math:`\hat{f}(q)` of
-    discrete data :math:`f(r)`.
-
-    .. math::
-
-       \hat{f}(q)=\frac{4\pi}{q}\int_0^\infty f(r)r\sin(qr)\,dr
-
-    Parameters
-    ----------
-    r : `numpy.ndarray`
-        Radii :math:`r`.
-
-        **Reference unit**: :math:`\mathrm{Å}`.
-
-    f : `numpy.ndarray`
-        Discrete data :math:`f(r)` to Fourier transform.
-
-        **Shape**: Same as `r`.
-
-    q : `numpy.ndarray`
-        Wavenumbers :math:`q` to evaluate the Fourier transforms at.
-
-        **Reference unit**: :math:`\mathrm{Å}^{-1}`.
-
-    Returns
-    -------
-    rft : `numpy.ndarray`
-        Radial Fourier transform of the discrete data.
-
-        **Shape**: Same as `q`.
-    """
-
-    rft = 4 * np.pi * np.divide(simpson(f * r * np.sin(np.outer(q, r)), r), q)
-    if 0 in q:
-        rft[q == 0] = 4 * np.pi * simpson(f * r ** 2, r)
-    return rft
 
 def calculate_structure_factor(
         r: np.ndarray[float], g: np.ndarray[float], equal: bool, rho: float,
@@ -441,17 +440,24 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
     r"""
     Serial and parallel implementations to calculate the radial 
     distribution function (RDF) :math:`g_{ij}(r)` between types 
-    :math:`i` and :math:`j` and its related properties.
+    :math:`i` and :math:`j` and its related properties for two-
+    and three-dimensional systems.
 
-    It is given by
+    The RDF is given by
 
     .. math::
 
-       g_{ij}(r)=\frac{1}{N_iN_j}\sum_\alpha\sum_\beta \left\langle
+       g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}\sum_{\alpha=1}^{N_i}
+       \sum_{\beta=1}^{N_j}\left\langle
+       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
+       \right\rangle\\
+       g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}\sum_{\alpha=1}^{N_i}
+       \sum_{\beta=1}^{N_j}\left\langle
        \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
        \right\rangle
 
-    where :math:`N_i` and :math:`N_j` are the number of particles, and
+    where :math:`V` and :math:`A` are the system volume and area,
+    :math:`N_i` and :math:`N_j` are the number of particles, and
     :math:`\mathbf{r}_\alpha` and :math:`\mathbf{r}_\beta` are the
     positions of particles :math:`\alpha` and :math:`\beta` belonging
     to species :math:`i` and :math:`j`, respectively. The RDF is
@@ -466,7 +472,8 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
 
     .. math::
 
-       G_{ij}(r)=4\pi\int_0^rR^2g_{ij}(R)\,dR
+       G_{ij}^\mathrm{3D}(r)=4\pi\int_0^rR^2g_{ij}(R)\,dR\\
+       G_{ij}^\mathrm{2D}(r)=2\pi\int_0^rRg_{ij}(R)\,dR
 
     and the average number of :math:`j` particles found within radius
     :math:`r` is
@@ -478,7 +485,7 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
     The expression above can be used to compute the coordination numbers
     (number of neighbors in each solvation shell) by setting :math:`r`
     to the :math:`r`-values where :math:`g_{ij}(r)` is locally
-    maximized, which signify the solvation shell boundaries.
+    minimized, which signify the solvation shell boundaries.
 
     .. container::
 
@@ -497,17 +504,6 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
        * the (partial) static structure factor (see
          :func:`calculate_structure_factor` for the possible
          definitions).
-
-    This class can be used for a two-dimension system by specifying the
-    axis to drop in `drop_axis`. Then, the radial distribution function
-    is normalized for circular rings and the average number of :math:`j`
-    particles found within radius :math:`r` becomes
-
-    .. math::
-
-       N_{ij}(r)=2\pi\sigma_j\int_0^rRg_{ij}(R)\,dR
-
-    where :math:`\sigma_j` is the area density of species :math:`j`.
 
     Parameters
     ----------
@@ -1058,11 +1054,11 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
 
 class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
-    r"""
+    """
     Serial and parallel implementations to calculate the static 
     structure factor :math:`S(q)` or partial structure factor 
-    :math:`S_{\alpha\beta}(q)` for species :math:`\alpha` and 
-    :math:`\beta`.
+    :math:`S_{\\alpha\\beta}(q)` for species :math:`\\alpha` and 
+    :math:`\\beta`.
 
     The static structure factor is a measure of how a material scatters
     incident radiation, and can be computed directly from a molecular
@@ -1070,11 +1066,11 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
     .. math::
 
-        S(\mathbf{q})&=\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N
-        \exp{[-i\mathbf{q}\cdot(\mathbf{r}_j-\mathbf{r}_k)]}\right\rangle\\
-        &=\frac{1}{N}\left\langle\left[
-        \sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\right]^2+\left[
-        \sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}\right]^2\right\rangle
+        S(\mathbf{q})&=\\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N
+        \exp{[-i\mathbf{q}\cdot(\mathbf{r}_j-\mathbf{r}_k)]}\\right\\rangle\\\\
+        &=\\frac{1}{N}\left\langle\left[
+        \sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2+\left[
+        \sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2\\right\\rangle
 
     where :math:`N` is the number of particles, :math:`\mathbf{q}` is
     the scattering wavevector, and :math:`\mathbf{r}_i` is the position
@@ -1085,14 +1081,14 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
     .. math::
 
-       S_{\alpha\beta}(\mathbf{q})=\frac{1}{\sqrt{N_\alpha N_\beta}}
-       \left\langle\sum_{j=1}^{N_\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
-       \sum_{k=1}^{N_\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}
-       +\sum_{j=1}^{N_\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}
-       \sum_{k=1}^{N_\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}\right\rangle
+       S_{\\alpha\\beta}(\mathbf{q})=\\frac{1}{\sqrt{N_\\alpha N_\\beta}}
+       \left\langle\sum_{j=1}^{N_\\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
+       \sum_{k=1}^{N_\\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}
+       +\sum_{j=1}^{N_\\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}
+       \sum_{k=1}^{N_\\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}\\right\\rangle
 
-    where :math:`N_\alpha` and :math:`N_\beta` are the numbers of
-    particles for species :math:`\alpha` and :math:`\beta`.
+    where :math:`N_\\alpha` and :math:`N_\\beta` are the numbers of
+    particles for species :math:`\\alpha` and :math:`\\beta`.
 
     Parameters
     ----------
@@ -1125,7 +1121,7 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
         **Shape**: :math:`(3,)`.
 
-        **Reference unit**: :math:`\\mathrm{Å}`.
+        **Reference unit**: :math:`\mathrm{Å}`.
 
     n_points : `int`, default: :code:`32`
         Number of points in the scattering wavevector grid. Additional
@@ -1199,7 +1195,7 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
     results.ssf : `numpy.ndarray`
         Static structure factor :math:`S(q)` or partial structure
-        factor(s) :math:`S_{\alpha\beta}(q)`.
+        factor(s) :math:`S_{\\alpha\\beta}(q)`.
 
         **Shape**: :math:`(N_\mathrm{w},)`, :math:`(1,\,N_\mathrm{w})`,
         or :math:`(C(N_\mathrm{g}+1,\,2),\,N_\mathrm{w})`.
@@ -1549,7 +1545,7 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase, 
                                                SerialAnalysisBase):
 
-    r"""
+    """
     Serial and parallel implementations to calculate the incoherent (or
     self) intermediate scattering function :math:`F_\mathrm{s}(q,\,t)`.
 
@@ -1559,9 +1555,9 @@ class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase,
 
     .. math::
 
-        F_\mathrm{s}(\mathbf{q},t)=\frac{1}{N}\left\langle\sum_{j=1}^N
+        F_\mathrm{s}(\mathbf{q},t)=\\frac{1}{N}\left\langle\sum_{j=1}^N
         \exp\left[i\mathbf{q}\cdot\left(\mathbf{r}_j(t_0+t)
-        -\mathbf{r}_j(t_0)\right)\right]\right\rangle
+        -\mathbf{r}_j(t_0)\\right)\\right]\\right\\rangle
 
     where :math:`N` is the number of particles, :math:`\mathbf{q}` is
     the wavevector, :math:`t_0` and :math:`t` are the initial and lag
@@ -1604,7 +1600,7 @@ class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase,
 
         **Shape**: :math:`(3,)`.
 
-        **Reference unit**: :math:`\\mathrm{Å}`.
+        **Reference unit**: :math:`\mathrm{Å}`.
 
     n_points : `int`, default: :code:`32`
         Number of points in the scattering wavevector grid. Additional
