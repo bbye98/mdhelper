@@ -19,6 +19,7 @@ structure
       calculate_structure_factor
       radial_fourier_transform
       radial_histogram
+      zeroth_order_hankel_transform
    
    
 
@@ -32,9 +33,7 @@ structure
       :nosignatures:
    
       IncoherentIntermediateScatteringFunction
-      ParallelRDF2D
       RDF
-      RDF2D
       StructureFactor
    
    

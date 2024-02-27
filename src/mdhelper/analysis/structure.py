@@ -16,6 +16,7 @@ from MDAnalysis.lib import distances
 import numpy as np
 from scipy.integrate import simpson
 from scipy.signal import argrelextrema
+from scipy.special import jv
 
 from .base import SerialAnalysisBase, ParallelAnalysisBase
 from .. import FOUND_OPENMM, ureg, Q_
@@ -98,21 +99,29 @@ def radial_histogram(
 
 def calculate_coordination_numbers(
         bins: np.ndarray[float], rdf: np.ndarray[float], rho: float, *,
-        n: int = 2, threshold: float = 0.1) -> np.ndarray[float]:
+        n_coord_nums: int = 2, n_dims: int = 3, threshold: float = 0.1
+    ) -> np.ndarray[float]:
 
     r"""
     Calculates coordination numbers :math:`n_k` from a radial
     distribution function :math:`g_{ij}(r)`.
 
-    The definition is
+    It is defined as
 
     .. math::
 
        n_k=4\pi\rho_j\int_{r_{k-1}}^{r_k}r^2g_{ij}(r)\,dr
 
-    where :math:`k` is the index, :math:`\rho_j` is the bulk number
-    density of species :math:`j` and :math:`r_k` is the
-    :math:`(k + 1)`-th local minimum of :math:`g_{ij}(r)`.
+    for three-dimensional systems and
+
+    .. math::
+
+       n_k=2\pi\rho_j\int_{r_{k-1}}^{r_k}rg_{ij}(r)\,dr
+    
+    for two-dimensional systems, where :math:`k` is the index,
+    :math:`\rho_j` is the bulk number density of species :math:`j` and
+    :math:`r_k` is the :math:`(k + 1)`-th local minimum of 
+    :math:`g_{ij}(r)`.
 
     If the radial distribution function :math:`g_{ij}(r)` does not
     contain as many local minima as `n`, this method will return
@@ -136,10 +145,14 @@ def calculate_coordination_numbers(
     rho : `float`
         Number density :math:`\rho_j` of species :math:`j`.
 
-        **Reference unit**: :math:`\mathrm{Å}^{-3}`.
+        **Reference unit**: :math:`\mathrm{Å}^D`, where :math:`D` is the
+        number of dimensions.
 
-    n : `int`, keyword-only, default: :code:`2`
+    n_coord_nums : `int`, keyword-only, default: :code:`2`
         Number of coordination numbers to calculate.
+
+    n_dims : `int`, keyword-only, default: :code:`3`
+        Number of dimensions :math:`D`.
 
     threshold : `float`, keyword-only, default: :code:`0.1`
         Minimum :math:`g_{ij}(r)` value that must be reached before
@@ -151,7 +164,16 @@ def calculate_coordination_numbers(
         Coordination numbers :math:`n_k`.
     """
 
-    coord_nums = np.empty(n)
+    if n_dims not in {2, 3}:
+        raise ValueError("Invalid number of dimensions.")
+        
+    def f(r, rdf, rho, start, stop):
+        if n_dims == 3:
+            return 4 * np.pi * rho * simpson(r ** 2 * rdf[start:stop], r)
+        else:
+            return 2 * np.pi * rho * simpson(r * rdf[start:stop], r)
+
+    coord_nums = np.empty(n_coord_nums)
     coord_nums[:] = np.nan
 
     # Find indices of minima in the radial distribution function
@@ -163,17 +185,57 @@ def calculate_coordination_numbers(
     # number(s)
     if n_min:
         r = bins[:i_min[0] + 1]
-        coord_nums[0] = (4 * np.pi * rho
-                         * simpson(r ** 2 * rdf[:i_min[0] + 1], r))
-        for i in range(min(n, n_min) - 1):
+        coord_nums[0] = f(r, rdf, rho, None, i_min[0] + 1)
+        for i in range(min(n_coord_nums, n_min) - 1):
             r = bins[i_min[i]:i_min[i + 1] + 1]
-            coord_nums[i + 1] = \
-                (4 * np.pi * rho
-                 * simpson(r ** 2 * rdf[i_min[i]:i_min[i + 1] + 1], r))
+            coord_nums[i + 1] = f(r, rdf, rho, i_min[i], i_min[i + 1] + 1)
     else:
         warnings.warn("No local minima found.")
 
     return coord_nums
+
+def zeroth_order_hankel_transform(
+        r: np.ndarray[float], f: np.ndarray[float], q: np.ndarray[float]
+    ) -> np.ndarray[float]:
+
+    r"""
+    Computes the zeroth-order Hankel transform :math:`F_0(q)` of
+    discrete data :math:`f(r)` using the zeroth-order Bessel function
+    :math:`J_0`.
+
+    .. math::
+
+       F_0(q)=\int_0^\infty f(r)J_0(qr)r\,dr
+
+    Parameters
+    ----------
+    r : `numpy.ndarray`
+        Radii :math:`r`.
+
+        **Reference unit**: :math:`\mathrm{Å}`.
+
+    f : `numpy.ndarray`
+        Discrete data :math:`f(r)` to Hankel transform.
+
+        **Shape**: Same as `r`.
+
+    q : `numpy.ndarray`
+        Wavenumbers :math:`q` to evaluate the Hankel transforms at.
+
+        **Reference unit**: :math:`\mathrm{Å}^{-1}`.
+
+    Returns
+    -------
+    ht : `numpy.ndarray`
+        Hankel transform of the discrete data.
+
+        **Shape**: Same as `q`.
+    """
+
+    ht = 2 * np.pi * simpson(f * r * jv(0, q * r), r)
+    if 0 in q:
+        ht[q == 0] = 2 * np.pi * simpson(f * r, r)
+    return ht
 
 def radial_fourier_transform(
         r: np.ndarray[float], f: np.ndarray[float], q: np.ndarray[float]
@@ -220,8 +282,9 @@ def radial_fourier_transform(
 def calculate_structure_factor(
         r: np.ndarray[float], g: np.ndarray[float], equal: bool, rho: float,
         x_i: float = 1, x_j: float = None, q: np.ndarray[float] = None, *,
-        q_lower: float = None, q_upper: float = None, n_q: int = 1_000,
-        formalism: str = "FZ") -> tuple[np.ndarray[float], np.ndarray[float]]:
+        q_lower: float = None, q_upper: float = None, n_q: int = 1_000, 
+        n_dims: int = 3, formalism: str = "FZ"
+    ) -> tuple[np.ndarray[float], np.ndarray[float]]:
 
     r"""
     Computes the (partial) static structure factor :math:`S_{ij}(q)`
@@ -247,9 +310,11 @@ def calculate_structure_factor(
         `x_j`.
 
     rho : `float`
-        Bulk number density :math:`\rho`.
+        Bulk number density :math:`\rho`, surface density 
+        :math:`\sigma`, or line density :math:`\lambda`.
 
-        **Reference unit**: :math:`\mathrm{Å}^{-3}`.
+        **Reference unit**: :math:`\mathrm{Å}^{-3}`, 
+        :math:`\mathrm{Å}^{-2}`, or :math:`\mathrm{Å}^{-1}`.
 
     x_i : `float`, default: :code:`1`
         Number concentration of species :math:`i`. Required if
@@ -280,6 +345,9 @@ def calculate_structure_factor(
         Number of wavenumbers :math:`q` to generate. Has no effect if `q`
         is specified.
 
+    n_dims : `int`, keyword-only, default: :code:`3`
+        Number of dimensions :math:`D`.
+
     formalism : `str`, keyword-only, default: :code:`"FZ"`
         Formalism to use for the partial structure factor. Has no effect
         if :code:`equal=True`.
@@ -293,21 +361,30 @@ def calculate_structure_factor(
              .. math::
 
                 S_{ij}(q)=1+x_ix_j\frac{4\pi\rho}{q}\int_0^\infty
-                (g_{ij}(r)-1)r\sin{(qr)}\,dr
+                (g_{ij}(r)-1)\sin{(qr)}r\,dr
 
            * :code:`"FZ"`: Faber–Ziman formalism [1]_
 
              .. math::
 
                 S_{ij}(q)=1+\frac{4\pi\rho}{q}\int_0^\infty
-                (g_{ij}(r)-1)r\sin{(qr)}\,dr
+                (g_{ij}(r)-1)\sin{(qr)}r\,dr
 
            * :code:`"AL"`: Ashcroft–Langreth formalism [2]_
 
              .. math::
 
                 S_{ij}(q)=\delta_{ij}+(x_ix_j)^{1/2}\frac{4\pi\rho}{q}
-                \int_0^\infty (g_{ij}(r)-1)r\sin{(qr)}\,dr
+                \int_0^\infty (g_{ij}(r)-1)\sin{(qr)}r\,dr
+           
+           In two-dimensional systems, the second term is
+
+           .. math::
+
+              2\pi\rho\int_0^\infty (g_{ij}(r)-1)J_0(qr)r\,dr
+
+           instead, where :math:`J_0` is the zeroth-order Bessel 
+           function.
 
     Returns
     -------
@@ -342,7 +419,14 @@ def calculate_structure_factor(
                         int((q_upper - q_lower) / q_lower)
                         if n_q is None else n_q)
 
-    rho_sft = rho * radial_fourier_transform(r, g - 1, q)
+    if n_dims == 3:
+        _transform = radial_fourier_transform
+    elif n_dims == 2:
+        _transform = zeroth_order_hankel_transform
+    else:
+        raise ValueError("Invalid number of dimensions.")
+
+    rho_sft = rho * _transform(r, g - 1, q)
     if equal or formalism == "FZ":
         return q, 1 + rho_sft
     elif not equal:
@@ -382,7 +466,7 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
 
     .. math::
 
-       G_{ij}(r)=\int_0^r4\pi Rg_{ij}(R)\,dR
+       G_{ij}(r)=4\pi\int_0^rR^2g_{ij}(R)\,dR
 
     and the average number of :math:`j` particles found within radius
     :math:`r` is
@@ -414,6 +498,17 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
          :func:`calculate_structure_factor` for the possible
          definitions).
 
+    This class can be used for a two-dimension system by specifying the
+    axis to drop in `drop_axis`. Then, the radial distribution function
+    is normalized for circular rings and the average number of :math:`j`
+    particles found within radius :math:`r` becomes
+
+    .. math::
+
+       N_{ij}(r)=2\pi\sigma_j\int_0^rRg_{ij}(R)\,dR
+
+    where :math:`\sigma_j` is the area density of species :math:`j`.
+
     Parameters
     ----------
     ag1 : `MDAnalysis.AtomGroup`
@@ -432,6 +527,14 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
         **Shape**: :math:`(2,)`.
 
         **Reference unit**: :math:`\mathrm{Å}`.
+
+    drop_axis : `int` or `str`, keyword-only, default: :code:`2`
+        Axis in three-dimensional space to ignore in the two-dimensional
+        analysis.
+
+        **Valid values**: :code:`0` or :code:`x` for the :math:`x`-axis,
+        :code:`1` or :code:`y` for the :math:`y`-axis, and :code:`2` or
+        :code:`z` for the :math:`z`-axis.
 
     norm : `str`, keyword-only, default: :code:`"rdf"`
         Determines how the radial histograms are normalized.
@@ -569,7 +672,8 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
     def __init__(
             self, ag1: mda.AtomGroup, ag2: mda.AtomGroup = None,
             n_bins: int = 201, range: tuple[float] = (0.0, 15.0), *,
-            norm: str = "rdf", exclusion: tuple[int] = None,
+            drop_axis: Union[int, str] = None, norm: str = "rdf",
+            exclusion: tuple[int] = None,
             groupings: Union[str, tuple[str]] = "atoms",
             reduced: bool = False, n_batches: int = None, 
             parallel: bool = False, verbose: bool = True, **kwargs) -> None:
@@ -601,6 +705,11 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
             self._groupings = (2 * groupings if len(groupings) == 1 
                                else groupings)
 
+        self._drop_axis = (ord(drop_axis) - 120 if isinstance(drop_axis, str)
+                           else drop_axis)
+        if self._drop_axis not in {0, 1, 2, None}:
+            raise ValueError("Invalid axis to drop.")
+        
         self._n_bins = n_bins
         self._range = range
         self._norm = norm
@@ -619,13 +728,32 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
         self.results.units = {"results.bins": ureg.angstrom,
                               "results.edges": ureg.angstrom}
 
-        # Preallocate floating-point number for total volume analyzed
-        # (for when system dimensions can change, such as during NpT
-        # equilibration)
+        # Preallocate floating-point number for total volume (or area)
+        # analyzed (for when system dimensions can change, such as 
+        # during NpT equilibration)
         if not self._parallel and self._norm == "rdf":
-            self._volume = 0.0
+            self._area_or_volume = 0.0
 
     def _single_frame(self) -> None:
+
+        dims = self._ts.dimensions
+        pos1 = (self.ag1.positions if self._groupings[0] == "atoms"
+                else center_of_mass(self.ag1, self._groupings[0]))
+        pos2 = (self.ag2.positions if self._groupings[1] == "atoms"
+                else center_of_mass(self.ag2, self._groupings[1]))
+
+        if self._drop_axis is None:
+            if self._norm == "rdf":
+                self._area_or_volume += self._ts.volume
+        else:
+
+            # Apply corrections to avoid including periodic images in 
+            # the dimension to exclude
+            pos1[:, self._drop_axis] = pos2[:, self._drop_axis] = 0
+            dims[self._drop_axis] = dims[:3].max()
+
+            if self._norm == "rdf":
+                self._area_or_volume += np.delete(dims[:3], self._drop_axis).prod()
 
         # Tally counts in each pair separation distance bin
         if self._n_batches:
@@ -637,38 +765,37 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
                           *((a[-1], b[-1])
                             for a, b in zip(edges[:-1], edges[1:]))]
             }
-            pos1 = (self.ag1.positions if self._groupings[0] == "atoms"
-                    else center_of_mass(self.ag1, self._groupings[0]))
-            pos2 = (self.ag2.positions if self._groupings[1] == "atoms"
-                    else center_of_mass(self.ag2, self._groupings[1]))
             for r, i in ranges_indices.items():
                 self.results.counts[i] += radial_histogram(
                     pos1=pos1, pos2=pos2, n_bins=i.shape[0], range=r,
-                    dims=self._ts.dimensions, exclusion=self._exclusion
+                    dims=dims, exclusion=self._exclusion
                 )
         else:
             self.results.counts += radial_histogram(
-                pos1=self.ag1.positions
-                     if self._groupings[0] == "atoms"
-                     else center_of_mass(self.ag1, self._groupings[0]),
-                pos2=self.ag2.positions
-                     if self._groupings[1] == "atoms"
-                     else center_of_mass(self.ag2, self._groupings[1]),
-                n_bins=self._n_bins,
-                range=self._range,
-                dims=self._ts.dimensions,
-                exclusion=self._exclusion
+                pos1=pos1, pos2=pos2, n_bins=self._n_bins, range=self._range,
+                dims=dims, exclusion=self._exclusion
             )
-
-        # Add volume analyzed
-        if self._norm == "rdf":
-            self._volume += self._ts.volume
 
     def _single_frame_parallel(
             self, frame: int, index: int) -> np.ndarray[float]:
 
         _ts = self._trajectory[frame]
         result = np.empty(1 + self._n_bins)
+
+        dims = _ts.dimensions
+        pos1 = (self.ag1.positions if self._groupings[0] == "atoms"
+                else center_of_mass(self.ag1, self._groupings[0]))
+        pos2 = (self.ag2.positions if self._groupings[1] == "atoms"
+                else center_of_mass(self.ag2, self._groupings[1]))
+
+        # Apply corrections to avoid including periodic images in the
+        # dimension to exclude
+        if self._drop_axis is None:
+            result[self._n_bins] = _ts.volume
+        else:
+            pos1[:, self._drop_axis] = pos2[:, self._drop_axis] = 0
+            dims[self._drop_axis] = dims[:3].max()
+            result[self._n_bins] = np.delete(dims[:3], self._drop_axis).prod()
 
         # Compute radial histogram for a single frame
         if self._n_batches:
@@ -680,32 +807,16 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
                           *((a[-1], b[-1])
                             for a, b in zip(edges[:-1], edges[1:]))]
             }
-            pos1 = (self.ag1.positions if self._groupings[0] == "atoms"
-                    else center_of_mass(self.ag1, self._groupings[0]))
-            pos2 = (self.ag2.positions if self._groupings[1] == "atoms"
-                    else center_of_mass(self.ag2, self._groupings[1]))
             for r, i in ranges_indices.items():
-                result[i] = radial_histogram(pos1=pos1, pos2=pos2,
-                                             n_bins=i.shape[0],
-                                             range=r, dims=_ts.dimensions,
-                                             exclusion=self._exclusion)
+                result[i] = radial_histogram(
+                    pos1=pos1, pos2=pos2, n_bins=i.shape[0], range=r, 
+                    dims=_ts.dimensions, exclusion=self._exclusion
+                )
         else:
             result[:self._n_bins] = radial_histogram(
-                pos1=self.ag1.positions
-                     if self._groupings[0] == "atoms"
-                     else center_of_mass(self.ag1, self._groupings[0]),
-                pos2=self.ag2.positions
-                     if self._groupings[1] == "atoms"
-                     else center_of_mass(self.ag2, self._groupings[1]),
-                n_bins=self._n_bins,
-                range=self._range,
-                dims=_ts.dimensions,
-                exclusion=self._exclusion
+                pos1=pos1, pos2=pos2, n_bins=self._n_bins, range=self._range,
+                dims=dims, exclusion=self._exclusion
             )
-
-        # Store system volume of current frame in the last slot of the
-        # results array
-        result[self._n_bins] = _ts.volume
 
         return result
 
@@ -716,18 +827,21 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
         if self._parallel:
             self._results = np.vstack(self._results).sum(axis=0)
             self.results.counts[:] = self._results[:self._n_bins]
-            self._volume = self._results[self._n_bins]
+            self._area_or_volume = self._results[self._n_bins]
 
         # Compute the normalization factor
         norm = self.n_frames
         if self._norm is not None:
-            norm *= 4 * np.pi * np.diff(self.results.edges ** 3) / 3
+            if self._drop_axis is None:
+                norm *= 4 * np.pi * np.diff(self.results.edges ** 3) / 3
+            else:
+                norm *= np.pi * np.diff(self.results.edges ** 2)
             if self._norm == "rdf":
                 _N2 = getattr(self.ag2, f"n_{self._groupings[1]}")
                 if self._exclusion:
                     _N2 -= self._exclusion[1]
                 norm *= (getattr(self.ag1, f"n_{self._groupings[0]}") * _N2
-                         * self.n_frames / self._volume)
+                         * self.n_frames / self._area_or_volume)
 
         # Compute and store the radial distribution function, the single
         # particle density, or the raw radial pair counts
@@ -794,14 +908,19 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
             _N2 = getattr(self.ag2, f"n_{self._groupings[1]}")
             if self._exclusion:
                 _N2 -= self._exclusion[1]
-            return 3 * self._volume * self.results.counts / (
-                4 * np.pi * self.n_frames ** 2 * _N2
+
+            if self._drop_axis is None:
+                norm = 4 * np.diff(self.results.edges ** 3) / 3
+            else:
+                norm = np.diff(self.results.edges ** 2)
+            return self._area_or_volume * self.results.counts / (
+                np.pi * self.n_frames ** 2 * _N2 * norm
                 * getattr(self.ag1, f"n_{self._groupings[0]}")
-                * np.diff(self.results.edges ** 3)
             )
 
     def calculate_coordination_numbers(
-            self, rho: float, *, n: int = 2, threshold: float = 0.1) -> None:
+            self, rho: float, *, n_coord_nums: int = 2, threshold: float = 0.1
+        ) -> None:
 
         r"""
         Calculates the coordination numbers :math:`n_k`.
@@ -818,7 +937,7 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
 
             **Reference unit**: :math:`\mathrm{nm}^{-3}`.
 
-        n : `int`, keyword-only, default: :code:`2`
+        n_coord_nums : `int`, keyword-only, default: :code:`2`
             Number of coordination numbers to calculate.
 
         threshold : `float`, keyword-only, default: :code:`0.1`
@@ -827,7 +946,8 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
         """
 
         self.results.coordination_numbers = calculate_coordination_numbers(
-            self.results.bins, self._get_rdf(), rho, n=n, threshold=threshold
+            self.results.bins, self._get_rdf(), rho, n_coord_nums=n_coord_nums,
+            n_dims=2 + (self._drop_axis is None), threshold=threshold
         )
 
     def calculate_pmf(
@@ -869,7 +989,7 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
     def calculate_structure_factor(
             self, rho: float, x_i: float = None, x_j: float = None,
             q: np.ndarray[float] = None, *, q_lower: float = None,
-            q_upper: float = None, n_q: int = 1000, formalism: str = "FZ"
+            q_upper: float = None, n_q: int = 1_000, formalism: str = "FZ"
         ) -> None:
 
         r"""
@@ -909,7 +1029,7 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
 
             **Reference unit**: :math:`\mathrm{Å}^{-1}`.
 
-        n_q : `int`, keyword-only, default: :code:`1000`
+        n_q : `int`, keyword-only, default: :code:`1_000`
             Number of wavenumbers :math:`q` to generate. Has no effect if `q`
             is specified.
 
@@ -926,493 +1046,15 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
                  is multiplied by :math:`x_ix_j`.
                * :code:`"FZ"`: Faber–Ziman formalism.
                * :code:`"AL"`: Ashcroft–Langreth formalism.
+
+               See :func:`calculate_structure_factor` for more details.
         """
 
         self.results.wavenumbers, self.results.ssf = calculate_structure_factor(
             self.results.bins, self._get_rdf(), self.ag1 == self.ag2,
             rho, x_i, x_j, q=q, q_lower=q_lower, q_upper=q_upper,
-            n_q=n_q, formalism=formalism
+            n_q=n_q, n_dims=2 + (self._drop_axis is None), formalism=formalism
         )
-
-class RDF2D(SerialAnalysisBase):
-
-    r"""
-    A serial implementation to calculate the two-dimensional radial
-    distribution function (RDF) :math:`g_{ij}(r)` between types
-    :math:`i` and :math:`j` and its related properties.
-
-    It is given by
-
-    .. math::
-
-       g_{ij}(r)=\frac{1}{N_iN_j}\sum_\alpha\sum_\beta \left\langle
-       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
-       \right\rangle
-
-    where :math:`N_i` and :math:`N_j` are the number of particles, and
-    :math:`\mathbf{r}_\alpha` and :math:`\mathbf{r}_\beta` are the positions
-    of particles :math:`\alpha` and :math:`\beta` belonging to
-    species :math:`i` and :math:`j`, respectively. The RDF is normalized
-    such that :math:`\lim_{r\rightarrow\infty}g_{ij}(r)=1` in a
-    homogeneous system.
-
-    (A closely related quantity is the single particle density
-    :math:`n_{ij}(r)=\rho_jg_{ij}(r)`, where :math:`\rho_j` is the
-    number density of species :math:`j`.)
-
-    The RDF can also be used to obtain the potential of mean force
-
-    .. math::
-
-       w_{ij}(r)=-k_\mathrm{B}T\ln{g_{ij}(r)}
-
-    where :math:`k_\mathrm{B}` is the Boltzmann constant and :math:`T`
-    is the system temperature.
-
-    Parameters
-    ----------
-    ag1 : `MDAnalysis.AtomGroup`
-        First atom group :math:`i`.
-
-    ag2 : `MDAnalysis.AtomGroup`
-        Second atom group :math:`j`.
-
-    n_bins : `int`, default: :code:`201`
-        Number of histogram bins :math:`N_\mathrm{bins}`.
-
-    range : array-like, default: :code:`(0.0, 15.0)`
-        Range of radii values. The upper bound should be less than half
-        the largest system dimension.
-
-        **Shape**: :math:`(2,)`.
-
-        **Reference unit**: :math:`\mathrm{Å}`.
-
-    drop_axis : `int` or `str`, keyword-only, default: :code:`2`
-        Axis in three-dimensional space to ignore in the two-dimensional
-        analysis.
-
-        **Valid values**: :code:`0` or :code:`x` for the :math:`x`-axis,
-        :code:`1` or :code:`y` for the :math:`y`-axis, and :code:`2` or
-        :code:`z` for the :math:`z`-axis.
-
-    norm : `str`, keyword-only, default: :code:`"rdf"`
-        Determines how the radial histograms are normalized.
-
-        .. container::
-
-           **Valid values**:
-
-           * :code:`norm="rdf"`: The radial distribution function
-             :math:`g_{ij}(r)` is computed.
-           * :code:`norm="density"`: The single particle density
-             :math:`n_{ij}(r)` is computed.
-           * :code:`norm=None`: The raw particle pair count in the
-             radial histogram bins is returned.
-
-    exclusion : array-like, keyword-only, optional
-        Tiles to exclude from the interparticle distances. The
-        `groupings` parameter dictates what a tile represents.
-
-        **Shape**: :math:`(2,)`.
-
-        **Example**: :code:`(1, 1)` to exclude self-interactions.
-
-    groupings : `str` or array-like, keyword-only, default: :code:`"atoms"`
-        Determines whether the centers of mass are used in lieu of
-        individual atom positions. If `groupings` is a `str`, the same
-        value is used for all `groups`.
-
-        .. container::
-
-           **Valid values**:
-
-           * :code:`"atoms"`: Atom positions (generally for
-             coarse-grained simulations).
-           * :code:`"residues"`: Residues' centers of mass (for
-             atomistic simulations).
-           * :code:`"segments"`: Segments' centers of mass (for
-             atomistic polymer simulations).
-
-    reduced : `bool`, keyword-only, default: :code:`False`
-        Specifies whether the data is in reduced units.
-
-    n_batches : `int`, keyword-only, optional
-        Number of batches to divide the histogram calculation into.
-        This is useful for large systems that cannot be processed in a
-        single pass.
-
-        .. note::
-
-           If you use too few bins and too many batches, the histogram
-           counts may be off by a few due to the floating-point nature
-           of the cutoffs. However, when the RDF is averaged over a
-           long trajectory with many particles, the difference should
-           be negligible.
-
-    verbose : `bool`, keyword-only, default: :code:`True`
-        Determines whether detailed progress is shown.
-
-    **kwargs
-        Additional keyword arguments to pass to
-        :class:`MDAnalysis.analysis.base.AnalysisBase`.
-
-    Attributes
-    ----------
-    universe : `MDAnalysis.Universe`
-        :class:`MDAnalysis.core.universe.Universe` object containing all
-        information describing the system.
-
-    results.units : `dict`
-        Reference units for the results. For example, to get the
-        reference units for :code:`results.bins`, call
-        :code:`results.units["results.bins"]`.
-
-    results.edges : `numpy.ndarray`
-        Edges of the histogram bins.
-
-        **Shape**: :math:`(N_\mathrm{bins}+1,)`.
-
-        **Reference unit**: :math:`\textrm{Å}`.
-
-    results.bins : `numpy.ndarray`
-        Centers of the histogram bins.
-
-        **Shape**: :math:`(N_\mathrm{bins},)`.
-
-        **Reference unit**: :math:`\textrm{Å}`.
-
-    results.counts : `numpy.ndarray`
-        Raw particle pair counts in the radial histogram bins.
-
-        **Shape**: :math:`(N_\mathrm{bins},)`.
-
-    results.rdf : `numpy.ndarray`
-        .. container::
-
-           One of
-
-           * :code:`norm="rdf"`: the radial distribution function
-             :math:`g_{ij}(r)`,
-           * :code:`norm="density"`: the single particle density
-             :math:`n_{ij}(r)`, or
-           * :code:`norm=None`: the raw particle pair count in the
-             radial histogram bins.
-
-        **Shape**: :math:`(N_\mathrm{bins},)`.
-
-    results.pmf : `numpy.ndarray`
-        Potential of mean force :math:`w(r)`. Only available after
-        running :meth:`calculate_pmf`.
-
-        **Shape**: :math:`(N_\mathrm{bins},)`.
-
-        **Reference unit**: :math:`\mathrm{kJ/mol}`.
-    """
-
-    # TODO: Combine with RDF class.
-
-    def __init__(
-            self, ag1: mda.AtomGroup, ag2: mda.AtomGroup = None,
-            n_bins: int = 201, range: tuple[float] = (0.0, 15.0), *,
-            drop_axis: Union[int, str] = 2, norm: str = "rdf",
-            exclusion: tuple[int] = None,
-            groupings: Union[str, tuple[str]] = "atoms",
-            reduced: bool = False, n_batches: int = None,
-            verbose: bool = True, **kwargs) -> None:
-
-        self.ag1 = ag1
-        self.ag2 = ag1 if ag2 is None else ag2
-        self.universe = self.ag1.universe
-        if self.universe.dimensions is None and self._ts.dimensions is None:
-            raise ValueError("Trajectory does not contain system "
-                             "dimension information.")
-        super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
-
-        if isinstance(groupings, str):
-            if groupings not in {"atoms", "residues", "segments"}:
-                emsg = (f"Invalid grouping '{groupings}'. The options are "
-                        "'atoms', 'residues', and 'segments'.")
-                raise ValueError(emsg)
-            self._groupings = 2 * [groupings]
-        else:
-            for g in groupings:
-                if g not in {"atoms", "residues", "segments"}:
-                    emsg = (f"Invalid grouping '{g}'. The options are "
-                            "'atoms', 'residues', and 'segments'.")
-                    raise ValueError(emsg)
-            self._groupings = 2 * groupings if len(groupings) == 1 else groupings
-
-        self._drop_axis = (ord(drop_axis) - 120 if isinstance(drop_axis, str)
-                           else drop_axis)
-        self._n_bins = n_bins
-        self._range = range
-        self._norm = norm
-        self._exclusion = exclusion
-        self._reduced = reduced
-        self._n_batches = n_batches
-        self._verbose = verbose
-
-    def _prepare(self) -> None:
-
-        # Preallocate arrays to store neighbor counts
-        self.results.edges = np.linspace(*self._range, self._n_bins + 1)
-        self.results.bins = (self.results.edges[:-1]
-                             + self.results.edges[1:]) / 2
-        self.results.counts = np.zeros(self._n_bins, dtype=int)
-        if not self._reduced:
-            self.results.units = {"results.bins": ureg.angstrom,
-                                  "results.edges": ureg.angstrom}
-
-        # Preallocate floating-point number for total area analyzed
-        # (for when system dimensions can change, such as during NpT
-        # equilibration)
-        if self._norm == "rdf":
-            self._area = 0.0
-
-    def _single_frame(self) -> None:
-
-        dims = self._ts.dimensions
-        pos1 = (self.ag1.positions if self._groupings[0] == "atoms"
-                else center_of_mass(self.ag1, self._groupings[0]))
-        pos2 = (self.ag2.positions if self._groupings[1] == "atoms"
-                else center_of_mass(self.ag2, self._groupings[1]))
-
-        # Apply corrections to avoid including periodic images in the
-        # dimension to exclude
-        pos1[:, self._drop_axis] = pos2[:, self._drop_axis] = 0
-        dims[self._drop_axis] = dims[:3].max()
-
-        # Tally counts in each pair separation distance bin
-        if self._n_batches:
-            edges = np.array_split(self.results.edges, self._n_batches)
-            ranges_indices = {
-                e: np.where((self.results.bins > e[0])
-                            & (self.results.bins < e[1]))[0]
-                for e in [(self._range[0], edges[0][-1]),
-                          *((a[-1], b[-1])
-                            for a, b in zip(edges[:-1], edges[1:]))]
-            }
-
-            for r, i in ranges_indices.items():
-                self.results.counts[i] += radial_histogram(
-                    pos1=pos1, pos2=pos2, n_bins=i.shape[0], range=r,
-                    dims=dims, exclusion=self._exclusion
-                )
-        else:
-            self.results.counts += radial_histogram(
-                pos1=pos1, pos2=pos2, n_bins=self._n_bins, range=self._range,
-                dims=dims, exclusion=self._exclusion
-            )
-
-        # Add area analyzed
-        if self._norm == "rdf":
-            self._area += np.delete(dims[:3], self._drop_axis).prod()
-
-    def _conclude(self):
-
-        # Compute the normalization factor
-        norm = self.n_frames
-        if self._norm is not None:
-            norm *= np.pi * np.diff(self.results.edges ** 2)
-            if self._norm == "rdf":
-                _N2 = getattr(self.ag2, f"n_{self._groupings[1]}")
-                if self._exclusion:
-                    _N2 -= self._exclusion[1]
-                norm *= (getattr(self.ag1, f"n_{self._groupings[0]}") * _N2
-                         * self.n_frames / self._area)
-
-        # Compute and store the radial distribution function, the single
-        # particle density, or the raw radial pair counts
-        self.results.rdf = self.results.counts / norm
-
-    def _get_rdf(self) -> np.ndarray[float]:
-
-        """
-        Returns the existing radial distribution function (RDF) if
-        :code:`norm="rdf"` was passed to the :class:`RDF` constructor.
-        Otherwise, the RDF is calculated and returned.
-
-        Returns
-        -------
-        rdf : `numpy.ndarray`
-            Radial distribution function :math:`g_{ij}(r)`.
-        """
-
-        if self._norm == "rdf":
-            return self.results.rdf
-        else:
-            _N2 = getattr(self.ag2, f"n_{self._groupings[1]}")
-            if self._exclusion:
-                _N2 -= self._exclusion[1]
-            return self._area * self.results.counts / (
-                np.pi * self.n_frames ** 2 * _N2
-                * getattr(self.ag1, f"n_{self._groupings[0]}")
-                * np.diff(self.results.edges ** 2)
-            )
-
-    def calculate_coordination_numbers(
-            self, rho: float, *, n: int = 2, threshold: float = 0.1) -> None:
-
-        r"""
-        Calculates the coordination numbers :math:`n_k`.
-
-        If the radial distribution function :math:`g_{ij}(r)` does not
-        contain :math:`k` local minima, this method will return
-        `numpy.nan` for the coordination numbers that could not be
-        calculated.
-
-        Parameters
-        ----------
-        rho : `float`
-            Number density :math:`\rho_j` of species :math:`j`.
-
-            **Reference unit**: :math:`\mathrm{nm}^{-3}`.
-
-        n : `int`, keyword-only, default: :code:`2`
-            Number of coordination numbers to calculate.
-
-        threshold : `float`, keyword-only, default: :code:`0.1`
-            Minimum :math:`g_{ij}(r)` value for a local minimum to be
-            considered the boundary of a radial shell.
-        """
-
-        self.results.coordination_numbers = calculate_coordination_numbers(
-            self.results.bins, self._get_rdf(), rho, n=n, threshold=threshold
-        )
-
-    def calculate_pmf(
-            self, temperature: Union[float, "unit.Quantity", Q_]) -> None:
-
-        r"""
-        Calculates the potential of mean force :math:`w_{ij}(r)`.
-
-        Parameters
-        ----------
-        temperature : `float` or `openmm.unit.Quantity`
-            System temperature :math:`T`.
-
-            .. note::
-
-               If :code:`reduced=True` was set in the :class:`RDF`
-               constructor, `temperature` should be equal to the energy
-               scale. When the Lennard-Jones potential is used, it 
-               generally means that :math:`T^*=1`, or `temperature=1`.
-
-            **Reference unit**: :math:`\mathrm{K}`.
-        """
-
-        self.results.units = {"results.pmf": ureg.kilojoule / ureg.mole}
-
-        temperature, unit_ = strip_unit(temperature, "kelvin")
-        if self._reduced:
-            if isinstance(unit_, str):
-                emsg = "'temperature' cannot have units when reduced=True."
-                raise ValueError(emsg)
-            kBT = temperature
-        else:
-            kBT = (
-                ureg.avogadro_constant * ureg.boltzmann_constant 
-                * temperature * ureg.kelvin
-            ).m_as(self.results.units["results.pmf"])
-        self.results.pmf = -kBT * np.log(self._get_rdf())
-
-class ParallelRDF2D(RDF2D, ParallelAnalysisBase):
-
-    """
-    A multithreaded implementation to calculate the two-dimensional
-    radial distribution function (RDF) :math:`g_{ij}(r)` between types
-    :math:`i` and :math:`j` and its related properties.
-
-    .. note::
-       For a theoretical background and a complete list of
-       parameters, attributes, and available methods, see :class:`RDF2D`.
-    """
-
-    # TODO: Combine with ParallelRDF class.
-
-    def __init__(
-            self, ag1: mda.AtomGroup, ag2: mda.AtomGroup = None,
-            n_bins: int = 201, range: tuple[float] = (0.0, 15.0), *,
-            drop_axis: Union[int, str] = 2, norm: str = "rdf",
-            exclusion: tuple[int] = None,
-            groupings: Union[str, tuple[str]] = "atoms",
-            reduced: bool = False, n_batches: int = None,
-            verbose: bool = True, **kwargs) -> None:
-
-        RDF2D.__init__(self, ag1, ag2, n_bins, range, drop_axis=drop_axis,
-                       norm=norm, exclusion=exclusion, groupings=groupings,
-                       reduced=reduced, n_batches=n_batches, verbose=verbose,
-                       **kwargs)
-        ParallelAnalysisBase.__init__(self, ag1.universe.trajectory,
-                                      verbose=verbose, **kwargs)
-
-    def _single_frame_parallel(self, frame: int, index: int) -> np.ndarray[float]:
-
-        _ts = self._trajectory[frame]
-        result = np.empty(1 + self._n_bins)
-
-        dims = _ts.dimensions
-        pos1 = (self.ag1.positions if self._groupings[0] == "atoms" \
-                else center_of_mass(self.ag1, self._groupings[0]))
-        pos2 = (self.ag2.positions if self._groupings[1] == "atoms"
-                else center_of_mass(self.ag2, self._groupings[1]))
-
-        # Apply corrections to avoid including periodic images in the
-        # dimension to exclude
-        pos1[:, self._drop_axis] = pos2[:, self._drop_axis] = 0
-        dims[self._drop_axis] = dims[:3].max()
-
-        # Compute radial histogram for a single frame
-        if self._n_batches:
-            edges = np.array_split(self.results.edges, self._n_batches)
-            ranges_indices = {
-                e: np.where((self.results.bins > e[0])
-                            & (self.results.bins < e[1]))[0]
-                for e in [(self._range[0], edges[0][-1]),
-                          *((a[-1], b[-1])
-                            for a, b in zip(edges[:-1], edges[1:]))]
-            }
-
-            for r, i in ranges_indices.items():
-                result[i] = radial_histogram(
-                    pos1=pos1, pos2=pos2, n_bins=i.shape[0], range=r,
-                    dims=dims, exclusion=self._exclusion
-                )
-        else:
-            result[:self._n_bins] = radial_histogram(
-                pos1=pos1, pos2=pos2, n_bins=self._n_bins, range=self._range,
-                dims=dims, exclusion=self._exclusion
-            )
-
-        # Store area analyzed in the current frame in the last slot of
-        # the results array
-        result[self._n_bins] = np.delete(dims[:3], self._drop_axis).prod()
-
-        return result
-
-    def _conclude(self):
-
-        # Tally counts in each pair separation distance bin over all
-        # frames
-        self._results = np.vstack(self._results).sum(axis=0)
-        self.results.counts[:] = self._results[:self._n_bins]
-        self._area = self._results[self._n_bins]
-
-        # Compute the normalization factor
-        norm = self.n_frames
-        if self._norm is not None:
-            norm *= np.pi * np.diff(self.results.edges ** 2)
-            if self._norm == "rdf":
-                _N2 = getattr(self.ag2, f"n_{self._groupings[1]}")
-                if self._exclusion:
-                    _N2 -= self._exclusion[1]
-                norm *= (getattr(self.ag1, f"n_{self._groupings[0]}") * _N2
-                         * self.n_frames / self._area)
-
-        # Compute and store the radial distribution function, the single
-        # particle density, or the raw radial pair counts
-        self.results.rdf = self.results.counts / norm
 
 class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 

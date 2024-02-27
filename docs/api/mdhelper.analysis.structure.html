@@ -219,10 +219,9 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.calculate_structure_factor.html">calculate_structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.zeroth_order_hankel_transform.html">zeroth_order_hankel_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF2D.html">ParallelRDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -418,6 +417,9 @@ electrolyte systems.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html#mdhelper.analysis.structure.radial_histogram" title="mdhelper.analysis.structure.radial_histogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radial_histogram</span></code></a></p></td>
 <td><p>Calculates the radial histogram of distances between particles of the same type or two different types.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.analysis.structure.zeroth_order_hankel_transform.html#mdhelper.analysis.structure.zeroth_order_hankel_transform" title="mdhelper.analysis.structure.zeroth_order_hankel_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zeroth_order_hankel_transform</span></code></a></p></td>
+<td><p>Computes the zeroth-order Hankel transform <span class="math notranslate nohighlight">\(F_0(q)\)</span> of discrete data <span class="math notranslate nohighlight">\(f(r)\)</span> using the zeroth-order Bessel function <span class="math notranslate nohighlight">\(J_0\)</span>.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -428,14 +430,8 @@ electrolyte systems.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction" title="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IncoherentIntermediateScatteringFunction</span></code></a></p></td>
 <td><p>Serial and parallel implementations to calculate the incoherent (or self) intermediate scattering function <span class="math notranslate nohighlight">\(F_\mathrm{s}(q,\,t)\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF2D.html#mdhelper.analysis.structure.ParallelRDF2D" title="mdhelper.analysis.structure.ParallelRDF2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelRDF2D</span></code></a></p></td>
-<td><p>A multithreaded implementation to calculate the two-dimensional radial distribution function (RDF) <span class="math notranslate nohighlight">\(g_{ij}(r)\)</span> between types <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> and its related properties.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF" title="mdhelper.analysis.structure.RDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RDF</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF" title="mdhelper.analysis.structure.RDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RDF</span></code></a></p></td>
 <td><p>Serial and parallel implementations to calculate the radial distribution function (RDF) <span class="math notranslate nohighlight">\(g_{ij}(r)\)</span> between types <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> and its related properties.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.analysis.structure.RDF2D.html#mdhelper.analysis.structure.RDF2D" title="mdhelper.analysis.structure.RDF2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RDF2D</span></code></a></p></td>
-<td><p>A serial implementation to calculate the two-dimensional radial distribution function (RDF) <span class="math notranslate nohighlight">\(g_{ij}(r)\)</span> between types <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> and its related properties.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html#mdhelper.analysis.structure.StructureFactor" title="mdhelper.analysis.structure.StructureFactor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StructureFactor</span></code></a></p></td>
 <td><p>Serial and parallel implementations to calculate the static structure factor <span class="math notranslate nohighlight">\(S(q)\)</span> or partial structure factor <span class="math notranslate nohighlight">\(S_{\alpha\beta}(q)\)</span> for species <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span>.</p></td>
