@@ -31,7 +31,6 @@ polymer
       :nosignatures:
    
       Gyradius
-      ParallelSingleChainStructureFactor
       Relaxation
       SingleChainStructureFactor
    

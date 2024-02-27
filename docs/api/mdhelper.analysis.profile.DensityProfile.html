@@ -205,7 +205,6 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.ParallelSingleChainStructureFactor.html">ParallelSingleChainStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
@@ -221,10 +220,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF2D.html">ParallelRDF2D</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
@@ -514,7 +510,7 @@ is not specified, the center of the simulation box is used.</p>
 <p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((3,)\)</span> for the fixed center of mass.</p>
 </dd>
 <dt><strong>reduced</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Specifies whether the data is in reduced units. Affects
-<cite>results.number_density</cite>, <cite>results.charge_density</cite>, etc.</p>
+<cite>results.number_densities</cite>, <cite>results.charge_densities</cite>, etc.</p>
 </dd>
 <dt><strong>verbose</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether detailed progress is shown.</p>
 </dd>
@@ -542,17 +538,17 @@ dimension.</p>
 <span class="math notranslate nohighlight">\((N_\mathrm{bins},)\)</span> arrays.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å}\)</span>.</p>
 </dd>
-<dt><strong>results.number_density</strong><span class="classifier"><cite>list</cite></span></dt><dd><p>Number density profiles.</p>
+<dt><strong>results.number_densities</strong><span class="classifier"><cite>list</cite></span></dt><dd><p>Number density profiles.</p>
 <p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_\mathrm{axes},)\)</span> list of
 <span class="math notranslate nohighlight">\((N_\mathrm{bins},)\)</span> arrays.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å}^{-3}\)</span>.</p>
 </dd>
-<dt><strong>results.charge_density</strong><span class="classifier"><cite>list</cite></span></dt><dd><p>Charge density profiles, if charge information is available.</p>
+<dt><strong>results.charge_densities</strong><span class="classifier"><cite>list</cite></span></dt><dd><p>Charge density profiles, if charge information is available.</p>
 <p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_\mathrm{axes},)\)</span> list of
 <span class="math notranslate nohighlight">\((N_\mathrm{bins},)\)</span> arrays.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{e/Å}^{-3}\)</span>.</p>
 </dd>
-<dt><strong>results.potential</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Potential profiles, if charge information is available, with
+<dt><strong>results.potentials</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Potential profiles, if charge information is available, with
 the key being the axis index (e.g., <code class="code docutils literal notranslate"><span class="pre">1</span></code> for the <span class="math notranslate nohighlight">\(z\)</span>-
 direction if <code class="code docutils literal notranslate"><span class="pre">axes=&quot;yz&quot;</span></code>). Only available after running
 <a class="reference internal" href="mdhelper.analysis.profile.calculate_potential_profile.html#mdhelper.analysis.profile.calculate_potential_profile" title="mdhelper.analysis.profile.calculate_potential_profile"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calculate_potential_profile()</span></code></a>.</p>

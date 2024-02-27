@@ -159,8 +159,8 @@ class _PolymerAnalysisBase(SerialAnalysisBase):
 
     results.units : `dict`
         Reference units for the results. For example, to get the
-        reference units for :code:`results.time`, call
-        :code:`results.units["results.time"]`.
+        reference units for :code:`results.times`, call
+        :code:`results.units["results.times"]`.
 
     Notes
     -----
@@ -305,10 +305,10 @@ class Gyradius(_PolymerAnalysisBase):
 
     results.units : `dict`
         Reference units for the results. For example, to get the
-        reference units for :code:`results.time`, call
-        :code:`results.units["results.time"]`.
+        reference units for :code:`results.gyradii`, call
+        :code:`results.units["results.gyradii"]`.
 
-    results.gyradius : `numpy.ndarray`
+    results.gyradii : `numpy.ndarray`
         Radii of gyration for the :math:`N_\textrm{g}` groups over
         :math:`N_t` trajectory frames.
 
@@ -362,10 +362,10 @@ class Gyradius(_PolymerAnalysisBase):
         # Preallocate arrays to store results
         shape = ((self._n_groups, self.n_frames, 3) if self._components
                  else (self._n_groups, self.n_frames))
-        self.results.gyradius = np.empty(shape)
+        self.results.gyradii = np.empty(shape)
 
         # Store reference units
-        self.results.units = {"results.gyradius": ureg.angstrom}
+        self.results.units = {"results.gyradii": ureg.angstrom}
 
     def _single_frame(self) -> None:
 
@@ -374,8 +374,7 @@ class Gyradius(_PolymerAnalysisBase):
                     self._n_monomers)):
 
             # Store atom or center-of-mass positions in the current frame
-            positions = (g.positions if gr == "atoms"
-                         else center_of_mass(g, gr))
+            positions = g.positions if gr == "atoms" else center_of_mass(g, gr)
 
             # Unwrap particle positions if necessary
             if self._unwrap:
@@ -388,7 +387,7 @@ class Gyradius(_PolymerAnalysisBase):
                 )
 
             # Calculate radius of gyration
-            self.results.gyradius[i, self._frame_index] \
+            self.results.gyradii[i, self._frame_index] \
                 = radius_of_gyration(
                     grouping="segments",
                     positions=positions.reshape((M, N_p, 3)),
@@ -494,10 +493,10 @@ class Relaxation(_PolymerAnalysisBase):
 
     results.units : `dict`
         Reference units for the results. For example, to get the
-        reference units for :code:`results.time`, call
-        :code:`results.units["results.time"]`.
+        reference units for :code:`results.times`, call
+        :code:`results.units["results.times"]`.
 
-    results.time : `numpy.ndarray`
+    results.times : `numpy.ndarray`
         Changes in time :math:`t-t_0`.
 
         **Shape**: :math:`(N_t,)`.
@@ -512,7 +511,7 @@ class Relaxation(_PolymerAnalysisBase):
         **Shape**:
         :math:`(N_\textrm{g},\,N_\textrm{b},\,N_t)`.
 
-    results.relaxation_time : `numpy.ndarray`
+    results.relaxation_times : `numpy.ndarray`
         Average orientational relaxation times for the
         :math:`N_\textrm{g}` groups over :math:`N_t` trajectory frames
         split into :math:`N_\textrm{b}` blocks.
@@ -583,8 +582,8 @@ class Relaxation(_PolymerAnalysisBase):
             self._thresholds = self._dimensions / 2
 
         # Preallocate arrays to store results
-        self.results.time = self.step * self._dt * np.arange(self._n_frames //
-                                                             self._n_blocks)
+        self.results.times = self.step * self._dt * np.arange(self._n_frames //
+                                                              self._n_blocks)
         self.results.acf = np.empty(
             (self._n_groups, self._n_blocks, self._n_frames_block)
         )
@@ -631,23 +630,23 @@ class Relaxation(_PolymerAnalysisBase):
                     "Relaxation.calculate_relaxation_time().")
             raise RuntimeError(emsg)
 
-        self.results.relaxation_time = np.empty(
+        self.results.relaxation_times = np.empty(
             (self._n_groups, self._n_blocks)
         )
-        self.results.units["results.relaxation_time"] = ureg.picosecond
+        self.results.units["results.relaxation_times"] = ureg.picosecond
 
         for i, g in enumerate(self.results.acf):
             for j, acf in enumerate(g):
                 valid = np.where(acf >= 0)[0]
-                self.results.relaxation_time[i, j] = calculate_relaxation_time(
-                    self.results.time[valid], acf[valid]
+                self.results.relaxation_times[i, j] = calculate_relaxation_time(
+                    self.results.times[valid], acf[valid]
                 )
 
-class SingleChainStructureFactor(SerialAnalysisBase):
+class SingleChainStructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
     r"""
-    A serial implementation to calculate the single-chain structure
-    factor :math:`S_\mathrm{sc}(q)` of a homopolymer.
+    Serial and parallel implementations to calculate the single-chain
+    structure factor :math:`S_\mathrm{sc}(q)` of a homopolymer.
 
     It is defined as
 
@@ -718,6 +717,9 @@ class SingleChainStructureFactor(SerialAnalysisBase):
     unwrap : `bool`, keyword-only, default: :code:`False`
         Determines whether atom positions are unwrapped.
 
+    parallel : `bool`, keyword-only, default: :code:`False`
+        Determines whether the analysis is run in parallel.
+
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
 
@@ -733,8 +735,8 @@ class SingleChainStructureFactor(SerialAnalysisBase):
 
     results.units : `dict`
         Reference units for the results. For example, to get the
-        reference units for :code:`results.time`, call
-        :code:`results.units["results.time"]`.
+        reference units for :code:`results.wavenumbers`, call
+        :code:`results.units["results.wavenumbers"]`.
 
     results.wavenumbers : `numpy.ndarray`
         Unique wavenumbers.
@@ -762,11 +764,16 @@ class SingleChainStructureFactor(SerialAnalysisBase):
             self, group: mda.AtomGroup, grouping: str = "atoms",
             n_points: int = 32, *, n_chains: int = None, n_monomers: int = None,
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
-            unwrap: bool = False, verbose: bool = True, **kwargs):
+            unwrap: bool = False, parallel: bool = False, verbose: bool = True,
+            **kwargs) -> None:
 
         self._group = group
         self.universe = group.universe
-        super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
+
+        self._parallel = parallel
+        (ParallelAnalysisBase if parallel else SerialAnalysisBase).__init__(
+            self, self.universe.trajectory, verbose=verbose, **kwargs
+        )
 
         self.results.units = {"_dimensions": ureg.angstrom}
 
@@ -831,8 +838,43 @@ class SingleChainStructureFactor(SerialAnalysisBase):
         self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
         self.results.units["results.wavenumbers"] = ureg.angstrom ** -1
 
+        # Store (unwrapped) particle positions in a shared memory array
+        if self._parallel:
+            self._positions = np.empty(
+                (self.n_frames, self._n_chains * self._n_monomers, 3)
+            )
+
+            # Store particle positions in a shared memory array
+            for i, _ in enumerate(self.universe.trajectory[
+                    list(self._sliced_trajectory.frames)
+                    if hasattr(self._sliced_trajectory, "frames")
+                    else slice(self.start, self.stop, self.step)
+                ]):
+
+                # Store atom or center-of-mass positions in the current frame
+                self._positions[i] = (
+                    self._group.positions if self._grouping == "atoms"
+                    else center_of_mass(self._group, self._grouping)
+                )
+
+                # Unwrap particle positions if necessary
+                if self._unwrap:
+                    unwrap(
+                        self._positions[i],
+                        self._positions_old,
+                        self._dimensions,
+                        thresholds=self._thresholds,
+                        images=self._images
+                    )
+
+                # Clean up memory
+                del self._positions_old
+                del self._thresholds
+                del self._images
+
         # Preallocate arrays to store results
-        self.results.scsf = np.zeros(len(self._wavevectors))
+        else:
+            self.results.scsf = np.zeros(len(self._wavevectors))
 
     def _single_frame(self) -> None:
 
@@ -856,7 +898,22 @@ class SingleChainStructureFactor(SerialAnalysisBase):
             self.results.scsf += (np.sin(arg).sum(axis=0) ** 2
                                   + np.cos(arg).sum(axis=0) ** 2)
 
+    def _single_frame_parallel(self, frame: int, index: int) -> np.ndarray[float]:
+
+        # Compute the single-chain structure factor by squaring the
+        # cosine and sine terms and adding them together
+        scsf = np.zeros(len(self._wavevectors), dtype=float)
+        for chain in self._positions[index].reshape((self._n_chains, -1, 3)):
+            arg = np.einsum("ij,kj->ki", self._wavevectors, chain)
+            scsf += np.sin(arg).sum(axis=0) ** 2 + np.cos(arg).sum(axis=0) ** 2
+        return scsf
+
     def _conclude(self) -> None:
+
+        # Tally single-chain structure factor for each wavevector over
+        # all frames and normalize by the number of particles and timesteps
+        if self._parallel:
+            self.results.scsf = np.vstack(self._results).sum(axis=0)
 
         # Normalize the single-chain structure factor by
         # dividing by the total number of monomers and timesteps
@@ -871,103 +928,44 @@ class SingleChainStructureFactor(SerialAnalysisBase):
             count=len(self.results.wavenumbers)
         )
 
-class ParallelSingleChainStructureFactor(
-        SingleChainStructureFactor, ParallelAnalysisBase):
+    def run(
+            self, start: int = None, stop: int = None, step: int = None,
+            frames: Union[slice, np.ndarray[int]] = None,
+            verbose: bool = None, **kwargs
+        ) -> Union[SerialAnalysisBase, ParallelAnalysisBase]:
 
-    r"""
-    A multithreaded implementation to calculate the single-chain
-    structure factor :math:`S_\mathrm{sc}(q)` of a homopolymer.
+        """
+        Perform the calculation.
 
-    .. note::
+        Parameters
+        ----------
+        start : `int`, optional
+            Starting frame for analysis.
+        
+        stop : `int`, optional
+            Ending frame for analysis.
 
-       For a theoretical background and a complete list of parameters,
-       attributes, and available methods, see
-       :class:`SingleChainStructureFactor`.
-    """
+        step : `int`, optional
+            Number of frames to skip between each analyzed frame.
 
-    def __init__(
-            self, group: mda.AtomGroup, grouping: str = "atoms",
-            n_points: int = 32, *, n_chains: int = None, n_monomers: int = None,
-            dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
-            unwrap: bool = False, verbose: bool = True, **kwargs):
+        frames : `slice` or array-like, optional
+            Index or logical array of the desired trajectory frames.
 
-        SingleChainStructureFactor.__init__(
-            self, group, grouping, n_points, n_chains=n_chains,
-            n_monomers=n_monomers, dimensions=dimensions, unwrap=unwrap,
+        verbose : `bool`, optional
+            Determines whether detailed progress is shown.
+        
+        **kwargs
+            Additional keyword arguments to pass to
+            :class:`MDAnalysis.lib.log.ProgressBar`.
+
+        Returns
+        -------
+        self : `SerialAnalysisBase` or `ParallelAnalysisBase`
+            Analysis object with results.
+        """
+
+        return (ParallelAnalysisBase if self._parallel 
+                else SerialAnalysisBase).run(
+            self, start=start, stop=stop, step=step, frames=frames,
             verbose=verbose, **kwargs
-        )
-        ParallelAnalysisBase.__init__(self, self.universe.trajectory,
-                                      verbose=verbose, **kwargs)
-
-    def _prepare(self) -> None:
-
-        # Unwrap particle positions if necessary
-        self._positions = np.empty(
-            (self.n_frames, self._n_chains * self._n_monomers, 3)
-        )
-        if self._unwrap:
-            self.universe.trajectory[
-                self._sliced_trajectory.frames[0]
-                if hasattr(self._sliced_trajectory, "frames")
-                else (self.start or 0)
-            ]
-            positions_old = (
-                self._group.positions if self._grouping == "atoms"
-                else center_of_mass(self._group, self._grouping)
-            )
-            images = np.zeros(positions_old.shape, dtype=int)
-            threshold = self._dimensions / 2
-
-        # Store particle positions in a shared memory array
-        for i, _ in enumerate(self.universe.trajectory[
-                list(self._sliced_trajectory.frames)
-                if hasattr(self._sliced_trajectory, "frames")
-                else slice(self.start, self.stop, self.step)
-            ]):
-
-            # Store atom or center-of-mass positions in the current frame
-            self._positions[i] = (
-                self._group.positions if self._grouping == "atoms"
-                else center_of_mass(self._group, self._grouping)
-            )
-
-            # Unwrap particle positions if necessary
-            if self._unwrap:
-                unwrap(
-                    self._positions[i],
-                    positions_old,
-                    self._dimensions,
-                    thresholds=threshold,
-                    images=images
-                )
-
-        # Determine the unique wavenumbers
-        self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
-
-    def _single_frame(self, frame: int, index: int) -> np.ndarray[float]:
-
-        # Compute the single-chain structure factor by squaring the
-        # cosine and sine terms and adding them together
-        scsf = np.zeros(len(self._wavevectors), dtype=float)
-        for chain in self._positions[index].reshape((self._n_chains, -1, 3)):
-            arg = np.einsum("ij,kj->ki", self._wavevectors, chain)
-            scsf += np.sin(arg).sum(axis=0) ** 2 + np.cos(arg).sum(axis=0) ** 2
-        return scsf
-
-    def _conclude(self) -> None:
-
-        # Tally single-chain structure factor for each wavevector over
-        # all frames and normalize by the number of particles and timesteps
-        self.results.scsf = (
-            np.vstack(self._results).sum(axis=0) 
-            / (self._n_chains * self._n_monomers * self.n_frames)
-        )
-
-        # Flatten the array by combining values sharing the same
-        # wavevector magnitude
-        self.results.scsf = np.fromiter(
-            (self.results.scsf[np.isclose(q, self._wavenumbers)].mean()
-             for q in self.results.wavenumbers),
-            dtype=float,
-            count=len(self.results.wavenumbers)
         )

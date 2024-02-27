@@ -32,10 +32,7 @@ structure
       :nosignatures:
    
       IncoherentIntermediateScatteringFunction
-      ParallelIncoherentIntermediateScatteringFunction
-      ParallelRDF
       ParallelRDF2D
-      ParallelStructureFactor
       RDF
       RDF2D
       StructureFactor

@@ -67,11 +67,10 @@ def test_class_rdf_residue60_water():
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
     # TEST CASE 2: Batched parallel RDF calculation
-    parallel_rdf = structure.ParallelRDF(res60, water, n_bins=n_bins, n_batches=2).run()
+    parallel_rdf = structure.RDF(res60, water, n_bins=n_bins, n_batches=2, 
+                                 parallel=True).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)
-
-test_class_rdf_residue60_water()
 
 def test_class_rdf_residue60_exclusion_self():
 
@@ -84,8 +83,8 @@ def test_class_rdf_residue60_exclusion_self():
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
     # TEST CASE 2: Parallel RDF calculation
-    parallel_rdf = structure.ParallelRDF(res60, n_bins=n_bins,
-                                         exclusion=exclusion).run()
+    parallel_rdf = structure.RDF(res60, n_bins=n_bins, exclusion=exclusion, 
+                                 parallel=True).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)
 
@@ -100,8 +99,8 @@ def test_class_rdf_threonine_exclusion_self():
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
     # TEST CASE 2: Parallel RDF calculation
-    parallel_rdf = structure.ParallelRDF(thr, n_bins=n_bins,
-                                         exclusion=exclusion).run()
+    parallel_rdf = structure.RDF(thr, n_bins=n_bins, exclusion=exclusion, 
+                                 parallel=True).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)
 
@@ -116,7 +115,7 @@ def test_class_rdf_threonine_exclusion_carbon():
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
     # TEST CASE 2: Parallel RDF calculation
-    parallel_rdf = structure.ParallelRDF(thr, n_bins=n_bins,
-                                         exclusion=exclusion).run()
+    parallel_rdf = structure.RDF(thr, n_bins=n_bins, exclusion=exclusion, 
+                                 parallel=True).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)

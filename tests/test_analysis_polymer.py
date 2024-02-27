@@ -34,8 +34,8 @@ def test_class_gyradius():
     gyradius = polymer.Gyradius(protein, grouping="residues").run()
 
     # TEST CASE 1: Time series of overall radii of gyration
-    assert np.allclose(rog.results["timeseries"][:, 0], gyradius.results.gyradius[0])
+    assert np.allclose(rog.results["timeseries"][:, 0], gyradius.results.gyradii[0])
 
     # TEST CASE 2: Time series of radius of gyration components
     gyradius = polymer.Gyradius(protein, grouping="residues", components=True).run()
-    assert np.allclose(rog.results["timeseries"][:, 1:], gyradius.results.gyradius[0])
+    assert np.allclose(rog.results["timeseries"][:, 1:], gyradius.results.gyradii[0])

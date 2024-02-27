@@ -30,7 +30,7 @@ def test_class_density_profile():
             np.allclose(
                 0.602214076 * getattr(density.results, axis).mass_density
                 / universe.residues.masses[0],
-                density_profile.results["number_density"][i]
+                density_profile.results.number_densities[i]
             )
         )
 
@@ -38,6 +38,6 @@ def test_class_density_profile():
         assert(
             np.allclose(
                 0.602214076 * getattr(density.results, axis).charge_density,
-                density_profile.results["charge_density"][i]
+                density_profile.results.charge_densities[i]
             )
         )

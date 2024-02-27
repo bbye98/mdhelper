@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="SingleChainStructureFactor" href="mdhelper.analysis.polymer.SingleChainStructureFactor.html" /><link rel="prev" title="ParallelSingleChainStructureFactor" href="mdhelper.analysis.polymer.ParallelSingleChainStructureFactor.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="SingleChainStructureFactor" href="mdhelper.analysis.polymer.SingleChainStructureFactor.html" /><link rel="prev" title="Gyradius" href="mdhelper.analysis.polymer.Gyradius.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>Relaxation - MDHelper 1.0.0 documentation</title>
@@ -205,7 +205,6 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.ParallelSingleChainStructureFactor.html">ParallelSingleChainStructureFactor</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
@@ -221,10 +220,7 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelRDF2D.html">ParallelRDF2D</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF.html">RDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
@@ -494,10 +490,10 @@ information, provide the number of chains and chain lengths in
 information describing the system.</p>
 </dd>
 <dt><strong>results.units</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Reference units for the results. For example, to get the
-reference units for <code class="code docutils literal notranslate"><span class="pre">results.time</span></code>, call
-<code class="code docutils literal notranslate"><span class="pre">results.units[&quot;results.time&quot;]</span></code>.</p>
+reference units for <code class="code docutils literal notranslate"><span class="pre">results.times</span></code>, call
+<code class="code docutils literal notranslate"><span class="pre">results.units[&quot;results.times&quot;]</span></code>.</p>
 </dd>
-<dt><strong>results.time</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Changes in time <span class="math notranslate nohighlight">\(t-t_0\)</span>.</p>
+<dt><strong>results.times</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Changes in time <span class="math notranslate nohighlight">\(t-t_0\)</span>.</p>
 <p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_t,)\)</span>.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\textrm{ps}\)</span>.</p>
 </dd>
@@ -507,7 +503,7 @@ each.</p>
 <p><strong>Shape</strong>:
 <span class="math notranslate nohighlight">\((N_\textrm{g},\,N_\textrm{b},\,N_t)\)</span>.</p>
 </dd>
-<dt><strong>results.relaxation_time</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Average orientational relaxation times for the
+<dt><strong>results.relaxation_times</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Average orientational relaxation times for the
 <span class="math notranslate nohighlight">\(N_\textrm{g}\)</span> groups over <span class="math notranslate nohighlight">\(N_t\)</span> trajectory frames
 split into <span class="math notranslate nohighlight">\(N_\textrm{b}\)</span> blocks.</p>
 </dd>
@@ -613,14 +609,14 @@ depending on the values of <cite>archive</cite> and <cite>compress</cite>.</p>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="mdhelper.analysis.polymer.ParallelSingleChainStructureFactor.html">
+          <a class="prev-page" href="mdhelper.analysis.polymer.Gyradius.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">ParallelSingleChainStructureFactor</div>
+                <div class="title">Gyradius</div>
                 
               </div>
             </a>

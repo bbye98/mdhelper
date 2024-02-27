@@ -301,7 +301,7 @@ class DensityProfile(SerialAnalysisBase):
 
     reduced : `bool`, keyword-only, default: :code:`False`
         Specifies whether the data is in reduced units. Affects
-        `results.number_density`, `results.charge_density`, etc.
+        `results.number_densities`, `results.charge_densities`, etc.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -337,7 +337,7 @@ class DensityProfile(SerialAnalysisBase):
 
         **Reference unit**: :math:`\mathrm{Å}`.
 
-    results.number_density : `list`
+    results.number_densities : `list`
         Number density profiles.
 
         **Shape**: :math:`(N_\mathrm{axes},)` list of
@@ -345,7 +345,7 @@ class DensityProfile(SerialAnalysisBase):
 
         **Reference unit**: :math:`\mathrm{Å}^{-3}`.
 
-    results.charge_density : `list`
+    results.charge_densities : `list`
         Charge density profiles, if charge information is available.
 
         **Shape**: :math:`(N_\mathrm{axes},)` list of
@@ -353,7 +353,7 @@ class DensityProfile(SerialAnalysisBase):
 
         **Reference unit**: :math:`\mathrm{e/Å}^{-3}`.
 
-    results.potential : `dict`
+    results.potentials : `dict`
         Potential profiles, if charge information is available, with
         the key being the axis index (e.g., :code:`1` for the :math:`z`-
         direction if :code:`axes="yz"`). Only available after running
@@ -515,11 +515,11 @@ class DensityProfile(SerialAnalysisBase):
 
         # Preallocate arrays to hold number density data
         if self._average:
-            self.results.number_density = [np.zeros((self._n_groups, n))
-                                           for n in self._n_bins]
+            self.results.number_densities = [np.zeros((self._n_groups, n))
+                                             for n in self._n_bins]
         else:
-            self.results.time = self.step * self._dt * np.arange(self.n_frames)
-            self.results.number_density = [
+            self.results.times = self.step * self._dt * np.arange(self.n_frames)
+            self.results.number_densities = [
                 np.zeros((self._n_groups, self.n_frames, n))
                 for n in self._n_bins
             ]
@@ -527,19 +527,19 @@ class DensityProfile(SerialAnalysisBase):
         # Store reference units
         if not self._reduced:
             self.results.units["results.bins"] = ureg.angstrom
-            self.results.units["results.number_density"] = \
+            self.results.units["results.number_densities"] = \
                 self.results.units["results.bins"] ** -3
 
         # Preallocate arrays to hold charge density data, if charge
         # information is available
         if self._charges is not None:
-            self.results.charge_density = [
-                np.zeros_like(arr) for arr in self.results.number_density
+            self.results.charge_densities = [
+                np.zeros_like(arr) for arr in self.results.number_densities
             ]
             if not self._reduced:
-                self.results.units["results.charge_density"] = (
+                self.results.units["results.charge_densities"] = (
                     self.results.units["_charges"]
-                    * self.results.units["results.number_density"]
+                    * self.results.units["results.number_densities"]
                 )
 
     def _single_frame(self):
@@ -591,11 +591,11 @@ class DensityProfile(SerialAnalysisBase):
 
                 # Compute and tally the bin counts for the current positions
                 if self._average:
-                    self.results.number_density[a][i] += np.histogram(
+                    self.results.number_densities[a][i] += np.histogram(
                         pos_group[:, axis], n_bins, (0, self._dimensions[axis])
                     )[0]
                 else:
-                    self.results.number_density[a][i, self._frame_index] \
+                    self.results.number_densities[a][i, self._frame_index] \
                         = np.histogram(
                             pos_group[:, axis],
                             n_bins,
@@ -614,14 +614,14 @@ class DensityProfile(SerialAnalysisBase):
             denom = self._n_bins[a] / V
             if self._average:
                 denom /= self.n_frames
-            self.results.number_density[a] *= denom
+            self.results.number_densities[a] *= denom
 
             # Compute the charge density profiles
             if self._charges is not None:
-                self.results.charge_density[a] = np.einsum(
+                self.results.charge_densities[a] = np.einsum(
                     "g,g...b->...b",
                     self._charges,
-                    self.results.number_density[a]
+                    self.results.number_densities[a]
                 )
 
     def calculate_potential_profile(
@@ -690,17 +690,17 @@ class DensityProfile(SerialAnalysisBase):
             **Reference unit**: :math:`\\mathrm{V}`.
         """
 
-        if not hasattr(self.results, "charge_density"):
+        if not hasattr(self.results, "charge_densities"):
             emsg = ("Either call run() before calculate_potential_profile() "
                     "or provide charge information when initializing the "
                     "DensityProfile object.")
             raise RuntimeError(emsg)
 
-        if not hasattr(self.results, "potential"):
-            self.results.potential = {}
+        if not hasattr(self.results, "potentials"):
+            self.results.potentials = {}
 
             # Store reference units
-            self.results.units["results.potential"] = ureg.volt
+            self.results.units["results.potentials"] = ureg.volt
 
         if isinstance(axis, str):
             axis = ord(axis.lower()) - 120
@@ -724,10 +724,10 @@ class DensityProfile(SerialAnalysisBase):
                 emsg = "'V0' cannot have units when reduced=True."
                 raise ValueError(emsg)
 
-        charge_density = self.results.charge_density[index]
+        charge_density = self.results.charge_densities[index]
         if charge_density.ndim == 3:
             charge_density = charge_density.mean(axis=1)
-        self.results.potential[index] = calculate_potential_profile(
+        self.results.potentials[index] = calculate_potential_profile(
             self.results.bins[index],
             charge_density,
             self._dimensions[axis],

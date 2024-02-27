@@ -220,7 +220,7 @@ def radial_fourier_transform(
 def calculate_structure_factor(
         r: np.ndarray[float], g: np.ndarray[float], equal: bool, rho: float,
         x_i: float = 1, x_j: float = None, q: np.ndarray[float] = None, *,
-        q_lower: float = None, q_upper: float = None, n_q: int = 1000,
+        q_lower: float = None, q_upper: float = None, n_q: int = 1_000,
         formalism: str = "FZ") -> tuple[np.ndarray[float], np.ndarray[float]]:
 
     r"""
@@ -276,7 +276,7 @@ def calculate_structure_factor(
 
         **Reference unit**: :math:`\mathrm{Å}^{-1}`.
 
-    n_q : `int`, keyword-only, default: :code:`1000`
+    n_q : `int`, keyword-only, default: :code:`1_000`
         Number of wavenumbers :math:`q` to generate. Has no effect if `q`
         is specified.
 
@@ -352,12 +352,12 @@ def calculate_structure_factor(
             return q, 1 + x_i * x_j * rho_sft
     raise ValueError("Invalid formalism.")
 
-class RDF(SerialAnalysisBase):
+class RDF(ParallelAnalysisBase, SerialAnalysisBase):
 
     r"""
-    A serial implementation to calculate the radial distribution
-    function (RDF) :math:`g_{ij}(r)` between types :math:`i` and
-    :math:`j` and its related properties.
+    Serial and parallel implementations to calculate the radial 
+    distribution function (RDF) :math:`g_{ij}(r)` between types 
+    :math:`i` and :math:`j` and its related properties.
 
     It is given by
 
@@ -487,6 +487,9 @@ class RDF(SerialAnalysisBase):
            long trajectory with many particles, the difference should
            be negligible.
 
+    parallel : `bool`, keyword-only, default: :code:`False`
+        Determines whether the calculation is run in parallel.
+
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
 
@@ -568,8 +571,8 @@ class RDF(SerialAnalysisBase):
             n_bins: int = 201, range: tuple[float] = (0.0, 15.0), *,
             norm: str = "rdf", exclusion: tuple[int] = None,
             groupings: Union[str, tuple[str]] = "atoms",
-            reduced: bool = False, n_batches: int = None,
-            verbose: bool = True, **kwargs) -> None:
+            reduced: bool = False, n_batches: int = None, 
+            parallel: bool = False, verbose: bool = True, **kwargs) -> None:
 
         self.ag1 = ag1
         self.ag2 = ag1 if ag2 is None else ag2
@@ -577,7 +580,11 @@ class RDF(SerialAnalysisBase):
         if self.universe.dimensions is None and self._ts.dimensions is None:
             raise ValueError("Trajectory does not contain system "
                              "dimension information.")
-        super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
+        
+        self._parallel = parallel
+        (ParallelAnalysisBase if parallel else SerialAnalysisBase).__init__(
+            self, self.universe.trajectory, verbose=verbose, **kwargs
+        )
 
         if isinstance(groupings, str):
             if groupings not in {"atoms", "residues", "segments"}:
@@ -591,7 +598,8 @@ class RDF(SerialAnalysisBase):
                     emsg = (f"Invalid grouping '{g}'. The options are "
                             "'atoms', 'residues', and 'segments'.")
                     raise ValueError(emsg)
-            self._groupings = 2 * groupings if len(groupings) == 1 else groupings
+            self._groupings = (2 * groupings if len(groupings) == 1 
+                               else groupings)
 
         self._n_bins = n_bins
         self._range = range
@@ -603,7 +611,7 @@ class RDF(SerialAnalysisBase):
 
     def _prepare(self) -> None:
 
-        # Preallocate arrays to store neighbor counts
+        # Preallocate arrays to store results
         self.results.edges = np.linspace(*self._range, self._n_bins + 1)
         self.results.bins = (self.results.edges[:-1]
                              + self.results.edges[1:]) / 2
@@ -614,7 +622,7 @@ class RDF(SerialAnalysisBase):
         # Preallocate floating-point number for total volume analyzed
         # (for when system dimensions can change, such as during NpT
         # equilibration)
-        if self._norm == "rdf":
+        if not self._parallel and self._norm == "rdf":
             self._volume = 0.0
 
     def _single_frame(self) -> None:
@@ -656,7 +664,59 @@ class RDF(SerialAnalysisBase):
         if self._norm == "rdf":
             self._volume += self._ts.volume
 
+    def _single_frame_parallel(
+            self, frame: int, index: int) -> np.ndarray[float]:
+
+        _ts = self._trajectory[frame]
+        result = np.empty(1 + self._n_bins)
+
+        # Compute radial histogram for a single frame
+        if self._n_batches:
+            edges = np.array_split(self.results.edges, self._n_batches)
+            ranges_indices = {
+                e: np.where((self.results.bins > e[0])
+                            & (self.results.bins < e[1]))[0]
+                for e in [(self._range[0], edges[0][-1]),
+                          *((a[-1], b[-1])
+                            for a, b in zip(edges[:-1], edges[1:]))]
+            }
+            pos1 = (self.ag1.positions if self._groupings[0] == "atoms"
+                    else center_of_mass(self.ag1, self._groupings[0]))
+            pos2 = (self.ag2.positions if self._groupings[1] == "atoms"
+                    else center_of_mass(self.ag2, self._groupings[1]))
+            for r, i in ranges_indices.items():
+                result[i] = radial_histogram(pos1=pos1, pos2=pos2,
+                                             n_bins=i.shape[0],
+                                             range=r, dims=_ts.dimensions,
+                                             exclusion=self._exclusion)
+        else:
+            result[:self._n_bins] = radial_histogram(
+                pos1=self.ag1.positions
+                     if self._groupings[0] == "atoms"
+                     else center_of_mass(self.ag1, self._groupings[0]),
+                pos2=self.ag2.positions
+                     if self._groupings[1] == "atoms"
+                     else center_of_mass(self.ag2, self._groupings[1]),
+                n_bins=self._n_bins,
+                range=self._range,
+                dims=_ts.dimensions,
+                exclusion=self._exclusion
+            )
+
+        # Store system volume of current frame in the last slot of the
+        # results array
+        result[self._n_bins] = _ts.volume
+
+        return result
+
     def _conclude(self):
+
+        # Tally counts in each pair separation distance bin over all
+        # frames
+        if self._parallel:
+            self._results = np.vstack(self._results).sum(axis=0)
+            self.results.counts[:] = self._results[:self._n_bins]
+            self._volume = self._results[self._n_bins]
 
         # Compute the normalization factor
         norm = self.n_frames
@@ -672,6 +732,48 @@ class RDF(SerialAnalysisBase):
         # Compute and store the radial distribution function, the single
         # particle density, or the raw radial pair counts
         self.results.rdf = self.results.counts / norm
+
+    def run(
+            self, start: int = None, stop: int = None, step: int = None,
+            frames: Union[slice, np.ndarray[int]] = None,
+            verbose: bool = None, **kwargs
+        ) -> Union[SerialAnalysisBase, ParallelAnalysisBase]:
+
+        """
+        Perform the calculation.
+
+        Parameters
+        ----------
+        start : `int`, optional
+            Starting frame for analysis.
+        
+        stop : `int`, optional
+            Ending frame for analysis.
+
+        step : `int`, optional
+            Number of frames to skip between each analyzed frame.
+
+        frames : `slice` or array-like, optional
+            Index or logical array of the desired trajectory frames.
+
+        verbose : `bool`, optional
+            Determines whether detailed progress is shown.
+        
+        **kwargs
+            Additional keyword arguments to pass to
+            :class:`MDAnalysis.lib.log.ProgressBar`.
+
+        Returns
+        -------
+        self : `SerialAnalysisBase` or `ParallelAnalysisBase`
+            Analysis object with results.
+        """
+
+        return (ParallelAnalysisBase if self._parallel 
+                else SerialAnalysisBase).run(
+            self, start=start, stop=stop, step=step, frames=frames,
+            verbose=verbose, **kwargs
+        )
 
     def _get_rdf(self) -> np.ndarray[float]:
 
@@ -831,100 +933,6 @@ class RDF(SerialAnalysisBase):
             rho, x_i, x_j, q=q, q_lower=q_lower, q_upper=q_upper,
             n_q=n_q, formalism=formalism
         )
-
-class ParallelRDF(RDF, ParallelAnalysisBase):
-
-    """
-    A multithreaded implementation to calculate the radial distribution
-    function (RDF) :math:`g_{ij}(r)` between types :math:`i` and
-    :math:`j` and its related properties.
-
-    .. note::
-
-       For a theoretical background and a complete list of
-       parameters, attributes, and available methods, see :class:`RDF`.
-    """
-
-    def __init__(
-            self, ag1: mda.AtomGroup, ag2: mda.AtomGroup = None,
-            n_bins: int = 201, range: tuple[float] = (0.0, 15.0), *,
-            norm: str = "rdf", exclusion: tuple[int] = None,
-            groupings: Union[str, tuple[str]] = "atoms",
-            reduced: bool = False, n_batches: int = None,
-            verbose: bool = True, **kwargs) -> None:
-
-        RDF.__init__(self, ag1, ag2, n_bins, range, norm=norm,
-                     exclusion=exclusion, groupings=groupings, reduced=reduced,
-                     n_batches=n_batches, verbose=verbose, **kwargs)
-        ParallelAnalysisBase.__init__(self, ag1.universe.trajectory,
-                                      verbose=verbose, **kwargs)
-
-    def _single_frame(self, frame: int, index: int) -> np.ndarray[float]:
-
-        _ts = self._trajectory[frame]
-        result = np.empty(1 + self._n_bins)
-
-        # Compute radial histogram for a single frame
-        if self._n_batches:
-            edges = np.array_split(self.results.edges, self._n_batches)
-            ranges_indices = {
-                e: np.where((self.results.bins > e[0])
-                            & (self.results.bins < e[1]))[0]
-                for e in [(self._range[0], edges[0][-1]),
-                          *((a[-1], b[-1])
-                            for a, b in zip(edges[:-1], edges[1:]))]
-            }
-            pos1 = (self.ag1.positions if self._groupings[0] == "atoms"
-                    else center_of_mass(self.ag1, self._groupings[0]))
-            pos2 = (self.ag2.positions if self._groupings[1] == "atoms"
-                    else center_of_mass(self.ag2, self._groupings[1]))
-            for r, i in ranges_indices.items():
-                result[i] = radial_histogram(pos1=pos1, pos2=pos2,
-                                             n_bins=i.shape[0],
-                                             range=r, dims=_ts.dimensions,
-                                             exclusion=self._exclusion)
-        else:
-            result[:self._n_bins] = radial_histogram(
-                pos1=self.ag1.positions
-                     if self._groupings[0] == "atoms"
-                     else center_of_mass(self.ag1, self._groupings[0]),
-                pos2=self.ag2.positions
-                     if self._groupings[1] == "atoms"
-                     else center_of_mass(self.ag2, self._groupings[1]),
-                n_bins=self._n_bins,
-                range=self._range,
-                dims=_ts.dimensions,
-                exclusion=self._exclusion
-            )
-
-        # Store system volume of current frame in the last slot of the
-        # results array
-        result[self._n_bins] = _ts.volume
-
-        return result
-
-    def _conclude(self):
-
-        # Tally counts in each pair separation distance bin over all
-        # frames
-        self._results = np.vstack(self._results).sum(axis=0)
-        self.results.counts[:] = self._results[:self._n_bins]
-        self._volume = self._results[self._n_bins]
-
-        # Compute the normalization factor
-        norm = self.n_frames
-        if self._norm is not None:
-            norm *= 4 * np.pi * np.diff(self.results.edges ** 3) / 3
-            if self._norm == "rdf":
-                _N2 = getattr(self.ag2, f"n_{self._groupings[1]}")
-                if self._exclusion:
-                    _N2 -= self._exclusion[1]
-                norm *= (getattr(self.ag1, f"n_{self._groupings[0]}") * _N2
-                         * self.n_frames / self._volume)
-
-        # Compute and store the radial distribution function, the single
-        # particle density, or the raw radial pair counts
-        self.results.rdf = self.results.counts / norm
 
 class RDF2D(SerialAnalysisBase):
 
@@ -1339,7 +1347,7 @@ class ParallelRDF2D(RDF2D, ParallelAnalysisBase):
         ParallelAnalysisBase.__init__(self, ag1.universe.trajectory,
                                       verbose=verbose, **kwargs)
 
-    def _single_frame(self, frame: int, index: int) -> np.ndarray[float]:
+    def _single_frame_parallel(self, frame: int, index: int) -> np.ndarray[float]:
 
         _ts = self._trajectory[frame]
         result = np.empty(1 + self._n_bins)
@@ -1406,12 +1414,13 @@ class ParallelRDF2D(RDF2D, ParallelAnalysisBase):
         # particle density, or the raw radial pair counts
         self.results.rdf = self.results.counts / norm
 
-class StructureFactor(SerialAnalysisBase):
+class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
     r"""
-    A serial implementation to calculate the static structure factor
-    :math:`S(q)` or partial structure factor :math:`S_{\alpha\beta}(q)`
-    for species :math:`\alpha` and :math:`\beta`.
+    Serial and parallel implementations to calculate the static 
+    structure factor :math:`S(q)` or partial structure factor 
+    :math:`S_{\alpha\beta}(q)` for species :math:`\alpha` and 
+    :math:`\beta`.
 
     The static structure factor is a measure of how a material scatters
     incident radiation, and can be computed directly from a molecular
@@ -1467,6 +1476,15 @@ class StructureFactor(SerialAnalysisBase):
            * :code:`"segments"`: Segments' centers of mass (for
              atomistic polymer simulations).
 
+    dimensions : array-like, `openmm.unit.Quantity`, or \
+    `pint.Quantity`, keyword-only, optional
+        System dimensions. If not provided, they are retrieved from the
+        topology or trajectory.
+
+        **Shape**: :math:`(3,)`.
+
+        **Reference unit**: :math:`\\mathrm{Å}`.
+
     n_points : `int`, default: :code:`32`
         Number of points in the scattering wavevector grid. Additional
         wavevectors can be introduced via `n_surfaces` and
@@ -1506,6 +1524,9 @@ class StructureFactor(SerialAnalysisBase):
         into. This is useful for large systems that cannot be processed
         in a single pass.
 
+    parallel : `bool`, keyword-only, default: :code:`False`
+        Determines whether the calculation is run in parallel.
+
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
 
@@ -1544,13 +1565,29 @@ class StructureFactor(SerialAnalysisBase):
 
     def __init__(
             self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
-            groupings: Union[str, tuple[str]] = "atoms", n_points: int = 32,
-            mode: str = None, *, n_surfaces: int = None,
+            groupings: Union[str, tuple[str]] = "atoms", 
+            dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
+            n_points: int = 32, mode: str = None, *, n_surfaces: int = None,
             n_surface_points: int = 8, wavevectors: np.ndarray[float] = None,
-            n_batches: int = None, verbose: bool = True, **kwargs):
+            n_batches: int = None, parallel: bool = False, 
+            verbose: bool = True, **kwargs) -> None:
 
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
+
+        self._parallel = parallel
+        (ParallelAnalysisBase if parallel else SerialAnalysisBase).__init__(
+            self, self.universe.trajectory, verbose=verbose, **kwargs
+        )
+
+        if dimensions is not None:
+            if len(dimensions) != 3:
+                raise ValueError("'dimensions' must have length 3.")
+            self._dimensions = np.asarray(strip_unit(dimensions, "angstrom")[0])
+        elif self.universe.dimensions is not None:
+            self._dimensions = self.universe.dimensions[:3].copy()
+        else:
+            raise ValueError("No system dimensions found or provided.")
 
         self._mode = mode
         if self._mode == "pair" and not 1 <= len(self._groups) <= 2:
@@ -1561,9 +1598,6 @@ class StructureFactor(SerialAnalysisBase):
                 emsg = ("The provided atom groups do not contain all atoms "
                         "in the universe.")
                 raise ValueError(emsg)
-
-        super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
-        self._dims = self.universe.dimensions[:3].copy()
 
         self._n_groups = len(self._groups)
         if isinstance(groupings, str):
@@ -1598,14 +1632,13 @@ class StructureFactor(SerialAnalysisBase):
         # Determine the wavevectors and their corresponding magnitudes
         if wavevectors is not None:
             self._wavevectors = wavevectors
-        elif np.allclose(self._dims, self._dims[0]):
-            grid = 2 * np.pi * np.arange(n_points) / self._dims[0]
-            self._wavevectors = np.stack(
-                np.meshgrid(grid, grid, grid), -1
-            ).reshape(-1, 3)
+        elif np.allclose(self._dimensions, self._dimensions[0]):
+            grid = 2 * np.pi * np.arange(n_points) / self._dimensions[0]
+            self._wavevectors = (np.stack(np.meshgrid(grid, grid, grid), -1)
+                                 .reshape(-1, 3))
             if n_surfaces:
                 n_theta, n_phi = get_closest_factors(n_surface_points, 2,
-                                                         reverse=True)
+                                                     reverse=True)
                 theta = np.linspace(np.pi / (2 * n_theta + 4),
                                     np.pi / 2 - np.pi / (2 * n_theta + 4),
                                     n_theta)
@@ -1628,7 +1661,7 @@ class StructureFactor(SerialAnalysisBase):
             self._wavevectors = np.stack(
                 np.meshgrid(
                     *[2 * np.pi * np.arange(n_points) / L
-                      for L in self._dims]
+                      for L in self._dimensions]
                 ), -1
             ).reshape(-1, 3)
         self._wavenumbers = np.linalg.norm(self._wavevectors, axis=1)
@@ -1638,32 +1671,36 @@ class StructureFactor(SerialAnalysisBase):
 
     def _prepare(self) -> None:
 
-        # Determine the unique wavenumbers
-        self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
-
-        # Preallocate arrays to store results
-        self._positions = np.empty((self._N, 3))
-        if self._mode is None:
-            self.results.ssf = np.zeros(len(self._wavenumbers))
-        else:
+        # Determine all unique pairs
+        if self._mode is not None:
             self.results.pairs = tuple(
                 combinations_with_replacement(range(self._n_groups), 2)
             ) if self._mode == "partial" else ((0, self._n_groups - 1),)
+
+        if not self._parallel:
+
+            # Create a persisting array to hold atom positions for a 
+            # given frame so that it doesn't have to be recreated each
+            # frame
+            self._positions = np.empty((self._N, 3))
+
+            # Preallocate arrays to store results
             self.results.ssf = np.zeros(
-                (len(self.results.pairs), len(self._wavenumbers))
+                len(self._wavenumbers) if self._mode is None 
+                else (len(self.results.pairs), len(self._wavenumbers))
             )
 
-        # Create dictionary to hold reference units
-        self.results.units = {"_dims": ureg.angstrom,
-                              "results.wavenumbers": ureg.angstrom ** -1}
+        # Determine the unique wavenumbers
+        self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
+        self.results.units = {"results.wavenumbers": ureg.angstrom ** -1}
 
     def _single_frame(self) -> None:
 
         for g, gr, s in zip(self._groups, self._groupings, self._slices):
 
             # Store atom or center-of-mass positions in the current frame
-            self._positions[s] = g.positions if gr == "atoms" \
-                                 else center_of_mass(g, gr)
+            self._positions[s] = (g.positions if gr == "atoms"
+                                  else center_of_mass(g, gr))
 
         # Compute the structure factor by multiplying the cosine and
         # sine terms and adding them together
@@ -1673,15 +1710,15 @@ class StructureFactor(SerialAnalysisBase):
                 for w in np.array_split(self._wavevectors, self._n_batches,
                                         axis=0):
                     arg = np.einsum("wd,pd->pw", w, self._positions)
-                    self.results.ssf[start:start + w.shape[0]] += \
-                        np.sin(arg).sum(axis=0) ** 2 \
+                    self.results.ssf[start:start + w.shape[0]] += (
+                        np.sin(arg).sum(axis=0) ** 2
                         + np.cos(arg).sum(axis=0) ** 2
+                    )
                     start += w.shape[0]
             else:
-                arg = np.einsum("wd,pd->pw",
-                                self._wavevectors, self._positions)
-                self.results.ssf += np.sin(arg).sum(axis=0) ** 2 \
-                                    + np.cos(arg).sum(axis=0) ** 2
+                arg = np.einsum("wd,pd->pw", self._wavevectors, self._positions)
+                self.results.ssf += (np.sin(arg).sum(axis=0) ** 2
+                                     + np.cos(arg).sum(axis=0) ** 2)
         else:
             for i, (j, k) in enumerate(self.results.pairs):
                 if self._n_batches:
@@ -1691,9 +1728,10 @@ class StructureFactor(SerialAnalysisBase):
                         arg_j = np.einsum("wd,pd->pw", w,
                                           self._positions[self._slices[j]])
                         if j == k:
-                            self.results.ssf[i, start:start + w.shape[0]] += \
-                                np.sin(arg_j).sum(axis=0) ** 2 \
+                            self.results.ssf[i, start:start + w.shape[0]] += (
+                                np.sin(arg_j).sum(axis=0) ** 2
                                 + np.cos(arg_j).sum(axis=0) ** 2
+                            )
                         else:
                             arg_k = np.einsum("wd,pd->pw", w,
                                               self._positions[self._slices[k]])
@@ -1708,11 +1746,11 @@ class StructureFactor(SerialAnalysisBase):
                     arg_j = np.einsum("wd,pd->pw", self._wavevectors,
                                       self._positions[self._slices[j]])
                     if j == k:
-                        self.results.ssf[i] += np.sin(arg_j).sum(axis=0) ** 2 \
-                                               + np.cos(arg_j).sum(axis=0) ** 2
+                        self.results.ssf[i] += (np.sin(arg_j).sum(axis=0) ** 2
+                                                + np.cos(arg_j).sum(axis=0) ** 2)
                     else:
                         arg_k = np.einsum("wd,pd->pw", self._wavevectors,
-                                        self._positions[self._slices[k]])
+                                          self._positions[self._slices[k]])
                         self.results.ssf[i] += (
                             np.sin(arg_j).sum(axis=0)
                             * np.sin(arg_k).sum(axis=0)
@@ -1720,11 +1758,88 @@ class StructureFactor(SerialAnalysisBase):
                             * np.cos(arg_k).sum(axis=0)
                         )
 
+    def _single_frame_parallel(
+            self, frame: int, index: int) -> np.ndarray[float]:
+
+        self._trajectory[frame]
+        positions = np.empty((self._N, 3))
+        for g, gr, s in zip(self._groups, self._groupings, self._slices):
+
+            # Store atom or center-of-mass positions in the current frame
+            positions[s] = (g.positions if gr == "atoms"
+                            else center_of_mass(g, gr))
+
+        # Compute the structure factor by multiplying the cosine and
+        # sine terms and adding them together
+        if self._mode is None:
+            if self._n_batches:
+                start = 0
+                ssf = np.empty(len(self._wavenumbers))
+                for w in np.array_split(self._wavevectors, self._n_batches,
+                                        axis=0):
+                    arg = np.einsum("wd,pd->pw", w, positions)
+                    ssf[start:start + w.shape[0]] = (
+                        np.sin(arg).sum(axis=0) ** 2
+                        + np.cos(arg).sum(axis=0) ** 2
+                    )
+                    start += w.shape[0]
+                return ssf
+            else:
+                arg = np.einsum("wd,pd->pw", self._wavevectors, positions)
+                return (np.sin(arg).sum(axis=0) ** 2
+                        + np.cos(arg).sum(axis=0) ** 2)
+        else:
+            ssf = np.empty((len(self.results.pairs), len(self._wavenumbers)))
+            for i, (j, k) in enumerate(self.results.pairs):
+                if self._n_batches:
+                    start = 0
+                    for w in np.array_split(self._wavevectors, self._n_batches,
+                                            axis=0):
+                        arg_j = np.einsum(
+                            "wd,pd->pw", w, positions[self._slices[j]]
+                        )
+                        if j == k:
+                            ssf[i, start:start + w.shape[0]] = (
+                                np.sin(arg_j).sum(axis=0) ** 2
+                                + np.cos(arg_j).sum(axis=0) ** 2
+                            )
+                        else:
+                            arg_k = np.einsum(
+                                "wd,pd->pw", w, positions[self._slices[k]]
+                            )
+                            ssf[i, start:start + w.shape[0]] = (
+                                np.sin(arg_j).sum(axis=0)
+                                * np.sin(arg_k).sum(axis=0)
+                                + np.cos(arg_j).sum(axis=0)
+                                * np.cos(arg_k).sum(axis=0)
+                            )
+                        start += w.shape[0]
+                else:
+                    arg_j = np.einsum("wd,pd->pw", self._wavevectors,
+                                      positions[self._slices[j]])
+                    if j == k:
+                        ssf[i] = (np.sin(arg_j).sum(axis=0) ** 2
+                                  + np.cos(arg_j).sum(axis=0) ** 2)
+                    else:
+                        arg_k = np.einsum("wd,pd->pw", self._wavevectors,
+                                          positions[self._slices[k]])
+                        ssf[i] = (
+                            np.sin(arg_j).sum(axis=0)
+                            * np.sin(arg_k).sum(axis=0)
+                            + np.cos(arg_j).sum(axis=0)
+                            * np.cos(arg_k).sum(axis=0)
+                        )
+            return ssf
+
     def _conclude(self) -> None:
 
-        # Normalize the static structure factor by the number of
-        # particles and timesteps, and flatten the array by combining
-        # values sharing the same wavevector magnitude
+        # Tally structure factors over all frames
+        if self._parallel:
+            self.results.ssf = np.vstack(self._results).sum(axis=0)
+
+        # Normalize the structure factor by the number of particles and
+        # timesteps, and flatten the array by combining values sharing
+        # the same wavevector magnitude
         if self._mode is None:
             self.results.ssf /= self.n_frames * self._N
             self.results.ssf = np.fromiter(
@@ -1747,153 +1862,54 @@ class StructureFactor(SerialAnalysisBase):
                  for q in self.results.wavenumbers]
             )
 
-class ParallelStructureFactor(StructureFactor, ParallelAnalysisBase):
+    def run(
+            self, start: int = None, stop: int = None, step: int = None,
+            frames: Union[slice, np.ndarray[int]] = None,
+            verbose: bool = None, **kwargs
+        ) -> Union[SerialAnalysisBase, ParallelAnalysisBase]:
+
+        """
+        Perform the calculation.
+
+        Parameters
+        ----------
+        start : `int`, optional
+            Starting frame for analysis.
+        
+        stop : `int`, optional
+            Ending frame for analysis.
+
+        step : `int`, optional
+            Number of frames to skip between each analyzed frame.
+
+        frames : `slice` or array-like, optional
+            Index or logical array of the desired trajectory frames.
+
+        verbose : `bool`, optional
+            Determines whether detailed progress is shown.
+        
+        **kwargs
+            Additional keyword arguments to pass to
+            :class:`MDAnalysis.lib.log.ProgressBar`.
+
+        Returns
+        -------
+        self : `SerialAnalysisBase` or `ParallelAnalysisBase`
+            Analysis object with results.
+        """
+
+        return (ParallelAnalysisBase if self._parallel 
+                else SerialAnalysisBase).run(
+            self, start=start, stop=stop, step=step, frames=frames,
+            verbose=verbose, **kwargs
+        )
+
+class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase, 
+                                               SerialAnalysisBase):
 
     r"""
-    A multithreaded implementation to calculate the static structure
-    factor :math:`S(q)` or partial structure factor
-    :math:`S_{\alpha\beta}(q)` for species :math:`\alpha` and
-    :math:`\beta`.
-
-    .. note::
-
-       For a theoretical background and a complete list of parameters,
-       attributes, and available methods, see :class:`StructureFactor`.
-    """
-
-    def __init__(
-            self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
-            groupings: Union[str, tuple[str]] = "atoms", n_points: int = 32,
-            mode: str = None, *, n_surfaces: int = None,
-            n_surface_points: int = 8, wavevectors: np.ndarray[float] = None,
-            n_batches: int = None, verbose: bool = True, **kwargs):
-
-        StructureFactor.__init__(self, groups, groupings, n_points, mode,
-                                 n_surfaces=n_surfaces,
-                                 n_surface_points=n_surface_points,
-                                 wavevectors=wavevectors, n_batches=n_batches,
-                                 verbose=verbose, **kwargs)
-        ParallelAnalysisBase.__init__(self, self.universe.trajectory,
-                                      verbose=verbose, **kwargs)
-
-    def _prepare(self) -> None:
-
-        # Determine pairs
-        if self._mode is not None:
-            self.results.pairs = tuple(
-                combinations_with_replacement(range(self._n_groups), 2)
-            ) if self._mode == "partial" else ((0, self._n_groups - 1),)
-
-        # Determine the unique wavenumbers
-        self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
-
-        # Create dictionary to hold reference units
-        self.results.units = {"_dims": ureg.angstrom,
-                              "results.wavenumbers": ureg.angstrom ** -1}
-
-    def _single_frame(self, frame: int, index: int) -> np.ndarray[float]:
-
-        self._trajectory[frame]
-        positions = np.empty((self._N, 3))
-        for g, gr, s in zip(self._groups, self._groupings, self._slices):
-
-            # Store atom or center-of-mass positions in the current frame
-            positions[s] = g.positions if gr == "atoms" \
-                           else center_of_mass(g, gr)
-
-        # Compute the structure factor by multiplying the cosine and
-        # sine terms and adding them together
-        if self._mode is None:
-            if self._n_batches:
-                start = 0
-                ssf = np.empty(len(self._wavenumbers))
-                for w in np.array_split(self._wavevectors, self._n_batches,
-                                        axis=0):
-                    arg = np.einsum("wd,pd->pw", w, positions)
-                    ssf[start:start + w.shape[0]] = \
-                        np.sin(arg).sum(axis=0) ** 2 \
-                        + np.cos(arg).sum(axis=0) ** 2
-                    start += w.shape[0]
-                return ssf
-            else:
-                arg = np.einsum("wd,pd->pw", self._wavevectors, positions)
-                return np.sin(arg).sum(axis=0) ** 2 \
-                       + np.cos(arg).sum(axis=0) ** 2
-        else:
-            ssf = np.empty((len(self.results.pairs), len(self._wavenumbers)))
-            for i, (j, k) in enumerate(self.results.pairs):
-                if self._n_batches:
-                    start = 0
-                    for w in np.array_split(self._wavevectors, self._n_batches,
-                                            axis=0):
-                        arg_j = np.einsum(
-                            "wd,pd->pw", w, positions[self._slices[j]]
-                        )
-                        if j == k:
-                            ssf[i, start:start + w.shape[0]] = \
-                                np.sin(arg_j).sum(axis=0) ** 2 \
-                                + np.cos(arg_j).sum(axis=0) ** 2
-                        else:
-                            arg_k = np.einsum(
-                                "wd,pd->pw", w, positions[self._slices[k]]
-                            )
-                            ssf[i, start:start + w.shape[0]] = (
-                                np.sin(arg_j).sum(axis=0)
-                                * np.sin(arg_k).sum(axis=0)
-                                + np.cos(arg_j).sum(axis=0)
-                                * np.cos(arg_k).sum(axis=0)
-                            )
-                        start += w.shape[0]
-                else:
-                    arg_j = np.einsum("wd,pd->pw", self._wavevectors,
-                                      positions[self._slices[j]])
-                    if j == k:
-                        ssf[i] = np.sin(arg_j).sum(axis=0) ** 2 \
-                                 + np.cos(arg_j).sum(axis=0) ** 2
-                    else:
-                        arg_k = np.einsum("wd,pd->pw", self._wavevectors,
-                                          positions[self._slices[k]])
-                        ssf[i] = (
-                            np.sin(arg_j).sum(axis=0)
-                            * np.sin(arg_k).sum(axis=0)
-                            + np.cos(arg_j).sum(axis=0)
-                            * np.cos(arg_k).sum(axis=0)
-                        )
-            return ssf
-
-    def _conclude(self) -> None:
-
-        # Normalize the static structure factor by the number of
-        # particles and timesteps, and flatten the array by combining
-        # values sharing the same wavevector magnitude
-        if self._mode is None:
-            self.results.ssf = np.vstack(self._results).sum(axis=0) \
-                               / (self.n_frames * self._N)
-            self.results.ssf = np.fromiter(
-                (self.results.ssf[np.isclose(q, self._wavenumbers)].mean()
-                 for q in self.results.wavenumbers),
-                dtype=float,
-                count=len(self.results.wavenumbers)
-            )
-        else:
-            self.results.ssf = np.stack(self._results).sum(axis=0) / (
-                self.n_frames *
-                np.fromiter((np.sqrt(self._Ns[i] * self._Ns[j])
-                             for i, j in self.results.pairs),
-                            dtype=float,
-                            count=len(self.results.pairs))[:, None]
-            )
-            self.results.ssf = np.hstack(
-                [self.results.ssf[:, np.isclose(q, self._wavenumbers)]
-                 .mean(axis=1, keepdims=True)
-                 for q in self.results.wavenumbers]
-            )
-
-class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
-
-    r"""
-    A serial implementation to calculate the incoherent (or self)
-    intermediate scattering function :math:`F_\mathrm{s}(q,\,t)`.
+    Serial and parallel implementations to calculate the incoherent (or
+    self) intermediate scattering function :math:`F_\mathrm{s}(q,\,t)`.
 
     The incoherent intermediate scattering function characterizes the
     mean relaxation time of a system, and its spatial fluctuations
@@ -1939,6 +1955,15 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
            * :code:`"segments"`: Segments' centers of mass (for
              atomistic polymer simulations).
 
+    dimensions : array-like, `openmm.unit.Quantity`, or \
+    `pint.Quantity`, keyword-only, optional
+        System dimensions. If not provided, they are retrieved from the
+        topology or trajectory.
+
+        **Shape**: :math:`(3,)`.
+
+        **Reference unit**: :math:`\\mathrm{Å}`.
+
     n_points : `int`, default: :code:`32`
         Number of points in the scattering wavevector grid. Additional
         wavevectors can be introduced via `n_surfaces` and
@@ -1971,6 +1996,9 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
         Determines whether fast Fourier transforms (FFT) are used to
         evaluate the auto- and cross-correlations.
 
+    parallel : `bool`, keyword-only, default: :code:`False`
+        Determines whether the calculation is run in parallel.
+
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
 
@@ -1989,28 +2017,52 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
         reference units for :code:`results.wavenumbers`, call
         :code:`results.units["results.wavenumbers"]`.
 
+    results.times : `numpy.ndarray`
+        Lag times :math:`t`.
+
+        **Shape**: :math:`(N_\mathrm{t},)`.
+
+        **Reference units**: :math:`\mathrm{ps}`.
+
     results.wavenumbers : `numpy.ndarray`
         Scattering wavenumbers :math:`q`.
+
+        **Shape**: :math:`(N_\mathrm{w},)`.
+
+        **Reference units**: :math:`\mathrm{Å}^{-1}`.
 
     results.isf : `numpy.ndarray`
         Incoherent (self) intermediate scattering function
         :math:`F_\mathrm{s}(q,\,t)`.
 
-        **Shape**: Same as `results.wavenumbers`.
+        **Shape**: :math:`(N_\mathrm{t},\,N_\mathrm{w})`.
     """
 
     def __init__(
             self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
-            groupings: Union[str, tuple[str]] = "atoms", n_points: int = 32,
-            *, n_surfaces: int = None, n_surface_points: int = 8,
+            groupings: Union[str, tuple[str]] = "atoms", 
+            dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
+            n_points: int = 32, *, n_surfaces: int = None, n_surface_points: int = 8,
             wavevectors: np.ndarray[float] = None, n_batches: int = None,
-            fft: bool = True, verbose: bool = True, **kwargs):
+            fft: bool = True, parallel: bool = False, verbose: bool = True, 
+            **kwargs) -> None:
 
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
 
-        super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
-        self._dims = self.universe.dimensions[:3].copy()
+        self._parallel = parallel
+        (ParallelAnalysisBase if parallel else SerialAnalysisBase).__init__(
+            self, self.universe.trajectory, verbose=verbose, **kwargs
+        )
+
+        if dimensions is not None:
+            if len(dimensions) != 3:
+                raise ValueError("'dimensions' must have length 3.")
+            self._dimensions = np.asarray(strip_unit(dimensions, "angstrom")[0])
+        elif self.universe.dimensions is not None:
+            self._dimensions = self.universe.dimensions[:3].copy()
+        else:
+            raise ValueError("No system dimensions found or provided.")
 
         self._n_groups = len(self._groups)
         if isinstance(groupings, str):
@@ -2031,6 +2083,8 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
                     raise ValueError(emsg)
             self._groupings = groupings
 
+        # Determine the number of particles in each group and their
+        # corresponding indices
         self._Ns = tuple(getattr(a, f"n_{g}")
                          for (a, g) in zip(self._groups, self._groupings))
         self._N = sum(self._Ns)
@@ -2040,10 +2094,11 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
             self._slices.append(slice(index, index + N))
             index += N
 
+        # Determine the wavevectors and their corresponding magnitudes
         if wavevectors is not None:
             self._wavevectors = wavevectors
-        elif np.allclose(self._dims, self._dims[0]):
-            grid = 2 * np.pi * np.arange(n_points) / self._dims[0]
+        elif np.allclose(self._dimensions, self._dimensions[0]):
+            grid = 2 * np.pi * np.arange(n_points) / self._dimensions[0]
             self._wavevectors = np.stack(
                 np.meshgrid(grid, grid, grid), -1
             ).reshape(-1, 3)
@@ -2072,7 +2127,7 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
             self._wavevectors = np.stack(
                 np.meshgrid(
                     *[2 * np.pi * np.arange(n_points) / L
-                      for L in self._dims]
+                      for L in self._dimensions]
                 ), -1
             ).reshape(-1, 3)
         self._wavenumbers = np.linalg.norm(self._wavevectors, axis=1)
@@ -2096,16 +2151,16 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
 
         # Determine the unique wavenumbers and store the lag times
         self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
-        self.results.time = self._trajectory.dt * np.arange(self.n_frames)
+        self.results.times = self._trajectory.dt * np.arange(self.n_frames)
 
         # Preallocate arrays to store results
-        self._positions = np.empty((self._N, 3))
-        self._cos_sum = np.zeros((self.n_frames, len(self._wavenumbers)))
-        self._sin_sum = np.zeros((self.n_frames, len(self._wavenumbers)))
+        if not self._parallel:
+            self._positions = np.empty((self._N, 3))
+            self._cos_sum = np.zeros((self.n_frames, len(self._wavenumbers)))
+            self._sin_sum = np.zeros((self.n_frames, len(self._wavenumbers)))
 
         # Create dictionary to hold reference units
-        self.results.units = {"_dims": ureg.angstrom,
-                              "results.time": ureg.picosecond,
+        self.results.units = {"results.times": ureg.picosecond,
                               "results.wavenumbers": ureg.angstrom ** -1}
 
     def _single_frame(self) -> None:
@@ -2132,80 +2187,7 @@ class IncoherentIntermediateScatteringFunction(SerialAnalysisBase):
             self._cos_sum[self._frame_index] = np.cos(arg).sum(axis=0)
             self._sin_sum[self._frame_index] = np.sin(arg).sum(axis=0)
 
-    def _conclude(self) -> None:
-
-        # Tally intermediate scattering function for each wavevector
-        # over all frames and normalize by the number of particles and
-        # timesteps
-        corr = correlation_fft if self._fft \
-               else correlation_shift
-        self.results.isf = (
-            corr(self._cos_sum, axis=0) + corr(self._sin_sum, axis=0)
-        ) / self._N
-
-        # Flatten the array by combining values sharing the same
-        # wavevector magnitude
-        self.results.isf = np.hstack(
-            [
-                self.results.isf[
-                    :, np.isclose(q, self._wavenumbers)
-                ].mean(axis=1, keepdims=True)
-                for q in self.results.wavenumbers
-            ]
-        )
-
-class ParallelIncoherentIntermediateScatteringFunction(
-        IncoherentIntermediateScatteringFunction, ParallelAnalysisBase
-    ):
-
-    r"""
-    A multithreaded implementation to calculate the incoherent (self)
-    intermediate scattering function :math:`F_\mathrm{s}(q,\,t)`.
-
-    .. note::
-
-       For a theoretical background and a complete list of parameters,
-       attributes, and available methods, see
-       :class:`IncoherentIntermediateScatteringFunction`.
-    """
-
-    def __init__(
-            self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
-            groupings: Union[str, tuple[str]] = "atoms", n_points: int = 32,
-            *, n_surfaces: int = None, n_surface_points: int = 8,
-            wavevectors: np.ndarray[float] = None, n_batches: int = None,
-            fft: bool = True, verbose: bool = True, **kwargs):
-
-        IncoherentIntermediateScatteringFunction.__init__(
-            self, groups, groupings, n_points, n_surfaces=n_surfaces,
-            n_surface_points=n_surface_points, wavevectors=wavevectors,
-            n_batches=n_batches, fft=fft, verbose=verbose, **kwargs)
-        ParallelAnalysisBase.__init__(self, self.universe.trajectory,
-                                      verbose=verbose, **kwargs)
-
-    def _prepare(self) -> None:
-
-        # Ensure frames are evenly spaced and proceed forward in time
-        if hasattr(self._sliced_trajectory, "frames"):
-            df = np.diff(self._sliced_trajectory.frames)
-            if df[0] <= 0 or not np.allclose(df, df[0]):
-                emsg = ("The selected frames must be evenly spaced and "
-                        "proceed forward in time.")
-                raise ValueError(emsg)
-        elif hasattr(self._sliced_trajectory, "step") \
-                and self._sliced_trajectory.step <= 0:
-            raise ValueError("The analysis must proceed forward in time.")
-
-        # Determine the unique wavenumbers and store the lag times
-        self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
-        self.results.time = self._trajectory.dt * np.arange(self.n_frames)
-
-        # Create dictionary to hold reference units
-        self.results.units = {"_dims": ureg.angstrom,
-                              "results.time": ureg.picosecond,
-                              "results.wavenumbers": ureg.angstrom ** -1}
-
-    def _single_frame(self, frame: int, index: int) -> None:
+    def _single_frame_parallel(self, frame: int, index: int) -> None:
 
         self._trajectory[frame]
         results = np.zeros((2, len(self._wavenumbers)))
@@ -2235,24 +2217,27 @@ class ParallelIncoherentIntermediateScatteringFunction(
 
     def _conclude(self) -> None:
 
-        trig_sums = np.stack(self._results)
+        # Combine results from parallel runs
+        if self._parallel:
+            trig_sums = np.stack(self._results)
+            cos_sum = trig_sums[:, 0]
+            sin_sum = trig_sums[:, 1]
+        else:
+            cos_sum = self._cos_sum
+            sin_sum = self._sin_sum
 
         # Tally intermediate scattering function for each wavevector
         # over all frames and normalize by the number of particles and
         # timesteps
         corr = correlation_fft if self._fft \
                else correlation_shift
-        self.results.isf = (
-            corr(trig_sums[:, 0], axis=0) + corr(trig_sums[:, 1], axis=0)
-        ) / self._N
+        self.results.isf = ((corr(cos_sum, axis=0) + corr(sin_sum, axis=0))
+                            / self._N)
 
         # Flatten the array by combining values sharing the same
         # wavevector magnitude
-        self.results.isf = np.hstack(
-            [
-                self.results.isf[
-                    :, np.isclose(q, self._wavenumbers)
-                ].mean(axis=1, keepdims=True)
-                for q in self.results.wavenumbers
-            ]
-        )
+        self.results.isf = np.hstack([
+            self.results.isf[:, np.isclose(q, self._wavenumbers)]
+            .mean(axis=1, keepdims=True)
+            for q in self.results.wavenumbers
+        ])

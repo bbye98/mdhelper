@@ -204,7 +204,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.ParallelSingleChainStructureFactor.html">ParallelSingleChainStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
@@ -221,7 +220,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF2D.html">ParallelRDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
@@ -1063,7 +1061,7 @@
 
 <span class="sd">    reduced : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Specifies whether the data is in reduced units. Affects</span>
-<span class="sd">        `temperature`, `results.time`, etc.</span>
+<span class="sd">        `temperature`, `results.times`, etc.</span>
 
 <span class="sd">    unwrap : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Determines if atom positions are unwrapped. Ensure that</span>
@@ -1087,15 +1085,15 @@
 
 <span class="sd">    results.units : `dict`</span>
 <span class="sd">        Reference units for the results. For example, to get the</span>
-<span class="sd">        reference units for :code:`results.time`, call</span>
-<span class="sd">        :code:`results.units[&quot;results.time&quot;]`.</span>
+<span class="sd">        reference units for :code:`results.times`, call</span>
+<span class="sd">        :code:`results.units[&quot;results.times&quot;]`.</span>
 
 <span class="sd">    results.pairs : `tuple`</span>
 <span class="sd">        All unique pairs of indices of the groups of atoms in `groups`.</span>
 <span class="sd">        The ordering coincides with the column indices in</span>
 <span class="sd">        `results.msd`.</span>
 
-<span class="sd">    results.time : `numpy.ndarray`</span>
+<span class="sd">    results.times : `numpy.ndarray`</span>
 <span class="sd">        Changes in time :math:`t-t_0`.</span>
 
 <span class="sd">        **Shape**: :math:`(N_t,)`.</span>
@@ -1156,7 +1154,7 @@
 
 <span class="sd">        **Reference unit**: :math:`\\mathrm{Å}^2/\\mathrm{ps)}`.</span>
 
-<span class="sd">    results.conductivity : `numpy.ndarray`</span>
+<span class="sd">    results.conductivities : `numpy.ndarray`</span>
 <span class="sd">        Conductivities :math:`\\kappa`. Only available after running</span>
 <span class="sd">        :meth:`calculate_conductivity`.</span>
 
@@ -1167,7 +1165,7 @@
 
 <span class="sd">        **To SI unit**: :math:`1\times10^{19}\,\\mathrm{S}/\\mathrm{m}`.</span>
 
-<span class="sd">    results.electrophoretic_mobility : `numpy.ndarray`</span>
+<span class="sd">    results.electrophoretic_mobilities : `numpy.ndarray`</span>
 <span class="sd">        Electrophoretic mobilities :math:`\\mu_i`. Only available after</span>
 <span class="sd">        running :meth:`calculate_electrophoretic_mobility`.</span>
 
@@ -1179,7 +1177,7 @@
 <span class="sd">        **To SI unit**: :math:`1\times10^{-11}\,\\mathrm{m}^2/</span>
 <span class="sd">        (\\mathrm{V}\cdot\\mathrm{s})`.</span>
 
-<span class="sd">    results.transference_number : `numpy.ndarray`</span>
+<span class="sd">    results.transference_numbers : `numpy.ndarray`</span>
 <span class="sd">        Transference numbers :math:`t_i`. Only available after running</span>
 <span class="sd">        :meth:`calculate_transference_number`.</span>
 
@@ -1198,7 +1196,7 @@
 <span class="sd">      `results.msd_cross` will be used other than to calculate the</span>
 <span class="sd">      Onsager transport coefficients. On the other hand,</span>
 <span class="sd">      `results.msd_self` is averaged over all particles. Therefore, it</span>
-<span class="sd">      can be plotted against `results.time` to get the self-diffusion</span>
+<span class="sd">      can be plotted against `results.times` to get the self-diffusion</span>
 <span class="sd">      coefficients.</span>
 
 <span class="sd">    References</span>
@@ -1358,8 +1356,8 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
 
         <span class="c1"># Preallocate arrays to store results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">//</span>
-                                                             <span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">//</span>
+                                                              <span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msd_cross</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
             <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames_block</span><span class="p">),</span>
             <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
@@ -1370,7 +1368,7 @@
         <span class="p">)</span>
 
         <span class="c1"># Store reference units</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picosecond</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.times&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picosecond</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.msd_cross&quot;</span><span class="p">]</span> <span class="o">=</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.msd_self&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="mi">2</span>
 
@@ -1533,7 +1531,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">L_ij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">L_ii_self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">D_i</span> <span class="o">=</span> \
             <span class="n">calculate_transport_coefficients</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">times</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msd_cross</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msd_self</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span>
@@ -1602,12 +1600,12 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_charges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No charge number information available.&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">conductivity</span> <span class="o">=</span> <span class="n">calculate_conductivity</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">conductivities</span> <span class="o">=</span> <span class="n">calculate_conductivity</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">L_ij</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_charges</span><span class="p">,</span>
             <span class="n">reduced</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.conductivity&quot;</span><span class="p">]</span> <span class="o">=</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.conductivities&quot;</span><span class="p">]</span> <span class="o">=</span> \
             <span class="n">ureg</span><span class="o">.</span><span class="n">coulomb</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">ureg</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span>
                                  <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picosecond</span><span class="p">)</span></div>
 
@@ -1677,12 +1675,12 @@
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rhos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">rhos</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">mobility</span> <span class="o">=</span> <span class="n">calculate_electrophoretic_mobility</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">electrophoretic_mobilities</span> <span class="o">=</span> <span class="n">calculate_electrophoretic_mobility</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">L_ij</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">charges</span><span class="p">,</span> <span class="n">rhos</span><span class="p">,</span>
             <span class="n">reduced</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.mobility&quot;</span><span class="p">]</span> <span class="o">=</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.electrophoretic_mobilities&quot;</span><span class="p">]</span> <span class="o">=</span> \
             <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">coulomb</span> <span class="o">/</span> <span class="p">(</span><span class="n">ureg</span><span class="o">.</span><span class="n">kilojoule</span>
                                                  <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picosecond</span><span class="p">)</span></div>
 
@@ -1731,7 +1729,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_charges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No charge number information available.&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">transference_number</span> <span class="o">=</span> <span class="n">calculate_transference_number</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">transference_numbers</span> <span class="o">=</span> <span class="n">calculate_transference_number</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">L_ij</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_charges</span>
         <span class="p">)</span></div>
 </div>

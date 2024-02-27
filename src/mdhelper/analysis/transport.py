@@ -643,7 +643,7 @@ class Onsager(SerialAnalysisBase):
 
     reduced : `bool`, keyword-only, default: :code:`False`
         Specifies whether the data is in reduced units. Affects
-        `temperature`, `results.time`, etc.
+        `temperature`, `results.times`, etc.
 
     unwrap : `bool`, keyword-only, default: :code:`False`
         Determines if atom positions are unwrapped. Ensure that
@@ -667,15 +667,15 @@ class Onsager(SerialAnalysisBase):
 
     results.units : `dict`
         Reference units for the results. For example, to get the
-        reference units for :code:`results.time`, call
-        :code:`results.units["results.time"]`.
+        reference units for :code:`results.times`, call
+        :code:`results.units["results.times"]`.
 
     results.pairs : `tuple`
         All unique pairs of indices of the groups of atoms in `groups`.
         The ordering coincides with the column indices in
         `results.msd`.
 
-    results.time : `numpy.ndarray`
+    results.times : `numpy.ndarray`
         Changes in time :math:`t-t_0`.
 
         **Shape**: :math:`(N_t,)`.
@@ -736,7 +736,7 @@ class Onsager(SerialAnalysisBase):
 
         **Reference unit**: :math:`\\mathrm{Å}^2/\\mathrm{ps)}`.
 
-    results.conductivity : `numpy.ndarray`
+    results.conductivities : `numpy.ndarray`
         Conductivities :math:`\\kappa`. Only available after running
         :meth:`calculate_conductivity`.
 
@@ -747,7 +747,7 @@ class Onsager(SerialAnalysisBase):
 
         **To SI unit**: :math:`1\times10^{19}\,\\mathrm{S}/\\mathrm{m}`.
 
-    results.electrophoretic_mobility : `numpy.ndarray`
+    results.electrophoretic_mobilities : `numpy.ndarray`
         Electrophoretic mobilities :math:`\\mu_i`. Only available after
         running :meth:`calculate_electrophoretic_mobility`.
 
@@ -759,7 +759,7 @@ class Onsager(SerialAnalysisBase):
         **To SI unit**: :math:`1\times10^{-11}\,\\mathrm{m}^2/
         (\\mathrm{V}\cdot\\mathrm{s})`.
 
-    results.transference_number : `numpy.ndarray`
+    results.transference_numbers : `numpy.ndarray`
         Transference numbers :math:`t_i`. Only available after running
         :meth:`calculate_transference_number`.
 
@@ -778,7 +778,7 @@ class Onsager(SerialAnalysisBase):
       `results.msd_cross` will be used other than to calculate the
       Onsager transport coefficients. On the other hand,
       `results.msd_self` is averaged over all particles. Therefore, it
-      can be plotted against `results.time` to get the self-diffusion
+      can be plotted against `results.times` to get the self-diffusion
       coefficients.
 
     References
@@ -938,8 +938,8 @@ class Onsager(SerialAnalysisBase):
             warnings.warn(wmsg)
 
         # Preallocate arrays to store results
-        self.results.time = self.step * self._dt * np.arange(self._n_frames //
-                                                             self._n_blocks)
+        self.results.times = self.step * self._dt * np.arange(self._n_frames //
+                                                              self._n_blocks)
         self.results.msd_cross = np.empty(
             (len(self.results.pairs), self._n_blocks, self._n_frames_block),
             dtype=float
@@ -950,7 +950,7 @@ class Onsager(SerialAnalysisBase):
         )
 
         # Store reference units
-        self.results.units["results.time"] = ureg.picosecond
+        self.results.units["results.times"] = ureg.picosecond
         self.results.units["results.msd_cross"] = \
             self.results.units["results.msd_self"] = ureg.angstrom ** 2
 
@@ -1111,7 +1111,7 @@ class Onsager(SerialAnalysisBase):
 
         self.results.L_ij, self.results.L_ii_self, self.results.D_i = \
             calculate_transport_coefficients(
-                self.results.time,
+                self.results.times,
                 self.results.msd_cross,
                 self.results.msd_self,
                 self._Ns,
@@ -1177,12 +1177,12 @@ class Onsager(SerialAnalysisBase):
         if self._charges is None:
             raise ValueError("No charge number information available.")
 
-        self.results.conductivity = calculate_conductivity(
+        self.results.conductivities = calculate_conductivity(
             self.results.L_ij.mean(axis=0), self._charges,
             reduced=self._reduced
         )
 
-        self.results.units["results.conductivity"] = \
+        self.results.units["results.conductivities"] = \
             ureg.coulomb ** 2 / (ureg.kilojoule * ureg.angstrom
                                  * ureg.picosecond)
 
@@ -1249,12 +1249,12 @@ class Onsager(SerialAnalysisBase):
                 raise TypeError(emsg)
             self._rhos = np.asarray(rhos)
 
-        self.results.mobility = calculate_electrophoretic_mobility(
+        self.results.electrophoretic_mobilities = calculate_electrophoretic_mobility(
             self.results.L_ij.mean(axis=0), charges, rhos,
             reduced=self._reduced
         )
 
-        self.results.units["results.mobility"] = \
+        self.results.units["results.electrophoretic_mobilities"] = \
             ureg.angstrom ** 2 * ureg.coulomb / (ureg.kilojoule
                                                  * ureg.picosecond)
 
@@ -1300,6 +1300,6 @@ class Onsager(SerialAnalysisBase):
         if self._charges is None:
             raise ValueError("No charge number information available.")
 
-        self.results.transference_number = calculate_transference_number(
+        self.results.transference_numbers = calculate_transference_number(
             self.results.L_ij.mean(axis=0), self._charges
         )

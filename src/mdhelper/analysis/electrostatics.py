@@ -143,9 +143,9 @@ class DipoleMoment(SerialAnalysisBase):
         and will be retrieved from the main
         :class:`MDAnalysis.core.universe.Universe` object.
 
-        **Shape**: :math:`(N_\mathrm{g},)` array of :math:`(N_i,)`
-        arrays, where :math:`N_i` is the number of atoms in group
-        :math:`i`.
+        **Shape**: :math:`(N_\mathrm{g},)` array of `int`s, `float`s, or
+        :math:`(N_i,)` arrays, where :math:`N_i` is the number of atoms
+        in group :math:`i`.
 
         **Reference unit**: :math:`\mathrm{e}`.
 
@@ -191,24 +191,24 @@ class DipoleMoment(SerialAnalysisBase):
 
     results.units : `dict`
         Reference units for the results. For example, to get the
-        reference units for :code:`results.time`, call
-        :code:`results.units["results.time"]`.
+        reference units for :code:`results.times`, call
+        :code:`results.units["results.times"]`.
 
-    results.time : `numpy.ndarray`
+    results.times : `numpy.ndarray`
         Changes in time :math:`t-t_0`.
 
         **Shape**: :math:`(N_t,)`.
 
         **Reference unit**: :math:`\mathrm{ps}`.
 
-    results.dipole : `numpy.ndarray`
+    results.dipoles : `numpy.ndarray`
         Instantaneous dipole moment vectors :math:`\mathbf{M}`.
 
         **Shape**: :math:`(N_t, 3)`.
 
         **Reference unit**: :math:`\mathrm{e\cdotÅ}`.
 
-    results.volume : `numpy.ndarray`
+    results.volumes : `numpy.ndarray`
         System volumes :math:`V`.
 
         **Shape**: :math:`(N_t,)`.
@@ -309,13 +309,13 @@ class DipoleMoment(SerialAnalysisBase):
 
         # Preallocate arrays to store results and store reference units
         if not self._average:
-            self.results.time = (self.step * self._trajectory.dt
-                                 * np.arange(self.n_frames))
-            self.results.units["time"] = ureg.picosecond
-        self.results.dipole = np.zeros((self.n_frames, 3))
-        self.results.volume = np.empty(self.n_frames)
-        self.results.units["dipole"] = ureg.elementary_charge * ureg.angstrom
-        self.results.units["volume"] = ureg.angstrom ** 3
+            self.results.times = (self.step * self._trajectory.dt
+                                  * np.arange(self.n_frames))
+            self.results.units["times"] = ureg.picosecond
+        self.results.dipoles = np.zeros((self.n_frames, 3))
+        self.results.volumes = np.empty(self.n_frames)
+        self.results.units["dipoles"] = ureg.elementary_charge * ureg.angstrom
+        self.results.units["volumes"] = ureg.angstrom ** 3
 
     def _single_frame(self) -> None:
 
@@ -334,15 +334,15 @@ class DipoleMoment(SerialAnalysisBase):
 
         # Compute dipole moment vectors and store per-frame volume
         for g, c in zip(self._groups, self._charges):
-            self.results.dipole[self._frame_index] += c @ positions[g.indices]
-        self.results.volume[self._frame_index] = self.universe.trajectory.ts.volume
+            self.results.dipoles[self._frame_index] += c @ positions[g.indices]
+        self.results.volumes[self._frame_index] = self.universe.trajectory.ts.volume
 
     def _conclude(self) -> None:
 
         # Average results, if requested
         if self._average:
-            self.results.dipole = self.results.dipole.mean(axis=0)
-            self.results.volume = self.results.volume.mean()
+            self.results.dipoles = self.results.dipoles.mean(axis=0)
+            self.results.volumes = self.results.volumes.mean()
 
     def calculate_relative_permittivity(
             self, temperature: Union[float, "unit.Quantity", Q_]) -> None:
@@ -388,6 +388,6 @@ class DipoleMoment(SerialAnalysisBase):
                 raise ValueError(emsg)
 
             self.results.dielectric = calculate_relative_permittivity(
-                self.results.dipole, temperature, self.results.volume.mean(),
+                self.results.dipoles, temperature, self.results.volumes.mean(),
                 reduced=self._reduced
             )

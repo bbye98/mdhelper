@@ -156,10 +156,10 @@ class ParallelAnalysisBase(SerialAnalysisBase):
     def _dask_job_block(
             self, frames: Union[slice, np.ndarray[int]], 
             indices: np.ndarray[int]) -> list:
-        return [self._single_frame(f, i) for f, i in zip(frames, indices)]
+        return [self._single_frame_parallel(f, i) for f, i in zip(frames, indices)]
 
     @abstractmethod
-    def _single_frame(self, frame: int, index: int):
+    def _single_frame_parallel(self, frame: int, index: int):
         pass
 
     def run(
@@ -289,7 +289,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                     jobs.append(dask.delayed(self._dask_job_block)(frame, index))
             else:
                 for frame, index in zip(frames, indices):
-                    jobs.append(dask.delayed(self._single_frame)(frame, index))
+                    jobs.append(dask.delayed(self._single_frame_parallel)(frame, index))
 
             self._results = dask.delayed(jobs).compute(**config)
             if block:
@@ -305,7 +305,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             if block:
                 self._results = joblib.Parallel(n_jobs=n_jobs, prefer=method, 
                                                 **kwargs)(
-                    joblib.delayed(self._single_frame)(f, i)
+                    joblib.delayed(self._single_frame_parallel)(f, i)
                     for frames_, indices_ in zip(
                         np.array_split(frames, n_jobs),
                         np.array_split(indices, n_jobs)
@@ -314,7 +314,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             else:
                 self._results = joblib.Parallel(n_jobs=n_jobs, prefer=method, 
                                                 **kwargs)(
-                    joblib.delayed(self._single_frame)(f, i) 
+                    joblib.delayed(self._single_frame_parallel)(f, i) 
                     for f, i in zip(frames, indices)
                 )
 
@@ -332,7 +332,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             logging.info("Starting analysis using multiprocessing "
                          f"({n_jobs=}, {method=})...")
             with multiprocessing.get_context(method).Pool(n_jobs, **kwargs) as p:
-                self._results = p.starmap(self._single_frame, 
+                self._results = p.starmap(self._single_frame_parallel, 
                                           zip(frames, indices))
         logging.info(f"Analysis finished in {datetime.now() - time_start}.")
 
