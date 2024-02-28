@@ -7,13 +7,14 @@ This module contains classes to quantify properties along axes, such as
 density profiles.
 """
 
+import logging
 from numbers import Real
 from typing import Any, Union
 import warnings
 
 import MDAnalysis as mda
 import numpy as np
-from scipy import integrate
+from scipy import integrate, sparse
 
 from .base import SerialAnalysisBase
 from .. import FOUND_OPENMM, Q_, ureg
@@ -28,23 +29,89 @@ def calculate_potential_profile(
         bins: np.ndarray[float], charge_density: np.ndarray[float],
         L: float, dielectric: float = 1, *, sigma_q: float = None,
         dV: float = None, threshold: float = 1e-5, V0: float = 0,
-        reduced: bool = False) -> None:
+        method: str = "integral", pbc: bool = False, reduced: bool = False
+    ) -> np.ndarray[float]:
 
     r"""
     Calculates the potential profile :math:`\Psi(z)` using the charge
     density profile by numerically solving Poisson's equation for
     electrostatics.
 
-    The Poisson's equation is
+    Poisson's equation is given by
 
     .. math::
 
-       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_e(z)
+       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_q(z)
 
     where :math:`\varepsilon_0` is the vacuum permittivity,
     :math:`\varepsilon_\mathrm{r}` is the relative permittivity,
-    :math:`\rho_e` is the charge density, and :math:`\Psi` is the
+    :math:`\rho_q` is the charge density, and :math:`\Psi` is the
     potential.
+
+    The boundary conditions (BCs) are
+
+    .. math::
+
+       \left.\frac{\partial\Psi}{\partial z}\right\rvert_{z=0}&
+       =-\frac{\sigma_q}{\varepsilon_0\varepsilon_\mathrm{r}}\\
+       \left.\Psi\right\rvert_{z=0}&=\Psi_0
+
+    The first BC is used to ensure that the electric field in the bulk
+    of the solution is zero, while the second BC is used to set the 
+    potential on the left electrode.
+
+    Poisson's equation can be evaluated by using the trapezoidal rule
+    to numerically integrate the charge density profile twice:
+
+    1. Integrate the charge density profile.
+    2. Apply the first BC by subtracting :math:`\sigma_q` from all 
+       points.
+    3. Integrate the profile from Step 2.
+    4. Divide by :math:`-\varepsilon_0\varepsilon_\mathrm{r}`.
+    5. Apply the second BC by adding :math:`\Psi_0` to all points.
+
+    This method is fast but requires many histogram bins to accurately
+    resolve the potential profile.
+
+    Alternatively, Poisson's equation can be written as a system of
+    linear equations 
+
+    .. math::
+
+       A\mathbf{\Psi}=\mathbf{b}
+    
+    using second-order finite differences.
+    
+    The inner equations are given by
+
+    .. math::
+
+       \Psi_i^{''}=\frac{\Psi_{i-1}-2\Psi_i+\Psi_{i+1}}{h^2}
+       =-\frac{1}{\varepsilon_0\varepsilon_\mathrm{r}}\rho_{q,\,i}
+
+    where :math:`i` is the bin index and :math:`h` is the bin width.
+
+    In the case of periodic boundary conditions, the first and last
+    equations are given by
+
+    .. math::
+    
+       \Psi_0^{''}&=\frac{\Psi_{N-1}-2\Psi_0+\Psi_1}{h^2}
+       =-\frac{1}{\varepsilon_0\varepsilon_\mathrm{r}}\rho_{q,\,0}\\
+       \Psi_{N-1}^{''}&=\frac{\Psi_{N-2}-2\Psi_{N-1}+\Psi_0}{h^2}
+       =-\frac{1}{\varepsilon_0\varepsilon_\mathrm{r}}\rho_{q,\,N-1}
+
+    When the system has slab geometry, the boundary conditions are
+    implemented via
+
+    .. math::
+
+       \Psi_0&=\Psi_0\\
+       \Psi_0^\prime&=\frac{-3\Psi_0+4\Psi_1-\Psi_2}{2h}
+       =-\frac{\sigma_q}{\varepsilon_0\varepsilon_\mathrm{r}}
+
+    This method is slower but can be more accurate even with fewer
+    histogram bins for bulk systems with periodic boundary conditions.
 
     Parameters
     ----------
@@ -78,7 +145,8 @@ def calculate_potential_profile(
         ensure that the electric field in the bulk of the solution
         is zero. If not provided, it is determined using `dV` and
         the charge density profile, or the average value in the
-        center of the integrated charge density profile.
+        center of the integrated charge density profile if
+        :code:`method="integral"`.
 
         **Reference unit**: :math:`\mathrm{e/Å^2}`.
 
@@ -87,11 +155,6 @@ def calculate_potential_profile(
         dimension specified in `axis`. Has no effect if `sigma_q` is
         provided since this value is used solely to calculate
         `sigma_q`.
-
-        .. note::
-
-           By specifying `dV` to calculate `sigma_q` using Gauss's law,
-           it is assumed that the boundaries are perfectly conducting.
 
         **Reference unit**: :math:`\mathrm{V}`.
 
@@ -106,6 +169,15 @@ def calculate_potential_profile(
 
         **Reference unit**: :math:`\mathrm{V}`.
 
+    method : `str`, keyword-only, default: :code:`"integral"`
+        Method to use to calculate the potential profile.
+
+        **Valid values**: :code:`"integral"`, :code:`"matrix"`.
+
+    pbc : `bool`, keyword-only, default: :code:`False`
+        Specifies whether the axis has periodic boundary conditions.
+        Only used when :code:`method="matrix"`.
+
     reduced : `bool`, keyword-only, default: :code:`False`
         Specifies whether the data is in reduced units.
 
@@ -119,23 +191,28 @@ def calculate_potential_profile(
         **Reference unit**: :math:`\mathrm{V}`.
     """
 
-    # Calculate the first integral of the charge density profile
-    potential = integrate.cumulative_trapezoid(charge_density, bins, initial=0)
+    if len(bins) != len(charge_density):
+        emsg = ("'bins' and 'charge_density' arrays must have the same "
+                "length.")
+        raise ValueError(emsg)
 
-    if sigma_q is None:
+    CONVERSION_FACTOR = 4 * np.pi if reduced else (
+        1 * ureg.elementary_charge / (ureg.vacuum_permittivity * ureg.angstrom)
+    ).m_as(ureg.volt)
 
-        # Calculate surface charge density for system with perfectly
-        # conducting boundaries
-        if dV is not None:
-            sigma_q = dielectric * dV / L
-            if reduced:
-                sigma_q /= 4 * np.pi
-            else:
-                sigma_q = (sigma_q * ureg.vacuum_permittivity * ureg.volt
-                           * ureg.angstrom / ureg.elementary_charge).magnitude
-            sigma_q -= integrate.trapezoid(bins * charge_density, bins) / L
+    # Calculate surface charge density for system with perfectly
+    # conducting boundaries
+    if sigma_q is None and dV is not None:
+        sigma_q = (dielectric * dV / CONVERSION_FACTOR 
+                   - integrate.trapezoid(bins * charge_density, bins)) / L
 
-        else:
+    if method == "integral":
+
+        # Calculate the first integral of the charge density profile
+        potential = integrate.cumulative_trapezoid(charge_density, bins, 
+                                                   initial=0)
+
+        if sigma_q is None:
             wmsg = ("No surface charge density information. The value will "
                     "be extracted from the integrated charge density "
                     "profile, which may be inaccurate due to numerical "
@@ -147,30 +224,64 @@ def calculate_potential_profile(
             cut_indices = np.where(
                 np.diff(np.abs(np.gradient(potential)) < threshold)
             )[0] + 1
-            target_index = len(potential) // 2
-            sigma_q = potential[
-                cut_indices[cut_indices <= target_index][-1]:
-                cut_indices[cut_indices >= target_index][0]
-            ].mean()
+            if len(cut_indices) == 0:
+                logging.warning(
+                    "No bulk plateau region found in the charge "
+                    "density profile. The average value over the "
+                    "entire profile will be used."
+                )
+                sigma_q = potential.mean()
+            else:
+                target_index = len(potential) // 2
+                sigma_q = potential[
+                    cut_indices[cut_indices <= target_index][-1]:
+                    cut_indices[cut_indices >= target_index][0]
+                ].mean()
 
-    # Calculate the second integral of the charge density profile
-    potential = -integrate.cumulative_trapezoid(potential - sigma_q, bins,
-                                                initial=V0) / dielectric
-    if reduced:
-        potential *= 4 * np.pi
-    else:
-        potential = (
-            potential * ureg.elementary_charge
-            / (ureg.vacuum_permittivity * ureg.angstrom)
-        ).m_as(ureg.volt)
+        # Calculate the second integral of the charge density profile
+        return (
+            -CONVERSION_FACTOR
+            * integrate.cumulative_trapezoid(potential - sigma_q, bins,
+                                             initial=V0) / dielectric
+        )
 
-    return potential
+    elif method == "matrix":
+        if sigma_q is None:
+            emsg = ("No surface charge density information. Either "
+                    "'sigma_q' or 'dV' must be provided when "
+                    "method='matrix'.")
+            raise ValueError(emsg)
+
+        h = bins[1] - bins[0]
+        if not np.allclose(np.diff(bins), h):
+            raise ValueError("'bins' must be uniformly spaced.")
+        
+        # Set up matrix and load vector for second-order finite
+        # difference method
+        N = len(bins)
+        A = sparse.diags((1, -2, 1), (-1, 0, 1), shape=(N, N), format="csc")
+        b = charge_density.copy()
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", 
+                                  category=sparse.SparseEfficiencyWarning)
+            if pbc:
+                A[0, -1] = A[-1, 0] = 1
+                b *= -CONVERSION_FACTOR * h ** 2 / dielectric
+            else:
+                A[0, :3] = -1.5, 2, -0.5
+                A[-1, 0] = 1
+                A[-1, -2:] = 0
+                b[0] = CONVERSION_FACTOR * h * sigma_q / dielectric
+                b[1:-1] *= -CONVERSION_FACTOR * h ** 2 / dielectric
+                b[-1] = 0
+
+        return sparse.linalg.spsolve(A, b)
 
 class DensityProfile(SerialAnalysisBase):
 
     r"""
     A serial implementation to calculate the number and charge density
-    profiles :math:`\rho_i(z)` and :math:`\rho_e(z)` of a system
+    profiles :math:`\rho_i(z)` and :math:`\rho_q(z)` of a system
     along the specified axes.
 
     The microscopic number density profile of species :math:`i` in a
@@ -190,7 +301,7 @@ class DensityProfile(SerialAnalysisBase):
 
     .. math::
 
-       \rho_e(z)=\sum_i z_ie\rho_i(z)
+       \rho_q(z)=\sum_i z_ie\rho_i(z)
 
     where :math:`z_i` is the charge number of species :math:`i` and
     :math:`e` is the elementary charge.
@@ -201,7 +312,7 @@ class DensityProfile(SerialAnalysisBase):
 
     .. math::
 
-       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_e(z)
+       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_q(z)
 
     Parameters
     ----------
@@ -628,8 +739,8 @@ class DensityProfile(SerialAnalysisBase):
             self, dielectric: float, axis: Union[int, str], *,
             sigma_q: Union[float, "unit.Quantity", Q_] = None,
             dV: Union[float, "unit.Quantity", Q_] = None,
-            threshold: float = 1e-5, V0: Union[float, "unit.Quantity", Q_] = 0
-        ) -> None:
+            threshold: float = 1e-5, V0: Union[float, "unit.Quantity", Q_] = 0,
+            method: str = "integral", pbc: bool = False) -> None:
 
         """
         Calculates the average potential profile in the given dimension
@@ -640,7 +751,7 @@ class DensityProfile(SerialAnalysisBase):
         ----------
         dielectric : `float`
             Relative permittivity or dielectric constant
-            :math:`\\varepsilon_\mathrm{r}`.
+            :math:`\\varepsilon_\\mathrm{r}`.
 
         axis : `int` or `str`
             Axis along which to compute the potential profiles.
@@ -660,7 +771,7 @@ class DensityProfile(SerialAnalysisBase):
             the charge density profile, or the average value in the
             center of the integrated charge density profile.
 
-            **Reference unit**: :math:`\mathrm{e/Å^2}`.
+            **Reference unit**: :math:`\\mathrm{e/Å^2}`.
 
         dV : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, optional
@@ -669,13 +780,7 @@ class DensityProfile(SerialAnalysisBase):
             provided since this value is used solely to calculate
             `sigma_q`.
 
-            .. note::
-
-               By specifying `dV` to calculate `sigma_q` using Gauss's
-               law, it is assumed that the boundaries are perfectly
-               conducting.
-
-            **Reference unit**: :math:`\mathrm{V}`.
+            **Reference unit**: :math:`\\mathrm{V}`.
 
         threshold : `float`, keyword-only, default: :code:`1e-5`
             Threshold for determining the plateau region of the first
@@ -687,7 +792,16 @@ class DensityProfile(SerialAnalysisBase):
         keyword-only, default: :code:`0`
             Potential :math:`\Psi_0` at the left boundary.
 
-            **Reference unit**: :math:`\mathrm{V}`.
+            **Reference unit**: :math:`\\mathrm{V}`.
+
+        method : `str`, keyword-only, default: :code:`"integral"`
+            Method to use to calculate the potential profile.
+
+            **Valid values**: :code:`"integral"`, :code:`"matrix"`.
+
+        pbc : `bool`, keyword-only, default: :code:`False`
+            Specifies whether the system has periodic boundary conditions.
+            Only used when `method="matrix"`.
         """
 
         if not hasattr(self.results, "charge_densities"):
@@ -736,5 +850,7 @@ class DensityProfile(SerialAnalysisBase):
             dV=dV,
             threshold=threshold,
             V0=V0,
+            method=method,
+            pbc=pbc,
             reduced=self._reduced
         )

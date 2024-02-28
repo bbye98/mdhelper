@@ -39,7 +39,7 @@ To build it, follow these steps:
        make install
        make PythonInstall
 
-   The plugin will be installed as the `opemm-ic` Python package, which
+   The plugin will be installed as the `openmm-ic` Python package, which
    can be imported using `import openmm_ic`.
 
 Python API

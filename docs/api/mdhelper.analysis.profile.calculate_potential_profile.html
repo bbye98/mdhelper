@@ -398,19 +398,74 @@
 <h1>calculate_potential_profile<a class="headerlink" href="#calculate-potential-profile" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="mdhelper.analysis.profile.calculate_potential_profile">
-<span class="sig-prename descclassname"><span class="pre">mdhelper.analysis.profile.</span></span><span class="sig-name descname"><span class="pre">calculate_potential_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charge_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dielectric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduced</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/analysis/profile.html#calculate_potential_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.analysis.profile.calculate_potential_profile" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mdhelper.analysis.profile.</span></span><span class="sig-name descname"><span class="pre">calculate_potential_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charge_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dielectric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'integral'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduced</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mdhelper/analysis/profile.html#calculate_potential_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.analysis.profile.calculate_potential_profile" title="Link to this definition">#</a></dt>
 <dd><p>Calculates the potential profile <span class="math notranslate nohighlight">\(\Psi(z)\)</span> using the charge
 density profile by numerically solving Poisson’s equation for
 electrostatics.</p>
-<p>The Poisson’s equation is</p>
+<p>Poisson’s equation is given by</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
-\[\varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_e(z)\]</div>
+\[\varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_q(z)\]</div>
 </div>
 <p>where <span class="math notranslate nohighlight">\(\varepsilon_0\)</span> is the vacuum permittivity,
 <span class="math notranslate nohighlight">\(\varepsilon_\mathrm{r}\)</span> is the relative permittivity,
-<span class="math notranslate nohighlight">\(\rho_e\)</span> is the charge density, and <span class="math notranslate nohighlight">\(\Psi\)</span> is the
+<span class="math notranslate nohighlight">\(\rho_q\)</span> is the charge density, and <span class="math notranslate nohighlight">\(\Psi\)</span> is the
 potential.</p>
+<p>The boundary conditions (BCs) are</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\left.\frac{\partial\Psi}{\partial z}\right\rvert_{z=0}&amp;
+=-\frac{\sigma_q}{\varepsilon_0\varepsilon_\mathrm{r}}\\
+\left.\Psi\right\rvert_{z=0}&amp;=\Psi_0\end{split}\]</div>
+</div>
+<p>The first BC is used to ensure that the electric field in the bulk
+of the solution is zero, while the second BC is used to set the
+potential on the left electrode.</p>
+<p>Poisson’s equation can be evaluated by using the trapezoidal rule
+to numerically integrate the charge density profile twice:</p>
+<ol class="arabic simple">
+<li><p>Integrate the charge density profile.</p></li>
+<li><p>Apply the first BC by subtracting <span class="math notranslate nohighlight">\(\sigma_q\)</span> from all
+points.</p></li>
+<li><p>Integrate the profile from Step 2.</p></li>
+<li><p>Divide by <span class="math notranslate nohighlight">\(-\varepsilon_0\varepsilon_\mathrm{r}\)</span>.</p></li>
+<li><p>Apply the second BC by adding <span class="math notranslate nohighlight">\(\Psi_0\)</span> to all points.</p></li>
+</ol>
+<p>This method is fast but requires many histogram bins to accurately
+resolve the potential profile.</p>
+<p>Alternatively, Poisson’s equation can be written as a system of
+linear equations</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[A\mathbf{\Psi}=\mathbf{b}\]</div>
+</div>
+<p>using second-order finite differences.</p>
+<p>The inner equations are given by</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\Psi_i^{''}=\frac{\Psi_{i-1}-2\Psi_i+\Psi_{i+1}}{h^2}
+=-\frac{1}{\varepsilon_0\varepsilon_\mathrm{r}}\rho_{q,\,i}\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(i\)</span> is the bin index and <span class="math notranslate nohighlight">\(h\)</span> is the bin width.</p>
+<p>In the case of periodic boundary conditions, the first and last
+equations are given by</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\Psi_0^{''}&amp;=\frac{\Psi_{N-1}-2\Psi_0+\Psi_1}{h^2}
+=-\frac{1}{\varepsilon_0\varepsilon_\mathrm{r}}\rho_{q,\,0}\\
+\Psi_{N-1}^{''}&amp;=\frac{\Psi_{N-2}-2\Psi_{N-1}+\Psi_0}{h^2}
+=-\frac{1}{\varepsilon_0\varepsilon_\mathrm{r}}\rho_{q,\,N-1}\end{split}\]</div>
+</div>
+<p>When the system has slab geometry, the boundary conditions are
+implemented via</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\Psi_0&amp;=\Psi_0\\
+\Psi_0^\prime&amp;=\frac{-3\Psi_0+4\Psi_1-\Psi_2}{2h}
+=-\frac{\sigma_q}{\varepsilon_0\varepsilon_\mathrm{r}}\end{split}\]</div>
+</div>
+<p>This method is slower but can be more accurate even with fewer
+histogram bins for bulk systems with periodic boundary conditions.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
@@ -434,18 +489,14 @@ were calculated in.</p>
 ensure that the electric field in the bulk of the solution
 is zero. If not provided, it is determined using <cite>dV</cite> and
 the charge density profile, or the average value in the
-center of the integrated charge density profile.</p>
+center of the integrated charge density profile if
+<code class="code docutils literal notranslate"><span class="pre">method=&quot;integral&quot;</span></code>.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{e/Å^2}\)</span>.</p>
 </dd>
 <dt><strong>dV</strong><span class="classifier"><cite>float</cite>, keyword-only, optional</span></dt><dd><p>Potential difference <span class="math notranslate nohighlight">\(\Delta\Psi\)</span> across the system
 dimension specified in <cite>axis</cite>. Has no effect if <cite>sigma_q</cite> is
 provided since this value is used solely to calculate
 <cite>sigma_q</cite>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>By specifying <cite>dV</cite> to calculate <cite>sigma_q</cite> using Gauss’s law,
-it is assumed that the boundaries are perfectly conducting.</p>
-</div>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{V}\)</span>.</p>
 </dd>
 <dt><strong>threshold</strong><span class="classifier"><cite>float</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">1e-5</span></code></span></dt><dd><p>Threshold for determining the plateau region of the first
@@ -455,6 +506,12 @@ integral of the charge density profile to calculate
 </dd>
 <dt><strong>V0</strong><span class="classifier"><cite>float</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">0</span></code></span></dt><dd><p>Potential <span class="math notranslate nohighlight">\(\Psi_0\)</span> at the left boundary.</p>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{V}\)</span>.</p>
+</dd>
+<dt><strong>method</strong><span class="classifier"><cite>str</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">&quot;integral&quot;</span></code></span></dt><dd><p>Method to use to calculate the potential profile.</p>
+<p><strong>Valid values</strong>: <code class="code docutils literal notranslate"><span class="pre">&quot;integral&quot;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&quot;matrix&quot;</span></code>.</p>
+</dd>
+<dt><strong>pbc</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Specifies whether the axis has periodic boundary conditions.
+Only used when <code class="code docutils literal notranslate"><span class="pre">method=&quot;matrix&quot;</span></code>.</p>
 </dd>
 <dt><strong>reduced</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Specifies whether the data is in reduced units.</p>
 </dd>

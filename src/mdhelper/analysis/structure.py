@@ -208,8 +208,8 @@ def calculate_coordination_numbers(
     :math:`g_{ij}(r)`.
 
     If the radial distribution function :math:`g_{ij}(r)` does not
-    contain as many local minima as `n`, this method will return
-    `numpy.nan` for the coordination numbers that could not be
+    contain as many local minima as `n_coord_nums`, this method will 
+    return `numpy.nan` for the coordination numbers that could not be
     calculated.
 
     Parameters
@@ -1043,7 +1043,10 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
                * :code:`"FZ"`: Faber–Ziman formalism.
                * :code:`"AL"`: Ashcroft–Langreth formalism.
 
-               See :func:`calculate_structure_factor` for more details.
+               .. seealso::
+
+               For more information, see 
+               :func:`calculate_structure_factor`.
         """
 
         self.results.wavenumbers, self.results.ssf = calculate_structure_factor(

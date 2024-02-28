@@ -614,8 +614,8 @@
 <span class="sd">    :math:`g_{ij}(r)`.</span>
 
 <span class="sd">    If the radial distribution function :math:`g_{ij}(r)` does not</span>
-<span class="sd">    contain as many local minima as `n`, this method will return</span>
-<span class="sd">    `numpy.nan` for the coordination numbers that could not be</span>
+<span class="sd">    contain as many local minima as `n_coord_nums`, this method will </span>
+<span class="sd">    return `numpy.nan` for the coordination numbers that could not be</span>
 <span class="sd">    calculated.</span>
 
 <span class="sd">    Parameters</span>
@@ -1466,7 +1466,10 @@
 <span class="sd">               * :code:`&quot;FZ&quot;`: Faber–Ziman formalism.</span>
 <span class="sd">               * :code:`&quot;AL&quot;`: Ashcroft–Langreth formalism.</span>
 
-<span class="sd">               See :func:`calculate_structure_factor` for more details.</span>
+<span class="sd">               .. seealso::</span>
+
+<span class="sd">               For more information, see </span>
+<span class="sd">               :func:`calculate_structure_factor`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">calculate_structure_factor</span><span class="p">(</span>
