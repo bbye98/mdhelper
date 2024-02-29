@@ -902,7 +902,7 @@ def add_electric_field(
        With a positive potential difference
        (:math:`\Delta V>0\;\mathrm{V}`), the electric field is negative
        (:math:`E<0\;\mathrm{V/m}`) such that it is pointing from the
-       left (positive) plate to the right (negative) plate. If an ion
+       right (positive) plate to the left (negative) plate. If an ion
        has a positive charge (:math:`q_i>0\;\mathrm{e}`), the force will
        be negative, indicating that it will be drawn to the left plate,
        and vice versa.

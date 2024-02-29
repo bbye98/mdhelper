@@ -191,6 +191,7 @@
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="mdhelper.analysis.html">analysis</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -405,7 +406,7 @@ electrostatics.</p>
 <p>Poisson’s equation is given by</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
-\[\varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_q(z)\]</div>
+\[\varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=\rho_q(z)\]</div>
 </div>
 <p>where <span class="math notranslate nohighlight">\(\varepsilon_0\)</span> is the vacuum permittivity,
 <span class="math notranslate nohighlight">\(\varepsilon_\mathrm{r}\)</span> is the relative permittivity,
@@ -425,8 +426,7 @@ potential on the left electrode.</p>
 to numerically integrate the charge density profile twice:</p>
 <ol class="arabic simple">
 <li><p>Integrate the charge density profile.</p></li>
-<li><p>Apply the first BC by subtracting <span class="math notranslate nohighlight">\(\sigma_q\)</span> from all
-points.</p></li>
+<li><p>Apply the first BC by adding <span class="math notranslate nohighlight">\(\sigma_q\)</span> to all points.</p></li>
 <li><p>Integrate the profile from Step 2.</p></li>
 <li><p>Divide by <span class="math notranslate nohighlight">\(-\varepsilon_0\varepsilon_\mathrm{r}\)</span>.</p></li>
 <li><p>Apply the second BC by adding <span class="math notranslate nohighlight">\(\Psi_0\)</span> to all points.</p></li>
@@ -439,7 +439,10 @@ linear equations</p>
 <div class="math notranslate nohighlight">
 \[A\mathbf{\Psi}=\mathbf{b}\]</div>
 </div>
-<p>using second-order finite differences.</p>
+<p>using second-order finite differences. <span class="math notranslate nohighlight">\(A\)</span> is a tridiagonal
+matrix and <span class="math notranslate nohighlight">\(b\)</span> is a vector containing the charge density
+profile, with boundary conditions applied in the first and last
+rows.</p>
 <p>The inner equations are given by</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
@@ -491,6 +494,11 @@ is zero. If not provided, it is determined using <cite>dV</cite> and
 the charge density profile, or the average value in the
 center of the integrated charge density profile if
 <code class="code docutils literal notranslate"><span class="pre">method=&quot;integral&quot;</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This value should be negative if the potential difference
+is positive and vice versa.</p>
+</div>
 <p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{e/Å^2}\)</span>.</p>
 </dd>
 <dt><strong>dV</strong><span class="classifier"><cite>float</cite>, keyword-only, optional</span></dt><dd><p>Potential difference <span class="math notranslate nohighlight">\(\Delta\Psi\)</span> across the system

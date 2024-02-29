@@ -338,3 +338,75 @@ class ParallelAnalysisBase(SerialAnalysisBase):
 
         self._conclude()
         return self
+    
+class DynamicAnalysisBase(ParallelAnalysisBase, SerialAnalysisBase):
+    
+    """
+    A dynamic analysis base object.
+
+    Parameters
+    ----------
+    trajectory : `MDAnalysis.coordinates.base.ReaderBase`
+        Simulation trajectory.
+
+    parallel : `bool`
+        Determines whether the analysis is performed in parallel.
+    
+    verbose : `bool`, default: :code:`True`
+        Determines whether detailed progress is shown.
+
+    **kwargs
+        Additional keyword arguments to pass to
+        :class:`MDAnalysis.analysis.base.AnalysisBase`.
+    """
+
+    def __init__(
+            self, trajectory: ReaderBase, parallel: bool, 
+            verbose: bool = False, **kwargs) -> None:
+        
+        self._parallel = parallel
+        (ParallelAnalysisBase if parallel else SerialAnalysisBase).__init__(
+            self, trajectory, verbose=verbose, **kwargs
+        )
+
+    def run(
+            self, start: int = None, stop: int = None, step: int = None,
+            frames: Union[slice, np.ndarray[int]] = None,
+            verbose: bool = None, **kwargs
+        ) -> Union[SerialAnalysisBase, ParallelAnalysisBase]:
+
+        """
+        Performs the calculation.
+
+        Parameters
+        ----------
+        start : `int`, optional
+            Starting frame for analysis.
+        
+        stop : `int`, optional
+            Ending frame for analysis.
+
+        step : `int`, optional
+            Number of frames to skip between each analyzed frame.
+
+        frames : `slice` or array-like, optional
+            Index or logical array of the desired trajectory frames.
+
+        verbose : `bool`, optional
+            Determines whether detailed progress is shown.
+        
+        **kwargs
+            Additional keyword arguments to pass to
+            :class:`MDAnalysis.lib.log.ProgressBar`.
+
+        Returns
+        -------
+        self : `SerialAnalysisBase` or `ParallelAnalysisBase`
+            Analysis object with results.
+        """
+
+        return (ParallelAnalysisBase if self._parallel 
+                else SerialAnalysisBase).run(
+            self, start=start, stop=stop, step=step, frames=frames,
+            verbose=verbose, **kwargs
+        )

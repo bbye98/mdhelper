@@ -1,4 +1,4 @@
-base
+﻿base
 ====
 
 .. automodule:: mdhelper.analysis.base
@@ -20,6 +20,7 @@ base
       :template: autosummary/class.rst
       :nosignatures:
    
+      DynamicAnalysisBase
       ParallelAnalysisBase
       SerialAnalysisBase
    

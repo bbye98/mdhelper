@@ -190,6 +190,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -413,7 +414,7 @@
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">argrelextrema</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">jv</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">SerialAnalysisBase</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">DynamicAnalysisBase</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">FOUND_OPENMM</span><span class="p">,</span> <span class="n">ureg</span><span class="p">,</span> <span class="n">Q_</span>
 <span class="kn">from</span> <span class="nn">..algorithm.correlation</span> <span class="kn">import</span> <span class="n">correlation_fft</span><span class="p">,</span> <span class="n">correlation_shift</span>
 <span class="kn">from</span> <span class="nn">..algorithm.molecule</span> <span class="kn">import</span> <span class="n">center_of_mass</span>
@@ -847,7 +848,7 @@
 
 <div class="viewcode-block" id="RDF">
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF">[docs]</a>
-<span class="k">class</span> <span class="nc">RDF</span><span class="p">(</span><span class="n">ParallelAnalysisBase</span><span class="p">,</span> <span class="n">SerialAnalysisBase</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">RDF</span><span class="p">(</span><span class="n">DynamicAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Serial and parallel implementations to calculate the radial </span>
@@ -1093,10 +1094,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trajectory does not contain system &quot;</span>
                              <span class="s2">&quot;dimension information.&quot;</span><span class="p">)</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> <span class="o">=</span> <span class="n">parallel</span>
-        <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="n">parallel</span> <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groupings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">groupings</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">,</span> <span class="s2">&quot;segments&quot;</span><span class="p">}:</span>
@@ -1255,51 +1253,6 @@
         <span class="c1"># particle density, or the raw radial pair counts</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">counts</span> <span class="o">/</span> <span class="n">norm</span>
 
-<div class="viewcode-block" id="RDF.run">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.RDF.html#mdhelper.analysis.structure.RDF.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SerialAnalysisBase</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">]:</span>
-
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Performs the calculation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        start : `int`, optional</span>
-<span class="sd">            Starting frame for analysis.</span>
-<span class="sd">        </span>
-<span class="sd">        stop : `int`, optional</span>
-<span class="sd">            Ending frame for analysis.</span>
-
-<span class="sd">        step : `int`, optional</span>
-<span class="sd">            Number of frames to skip between each analyzed frame.</span>
-
-<span class="sd">        frames : `slice` or array-like, optional</span>
-<span class="sd">            Index or logical array of the desired trajectory frames.</span>
-
-<span class="sd">        verbose : `bool`, optional</span>
-<span class="sd">            Determines whether detailed progress is shown.</span>
-<span class="sd">        </span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments to pass to</span>
-<span class="sd">            :class:`MDAnalysis.lib.log.ProgressBar`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        self : `SerialAnalysisBase` or `ParallelAnalysisBase`</span>
-<span class="sd">            Analysis object with results.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> 
-                <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span></div>
-
-
     <span class="k">def</span> <span class="nf">_get_rdf</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1387,7 +1340,7 @@
 <span class="sd">            **Reference unit**: :math:`\mathrm{K}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;results.pmf&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">mole</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.pmf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">mole</span>
 
         <span class="n">temperature</span><span class="p">,</span> <span class="n">unit_</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="s2">&quot;kelvin&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span><span class="p">:</span>
@@ -1468,8 +1421,8 @@
 
 <span class="sd">               .. seealso::</span>
 
-<span class="sd">               For more information, see </span>
-<span class="sd">               :func:`calculate_structure_factor`.</span>
+<span class="sd">                  For more information, see </span>
+<span class="sd">                  :func:`calculate_structure_factor`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">calculate_structure_factor</span><span class="p">(</span>
@@ -1482,7 +1435,7 @@
 
 <div class="viewcode-block" id="StructureFactor">
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.StructureFactor.html#mdhelper.analysis.structure.StructureFactor">[docs]</a>
-<span class="k">class</span> <span class="nc">StructureFactor</span><span class="p">(</span><span class="n">ParallelAnalysisBase</span><span class="p">,</span> <span class="n">SerialAnalysisBase</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">StructureFactor</span><span class="p">(</span><span class="n">DynamicAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Serial and parallel implementations to calculate the static </span>
@@ -1496,11 +1449,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        S(\mathbf{q})&amp;=\\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N</span>
-<span class="sd">        \exp{[-i\mathbf{q}\cdot(\mathbf{r}_j-\mathbf{r}_k)]}\\right\\rangle\\\\</span>
+<span class="sd">        S(\\mathbf{q})&amp;=\\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N</span>
+<span class="sd">        \exp{[-i\\mathbf{q}\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\</span>
 <span class="sd">        &amp;=\\frac{1}{N}\left\langle\left[</span>
-<span class="sd">        \sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2+\left[</span>
-<span class="sd">        \sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2\\right\\rangle</span>
+<span class="sd">        \sum_{j=1}^N\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2+\left[</span>
+<span class="sd">        \sum_{j=1}^N\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2\\right\\rangle</span>
 
 <span class="sd">    where :math:`N` is the number of particles, :math:`\\mathbf{q}` is</span>
 <span class="sd">    the scattering wavevector, and :math:`\\mathbf{r}_i` is the position</span>
@@ -1643,10 +1596,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">)</span> <span class="k">else</span> <span class="n">groups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> <span class="o">=</span> <span class="n">parallel</span>
-        <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="n">parallel</span> <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dimensions</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
@@ -1669,20 +1619,20 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groupings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">groupings</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">}:</span>
-                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">groupings</span><span class="si">}</span><span class="s2">&#39;. The options are &quot;</span>
-                        <span class="s2">&quot;&#39;atoms&#39; and &#39;residues&#39;.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">groupings</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">GROUPINGS</span> <span class="o">:=</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">}):</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">groupings</span><span class="si">}</span><span class="s2">&#39;. Valid &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;values: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">GROUPINGS</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">*</span> <span class="p">[</span><span class="n">groupings</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">groupings</span><span class="p">):</span>
-                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The number of grouping values is not equal to the &quot;</span>
-                        <span class="s2">&quot;number of groups.&quot;</span><span class="p">)</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The number of grouping values is not equal to &quot;</span>
+                        <span class="s2">&quot;the number of groups.&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groupings</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">g</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">}:</span>
-                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&#39;. The options are &quot;</span>
-                            <span class="s2">&quot;&#39;atoms&#39; and &#39;residues&#39;.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">g</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">GROUPINGS</span> <span class="o">:=</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">}):</span>
+                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">groupings</span><span class="si">}</span><span class="s2">&#39;. Valid &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;values: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">GROUPINGS</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span> <span class="o">=</span> <span class="n">groupings</span>
 
@@ -1905,6 +1855,10 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
+        <span class="c1"># Free up memory used by the atom position array</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span>
+
         <span class="c1"># Normalize the structure factor by the number of particles and</span>
         <span class="c1"># timesteps, and flatten the array by combining values sharing</span>
         <span class="c1"># the same wavevector magnitude</span>
@@ -1928,62 +1882,16 @@
                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)]</span>
                  <span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                  <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">]</span>
-            <span class="p">)</span>
-
-<div class="viewcode-block" id="StructureFactor.run">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.StructureFactor.html#mdhelper.analysis.structure.StructureFactor.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SerialAnalysisBase</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">]:</span>
-
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Performs the calculation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        start : `int`, optional</span>
-<span class="sd">            Starting frame for analysis.</span>
-<span class="sd">        </span>
-<span class="sd">        stop : `int`, optional</span>
-<span class="sd">            Ending frame for analysis.</span>
-
-<span class="sd">        step : `int`, optional</span>
-<span class="sd">            Number of frames to skip between each analyzed frame.</span>
-
-<span class="sd">        frames : `slice` or array-like, optional</span>
-<span class="sd">            Index or logical array of the desired trajectory frames.</span>
-
-<span class="sd">        verbose : `bool`, optional</span>
-<span class="sd">            Determines whether detailed progress is shown.</span>
-<span class="sd">        </span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments to pass to</span>
-<span class="sd">            :class:`MDAnalysis.lib.log.ProgressBar`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        self : `SerialAnalysisBase` or `ParallelAnalysisBase`</span>
-<span class="sd">            Analysis object with results.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> 
-                <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span></div>
-</div>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="IncoherentIntermediateScatteringFunction">
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction">[docs]</a>
-<span class="k">class</span> <span class="nc">IncoherentIntermediateScatteringFunction</span><span class="p">(</span><span class="n">ParallelAnalysisBase</span><span class="p">,</span> 
-                                               <span class="n">SerialAnalysisBase</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">IncoherentIntermediateScatteringFunction</span><span class="p">(</span><span class="n">DynamicAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Serial and parallel implementations to calculate the incoherent (or</span>
-<span class="sd">    self) intermediate scattering function :math:`F_\\mathrm{s}(q,\,t)`.</span>
+<span class="sd">    self) intermediate scattering function :math:`F_\\mathrm{s}(q,\\,t)`.</span>
 
 <span class="sd">    The incoherent intermediate scattering function characterizes the</span>
 <span class="sd">    mean relaxation time of a system, and its spatial fluctuations</span>
@@ -2107,7 +2015,7 @@
 
 <span class="sd">    results.isf : `numpy.ndarray`</span>
 <span class="sd">        Incoherent (self) intermediate scattering function</span>
-<span class="sd">        :math:`F_\\mathrm{s}(q,\,t)`.</span>
+<span class="sd">        :math:`F_\\mathrm{s}(q,\\,t)`.</span>
 
 <span class="sd">        **Shape**: :math:`(N_\\mathrm{t},\,N_\\mathrm{w})`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2124,10 +2032,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">)</span> <span class="k">else</span> <span class="n">groups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> <span class="o">=</span> <span class="n">parallel</span>
-        <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="n">parallel</span> <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dimensions</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
@@ -2297,6 +2202,7 @@
             <span class="n">cos_sum</span> <span class="o">=</span> <span class="n">trig_sums</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">sin_sum</span> <span class="o">=</span> <span class="n">trig_sums</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span>
             <span class="n">cos_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span>
             <span class="n">sin_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span>
 
@@ -2314,52 +2220,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">isf</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)]</span>
             <span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span>
-        <span class="p">])</span>
-
-<div class="viewcode-block" id="IncoherentIntermediateScatteringFunction.run">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SerialAnalysisBase</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">]:</span>
-
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Performs the calculation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        start : `int`, optional</span>
-<span class="sd">            Starting frame for analysis.</span>
-<span class="sd">        </span>
-<span class="sd">        stop : `int`, optional</span>
-<span class="sd">            Ending frame for analysis.</span>
-
-<span class="sd">        step : `int`, optional</span>
-<span class="sd">            Number of frames to skip between each analyzed frame.</span>
-
-<span class="sd">        frames : `slice` or array-like, optional</span>
-<span class="sd">            Index or logical array of the desired trajectory frames.</span>
-
-<span class="sd">        verbose : `bool`, optional</span>
-<span class="sd">            Determines whether detailed progress is shown.</span>
-<span class="sd">        </span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments to pass to</span>
-<span class="sd">            :class:`MDAnalysis.lib.log.ProgressBar`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        self : `SerialAnalysisBase` or `ParallelAnalysisBase`</span>
-<span class="sd">            Analysis object with results.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> 
-                <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span></div>
-</div>
+        <span class="p">])</span></div>
 
 </pre></div>
         </article>

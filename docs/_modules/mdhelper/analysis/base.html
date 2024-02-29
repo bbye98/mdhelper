@@ -190,6 +190,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -746,6 +747,84 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_conclude</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+    
+<div class="viewcode-block" id="DynamicAnalysisBase">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html#mdhelper.analysis.base.DynamicAnalysisBase">[docs]</a>
+<span class="k">class</span> <span class="nc">DynamicAnalysisBase</span><span class="p">(</span><span class="n">ParallelAnalysisBase</span><span class="p">,</span> <span class="n">SerialAnalysisBase</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A dynamic analysis base object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    trajectory : `MDAnalysis.coordinates.base.ReaderBase`</span>
+<span class="sd">        Simulation trajectory.</span>
+
+<span class="sd">    parallel : `bool`</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
+<span class="sd">    </span>
+<span class="sd">    verbose : `bool`, default: :code:`True`</span>
+<span class="sd">        Determines whether detailed progress is shown.</span>
+
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments to pass to</span>
+<span class="sd">        :class:`MDAnalysis.analysis.base.AnalysisBase`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">:</span> <span class="n">ReaderBase</span><span class="p">,</span> <span class="n">parallel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> 
+            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> <span class="o">=</span> <span class="n">parallel</span>
+        <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="n">parallel</span> <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="DynamicAnalysisBase.run">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html#mdhelper.analysis.base.DynamicAnalysisBase.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SerialAnalysisBase</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">]:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs the calculation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : `int`, optional</span>
+<span class="sd">            Starting frame for analysis.</span>
+<span class="sd">        </span>
+<span class="sd">        stop : `int`, optional</span>
+<span class="sd">            Ending frame for analysis.</span>
+
+<span class="sd">        step : `int`, optional</span>
+<span class="sd">            Number of frames to skip between each analyzed frame.</span>
+
+<span class="sd">        frames : `slice` or array-like, optional</span>
+<span class="sd">            Index or logical array of the desired trajectory frames.</span>
+
+<span class="sd">        verbose : `bool`, optional</span>
+<span class="sd">            Determines whether detailed progress is shown.</span>
+<span class="sd">        </span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments to pass to</span>
+<span class="sd">            :class:`MDAnalysis.lib.log.ProgressBar`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : `SerialAnalysisBase` or `ParallelAnalysisBase`</span>
+<span class="sd">            Analysis object with results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> 
+                <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
 </div>
 
 </pre></div>

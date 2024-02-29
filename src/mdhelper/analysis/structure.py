@@ -18,7 +18,7 @@ from scipy.integrate import simpson
 from scipy.signal import argrelextrema
 from scipy.special import jv
 
-from .base import SerialAnalysisBase, ParallelAnalysisBase
+from .base import DynamicAnalysisBase
 from .. import FOUND_OPENMM, ureg, Q_
 from ..algorithm.correlation import correlation_fft, correlation_shift
 from ..algorithm.molecule import center_of_mass
@@ -435,7 +435,7 @@ def calculate_structure_factor(
             return q, 1 + x_i * x_j * rho_sft
     raise ValueError("Invalid formalism.")
 
-class RDF(ParallelAnalysisBase, SerialAnalysisBase):
+class RDF(DynamicAnalysisBase):
 
     r"""
     Serial and parallel implementations to calculate the radial 
@@ -681,10 +681,7 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
             raise ValueError("Trajectory does not contain system "
                              "dimension information.")
         
-        self._parallel = parallel
-        (ParallelAnalysisBase if parallel else SerialAnalysisBase).__init__(
-            self, self.universe.trajectory, verbose=verbose, **kwargs
-        )
+        super().__init__(self.universe.trajectory, parallel, verbose, **kwargs)
 
         if isinstance(groupings, str):
             if groupings not in {"atoms", "residues", "segments"}:
@@ -843,48 +840,6 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
         # particle density, or the raw radial pair counts
         self.results.rdf = self.results.counts / norm
 
-    def run(
-            self, start: int = None, stop: int = None, step: int = None,
-            frames: Union[slice, np.ndarray[int]] = None,
-            verbose: bool = None, **kwargs
-        ) -> Union[SerialAnalysisBase, ParallelAnalysisBase]:
-
-        """
-        Performs the calculation.
-
-        Parameters
-        ----------
-        start : `int`, optional
-            Starting frame for analysis.
-        
-        stop : `int`, optional
-            Ending frame for analysis.
-
-        step : `int`, optional
-            Number of frames to skip between each analyzed frame.
-
-        frames : `slice` or array-like, optional
-            Index or logical array of the desired trajectory frames.
-
-        verbose : `bool`, optional
-            Determines whether detailed progress is shown.
-        
-        **kwargs
-            Additional keyword arguments to pass to
-            :class:`MDAnalysis.lib.log.ProgressBar`.
-
-        Returns
-        -------
-        self : `SerialAnalysisBase` or `ParallelAnalysisBase`
-            Analysis object with results.
-        """
-
-        return (ParallelAnalysisBase if self._parallel 
-                else SerialAnalysisBase).run(
-            self, start=start, stop=stop, step=step, frames=frames,
-            verbose=verbose, **kwargs
-        )
-
     def _get_rdf(self) -> np.ndarray[float]:
 
         """
@@ -967,7 +922,7 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
             **Reference unit**: :math:`\mathrm{K}`.
         """
 
-        self.results.units = {"results.pmf": ureg.kilojoule / ureg.mole}
+        self.results.units["results.pmf"] = ureg.kilojoule / ureg.mole
 
         temperature, unit_ = strip_unit(temperature, "kelvin")
         if self._reduced:
@@ -1045,8 +1000,8 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
 
                .. seealso::
 
-               For more information, see 
-               :func:`calculate_structure_factor`.
+                  For more information, see 
+                  :func:`calculate_structure_factor`.
         """
 
         self.results.wavenumbers, self.results.ssf = calculate_structure_factor(
@@ -1055,7 +1010,7 @@ class RDF(ParallelAnalysisBase, SerialAnalysisBase):
             n_q=n_q, n_dims=2 + (self._drop_axis is None), formalism=formalism
         )
 
-class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
+class StructureFactor(DynamicAnalysisBase):
 
     """
     Serial and parallel implementations to calculate the static 
@@ -1069,11 +1024,11 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
     .. math::
 
-        S(\mathbf{q})&=\\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N
-        \exp{[-i\mathbf{q}\cdot(\mathbf{r}_j-\mathbf{r}_k)]}\\right\\rangle\\\\
+        S(\\mathbf{q})&=\\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N
+        \exp{[-i\\mathbf{q}\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\
         &=\\frac{1}{N}\left\langle\left[
-        \sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2+\left[
-        \sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}\\right]^2\\right\\rangle
+        \sum_{j=1}^N\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2+\left[
+        \sum_{j=1}^N\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2\\right\\rangle
 
     where :math:`N` is the number of particles, :math:`\\mathbf{q}` is
     the scattering wavevector, and :math:`\\mathbf{r}_i` is the position
@@ -1216,10 +1171,7 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
 
-        self._parallel = parallel
-        (ParallelAnalysisBase if parallel else SerialAnalysisBase).__init__(
-            self, self.universe.trajectory, verbose=verbose, **kwargs
-        )
+        super().__init__(self.universe.trajectory, parallel, verbose, **kwargs)
 
         if dimensions is not None:
             if len(dimensions) != 3:
@@ -1242,20 +1194,20 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
         self._n_groups = len(self._groups)
         if isinstance(groupings, str):
-            if groupings not in {"atoms", "residues"}:
-                emsg = (f"Invalid grouping '{groupings}'. The options are "
-                        "'atoms' and 'residues'.")
+            if groupings not in (GROUPINGS := {"atoms", "residues"}):
+                emsg = (f"Invalid grouping '{groupings}'. Valid "
+                        f"values: {', '.join(GROUPINGS)}.")
                 raise ValueError(emsg)
             self._groupings = self._n_groups * [groupings]
         else:
             if self._n_groups != len(groupings):
-                emsg = ("The number of grouping values is not equal to the "
-                        "number of groups.")
+                emsg = ("The number of grouping values is not equal to "
+                        "the number of groups.")
                 raise ValueError(emsg)
             for g in groupings:
-                if g not in {"atoms", "residues"}:
-                    emsg = (f"Invalid grouping '{g}'. The options are "
-                            "'atoms' and 'residues'.")
+                if g not in (GROUPINGS := {"atoms", "residues"}):
+                    emsg = (f"Invalid grouping '{groupings}'. Valid "
+                            f"values: {', '.join(GROUPINGS)}.")
                     raise ValueError(emsg)
             self._groupings = groupings
 
@@ -1478,6 +1430,10 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
         if self._parallel:
             self.results.ssf = np.vstack(self._results).sum(axis=0)
 
+        # Free up memory used by the atom position array
+        else:
+            del self._positions
+
         # Normalize the structure factor by the number of particles and
         # timesteps, and flatten the array by combining values sharing
         # the same wavevector magnitude
@@ -1503,54 +1459,11 @@ class StructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
                  for q in self.results.wavenumbers]
             )
 
-    def run(
-            self, start: int = None, stop: int = None, step: int = None,
-            frames: Union[slice, np.ndarray[int]] = None,
-            verbose: bool = None, **kwargs
-        ) -> Union[SerialAnalysisBase, ParallelAnalysisBase]:
-
-        """
-        Performs the calculation.
-
-        Parameters
-        ----------
-        start : `int`, optional
-            Starting frame for analysis.
-        
-        stop : `int`, optional
-            Ending frame for analysis.
-
-        step : `int`, optional
-            Number of frames to skip between each analyzed frame.
-
-        frames : `slice` or array-like, optional
-            Index or logical array of the desired trajectory frames.
-
-        verbose : `bool`, optional
-            Determines whether detailed progress is shown.
-        
-        **kwargs
-            Additional keyword arguments to pass to
-            :class:`MDAnalysis.lib.log.ProgressBar`.
-
-        Returns
-        -------
-        self : `SerialAnalysisBase` or `ParallelAnalysisBase`
-            Analysis object with results.
-        """
-
-        return (ParallelAnalysisBase if self._parallel 
-                else SerialAnalysisBase).run(
-            self, start=start, stop=stop, step=step, frames=frames,
-            verbose=verbose, **kwargs
-        )
-
-class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase, 
-                                               SerialAnalysisBase):
+class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
 
     """
     Serial and parallel implementations to calculate the incoherent (or
-    self) intermediate scattering function :math:`F_\\mathrm{s}(q,\,t)`.
+    self) intermediate scattering function :math:`F_\\mathrm{s}(q,\\,t)`.
 
     The incoherent intermediate scattering function characterizes the
     mean relaxation time of a system, and its spatial fluctuations
@@ -1674,7 +1587,7 @@ class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase,
 
     results.isf : `numpy.ndarray`
         Incoherent (self) intermediate scattering function
-        :math:`F_\\mathrm{s}(q,\,t)`.
+        :math:`F_\\mathrm{s}(q,\\,t)`.
 
         **Shape**: :math:`(N_\\mathrm{t},\,N_\\mathrm{w})`.
     """
@@ -1691,10 +1604,7 @@ class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase,
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
 
-        self._parallel = parallel
-        (ParallelAnalysisBase if parallel else SerialAnalysisBase).__init__(
-            self, self.universe.trajectory, verbose=verbose, **kwargs
-        )
+        super().__init__(self.universe.trajectory, parallel, verbose, **kwargs)
 
         if dimensions is not None:
             if len(dimensions) != 3:
@@ -1864,6 +1774,7 @@ class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase,
             cos_sum = trig_sums[:, 0]
             sin_sum = trig_sums[:, 1]
         else:
+            del self._positions
             cos_sum = self._cos_sum
             sin_sum = self._sin_sum
 
@@ -1882,45 +1793,3 @@ class IncoherentIntermediateScatteringFunction(ParallelAnalysisBase,
             .mean(axis=1, keepdims=True)
             for q in self.results.wavenumbers
         ])
-
-    def run(
-            self, start: int = None, stop: int = None, step: int = None,
-            frames: Union[slice, np.ndarray[int]] = None,
-            verbose: bool = None, **kwargs
-        ) -> Union[SerialAnalysisBase, ParallelAnalysisBase]:
-
-        """
-        Performs the calculation.
-
-        Parameters
-        ----------
-        start : `int`, optional
-            Starting frame for analysis.
-        
-        stop : `int`, optional
-            Ending frame for analysis.
-
-        step : `int`, optional
-            Number of frames to skip between each analyzed frame.
-
-        frames : `slice` or array-like, optional
-            Index or logical array of the desired trajectory frames.
-
-        verbose : `bool`, optional
-            Determines whether detailed progress is shown.
-        
-        **kwargs
-            Additional keyword arguments to pass to
-            :class:`MDAnalysis.lib.log.ProgressBar`.
-
-        Returns
-        -------
-        self : `SerialAnalysisBase` or `ParallelAnalysisBase`
-            Analysis object with results.
-        """
-
-        return (ParallelAnalysisBase if self._parallel 
-                else SerialAnalysisBase).run(
-            self, start=start, stop=stop, step=step, frames=frames,
-            verbose=verbose, **kwargs
-        )

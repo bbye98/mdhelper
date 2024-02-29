@@ -838,7 +838,8 @@ class SingleChainStructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
         self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
         self.results.units["results.wavenumbers"] = ureg.angstrom ** -1
 
-        # Store (unwrapped) particle positions in a shared memory array
+        # Store unwrapped atom positions in a shared memory array for
+        # parallel analysis
         if self._parallel:
             self._positions = np.empty(
                 (self.n_frames, self._n_chains * self._n_monomers, 3)
@@ -884,13 +885,11 @@ class SingleChainStructureFactor(ParallelAnalysisBase, SerialAnalysisBase):
 
         # Unwrap particle positions if necessary
         if self._unwrap:
-            unwrap(
-                positions,
-                self._positions_old,
-                self._dimensions,
-                thresholds=self._thresholds,
-                images=self._images
-            )
+            unwrap(positions,
+                   self._positions_old,
+                   self._dimensions,
+                   thresholds=self._thresholds,
+                   images=self._images)
 
         # Calculate single-chain structure factor contributions
         for chain in positions.reshape((self._n_chains, self._n_monomers, 3)):

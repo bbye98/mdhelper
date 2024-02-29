@@ -22,22 +22,27 @@ def test_class_density_profile():
     density = LinearDensity(universe.atoms, grouping="residues").run()
     density_profile = profile.DensityProfile(universe.atoms, "residues",
                                              n_bins=200).run()
+    parallel_density_profile = profile.DensityProfile(
+        universe.atoms, "residues", n_bins=200, parallel=True
+    ).run(n_jobs=1)
 
     for i, axis in enumerate("xyz"):
 
-        # TEST CASE 1: Number density profiles
-        assert(
-            np.allclose(
-                0.602214076 * getattr(density.results, axis).mass_density
-                / universe.residues.masses[0],
-                density_profile.results.number_densities[i]
-            )
+        number_density = (
+            0.602214076 * getattr(density.results, axis).mass_density
+            / universe.residues.masses[0]
         )
+        charge_density = (0.602214076 
+                          * getattr(density.results, axis).charge_density)
+
+        # TEST CASE 1: Number density profiles
+        assert(np.allclose(number_density,
+                           density_profile.results.number_densities[i]))
+        assert(np.allclose(number_density,
+                           parallel_density_profile.results.number_densities[i]))
 
         # TEST CASE 2: Charge density profiles
-        assert(
-            np.allclose(
-                0.602214076 * getattr(density.results, axis).charge_density,
-                density_profile.results.charge_densities[i]
-            )
-        )
+        assert(np.allclose(charge_density,
+                           density_profile.results.charge_densities[i]))
+        assert(np.allclose(charge_density,
+                           parallel_density_profile.results.charge_densities[i]))

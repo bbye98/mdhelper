@@ -190,6 +190,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -1253,7 +1254,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">11</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.wavenumbers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
 
-        <span class="c1"># Store (unwrapped) particle positions in a shared memory array</span>
+        <span class="c1"># Store unwrapped atom positions in a shared memory array for</span>
+        <span class="c1"># parallel analysis</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -1299,13 +1301,11 @@
 
         <span class="c1"># Unwrap particle positions if necessary</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
-            <span class="n">unwrap</span><span class="p">(</span>
-                <span class="n">positions</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
-                <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
-                <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
-            <span class="p">)</span>
+            <span class="n">unwrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
+                   <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
+                   <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
 
         <span class="c1"># Calculate single-chain structure factor contributions</span>
         <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
