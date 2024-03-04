@@ -57,7 +57,7 @@ toc_object_entries_show_parents = "hide"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_favicon = "../../assets/favicon.ico"
-html_logo = "../../assets/logo.svg"
+html_logo = "../../assets/logo.png"
 html_show_sourcelink = False
 html_static_path = ["_static"]
 html_theme = "furo"
