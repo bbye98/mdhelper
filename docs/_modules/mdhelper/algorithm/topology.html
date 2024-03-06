@@ -175,6 +175,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.wrap.html">wrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -733,6 +734,58 @@
         <span class="n">images</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">dpos</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">positions</span> <span class="o">+=</span> <span class="n">images</span> <span class="o">*</span> <span class="n">dimensions</span>
         <span class="k">return</span> <span class="n">positions</span><span class="p">,</span> <span class="n">positions_old</span><span class="p">,</span> <span class="n">images</span></div>
+
+    
+<div class="viewcode-block" id="wrap">
+<a class="viewcode-back" href="../../../api/mdhelper.algorithm.topology.wrap.html#mdhelper.algorithm.topology.wrap">[docs]</a>
+<span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span>
+        <span class="n">positions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">dimensions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wraps particle positions back into the primary simulation cell.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    positions : `numpy.ndarray`</span>
+<span class="sd">        Particle positions.</span>
+
+<span class="sd">        **Shape**: :math:`(N,\,3)`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{nm}`.</span>
+
+<span class="sd">    dimensions : `numpy.ndarray`</span>
+<span class="sd">        System dimensions.</span>
+
+<span class="sd">        **Shape**: :math:`(3,)`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{nm}`.</span>
+
+<span class="sd">    in_place : `bool`, keyword-only, default: :code:`False`</span>
+<span class="sd">        Determines whether the input array is modified in-place.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    positions : `numpy.ndarray`</span>
+<span class="sd">        Wrapped particle positions. Only returned if</span>
+<span class="sd">        :code:`in_place=False`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,\,3)`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{nm}`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">wrap_indices</span> <span class="o">=</span> <span class="p">(</span><span class="n">positions</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">positions</span> <span class="o">&gt;</span> <span class="n">dimensions</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">in_place</span><span class="p">:</span>
+        <span class="n">positions</span><span class="p">[</span><span class="n">wrap_indices</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">positions</span> <span class="o">/</span> <span class="n">dimensions</span><span class="p">)</span> <span class="o">*</span> <span class="n">dimensions</span>
+        <span class="p">)[</span><span class="n">wrap_indices</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">positions</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">positions</span><span class="p">[</span><span class="n">wrap_indices</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">positions</span> <span class="o">/</span> <span class="n">dimensions</span><span class="p">)</span> <span class="o">*</span> <span class="n">dimensions</span>
+        <span class="p">)[</span><span class="n">wrap_indices</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">positions</span></div>
 
 </pre></div>
         </article>

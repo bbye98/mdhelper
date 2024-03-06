@@ -80,7 +80,7 @@ def calculate_relative_permittivity(
 
     Returns
     -------
-    vareps_r : `float`
+    dielectric : `float`
         Relative permittivity (or static dielectric constant).
 
     References
@@ -137,13 +137,22 @@ class DipoleMoment(SerialAnalysisBase):
     groups : `MDAnalysis.AtomGroup` or array-like
         Group(s) of atoms for which the dipole moments are calculated.
 
+        .. important::
+
+           Ensure that no bonds are split over images when atoms are
+           wrapped into the primary simulation cell. If you think your
+           system may have split bonds, use
+           :class:`MDAnalysis.transformations.wrap.unwrap` to unwrap
+           the trajectory before passing an :code:`AtomGroup` to this
+           class.
+
     charges : array-like, keyword-only, optional
         Charge information for the atoms in the :math:`N_\mathrm{g}`
         groups in `groups`. If not provided, it should be available in
         and will be retrieved from the main
         :class:`MDAnalysis.core.universe.Universe` object.
 
-        **Shape**: :math:`(N_\mathrm{g},)` array of `int`s, `float`s, or
+        **Shape**: :math:`(N_\mathrm{g},)` array of real numbers or
         :math:`(N_i,)` arrays, where :math:`N_i` is the number of atoms
         in group :math:`i`.
 
@@ -172,6 +181,13 @@ class DipoleMoment(SerialAnalysisBase):
     reduced : `bool`, keyword-only, default: :code:`False`
         Specifies whether the data is in reduced units. Only affects
         :meth:`calculate_relative_permittivity` calls.
+
+    remove_net_charge : `bool`, keyword-only, default: :code:`False`
+        Specifies whether the net charge is subtracted at the center of
+        mass for molecules with net charges. Must be enabled if your
+        system contains molecules with net charges and you want to
+        calculate the relative permittivity, but should be disabled if
+        you are only interested in the instantaneous dipole moment.
 
     unwrap : `bool`, keyword-only, default: :code:`False`
         Determines whether atom positions are unwrapped.
@@ -233,8 +249,8 @@ class DipoleMoment(SerialAnalysisBase):
             charges: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             scales: Union[float, tuple[float]] = 1, average: bool = False,
-            reduced: bool = False, unwrap: bool = False, verbose: bool = True,
-            **kwargs) -> None:
+            reduced: bool = False, remove_net_charge: bool = False,
+            unwrap: bool = False, verbose: bool = True, **kwargs) -> None:
 
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self._n_groups = len(self._groups)
@@ -294,6 +310,7 @@ class DipoleMoment(SerialAnalysisBase):
 
         self._average = average
         self._reduced = reduced
+        self._remove_net_charge = remove_net_charge
         self._unwrap = unwrap
         self._verbose = verbose
 

@@ -20,7 +20,7 @@ from .base import SerialAnalysisBase
 from .. import FOUND_OPENMM, Q_, ureg
 from ..algorithm import correlation
 from ..algorithm.molecule import center_of_mass
-from ..algorithm.topology import unwrap
+from ..algorithm.topology import unwrap, wrap
 from ..algorithm.utility import strip_unit
 from ..fit.polynomial import poly1
 
@@ -450,38 +450,38 @@ class Onsager(SerialAnalysisBase):
     transport properties in bulk constant-volume fluids and
     electrolytic systems, such as those in the canonical
     (:math:`NVT`), microcanonical (:math:`NVE`), and grand
-    canonical (:math:`\mu VT`) ensembles.
+    canonical (:math:`\\mu VT`) ensembles.
 
     The Onsager transport equation
 
     .. math::
 
-       \pmb{J}_i=-\sum_j L_{ij}\\nabla\\bar{\mu}_j
+       \\pmb{J}_i=-\\sum_j L_{ij}\\nabla\\bar{\\mu}_j
 
     relates the flux :math:`\\pmb{J}_i` of species :math:`i` to the
     Onsager transport coefficients :math:`L_{ij}` and the
-    electrochemical potential :math:`\\bar{\mu}_j` of species :math:`j`.
-    There is an Onsager transport coefficient for each pair of species
-    that, unlike the Nernst–Einstein equation, captures the strong
-    cross-correlations in electrolytes.
+    electrochemical potential :math:`\\bar{\\mu}_j` of species 
+    :math:`j`. There is an Onsager transport coefficient for each pair
+    of species that, unlike the Nernst–Einstein equation, captures the
+    strong cross-correlations in electrolytes.
 
     The Onsager transport coefficients can be calculated from the
     particle positions over time using the Einstein relation
 
     .. math::
 
-       L_{ij}=\\frac{1}{6k_\mathrm{B}TV}
-       \lim_{t\\rightarrow\infty}\\frac{d}{dt}\left\langle\sum_\\alpha
-       \left[\pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)\\right]\cdot
-       \sum_\\beta\left[\pmb{r}_{j,\\beta}(t)-\pmb{r}_{j,\\beta}(0)\\right]
-       \\right\\rangle
+       L_{ij}=\\frac{1}{6k_\\mathrm{B}TV}
+       \\lim_{t\\rightarrow\\infty}\\frac{d}{dt}\\left\\langle\\sum_\\alpha
+       \\left[\\pmb{r}_{i,\\alpha}(t)-\\pmb{r}_{i,\\alpha}(0)\\right]
+       \\cdot\\sum_\\beta\\left[\\pmb{r}_{j,\\beta}(t)
+       -\\pmb{r}_{j,\\beta}(0)\\right]\\right\\rangle
 
-    where :math:`k_\mathrm{B}` is the Boltzmann constant, :math:`T` is
+    where :math:`k_\\mathrm{B}` is the Boltzmann constant, :math:`T` is
     the system temperature, :math:`V` is the system volume, :math:`t` is
-    time, and :math:`\pmb{r}_\\alpha` and :math:`\pmb{r}_\\beta` are the
-    positions of particles :math:`\\alpha` and :math:`\\beta` belonging
-    to species :math:`i` and :math:`j`, respectively. The angular
-    brackets denote the ensemble average. It is evident that
+    time, and :math:`\\pmb{r}_\\alpha` and :math:`\\pmb{r}_\\beta` are 
+    the positions of particles :math:`\\alpha` and :math:`\\beta` 
+    belonging to species :math:`i` and :math:`j`, respectively. The 
+    angular brackets denote the ensemble average. It is evident that
     :math:`L_{ij}=L_{ji}`; hence, the equation above is an Onsager
     reciprocal relation.
 
@@ -491,16 +491,16 @@ class Onsager(SerialAnalysisBase):
 
     .. math::
 
-       L_{ii}=L_{ii}^\mathrm{self}+L_{ii}^\mathrm{distinct}
+       L_{ii}=L_{ii}^\\mathrm{self}+L_{ii}^\\mathrm{distinct}
 
     The self term
 
     .. math::
 
-       L_{ii}^\mathrm{self}=\\frac{1}{6k_\mathrm{B}TV}
-       \lim_{t\\rightarrow\infty}\\frac{d}{dt}
-       \sum_\\alpha\left\langle\left[
-       \pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)
+       L_{ii}^\\mathrm{self}=\\frac{1}{6k_\\mathrm{B}TV}
+       \\lim_{t\\rightarrow\\infty}\\frac{d}{dt}
+       \\sum_\\alpha\\left\\langle\\left[
+       \\pmb{r}_{i,\\alpha}(t)-\\pmb{r}_{i,\\alpha}(0)
        \\right]^2\\right\\rangle
 
     is given by the autocorrelation function of the flux of a single
@@ -509,11 +509,11 @@ class Onsager(SerialAnalysisBase):
 
     .. math::
 
-       L_{ii}^\mathrm{self}=\\frac{1}{6k_\mathrm{B}TV}
-       \lim_{t\\rightarrow\infty}\\frac{d}{dt}
-       \sum_\\alpha\sum_{\\beta\\neq\\alpha}\left\langle\left[
-       \pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)\\right]\cdot
-       \left[\pmb{r}_{i,\\beta}(t)-\pmb{r}_{i,\\beta}(0)\\right]
+       L_{ii}^\\mathrm{self}=\\frac{1}{6k_\\mathrm{B}TV}
+       \\lim_{t\\rightarrow\\infty}\\frac{d}{dt}
+       \\sum_\\alpha\\sum_{\\beta\\neq\\alpha}\\left\\langle\\left[
+       \\pmb{r}_{i,\\alpha}(t)-\\pmb{r}_{i,\\alpha}(0)\\right]\\cdot
+       \\left[\\pmb{r}_{i,\\beta}(t)-\\pmb{r}_{i,\\beta}(0)\\right]
        \\right\\rangle
 
     is given by the cross-correlation between two distinct particles
@@ -522,7 +522,7 @@ class Onsager(SerialAnalysisBase):
 
     .. math::
 
-       L_{ii}^\mathrm{self}=\\frac{D_i\\rho_i}{k_\mathrm{B}T}
+       L_{ii}^\\mathrm{self}=\\frac{D_i\\rho_i}{k_\\mathrm{B}T}
 
     where :math:`\\rho_i` is the number density of species :math:`i`.
 
@@ -533,7 +533,7 @@ class Onsager(SerialAnalysisBase):
 
       .. math::
 
-         \\kappa=F^2\sum_i\sum_j z_iz_jL_{ij}
+         \\kappa=F^2\\sum_i\\sum_j z_iz_jL_{ij}
 
       :math:`F` is the Faraday constant.
 
@@ -541,13 +541,13 @@ class Onsager(SerialAnalysisBase):
 
       .. math::
 
-         \mu_i=\\frac{F}{\\rho_i}\sum_j z_jL_{ij}
+         \\mu_i=\\frac{F}{\\rho_i}\\sum_j z_jL_{ij}
 
     * Transference number:
 
       .. math::
 
-         t_i=\\frac{\sum_j z_iz_jL_{ij}}{\sum_k\sum_l z_kz_lL_{kl}}
+         t_i=\\frac{\\sum_j z_iz_jL_{ij}}{\\sum_k\\sum_l z_kz_lL_{kl}}
 
     Parameters
     ----------
@@ -581,17 +581,17 @@ class Onsager(SerialAnalysisBase):
            energy scale. When the Lennard-Jones potential is used, it
            generally means that :math:`T^* = 1`, or `temperature=1`.
 
-        **Reference unit**: :math:`\mathrm{K}`.
+        **Reference unit**: :math:`\\mathrm{K}`.
 
     charges : array-like, `openmm.unit.Quantity`, or `pint.Quantity`, \
     keyword-only, optional
         Charge numbers :math:`z_i` for the specified `groupings` in the
-        :math:`N_\mathrm{g}` `groups`. If not provided, it will be
+        :math:`N_\\mathrm{g}` `groups`. If not provided, it will be
         retrieved from the topology or trajectory.
 
-        **Shape**: :math:`(N_\mathrm{g},)`.
+        **Shape**: :math:`(N_\\mathrm{g},)`.
 
-        **Reference unit**: :math:`\mathrm{e}`.
+        **Reference unit**: :math:`\\mathrm{e}`.
 
     dimensions : array-like, `openmm.unit.Quantity`, or \
     `pint.Quantity`, keyword-only, optional
@@ -611,7 +611,7 @@ class Onsager(SerialAnalysisBase):
 
         **Shape**: :math:`(3,)`.
 
-        **Reference unit**: :math:`\mathrm{Å}`.
+        **Reference unit**: :math:`\\mathrm{Å}`.
 
     dt : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
     keyword-only, optional
@@ -622,17 +622,22 @@ class Onsager(SerialAnalysisBase):
         trajectory data every :math:`10,000` timesteps, then
         :math:`\\Delta t=100`.
 
-        **Reference unit**: :math:`\mathrm{ps}`.
+        **Reference unit**: :math:`\\mathrm{ps}`.
 
     n_blocks : `int`, keyword-only, default: :code:`1`
-        Number of blocks :math:`N_\mathrm{b}` to split the trajectory
+        Number of blocks :math:`N_\\mathrm{b}` to split the trajectory
         into.
 
     center : `bool`, keyword-only, default: :code:`False`
         Determines whether the system center of mass is subtracted from
         the positions used to compute the transport properties.
 
-    com_wrap : `bool`, keyword-only, default: :code:`False`
+    center_atom : `bool`, keyword-only, default: :code:`False`
+        Determines whether the system center of mass is computed using
+        the atom positions, regardless of `groupings`. Has no effect if
+        :code:`center=False`.
+
+    center_wrap : `bool`, keyword-only, default: :code:`False`
         Determines whether the system center of mass is computed using
         the wrapped particle positions. Has no effect if
         :code:`center=False`.
@@ -649,7 +654,7 @@ class Onsager(SerialAnalysisBase):
         Determines if atom positions are unwrapped. Ensure that
         :code:`unwrap=False` when the trajectory already contains
         unwrapped particle positions, as this parameter is used in
-        conjunction with `com_wrap` to determine the appropriate
+        conjunction with `center_wrap` to determine the appropriate
         system center of mass.
 
     verbose : `bool`, keyword-only, default: :code:`True`
@@ -680,90 +685,93 @@ class Onsager(SerialAnalysisBase):
 
         **Shape**: :math:`(N_t,)`.
 
-        **Reference unit**: :math:`\mathrm{ps}`.
+        **Reference unit**: :math:`\\mathrm{ps}`.
 
     results.msd_cross : `numpy.ndarray`
-        MSDs (or analogs) for the :math:`N_\mathrm{g}` groups over
-        :math:`N_\mathrm{b}` blocks of :math:`N_t` trajectory frames
+        MSDs (or analogs) for the :math:`N_\\mathrm{g}` groups over
+        :math:`N_\\mathrm{b}` blocks of :math:`N_t` trajectory frames
         each. Includes the dimensionality scaling factor. See Notes
         about what this value actually means.
 
         **Shape**:
-        :math:`(_{N_\mathrm{g}+1}\mathrm{C}_{2},\,N_\mathrm{b},\,N_t)`.
+        :math:`(_{N_\\mathrm{g}+1}\\mathrm{C}_{2},\\,N_\\mathrm{b},\\,
+        N_t)`.
 
-        **Reference unit**: :math:`\mathrm{Å}^2`.
+        **Reference unit**: :math:`\\mathrm{Å}^2`.
 
     results.msd_self : `numpy.ndarray`
-        Self MSDs (or analogs) for the :math:`N_\mathrm{g}` groups over
-        :math:`N_\mathrm{b}` blocks of :math:`N_t` trajectory frames
+        Self MSDs (or analogs) for the :math:`N_\\mathrm{g}` groups over
+        :math:`N_\\mathrm{b}` blocks of :math:`N_t` trajectory frames
         each. Includes the dimensionality scaling factor. See Notes
         about what this value actually means.
 
-        **Shape**: :math:`(N_\mathrm{g},\,N_\mathrm{b},\,N_t)`.
+        **Shape**: :math:`(N_\\mathrm{g},\\,N_\\mathrm{b},\\,N_t)`.
 
-        **Reference unit**: :math:`\mathrm{Å}^2`.
+        **Reference unit**: :math:`\\mathrm{Å}^2`.
 
     results.L_ij : `numpy.ndarray`
         Onsager transport coefficients :math:`L_{ij}`. Only available
         after running :meth:`calculate_transport_coefficients`.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g},\,N_\mathrm{g})`.
+        **Shape**: 
+        :math:`(N_\\mathrm{b},\\,N_\\mathrm{g},\\,N_\\mathrm{g})`.
 
         **Reference unit**:
-        :math:`\mathrm{mol/(kJ}\cdot\mathrm{Å}\cdot\mathrm{ps)}`.
+        :math:`\\mathrm{mol/(kJ}\\cdot\\mathrm{Å}\\cdot\\mathrm{ps)}`.
 
     results.L_ii_self : `numpy.ndarray`
         Self Onsager transport coefficient terms
-        :math:`L_{ii}^\mathrm{self}`. Note that
-        :math:`L_{ii}^\mathrm{self}` is related to :math:`D_i` via
+        :math:`L_{ii}^\\mathrm{self}`. Note that
+        :math:`L_{ii}^\\mathrm{self}` is related to :math:`D_i` via
 
         .. math::
 
-            L_{ii}^\mathrm{self}=\dfrac{N}{k_\mathrm{B}TV}D_i
+            L_{ii}^\\mathrm{self}=\\dfrac{N}{k_\\mathrm{B}TV}D_i
 
-        Only available after running :meth:`calculate_transport_coefficients`.
+        Only available after running 
+        :meth:`calculate_transport_coefficients`.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.
 
         **Reference unit**:
-        :math:`\mathrm{mol/(kJ}\cdot\mathrm{Å}\cdot\mathrm{ps)}`.
+        :math:`\\mathrm{mol/(kJ}\\cdot\\mathrm{Å}\\cdot\\mathrm{ps)}`.
 
     results.D_i : `numpy.ndarray`
         Self-diffusion coefficients :math:`D_i`. Only available after
         running :meth:`calculate_transport_coefficients`.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.
 
-        **Reference unit**: :math:`\mathrm{Å}^2/\mathrm{ps)}`.
+        **Reference unit**: :math:`\\mathrm{Å}^2/\\mathrm{ps)}`.
 
     results.conductivities : `numpy.ndarray`
         Conductivities :math:`\\kappa`. Only available after running
         :meth:`calculate_conductivity`.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.
 
-        **Reference unit**: :math:`\mathrm{C}^2/(\mathrm{kJ}\cdot
-        \mathrm{Å}\cdot\mathrm{ps})`.
+        **Reference unit**: :math:`\\mathrm{C}^2/(\\mathrm{kJ}\\cdot
+        \\mathrm{Å}\\cdot\\mathrm{ps})`.
 
-        **To SI unit**: :math:`1\times10^{19}\,\mathrm{S}/\mathrm{m}`.
+        **To SI unit**: :math:`1\times10^{19}\\,\\mathrm{S}/\\mathrm{m}`.
 
     results.electrophoretic_mobilities : `numpy.ndarray`
-        Electrophoretic mobilities :math:`\mu_i`. Only available after
+        Electrophoretic mobilities :math:`\\mu_i`. Only available after
         running :meth:`calculate_electrophoretic_mobility`.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.
 
         **Reference unit**:
-        :math:`\mathrm{Å}^2\cdot\mathrm{C/(kJ}\cdot\mathrm{ps)}`.
+        :math:`\\mathrm{Å}^2\\cdot\\mathrm{C/(kJ}\\cdot\\mathrm{ps)}`.
 
-        **To SI unit**: :math:`1\times10^{-11}\,\mathrm{m}^2/
-        (\mathrm{V}\cdot\mathrm{s})`.
+        **To SI unit**: :math:`1\times10^{-11}\\,\\mathrm{m}^2/
+        (\\mathrm{V}\\cdot\\mathrm{s})`.
 
     results.transference_numbers : `numpy.ndarray`
         Transference numbers :math:`t_i`. Only available after running
         :meth:`calculate_transference_number`.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.
 
     Notes
     -----
@@ -797,20 +805,13 @@ class Onsager(SerialAnalysisBase):
             charges: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             dt: Union[float, "unit.Quantity", Q_] = None,
-            n_blocks: int = 1, center: bool = False, com_wrap: bool = False,
-            fft: bool = True, reduced: bool = False, unwrap: bool = False,
-            verbose: bool = True, **kwargs) -> None:
+            n_blocks: int = 1, center: bool = False, center_atom: bool = False,
+            center_wrap: bool = False, fft: bool = True, reduced: bool = False,
+            unwrap: bool = False, verbose: bool = True, **kwargs) -> None:
 
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
         super().__init__(self.universe.trajectory, verbose=verbose, **kwargs)
-
-        self.results.units = {"_charges": ureg.elementary_charge,
-                              "_dimensions": ureg.angstrom,
-                              "_dt": ureg.picosecond,
-                              "_rhos": ureg.angstrom ** -3,
-                              "_kBT": ureg.kilojoule / ureg.mole,
-                              "_volume": ureg.angstrom ** 3}
 
         self._n_groups = len(self._groups)
         if isinstance(groupings, str):
@@ -877,6 +878,17 @@ class Onsager(SerialAnalysisBase):
         else:
             self._charges = None
 
+        # Determine the number of particles in each group and their
+        # corresponding indices
+        self._Ns = tuple(getattr(a, f"n_{g}")
+                         for (a, g) in zip(self._groups, self._groupings))
+        self._N = sum(self._Ns)
+        self._slices = []
+        index = 0
+        for N in self._Ns:
+            self._slices.append(slice(index, index + N))
+            index += N
+
         if np.all(~np.isclose(self._dimensions, 0)):
             self._rhos = np.fromiter(
                 (getattr(g, f"n_{gr}")
@@ -887,7 +899,8 @@ class Onsager(SerialAnalysisBase):
 
         self._n_blocks = n_blocks
         self._center = center
-        self._com_wrap = com_wrap
+        self._center_atom = center_atom
+        self._center_wrap = center_wrap
         self._fft = fft
         self._reduced = reduced
         self._unwrap = unwrap
@@ -913,10 +926,7 @@ class Onsager(SerialAnalysisBase):
 
         # Preallocate array(s) to store positions (and number of
         # boundary crossings) for each AtomGroup
-        self._Ns = tuple(getattr(a, f"n_{g}")
-                         for (a, g) in zip(self._groups, self._groupings))
-        self._positions = [np.empty((self.n_frames, N, 3), dtype=float)
-                           for N in self._Ns]
+        self._positions = np.empty((self.n_frames, self._N, 3))
         if self._unwrap:
             self._trajectory[self.start]
             self._positions_old = self.universe.atoms.positions
@@ -950,59 +960,55 @@ class Onsager(SerialAnalysisBase):
         )
 
         # Store reference units
-        self.results.units["results.times"] = ureg.picosecond
+        self.results.units = {"results.times": ureg.picosecond}
         self.results.units["results.msd_cross"] = \
             self.results.units["results.msd_self"] = ureg.angstrom ** 2
 
     def _single_frame(self) -> None:
 
-        # Store atom positions in the current frame
         positions = self.universe.atoms.positions.copy()
-
-        # Unwrap all particle positions, if necessary
         if self._unwrap:
             unwrap(positions, self._positions_old, self._dimensions,
                    thresholds=self._thresholds, images=self._images)
-
-        for i, (a, g) in enumerate(zip(self._groups, self._groupings)):
-
-            # Store particle or center-of-mass positions
-            self._positions[i][self._frame_index] = (
-                positions[a.indices] if g == "atoms"
+            
+        for g, gr, s in zip(self._groups, self._groupings, self._slices):
+            self._positions[self._frame_index, s] = (
+                positions[g.indices] if gr == "atoms"
                 else center_of_mass(
-                    a, grouping=g,
-                    images=self._images[a.indices] if hasattr(self, "_images")
+                    g, gr,
+                    images=self._images[g.indices] if hasattr(self, "_images")
                            else None
                 )
             )
 
+        # Subtract system center-of-mass from particle or molecule
+        # center-of-mass positions
         if self._center:
-
-            # Compute the system center-of-mass using the unwrapped or
-            # wrapped particle positions
-            if self._com_wrap:
-                if self._unwrap:
-                    positions = self.universe.atoms.positions.copy()
+            if self._center_atom:
+                if self._center_wrap:
+                    wrap(positions, self._dimensions)
+                scom = center_of_mass(positions=positions,
+                                      masses=self.universe.atoms.masses)
+            else:
+                if self._center_wrap:
+                    positions = wrap(self._positions[self._frame_index], 
+                                     self._dimensions, in_place=False)
                 else:
-                    indices = (positions < 0) | (positions > self._dimensions)
-                    positions[indices] -= (
-                        np.floor(positions / self._dimensions)
-                        * self._dimensions
-                    )[indices]
-            com = center_of_mass(positions=positions,
-                                          masses=self.universe.atoms.masses)
-
-            # Subtract system center-of-mass from particle or
-            # center-of-mass positions
-            for i in range(self._n_groups):
-                self._positions[i][self._frame_index] -= com
+                    positions = self._positions[self._frame_index]
+                scom = center_of_mass(
+                    positions=positions,
+                    masses=np.concatenate(
+                        [getattr(g, gr).masses 
+                         for g, gr in zip(self._groups, self._groupings)]
+                    )
+                )
+            self._positions[self._frame_index] -= scom
 
     def _conclude(self) -> None:
 
         # Truncate the positions array if there are extra frames
         if self.n_frames != self._n_frames:
-            for i, positions in enumerate(self._positions):
-                self._positions[i] = positions[:self._n_frames]
+            self._positions = self._positions[:self._n_frames]
 
         # Compute the MSDs (or their analogs) for each unique AtomGroup
         # pair
@@ -1012,7 +1018,7 @@ class Onsager(SerialAnalysisBase):
                                                  verbose=self._verbose)):
             if i1 == i2:
                 if self._Ns[i1]:
-                    positions = self._positions[i1].reshape(
+                    positions = self._positions[:, self._slices[i1]].reshape(
                         (self._n_blocks, -1, self._Ns[i1], 3)
                     )
                     positions[:, :, :, delete_dimensions] = 0
@@ -1026,10 +1032,10 @@ class Onsager(SerialAnalysisBase):
                     self.results.msd_cross[i] \
                         = self.results.msd_self[i1] = np.nan
             elif self._Ns[i1] and self._Ns[i2]:
-                positions1 = self._positions[i1].reshape(
+                positions1 = self._positions[:, self._slices[i1]].reshape(
                     (self._n_blocks, -1, self._Ns[i1], 3)
                 ).sum(axis=2)
-                positions2 = self._positions[i2].reshape(
+                positions2 = self._positions[:, self._slices[i2]].reshape(
                     (self._n_blocks, -1, self._Ns[i2], 3)
                 ).sum(axis=2)
                 positions1[:, :, delete_dimensions] \
@@ -1109,8 +1115,8 @@ class Onsager(SerialAnalysisBase):
                     "Onsager.calculate_transport_coefficients().")
             raise RuntimeError(emsg)
 
-        self.results.L_ij, self.results.L_ii_self, self.results.D_i = \
-            calculate_transport_coefficients(
+        self.results.L_ij, self.results.L_ii_self, self.results.D_i \
+            = calculate_transport_coefficients(
                 self.results.times,
                 self.results.msd_cross,
                 self.results.msd_self,
@@ -1150,13 +1156,13 @@ class Onsager(SerialAnalysisBase):
         charges : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
             Charge numbers :math:`z_i` of the groupings in the
-            :math:`N_\mathrm{g}` groups. This argument is optional only
+            :math:`N_\\mathrm{g}` groups. This argument is optional only
             if `charges` has previously been passed to a calculation
             method belonging to this class.
 
-            **Shape**: :math:`(N_\mathrm{g},)`.
+            **Shape**: :math:`(N_\\mathrm{g},)`.
 
-            **Reference unit**: :math:`\mathrm{e}`.
+            **Reference unit**: :math:`\\mathrm{e}`.
         """
 
         if not hasattr(self.results, "L_ij"):
@@ -1193,7 +1199,7 @@ class Onsager(SerialAnalysisBase):
         ) -> None:
 
         """
-        Calculates the electrophoretic mobility :math:`\mu_i` of each
+        Calculates the electrophoretic mobility :math:`\\mu_i` of each
         species using the Onsager transport coefficients :math:`L_{ij}`.
 
         Parameters
@@ -1201,23 +1207,23 @@ class Onsager(SerialAnalysisBase):
         charges : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
             Charge numbers :math:`z_i` of the groupings in the
-            :math:`N_\mathrm{g}` groups. This argument is optional only
+            :math:`N_\\mathrm{g}` groups. This argument is optional only
             if charge information is present in the topology or
             `charges` has previously been passed to a calculation
             method belonging to this class.
 
-            **Shape**: :math:`(N_\mathrm{g},)`.
+            **Shape**: :math:`(N_\\mathrm{g},)`.
 
-            **Reference unit**: :math:`\mathrm{e}`.
+            **Reference unit**: :math:`\\mathrm{e}`.
 
         rhos : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
             Number densities :math:`n_i` of the groupings in the
-            :math:`N_\mathrm{g}` groups.
+            :math:`N_\\mathrm{g}` groups.
 
-            **Shape**: :math:`(N_\mathrm{g},)`.
+            **Shape**: :math:`(N_\\mathrm{g},)`.
 
-            **Reference unit**: :math:`\mathrm{Å}^{-3}`.
+            **Reference unit**: :math:`\\mathrm{Å}^{-3}`.
         """
 
         if not hasattr(self.results, "L_ij"):
@@ -1272,14 +1278,14 @@ class Onsager(SerialAnalysisBase):
         charges : array-like, `openmm.unit.Quantity`, or \
         `pint.Quantity`, keyword-only, optional
             Charge numbers :math:`z_i` of the groupings in the
-            :math:`N_\mathrm{g}` groups. This argument is optional only
+            :math:`N_\\mathrm{g}` groups. This argument is optional only
             if charge information is present in the topology or
             `charges` has previously been passed to a calculation
             method belonging to this class.
 
-            **Shape**: :math:`(N_\mathrm{g},)`.
+            **Shape**: :math:`(N_\\mathrm{g},)`.
 
-            **Reference unit**: :math:`\mathrm{e}`.
+            **Reference unit**: :math:`\\mathrm{e}`.
         """
 
         if not hasattr(self.results, "L_ij"):

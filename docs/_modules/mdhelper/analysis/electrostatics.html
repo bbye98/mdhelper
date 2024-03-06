@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   <div class="sidebar-logo-container">
-    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+    <img class="sidebar-logo" src="../../../_static/logo.png" alt="Logo"/>
   </div>
   
   
@@ -175,6 +175,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.wrap.html">wrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -190,6 +191,8 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.Hash.html">Hash</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -218,12 +221,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_structure_factor.html">calculate_structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.zeroth_order_hankel_transform.html">zeroth_order_hankel_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF2D.html">ParallelRDF2D</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -480,7 +480,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    vareps_r : `float`</span>
+<span class="sd">    dielectric : `float`</span>
 <span class="sd">        Relative permittivity (or static dielectric constant).</span>
 
 <span class="sd">    References</span>
@@ -540,13 +540,22 @@
 <span class="sd">    groups : `MDAnalysis.AtomGroup` or array-like</span>
 <span class="sd">        Group(s) of atoms for which the dipole moments are calculated.</span>
 
+<span class="sd">        .. important::</span>
+
+<span class="sd">           Ensure that no bonds are split over images when atoms are</span>
+<span class="sd">           wrapped into the primary simulation cell. If you think your</span>
+<span class="sd">           system may have split bonds, use</span>
+<span class="sd">           :class:`MDAnalysis.transformations.wrap.unwrap` to unwrap</span>
+<span class="sd">           the trajectory before passing an :code:`AtomGroup` to this</span>
+<span class="sd">           class.</span>
+
 <span class="sd">    charges : array-like, keyword-only, optional</span>
 <span class="sd">        Charge information for the atoms in the :math:`N_\mathrm{g}`</span>
 <span class="sd">        groups in `groups`. If not provided, it should be available in</span>
 <span class="sd">        and will be retrieved from the main</span>
 <span class="sd">        :class:`MDAnalysis.core.universe.Universe` object.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{g},)` array of `int`s, `float`s, or</span>
+<span class="sd">        **Shape**: :math:`(N_\mathrm{g},)` array of real numbers or</span>
 <span class="sd">        :math:`(N_i,)` arrays, where :math:`N_i` is the number of atoms</span>
 <span class="sd">        in group :math:`i`.</span>
 
@@ -575,6 +584,13 @@
 <span class="sd">    reduced : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Specifies whether the data is in reduced units. Only affects</span>
 <span class="sd">        :meth:`calculate_relative_permittivity` calls.</span>
+
+<span class="sd">    remove_net_charge : `bool`, keyword-only, default: :code:`False`</span>
+<span class="sd">        Specifies whether the net charge is subtracted at the center of</span>
+<span class="sd">        mass for molecules with net charges. Must be enabled if your</span>
+<span class="sd">        system contains molecules with net charges and you want to</span>
+<span class="sd">        calculate the relative permittivity, but should be disabled if</span>
+<span class="sd">        you are only interested in the instantaneous dipole moment.</span>
 
 <span class="sd">    unwrap : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Determines whether atom positions are unwrapped.</span>
@@ -636,8 +652,8 @@
             <span class="n">charges</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">dimensions</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">scales</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">remove_net_charge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">)</span> <span class="k">else</span> <span class="n">groups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">)</span>
@@ -697,6 +713,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_average</span> <span class="o">=</span> <span class="n">average</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span> <span class="o">=</span> <span class="n">reduced</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_net_charge</span> <span class="o">=</span> <span class="n">remove_net_charge</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span> <span class="o">=</span> <span class="n">unwrap</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
 

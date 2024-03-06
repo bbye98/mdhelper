@@ -100,15 +100,18 @@ class ConstantVolumeHeatCapacity:
         self._reduced = reduced
 
         if energies:
-            self.results.energies, self.results.units["results.energy"] = strip_unit(energies)
-            if self.results.units["results.energy"] is None:
-                self.results.units["results.energy"] = ureg.kilojoule / ureg.mole
+            self.results.units["results.energy"] = ureg.kilojoule / ureg.mole
+            self.results.energies = strip_unit(
+                energies, 
+                self.results.units["results.energy"]
+            )[0]
         elif log_file:
             self._file = log_file if isinstance(log_file, Path) else Path(log_file)
             with open(self._file, "r") as f:
                 log = f.read()
 
-            # Determine the simulation toolkit used to 
+            # Determine the simulation toolkit used to write the log 
+            # file.
             if log_format is None:
                 for f, cs in self._COLUMNS.items():
                     if any(c in log for c in cs["energy"]):
@@ -118,6 +121,7 @@ class ConstantVolumeHeatCapacity:
                     raise ValueError("Could not determine log file format.")
             self._format = log_format
 
+            # Pre-process LAMMPS log files.
             if self._format == "lammps":
                 if "minimize" in log:
                     log = log[log.index("Minimization stats:"):]
@@ -136,6 +140,7 @@ class ConstantVolumeHeatCapacity:
                     warnings.warn("OpenMM simulations always use real units.")
                 self.results.units["results.energies"] = ureg.kilojoule / ureg.mole
 
+            # Determine which columns to keep.
             if self._COLUMNS[self._format]["energy"][0] in log:
                 cols = self._COLUMNS[self._format]["energy"][:1]
             elif self._COLUMNS[self._format]["energy"][1] in log:
@@ -154,9 +159,6 @@ class ConstantVolumeHeatCapacity:
 
             df = pd.read_csv(StringIO(log), **kwargs)
             self.results.energies = df[cols].sum(axis=1).to_numpy()
-
-            if temperature is None:
-                self._COLUMNS[self._format]["temperature"]
         else:
             raise ValueError("No log file or energy values provided.")
 
@@ -177,13 +179,43 @@ class ConstantVolumeHeatCapacity:
             self, start: int = None, stop: int = None, step: int = None,
             frames: Union[np.ndarray[int], slice] = None) -> None:
 
+        """
+        Performs the calculation.
+
+        Parameters
+        ----------
+        start : `int`, optional
+            Starting frame for analysis.
+        
+        stop : `int`, optional
+            Ending frame for analysis.
+
+        step : `int`, optional
+            Number of frames to skip between each analyzed frame.
+
+        frames : `slice` or array-like, optional
+            Index or logical array of the desired trajectory frames.
+
+        verbose : `bool`, optional
+            Determines whether detailed progress is shown.
+        
+        **kwargs
+            Additional keyword arguments to pass to
+            :class:`MDAnalysis.lib.log.ProgressBar`.
+
+        Returns
+        -------
+        self : `ConstantVolumeHeatCapacity`
+            Analysis object with results.
+        """
+
         if frames is None:
             frames = np.arange(start or 0,
                                stop or len(self.results.energies),
                                step)
         U = self.results.energies[frames] * self.results.units["results.energies"]
         if self._reduced:
-            pass
+            pass # TODO
         else:
             C_V = (
                 ((U ** 2).mean() - U.mean() ** 2)
@@ -192,3 +224,5 @@ class ConstantVolumeHeatCapacity:
             ).to(ureg.kilojoule / ureg.kelvin)
             self.results.heat_capacity = C_V.magnitude
             self.results.units["results.heat_capacity"] = C_V.units
+
+        return self

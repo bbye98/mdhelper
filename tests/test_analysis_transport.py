@@ -5,8 +5,8 @@ import sys
 import urllib
 
 import MDAnalysis as mda
-from MDAnalysis.tests.datafiles import RANDOM_WALK, RANDOM_WALK_TOPO
 from MDAnalysis.analysis.msd import EinsteinMSD
+from MDAnalysis.tests.datafiles import RANDOM_WALK, RANDOM_WALK_TOPO
 import numpy as np
 from scipy.stats import linregress
 
@@ -157,12 +157,13 @@ def test_class_onsager_transport_coefficients():
                       dtype=int)
     msds = compute_L_ij(*positions, volume)
 
-    onsager = transport.Onsager(groups, temperature=1, center=True, com_wrap=True, 
+    onsager = transport.Onsager(groups, temperature=1, center=True, 
+                                center_atom=True, center_wrap=True, 
                                 reduced=True, dt=dt).run(start=40)
     onsager.calculate_transport_coefficients(fit_start, fit_stop, 
-                                   start_self=fit_start_self, 
-                                   stop_self=fit_stop_self,
-                                   scale="linear", enforce_linear=False)
+                                             start_self=fit_start_self, 
+                                             stop_self=fit_stop_self,
+                                             scale="linear", enforce_linear=False)
 
     L_ij_array = np.triu(onsager.results.L_ij)
     for i, (msd, L_ij) in enumerate(zip(msds, L_ij_array[L_ij_array != 0])):

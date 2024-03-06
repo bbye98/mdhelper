@@ -331,3 +331,52 @@ def unwrap(
         images[mask] -= np.sign(dpos[mask]).astype(int)
         positions += images * dimensions
         return positions, positions_old, images
+    
+def wrap(
+        positions: np.ndarray[float], dimensions: np.ndarray[float], *,
+        in_place: bool = True) -> np.ndarray[float]:
+    
+    """
+    Wraps particle positions back into the primary simulation cell.
+
+    Parameters
+    ----------
+    positions : `numpy.ndarray`
+        Particle positions.
+
+        **Shape**: :math:`(N,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    dimensions : `numpy.ndarray`
+        System dimensions.
+
+        **Shape**: :math:`(3,)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    in_place : `bool`, keyword-only, default: :code:`False`
+        Determines whether the input array is modified in-place.
+
+    Returns
+    -------
+    positions : `numpy.ndarray`
+        Wrapped particle positions. Only returned if
+        :code:`in_place=False`.
+
+        **Shape**: :math:`(N,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+    """
+    
+    wrap_indices = (positions < 0) | (positions > dimensions)
+    if in_place:
+        positions[wrap_indices] -= (
+            np.floor(positions / dimensions) * dimensions
+        )[wrap_indices]
+    else:
+        positions = positions.copy()
+        positions[wrap_indices] -= (
+            np.floor(positions / dimensions) * dimensions
+        )[wrap_indices]
+        return positions

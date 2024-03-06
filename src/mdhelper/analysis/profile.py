@@ -19,7 +19,7 @@ from scipy import integrate, sparse
 from .base import DynamicAnalysisBase
 from .. import FOUND_OPENMM, Q_, ureg
 from ..algorithm.molecule import center_of_mass
-from ..algorithm.topology import unwrap
+from ..algorithm.topology import unwrap, wrap
 from ..algorithm.utility import strip_unit
 
 if FOUND_OPENMM:
@@ -325,6 +325,15 @@ class DensityProfile(DynamicAnalysisBase):
     ----------
     groups : `MDAnalysis.AtomGroup` or array-like
         Groups of atoms for which density profiles are calculated.
+
+        .. important::
+
+           Ensure that no bonds are split over images when atoms are
+           wrapped into the primary simulation cell. If you think your
+           system may have split bonds, use
+           :class:`MDAnalysis.transformations.wrap.unwrap` to unwrap
+           the trajectory before passing :code:`AtomGroup`s to this
+           class.
 
     groupings : `str` or array-like, default: :code:`"atoms"`
         Determines whether the centers of mass are used in lieu of
@@ -713,11 +722,7 @@ class DensityProfile(DynamicAnalysisBase):
                             count=3
                         )
 
-                    # Wrap particles outside of the unit cell into the unit cell
-                    self._positions[i, s] += (
-                        (self._positions[i, s] < 0).astype(int)
-                        - (self._positions[i, s] >= self._dimensions).astype(int)
-                    ) * self._dimensions
+                    wrap(self._positions[i], self._dimensions)
 
                 # Clean up memory
                 del self._positions_old
@@ -772,12 +777,8 @@ class DensityProfile(DynamicAnalysisBase):
                 dtype=float,
                 count=3
             )
-        
-        # Wrap particles outside of the unit cell into the unit cell
-        positions += (
-            (positions < 0).astype(int)
-            - (positions >= self._dimensions).astype(int)
-        ) * self._dimensions
+
+        wrap(positions, self._dimensions)
 
         # Compute and tally the bin counts for the current positions
         for i, (gr, s) in enumerate(zip(self._groupings, self._slices)):
@@ -802,13 +803,7 @@ class DensityProfile(DynamicAnalysisBase):
             for g, gr, s in zip(self._groups, self._groupings, self._slices):
                 positions[s] = (g.positions if gr == "atoms" 
                                 else center_of_mass(g, gr))
-                
-            # Wrap particles outside of the unit cell into the unit cell
-            positions += (
-                (positions < 0).astype(int)
-                - (positions >= self._dimensions).astype(int)
-            ) * self._dimensions
-
+            wrap(positions, self._dimensions)
         else:
             positions = self._positions[index]
 
@@ -930,7 +925,8 @@ class DensityProfile(DynamicAnalysisBase):
         index = np.where(self._axes == axis)[0][0]
 
         if sigma_q is not None:
-            sigma_q, unit_ = strip_unit(sigma_q, "elementary_charge/angstrom**2")
+            sigma_q, unit_ = strip_unit(sigma_q, 
+                                        "elementary_charge/angstrom**2")
             if self._reduced and not isinstance(unit_, str):
                 emsg = "'sigma_q' cannot have units when reduced=True."
                 raise ValueError(emsg)

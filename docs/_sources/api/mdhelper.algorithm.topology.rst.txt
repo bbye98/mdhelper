@@ -1,4 +1,4 @@
-topology
+﻿topology
 ========
 
 .. automodule:: mdhelper.algorithm.topology
@@ -17,6 +17,7 @@ topology
    
       create_atoms
       unwrap
+      wrap
    
    
 

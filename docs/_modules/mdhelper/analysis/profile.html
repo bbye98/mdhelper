@@ -175,6 +175,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.wrap.html">wrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -416,7 +417,7 @@
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">DynamicAnalysisBase</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">FOUND_OPENMM</span><span class="p">,</span> <span class="n">Q_</span><span class="p">,</span> <span class="n">ureg</span>
 <span class="kn">from</span> <span class="nn">..algorithm.molecule</span> <span class="kn">import</span> <span class="n">center_of_mass</span>
-<span class="kn">from</span> <span class="nn">..algorithm.topology</span> <span class="kn">import</span> <span class="n">unwrap</span>
+<span class="kn">from</span> <span class="nn">..algorithm.topology</span> <span class="kn">import</span> <span class="n">unwrap</span><span class="p">,</span> <span class="n">wrap</span>
 <span class="kn">from</span> <span class="nn">..algorithm.utility</span> <span class="kn">import</span> <span class="n">strip_unit</span>
 
 <span class="k">if</span> <span class="n">FOUND_OPENMM</span><span class="p">:</span>
@@ -727,6 +728,15 @@
 <span class="sd">    ----------</span>
 <span class="sd">    groups : `MDAnalysis.AtomGroup` or array-like</span>
 <span class="sd">        Groups of atoms for which density profiles are calculated.</span>
+
+<span class="sd">        .. important::</span>
+
+<span class="sd">           Ensure that no bonds are split over images when atoms are</span>
+<span class="sd">           wrapped into the primary simulation cell. If you think your</span>
+<span class="sd">           system may have split bonds, use</span>
+<span class="sd">           :class:`MDAnalysis.transformations.wrap.unwrap` to unwrap</span>
+<span class="sd">           the trajectory before passing :code:`AtomGroup`s to this</span>
+<span class="sd">           class.</span>
 
 <span class="sd">    groupings : `str` or array-like, default: :code:`&quot;atoms&quot;`</span>
 <span class="sd">        Determines whether the centers of mass are used in lieu of</span>
@@ -1115,11 +1125,7 @@
                             <span class="n">count</span><span class="o">=</span><span class="mi">3</span>
                         <span class="p">)</span>
 
-                    <span class="c1"># Wrap particles outside of the unit cell into the unit cell</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
-                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-                        <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-                    <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span>
+                    <span class="n">wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span>
 
                 <span class="c1"># Clean up memory</span>
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span>
@@ -1174,12 +1180,8 @@
                 <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
                 <span class="n">count</span><span class="o">=</span><span class="mi">3</span>
             <span class="p">)</span>
-        
-        <span class="c1"># Wrap particles outside of the unit cell into the unit cell</span>
-        <span class="n">positions</span> <span class="o">+=</span> <span class="p">(</span>
-            <span class="p">(</span><span class="n">positions</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-            <span class="o">-</span> <span class="p">(</span><span class="n">positions</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span>
+
+        <span class="n">wrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span>
 
         <span class="c1"># Compute and tally the bin counts for the current positions</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">)):</span>
@@ -1204,13 +1206,7 @@
             <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
                 <span class="n">positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> 
                                 <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">))</span>
-                
-            <span class="c1"># Wrap particles outside of the unit cell into the unit cell</span>
-            <span class="n">positions</span> <span class="o">+=</span> <span class="p">(</span>
-                <span class="p">(</span><span class="n">positions</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-                <span class="o">-</span> <span class="p">(</span><span class="n">positions</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-            <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span>
-
+            <span class="n">wrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
@@ -1334,7 +1330,8 @@
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">==</span> <span class="n">axis</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">sigma_q</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">sigma_q</span><span class="p">,</span> <span class="n">unit_</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">sigma_q</span><span class="p">,</span> <span class="s2">&quot;elementary_charge/angstrom**2&quot;</span><span class="p">)</span>
+            <span class="n">sigma_q</span><span class="p">,</span> <span class="n">unit_</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">sigma_q</span><span class="p">,</span> 
+                                        <span class="s2">&quot;elementary_charge/angstrom**2&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">emsg</span> <span class="o">=</span> <span class="s2">&quot;&#39;sigma_q&#39; cannot have units when reduced=True.&quot;</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>

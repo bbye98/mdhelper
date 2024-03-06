@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   <div class="sidebar-logo-container">
-    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+    <img class="sidebar-logo" src="../../../_static/logo.png" alt="Logo"/>
   </div>
   
   
@@ -175,6 +175,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.wrap.html">wrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -190,6 +191,8 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.Hash.html">Hash</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -415,7 +418,7 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">FOUND_OPENMM</span><span class="p">,</span> <span class="n">Q_</span><span class="p">,</span> <span class="n">ureg</span>
 <span class="kn">from</span> <span class="nn">..algorithm</span> <span class="kn">import</span> <span class="n">correlation</span>
 <span class="kn">from</span> <span class="nn">..algorithm.molecule</span> <span class="kn">import</span> <span class="n">center_of_mass</span>
-<span class="kn">from</span> <span class="nn">..algorithm.topology</span> <span class="kn">import</span> <span class="n">unwrap</span>
+<span class="kn">from</span> <span class="nn">..algorithm.topology</span> <span class="kn">import</span> <span class="n">unwrap</span><span class="p">,</span> <span class="n">wrap</span>
 <span class="kn">from</span> <span class="nn">..algorithm.utility</span> <span class="kn">import</span> <span class="n">strip_unit</span>
 <span class="kn">from</span> <span class="nn">..fit.polynomial</span> <span class="kn">import</span> <span class="n">poly1</span>
 
@@ -865,38 +868,38 @@
 <span class="sd">    transport properties in bulk constant-volume fluids and</span>
 <span class="sd">    electrolytic systems, such as those in the canonical</span>
 <span class="sd">    (:math:`NVT`), microcanonical (:math:`NVE`), and grand</span>
-<span class="sd">    canonical (:math:`\mu VT`) ensembles.</span>
+<span class="sd">    canonical (:math:`\\mu VT`) ensembles.</span>
 
 <span class="sd">    The Onsager transport equation</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \pmb{J}_i=-\sum_j L_{ij}\\nabla\\bar{\mu}_j</span>
+<span class="sd">       \\pmb{J}_i=-\\sum_j L_{ij}\\nabla\\bar{\\mu}_j</span>
 
 <span class="sd">    relates the flux :math:`\\pmb{J}_i` of species :math:`i` to the</span>
 <span class="sd">    Onsager transport coefficients :math:`L_{ij}` and the</span>
-<span class="sd">    electrochemical potential :math:`\\bar{\mu}_j` of species :math:`j`.</span>
-<span class="sd">    There is an Onsager transport coefficient for each pair of species</span>
-<span class="sd">    that, unlike the Nernst–Einstein equation, captures the strong</span>
-<span class="sd">    cross-correlations in electrolytes.</span>
+<span class="sd">    electrochemical potential :math:`\\bar{\\mu}_j` of species </span>
+<span class="sd">    :math:`j`. There is an Onsager transport coefficient for each pair</span>
+<span class="sd">    of species that, unlike the Nernst–Einstein equation, captures the</span>
+<span class="sd">    strong cross-correlations in electrolytes.</span>
 
 <span class="sd">    The Onsager transport coefficients can be calculated from the</span>
 <span class="sd">    particle positions over time using the Einstein relation</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       L_{ij}=\\frac{1}{6k_\mathrm{B}TV}</span>
-<span class="sd">       \lim_{t\\rightarrow\infty}\\frac{d}{dt}\left\langle\sum_\\alpha</span>
-<span class="sd">       \left[\pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)\\right]\cdot</span>
-<span class="sd">       \sum_\\beta\left[\pmb{r}_{j,\\beta}(t)-\pmb{r}_{j,\\beta}(0)\\right]</span>
-<span class="sd">       \\right\\rangle</span>
+<span class="sd">       L_{ij}=\\frac{1}{6k_\\mathrm{B}TV}</span>
+<span class="sd">       \\lim_{t\\rightarrow\\infty}\\frac{d}{dt}\\left\\langle\\sum_\\alpha</span>
+<span class="sd">       \\left[\\pmb{r}_{i,\\alpha}(t)-\\pmb{r}_{i,\\alpha}(0)\\right]</span>
+<span class="sd">       \\cdot\\sum_\\beta\\left[\\pmb{r}_{j,\\beta}(t)</span>
+<span class="sd">       -\\pmb{r}_{j,\\beta}(0)\\right]\\right\\rangle</span>
 
-<span class="sd">    where :math:`k_\mathrm{B}` is the Boltzmann constant, :math:`T` is</span>
+<span class="sd">    where :math:`k_\\mathrm{B}` is the Boltzmann constant, :math:`T` is</span>
 <span class="sd">    the system temperature, :math:`V` is the system volume, :math:`t` is</span>
-<span class="sd">    time, and :math:`\pmb{r}_\\alpha` and :math:`\pmb{r}_\\beta` are the</span>
-<span class="sd">    positions of particles :math:`\\alpha` and :math:`\\beta` belonging</span>
-<span class="sd">    to species :math:`i` and :math:`j`, respectively. The angular</span>
-<span class="sd">    brackets denote the ensemble average. It is evident that</span>
+<span class="sd">    time, and :math:`\\pmb{r}_\\alpha` and :math:`\\pmb{r}_\\beta` are </span>
+<span class="sd">    the positions of particles :math:`\\alpha` and :math:`\\beta` </span>
+<span class="sd">    belonging to species :math:`i` and :math:`j`, respectively. The </span>
+<span class="sd">    angular brackets denote the ensemble average. It is evident that</span>
 <span class="sd">    :math:`L_{ij}=L_{ji}`; hence, the equation above is an Onsager</span>
 <span class="sd">    reciprocal relation.</span>
 
@@ -906,16 +909,16 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       L_{ii}=L_{ii}^\mathrm{self}+L_{ii}^\mathrm{distinct}</span>
+<span class="sd">       L_{ii}=L_{ii}^\\mathrm{self}+L_{ii}^\\mathrm{distinct}</span>
 
 <span class="sd">    The self term</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       L_{ii}^\mathrm{self}=\\frac{1}{6k_\mathrm{B}TV}</span>
-<span class="sd">       \lim_{t\\rightarrow\infty}\\frac{d}{dt}</span>
-<span class="sd">       \sum_\\alpha\left\langle\left[</span>
-<span class="sd">       \pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)</span>
+<span class="sd">       L_{ii}^\\mathrm{self}=\\frac{1}{6k_\\mathrm{B}TV}</span>
+<span class="sd">       \\lim_{t\\rightarrow\\infty}\\frac{d}{dt}</span>
+<span class="sd">       \\sum_\\alpha\\left\\langle\\left[</span>
+<span class="sd">       \\pmb{r}_{i,\\alpha}(t)-\\pmb{r}_{i,\\alpha}(0)</span>
 <span class="sd">       \\right]^2\\right\\rangle</span>
 
 <span class="sd">    is given by the autocorrelation function of the flux of a single</span>
@@ -924,11 +927,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       L_{ii}^\mathrm{self}=\\frac{1}{6k_\mathrm{B}TV}</span>
-<span class="sd">       \lim_{t\\rightarrow\infty}\\frac{d}{dt}</span>
-<span class="sd">       \sum_\\alpha\sum_{\\beta\\neq\\alpha}\left\langle\left[</span>
-<span class="sd">       \pmb{r}_{i,\\alpha}(t)-\pmb{r}_{i,\\alpha}(0)\\right]\cdot</span>
-<span class="sd">       \left[\pmb{r}_{i,\\beta}(t)-\pmb{r}_{i,\\beta}(0)\\right]</span>
+<span class="sd">       L_{ii}^\\mathrm{self}=\\frac{1}{6k_\\mathrm{B}TV}</span>
+<span class="sd">       \\lim_{t\\rightarrow\\infty}\\frac{d}{dt}</span>
+<span class="sd">       \\sum_\\alpha\\sum_{\\beta\\neq\\alpha}\\left\\langle\\left[</span>
+<span class="sd">       \\pmb{r}_{i,\\alpha}(t)-\\pmb{r}_{i,\\alpha}(0)\\right]\\cdot</span>
+<span class="sd">       \\left[\\pmb{r}_{i,\\beta}(t)-\\pmb{r}_{i,\\beta}(0)\\right]</span>
 <span class="sd">       \\right\\rangle</span>
 
 <span class="sd">    is given by the cross-correlation between two distinct particles</span>
@@ -937,7 +940,7 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       L_{ii}^\mathrm{self}=\\frac{D_i\\rho_i}{k_\mathrm{B}T}</span>
+<span class="sd">       L_{ii}^\\mathrm{self}=\\frac{D_i\\rho_i}{k_\\mathrm{B}T}</span>
 
 <span class="sd">    where :math:`\\rho_i` is the number density of species :math:`i`.</span>
 
@@ -948,7 +951,7 @@
 
 <span class="sd">      .. math::</span>
 
-<span class="sd">         \\kappa=F^2\sum_i\sum_j z_iz_jL_{ij}</span>
+<span class="sd">         \\kappa=F^2\\sum_i\\sum_j z_iz_jL_{ij}</span>
 
 <span class="sd">      :math:`F` is the Faraday constant.</span>
 
@@ -956,13 +959,13 @@
 
 <span class="sd">      .. math::</span>
 
-<span class="sd">         \mu_i=\\frac{F}{\\rho_i}\sum_j z_jL_{ij}</span>
+<span class="sd">         \\mu_i=\\frac{F}{\\rho_i}\\sum_j z_jL_{ij}</span>
 
 <span class="sd">    * Transference number:</span>
 
 <span class="sd">      .. math::</span>
 
-<span class="sd">         t_i=\\frac{\sum_j z_iz_jL_{ij}}{\sum_k\sum_l z_kz_lL_{kl}}</span>
+<span class="sd">         t_i=\\frac{\\sum_j z_iz_jL_{ij}}{\\sum_k\\sum_l z_kz_lL_{kl}}</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -996,17 +999,17 @@
 <span class="sd">           energy scale. When the Lennard-Jones potential is used, it</span>
 <span class="sd">           generally means that :math:`T^* = 1`, or `temperature=1`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{K}`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{K}`.</span>
 
 <span class="sd">    charges : array-like, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">    keyword-only, optional</span>
 <span class="sd">        Charge numbers :math:`z_i` for the specified `groupings` in the</span>
-<span class="sd">        :math:`N_\mathrm{g}` `groups`. If not provided, it will be</span>
+<span class="sd">        :math:`N_\\mathrm{g}` `groups`. If not provided, it will be</span>
 <span class="sd">        retrieved from the topology or trajectory.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{g},)`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{g},)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{e}`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{e}`.</span>
 
 <span class="sd">    dimensions : array-like, `openmm.unit.Quantity`, or \</span>
 <span class="sd">    `pint.Quantity`, keyword-only, optional</span>
@@ -1026,7 +1029,7 @@
 
 <span class="sd">        **Shape**: :math:`(3,)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}`.</span>
 
 <span class="sd">    dt : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">    keyword-only, optional</span>
@@ -1037,17 +1040,22 @@
 <span class="sd">        trajectory data every :math:`10,000` timesteps, then</span>
 <span class="sd">        :math:`\\Delta t=100`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{ps}`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{ps}`.</span>
 
 <span class="sd">    n_blocks : `int`, keyword-only, default: :code:`1`</span>
-<span class="sd">        Number of blocks :math:`N_\mathrm{b}` to split the trajectory</span>
+<span class="sd">        Number of blocks :math:`N_\\mathrm{b}` to split the trajectory</span>
 <span class="sd">        into.</span>
 
 <span class="sd">    center : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Determines whether the system center of mass is subtracted from</span>
 <span class="sd">        the positions used to compute the transport properties.</span>
 
-<span class="sd">    com_wrap : `bool`, keyword-only, default: :code:`False`</span>
+<span class="sd">    center_atom : `bool`, keyword-only, default: :code:`False`</span>
+<span class="sd">        Determines whether the system center of mass is computed using</span>
+<span class="sd">        the atom positions, regardless of `groupings`. Has no effect if</span>
+<span class="sd">        :code:`center=False`.</span>
+
+<span class="sd">    center_wrap : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Determines whether the system center of mass is computed using</span>
 <span class="sd">        the wrapped particle positions. Has no effect if</span>
 <span class="sd">        :code:`center=False`.</span>
@@ -1064,7 +1072,7 @@
 <span class="sd">        Determines if atom positions are unwrapped. Ensure that</span>
 <span class="sd">        :code:`unwrap=False` when the trajectory already contains</span>
 <span class="sd">        unwrapped particle positions, as this parameter is used in</span>
-<span class="sd">        conjunction with `com_wrap` to determine the appropriate</span>
+<span class="sd">        conjunction with `center_wrap` to determine the appropriate</span>
 <span class="sd">        system center of mass.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
@@ -1095,90 +1103,93 @@
 
 <span class="sd">        **Shape**: :math:`(N_t,)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{ps}`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{ps}`.</span>
 
 <span class="sd">    results.msd_cross : `numpy.ndarray`</span>
-<span class="sd">        MSDs (or analogs) for the :math:`N_\mathrm{g}` groups over</span>
-<span class="sd">        :math:`N_\mathrm{b}` blocks of :math:`N_t` trajectory frames</span>
+<span class="sd">        MSDs (or analogs) for the :math:`N_\\mathrm{g}` groups over</span>
+<span class="sd">        :math:`N_\\mathrm{b}` blocks of :math:`N_t` trajectory frames</span>
 <span class="sd">        each. Includes the dimensionality scaling factor. See Notes</span>
 <span class="sd">        about what this value actually means.</span>
 
 <span class="sd">        **Shape**:</span>
-<span class="sd">        :math:`(_{N_\mathrm{g}+1}\mathrm{C}_{2},\,N_\mathrm{b},\,N_t)`.</span>
+<span class="sd">        :math:`(_{N_\\mathrm{g}+1}\\mathrm{C}_{2},\\,N_\\mathrm{b},\\,</span>
+<span class="sd">        N_t)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^2`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}^2`.</span>
 
 <span class="sd">    results.msd_self : `numpy.ndarray`</span>
-<span class="sd">        Self MSDs (or analogs) for the :math:`N_\mathrm{g}` groups over</span>
-<span class="sd">        :math:`N_\mathrm{b}` blocks of :math:`N_t` trajectory frames</span>
+<span class="sd">        Self MSDs (or analogs) for the :math:`N_\\mathrm{g}` groups over</span>
+<span class="sd">        :math:`N_\\mathrm{b}` blocks of :math:`N_t` trajectory frames</span>
 <span class="sd">        each. Includes the dimensionality scaling factor. See Notes</span>
 <span class="sd">        about what this value actually means.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{g},\,N_\mathrm{b},\,N_t)`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{g},\\,N_\\mathrm{b},\\,N_t)`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^2`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}^2`.</span>
 
 <span class="sd">    results.L_ij : `numpy.ndarray`</span>
 <span class="sd">        Onsager transport coefficients :math:`L_{ij}`. Only available</span>
 <span class="sd">        after running :meth:`calculate_transport_coefficients`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g},\,N_\mathrm{g})`.</span>
+<span class="sd">        **Shape**: </span>
+<span class="sd">        :math:`(N_\\mathrm{b},\\,N_\\mathrm{g},\\,N_\\mathrm{g})`.</span>
 
 <span class="sd">        **Reference unit**:</span>
-<span class="sd">        :math:`\mathrm{mol/(kJ}\cdot\mathrm{Å}\cdot\mathrm{ps)}`.</span>
+<span class="sd">        :math:`\\mathrm{mol/(kJ}\\cdot\\mathrm{Å}\\cdot\\mathrm{ps)}`.</span>
 
 <span class="sd">    results.L_ii_self : `numpy.ndarray`</span>
 <span class="sd">        Self Onsager transport coefficient terms</span>
-<span class="sd">        :math:`L_{ii}^\mathrm{self}`. Note that</span>
-<span class="sd">        :math:`L_{ii}^\mathrm{self}` is related to :math:`D_i` via</span>
+<span class="sd">        :math:`L_{ii}^\\mathrm{self}`. Note that</span>
+<span class="sd">        :math:`L_{ii}^\\mathrm{self}` is related to :math:`D_i` via</span>
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">            L_{ii}^\mathrm{self}=\dfrac{N}{k_\mathrm{B}TV}D_i</span>
+<span class="sd">            L_{ii}^\\mathrm{self}=\\dfrac{N}{k_\\mathrm{B}TV}D_i</span>
 
-<span class="sd">        Only available after running :meth:`calculate_transport_coefficients`.</span>
+<span class="sd">        Only available after running </span>
+<span class="sd">        :meth:`calculate_transport_coefficients`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.</span>
 
 <span class="sd">        **Reference unit**:</span>
-<span class="sd">        :math:`\mathrm{mol/(kJ}\cdot\mathrm{Å}\cdot\mathrm{ps)}`.</span>
+<span class="sd">        :math:`\\mathrm{mol/(kJ}\\cdot\\mathrm{Å}\\cdot\\mathrm{ps)}`.</span>
 
 <span class="sd">    results.D_i : `numpy.ndarray`</span>
 <span class="sd">        Self-diffusion coefficients :math:`D_i`. Only available after</span>
 <span class="sd">        running :meth:`calculate_transport_coefficients`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^2/\mathrm{ps)}`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{Å}^2/\\mathrm{ps)}`.</span>
 
 <span class="sd">    results.conductivities : `numpy.ndarray`</span>
 <span class="sd">        Conductivities :math:`\\kappa`. Only available after running</span>
 <span class="sd">        :meth:`calculate_conductivity`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{C}^2/(\mathrm{kJ}\cdot</span>
-<span class="sd">        \mathrm{Å}\cdot\mathrm{ps})`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{C}^2/(\\mathrm{kJ}\\cdot</span>
+<span class="sd">        \\mathrm{Å}\\cdot\\mathrm{ps})`.</span>
 
-<span class="sd">        **To SI unit**: :math:`1\times10^{19}\,\mathrm{S}/\mathrm{m}`.</span>
+<span class="sd">        **To SI unit**: :math:`1\times10^{19}\\,\\mathrm{S}/\\mathrm{m}`.</span>
 
 <span class="sd">    results.electrophoretic_mobilities : `numpy.ndarray`</span>
-<span class="sd">        Electrophoretic mobilities :math:`\mu_i`. Only available after</span>
+<span class="sd">        Electrophoretic mobilities :math:`\\mu_i`. Only available after</span>
 <span class="sd">        running :meth:`calculate_electrophoretic_mobility`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.</span>
 
 <span class="sd">        **Reference unit**:</span>
-<span class="sd">        :math:`\mathrm{Å}^2\cdot\mathrm{C/(kJ}\cdot\mathrm{ps)}`.</span>
+<span class="sd">        :math:`\\mathrm{Å}^2\\cdot\\mathrm{C/(kJ}\\cdot\\mathrm{ps)}`.</span>
 
-<span class="sd">        **To SI unit**: :math:`1\times10^{-11}\,\mathrm{m}^2/</span>
-<span class="sd">        (\mathrm{V}\cdot\mathrm{s})`.</span>
+<span class="sd">        **To SI unit**: :math:`1\times10^{-11}\\,\\mathrm{m}^2/</span>
+<span class="sd">        (\\mathrm{V}\\cdot\\mathrm{s})`.</span>
 
 <span class="sd">    results.transference_numbers : `numpy.ndarray`</span>
 <span class="sd">        Transference numbers :math:`t_i`. Only available after running</span>
 <span class="sd">        :meth:`calculate_transference_number`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -1212,20 +1223,13 @@
             <span class="n">charges</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">dimensions</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">dt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">n_blocks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">center</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">com_wrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">fft</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_blocks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">center</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">center_atom</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">center_wrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">fft</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">)</span> <span class="k">else</span> <span class="n">groups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_charges&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">elementary_charge</span><span class="p">,</span>
-                              <span class="s2">&quot;_dimensions&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span>
-                              <span class="s2">&quot;_dt&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picosecond</span><span class="p">,</span>
-                              <span class="s2">&quot;_rhos&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
-                              <span class="s2">&quot;_kBT&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">mole</span><span class="p">,</span>
-                              <span class="s2">&quot;_volume&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="mi">3</span><span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groupings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -1292,6 +1296,17 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_charges</span> <span class="o">=</span> <span class="kc">None</span>
 
+        <span class="c1"># Determine the number of particles in each group and their</span>
+        <span class="c1"># corresponding indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;n_</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                         <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="n">N</span><span class="p">))</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="n">N</span>
+
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rhos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
                 <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;n_</span><span class="si">{</span><span class="n">gr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1302,7 +1317,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span> <span class="o">=</span> <span class="n">n_blocks</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_center</span> <span class="o">=</span> <span class="n">center</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_com_wrap</span> <span class="o">=</span> <span class="n">com_wrap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_center_atom</span> <span class="o">=</span> <span class="n">center_atom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_center_wrap</span> <span class="o">=</span> <span class="n">center_wrap</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fft</span> <span class="o">=</span> <span class="n">fft</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span> <span class="o">=</span> <span class="n">reduced</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span> <span class="o">=</span> <span class="n">unwrap</span>
@@ -1328,10 +1344,7 @@
 
         <span class="c1"># Preallocate array(s) to store positions (and number of</span>
         <span class="c1"># boundary crossings) for each AtomGroup</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;n_</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                         <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-                           <span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
@@ -1365,59 +1378,55 @@
         <span class="p">)</span>
 
         <span class="c1"># Store reference units</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.times&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picosecond</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;results.times&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picosecond</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.msd_cross&quot;</span><span class="p">]</span> <span class="o">=</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.msd_self&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="mi">2</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Store atom positions in the current frame</span>
         <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-        <span class="c1"># Unwrap all particle positions, if necessary</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
             <span class="n">unwrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
                    <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">)):</span>
-
-            <span class="c1"># Store particle or center-of-mass positions</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">positions</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span> <span class="k">if</span> <span class="n">g</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
+            
+        <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">positions</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
                 <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span>
-                    <span class="n">a</span><span class="p">,</span> <span class="n">grouping</span><span class="o">=</span><span class="n">g</span><span class="p">,</span>
-                    <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_images&quot;</span><span class="p">)</span>
+                    <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span>
+                    <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_images&quot;</span><span class="p">)</span>
                            <span class="k">else</span> <span class="kc">None</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
+        <span class="c1"># Subtract system center-of-mass from particle or molecule</span>
+        <span class="c1"># center-of-mass positions</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">:</span>
-
-            <span class="c1"># Compute the system center-of-mass using the unwrapped or</span>
-            <span class="c1"># wrapped particle positions</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_com_wrap</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
-                    <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_atom</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_wrap</span><span class="p">:</span>
+                    <span class="n">wrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span>
+                <span class="n">scom</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="p">,</span>
+                                      <span class="n">masses</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_wrap</span><span class="p">:</span>
+                    <span class="n">positions</span> <span class="o">=</span> <span class="n">wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">],</span> 
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">indices</span> <span class="o">=</span> <span class="p">(</span><span class="n">positions</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">positions</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span>
-                    <span class="n">positions</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">positions</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span>
-                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span>
-                    <span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
-            <span class="n">com</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="p">,</span>
-                                          <span class="n">masses</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span>
-
-            <span class="c1"># Subtract system center-of-mass from particle or</span>
-            <span class="c1"># center-of-mass positions</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">-=</span> <span class="n">com</span>
+                    <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span>
+                <span class="n">scom</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span>
+                    <span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="p">,</span>
+                    <span class="n">masses</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                        <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span><span class="o">.</span><span class="n">masses</span> 
+                         <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">)]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">-=</span> <span class="n">scom</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="c1"># Truncate the positions array if there are extra frames</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">positions</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span><span class="p">]</span>
 
         <span class="c1"># Compute the MSDs (or their analogs) for each unique AtomGroup</span>
         <span class="c1"># pair</span>
@@ -1427,7 +1436,7 @@
                                                  <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">i1</span> <span class="o">==</span> <span class="n">i2</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">[</span><span class="n">i1</span><span class="p">]:</span>
-                    <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                    <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">i1</span><span class="p">]]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">[</span><span class="n">i1</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
                     <span class="p">)</span>
                     <span class="n">positions</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">delete_dimensions</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1441,10 +1450,10 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msd_cross</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> \
                         <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msd_self</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">[</span><span class="n">i2</span><span class="p">]:</span>
-                <span class="n">positions1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                <span class="n">positions1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">i1</span><span class="p">]]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
                     <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">[</span><span class="n">i1</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-                <span class="n">positions2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                <span class="n">positions2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">i2</span><span class="p">]]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
                     <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">[</span><span class="n">i2</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
                 <span class="n">positions1</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">delete_dimensions</span><span class="p">]</span> \
@@ -1526,8 +1535,8 @@
                     <span class="s2">&quot;Onsager.calculate_transport_coefficients().&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">L_ij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">L_ii_self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">D_i</span> <span class="o">=</span> \
-            <span class="n">calculate_transport_coefficients</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">L_ij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">L_ii_self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">D_i</span> \
+            <span class="o">=</span> <span class="n">calculate_transport_coefficients</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">times</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msd_cross</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msd_self</span><span class="p">,</span>
@@ -1570,13 +1579,13 @@
 <span class="sd">        charges : array-like, `openmm.unit.Quantity`, or \</span>
 <span class="sd">        `pint.Quantity`, keyword-only, optional</span>
 <span class="sd">            Charge numbers :math:`z_i` of the groupings in the</span>
-<span class="sd">            :math:`N_\mathrm{g}` groups. This argument is optional only</span>
+<span class="sd">            :math:`N_\\mathrm{g}` groups. This argument is optional only</span>
 <span class="sd">            if `charges` has previously been passed to a calculation</span>
 <span class="sd">            method belonging to this class.</span>
 
-<span class="sd">            **Shape**: :math:`(N_\mathrm{g},)`.</span>
+<span class="sd">            **Shape**: :math:`(N_\\mathrm{g},)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{e}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{e}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;L_ij&quot;</span><span class="p">):</span>
@@ -1616,7 +1625,7 @@
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculates the electrophoretic mobility :math:`\mu_i` of each</span>
+<span class="sd">        Calculates the electrophoretic mobility :math:`\\mu_i` of each</span>
 <span class="sd">        species using the Onsager transport coefficients :math:`L_{ij}`.</span>
 
 <span class="sd">        Parameters</span>
@@ -1624,23 +1633,23 @@
 <span class="sd">        charges : array-like, `openmm.unit.Quantity`, or \</span>
 <span class="sd">        `pint.Quantity`, keyword-only, optional</span>
 <span class="sd">            Charge numbers :math:`z_i` of the groupings in the</span>
-<span class="sd">            :math:`N_\mathrm{g}` groups. This argument is optional only</span>
+<span class="sd">            :math:`N_\\mathrm{g}` groups. This argument is optional only</span>
 <span class="sd">            if charge information is present in the topology or</span>
 <span class="sd">            `charges` has previously been passed to a calculation</span>
 <span class="sd">            method belonging to this class.</span>
 
-<span class="sd">            **Shape**: :math:`(N_\mathrm{g},)`.</span>
+<span class="sd">            **Shape**: :math:`(N_\\mathrm{g},)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{e}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{e}`.</span>
 
 <span class="sd">        rhos : array-like, `openmm.unit.Quantity`, or \</span>
 <span class="sd">        `pint.Quantity`, keyword-only, optional</span>
 <span class="sd">            Number densities :math:`n_i` of the groupings in the</span>
-<span class="sd">            :math:`N_\mathrm{g}` groups.</span>
+<span class="sd">            :math:`N_\\mathrm{g}` groups.</span>
 
-<span class="sd">            **Shape**: :math:`(N_\mathrm{g},)`.</span>
+<span class="sd">            **Shape**: :math:`(N_\\mathrm{g},)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{Å}^{-3}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{Å}^{-3}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;L_ij&quot;</span><span class="p">):</span>
@@ -1698,14 +1707,14 @@
 <span class="sd">        charges : array-like, `openmm.unit.Quantity`, or \</span>
 <span class="sd">        `pint.Quantity`, keyword-only, optional</span>
 <span class="sd">            Charge numbers :math:`z_i` of the groupings in the</span>
-<span class="sd">            :math:`N_\mathrm{g}` groups. This argument is optional only</span>
+<span class="sd">            :math:`N_\\mathrm{g}` groups. This argument is optional only</span>
 <span class="sd">            if charge information is present in the topology or</span>
 <span class="sd">            `charges` has previously been passed to a calculation</span>
 <span class="sd">            method belonging to this class.</span>
 
-<span class="sd">            **Shape**: :math:`(N_\mathrm{g},)`.</span>
+<span class="sd">            **Shape**: :math:`(N_\\mathrm{g},)`.</span>
 
-<span class="sd">            **Reference unit**: :math:`\mathrm{e}`.</span>
+<span class="sd">            **Reference unit**: :math:`\\mathrm{e}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;L_ij&quot;</span><span class="p">):</span>

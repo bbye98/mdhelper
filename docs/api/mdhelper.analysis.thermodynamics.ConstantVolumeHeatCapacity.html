@@ -454,12 +454,43 @@ reference units for the heat capacity, use key
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mdhelper.analysis.thermodynamics.ConstantVolumeHeatCapacity.run" title="mdhelper.analysis.thermodynamics.ConstantVolumeHeatCapacity.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a></p></td>
+<td><p>Performs the calculation.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<dl class="py method">
+<dt class="sig sig-object py" id="mdhelper.analysis.thermodynamics.ConstantVolumeHeatCapacity.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><span class="pre">slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mdhelper/analysis/thermodynamics.html#ConstantVolumeHeatCapacity.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.analysis.thermodynamics.ConstantVolumeHeatCapacity.run" title="Link to this definition">#</a></dt>
+<dd><p>Performs the calculation.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>start</strong><span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Starting frame for analysis.</p>
+</dd>
+<dt><strong>stop</strong><span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Ending frame for analysis.</p>
+</dd>
+<dt><strong>step</strong><span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Number of frames to skip between each analyzed frame.</p>
+</dd>
+<dt><strong>frames</strong><span class="classifier"><cite>slice</cite> or array-like, optional</span></dt><dd><p>Index or logical array of the desired trajectory frames.</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier"><cite>bool</cite>, optional</span></dt><dd><p>Determines whether detailed progress is shown.</p>
+</dd>
+<dt><strong>**kwargs</strong></dt><dd><p>Additional keyword arguments to pass to
+<a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/lib/log.html#MDAnalysis.lib.log.ProgressBar" title="(in MDAnalysis v2.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressBar</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>self</strong><span class="classifier"><cite>ConstantVolumeHeatCapacity</cite></span></dt><dd><p>Analysis object with results.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -520,7 +551,10 @@ reference units for the heat capacity, use key
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">ConstantVolumeHeatCapacity</a><ul>
-<li><a class="reference internal" href="#mdhelper.analysis.thermodynamics.ConstantVolumeHeatCapacity"><code class="docutils literal notranslate"><span class="pre">ConstantVolumeHeatCapacity</span></code></a></li>
+<li><a class="reference internal" href="#mdhelper.analysis.thermodynamics.ConstantVolumeHeatCapacity"><code class="docutils literal notranslate"><span class="pre">ConstantVolumeHeatCapacity</span></code></a><ul>
+<li><a class="reference internal" href="#mdhelper.analysis.thermodynamics.ConstantVolumeHeatCapacity.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
