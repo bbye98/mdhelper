@@ -192,6 +192,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.Hash.html">Hash</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -408,8 +409,7 @@
 <dt><strong>value</strong><span class="classifier"><cite>numbers.Number</cite>, <cite>openmm.unit.Quantity</cite>, or <cite>pint.Quantity</cite></span></dt><dd><p>Physical quantity for which to get the magnitude of in the
 unit specified in <cite>unit_</cite>.</p>
 </dd>
-<dt><strong>unit_</strong><span class="classifier"><cite>str</cite>, <cite>openmm.unit.Unit</cite>, or <cite>pint.Unit</cite>, optional</span></dt><dd><p>Unit to convert to. Must be consistent with the module used for
-<cite>value</cite>. If not specified, the original unit is used.</p>
+<dt><strong>unit_</strong><span class="classifier"><cite>str</cite>, <cite>openmm.unit.Unit</cite>, or <cite>pint.Unit</cite>, optional</span></dt><dd><p>Unit to convert to. If not specified, the original unit is used.</p>
 </dd>
 </dl>
 </dd>
@@ -422,6 +422,46 @@ unit specified in <cite>unit_</cite>.</p>
 </dl>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>For any quantity other than a <code class="xref py py-obj docutils literal notranslate"><span class="pre">openmm.unit.Quantity</span></code> or
+<a class="reference external" href="https://pint.readthedocs.io/en/stable/api/base.html#pint.Quantity" title="(in pint v0.23rc3.dev1+g52ac9f5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pint.Quantity</span></code></a> object, the raw quantity and user-specified
+unit are returned.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">strip_unit</span><span class="p">(</span><span class="mf">90.0</span><span class="p">,</span> <span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+<span class="go">(90.0, &#39;deg&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strip_unit</span><span class="p">(</span><span class="mf">90.0</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">degree</span><span class="p">)</span>
+<span class="go">(90.0, &lt;Unit(&#39;degree&#39;)&gt;)</span>
+</pre></div>
+</div>
+<p>If no target unit is specified, the magnitude and original unit of
+the quantity are returned.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">strip_unit</span><span class="p">(</span><span class="mf">1.380649e-23</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">joule</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">(1.380649e-23, &lt;Unit(&#39;joule / kelvin&#39;)&gt;)</span>
+</pre></div>
+</div>
+<p>If a target unit using the same module as the quantity is specified,
+the quantity is first converted to the target unit, if necessary,
+before its magnitude and unit are returned.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="mf">9.80665</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">meter</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">second</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strip_unit</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="s2">&quot;meter/second**2&quot;</span><span class="p">)</span>
+<span class="go">(9.80665, &lt;Unit(&#39;meter / second ** 2&#39;)&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strip_unit</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">foot</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">second</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">(32.17404855643044, &lt;Unit(&#39;foot / second ** 2&#39;)&gt;)</span>
+</pre></div>
+</div>
+<p>If a target unit using a different module than the quantity is
+specified, the quantity is first converted to the target unit in
+the same module as the quantity, if necessary, before its magnitude
+and unit are returned.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">strip_unit</span><span class="p">(</span><span class="mf">8.205736608095969e-05</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">meter</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">atmosphere</span>
+<span class="gp">... </span>           <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kelvin</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">mole</span><span class="p">),</span>
+<span class="gp">... </span>           <span class="n">ureg</span><span class="o">.</span><span class="n">joule</span> <span class="o">/</span> <span class="p">(</span><span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">mole</span><span class="p">))</span>
+<span class="go">(8.31446261815324, &lt;Unit(&#39;joule / kelvin / mole&#39;)&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strip_unit</span><span class="p">(</span><span class="mf">8.205736608095969e-05</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">meter</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">atmosphere</span>
+<span class="gp">... </span>           <span class="o">/</span> <span class="p">(</span><span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">mole</span><span class="p">),</span>
+<span class="gp">... </span>           <span class="n">unit</span><span class="o">.</span><span class="n">joule</span> <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kelvin</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">mole</span><span class="p">))</span>
+<span class="go">(8.31446261815324, Unit({BaseUnit(..., name=&quot;kelvin&quot;, ...): -1.0, ...}))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

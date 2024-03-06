@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   <div class="sidebar-logo-container">
-    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+    <img class="sidebar-logo" src="../../../_static/logo.png" alt="Logo"/>
   </div>
   
   
@@ -191,6 +191,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.Hash.html">Hash</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -430,6 +431,45 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.coordinates.base</span> <span class="kn">import</span> <span class="n">ReaderBase</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<div class="viewcode-block" id="Hash">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.Hash.html#mdhelper.analysis.base.Hash">[docs]</a>
+<span class="k">class</span> <span class="nc">Hash</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A hash table, or an extension of the built-in `dict` with dot</span>
+<span class="sd">    notation for accessing properties.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">arg</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Positional arguments must be dictionaries.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="fm">__delattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+
+
 <div class="viewcode-block" id="SerialAnalysisBase">
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.base.SerialAnalysisBase">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialAnalysisBase</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
@@ -634,8 +674,8 @@
 <span class="sd">            Parallel analysis base object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">_verbose</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_verbose&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span> \
-                           <span class="k">else</span> <span class="n">verbose</span>
+        <span class="n">_verbose</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_verbose&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span> 
+                    <span class="k">else</span> <span class="n">verbose</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{asctime}</span><span class="s2"> | </span><span class="si">{levelname:^8s}</span><span class="s2"> | </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">,</span> 
                             <span class="n">style</span><span class="o">=</span><span class="s2">&quot;{&quot;</span><span class="p">,</span> 
                             <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span> <span class="k">if</span> <span class="n">_verbose</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
@@ -646,9 +686,9 @@
 
         <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_jobs</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> 
                      <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sched_getaffinity</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
-        <span class="n">frames</span> <span class="o">=</span> <span class="n">frames</span> <span class="k">if</span> <span class="n">frames</span> \
-                 <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="p">(</span><span class="n">frames</span> <span class="k">if</span> <span class="n">frames</span>
+                  <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">))</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">_verbose</span><span class="p">:</span>
@@ -664,19 +704,21 @@
                 <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;processes&quot;</span>
                 <span class="k">elif</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;distributed&quot;</span><span class="p">,</span> <span class="s2">&quot;processes&quot;</span><span class="p">,</span> <span class="s2">&quot;threading&quot;</span><span class="p">,</span>
-                                  <span class="s2">&quot;threads&quot;</span><span class="p">,</span> <span class="s2">&quot;single-threaded&quot;</span><span class="p">,</span> <span class="s2">&quot;sync&quot;</span><span class="p">,</span>
-                                  <span class="s2">&quot;synchronous&quot;</span><span class="p">}:</span>
+                                    <span class="s2">&quot;threads&quot;</span><span class="p">,</span> <span class="s2">&quot;single-threaded&quot;</span><span class="p">,</span> <span class="s2">&quot;sync&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;synchronous&quot;</span><span class="p">}:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid Dask scheduler.&quot;</span><span class="p">)</span>
                     
                 <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;distributed&quot;</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The Dask distributed client &quot;</span>
-                                       <span class="s2">&quot;(client = dask.distributed.Client(...)) &quot;</span>
-                                       <span class="s2">&quot;should be instantiated in the main &quot;</span>
-                                       <span class="s2">&quot;program (__name__ = &#39;__main__&#39;) of &quot;</span>
-                                       <span class="s2">&quot;your script.&quot;</span><span class="p">)</span>
+                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The Dask distributed client &quot;</span>
+                            <span class="s2">&quot;(client = dask.distributed.Client(...)) &quot;</span>
+                            <span class="s2">&quot;should be instantiated in the main &quot;</span>
+                            <span class="s2">&quot;program (__name__ = &#39;__main__&#39;) of &quot;</span>
+                            <span class="s2">&quot;your script.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;threading&quot;</span><span class="p">,</span> <span class="s2">&quot;threads&quot;</span><span class="p">}:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The threaded Dask scheduler is not &quot;</span>
-                                     <span class="s2">&quot;compatible with MDAnalysis.&quot;</span><span class="p">)</span>
+                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The threaded Dask scheduler is not &quot;</span>
+                            <span class="s2">&quot;compatible with MDAnalysis.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">n_jobs</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;single-threaded&quot;</span><span class="p">,</span> <span class="s2">&quot;sync&quot;</span><span class="p">,</span>
                                                     <span class="s2">&quot;synchronous&quot;</span><span class="p">}:</span>
                     <span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;synchronous&quot;</span>
@@ -691,14 +733,13 @@
 
             <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">frame</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">),</span> 
-                        <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">)</span>
-                    <span class="p">):</span>
+                <span class="k">for</span> <span class="n">frame</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">),</span>
+                                        <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">)):</span>
                     <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dask_job_block</span><span class="p">)(</span><span class="n">frame</span><span class="p">,</span> <span class="n">index</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">frame</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
-                    <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_frame_parallel</span><span class="p">)(</span><span class="n">frame</span><span class="p">,</span> <span class="n">index</span><span class="p">))</span>
+                    <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_frame_parallel</span><span class="p">)</span>
+                                <span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">index</span><span class="p">))</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">jobs</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
@@ -712,8 +753,9 @@
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting analysis using Joblib &quot;</span>
                          <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">n_jobs</span><span class="si">=}</span><span class="s2">, backend=</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">)...&quot;</span><span class="p">)</span>           
             <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">prefer</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> 
-                                                <span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">Parallel</span><span class="p">(</span>
+                    <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">prefer</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)(</span>
                     <span class="n">joblib</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_frame_parallel</span><span class="p">)(</span><span class="n">f</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">frames_</span><span class="p">,</span> <span class="n">indices_</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
                         <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">),</span>
@@ -721,17 +763,19 @@
                     <span class="p">)</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">frames_</span><span class="p">,</span> <span class="n">indices_</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">prefer</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> 
-                                                <span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">Parallel</span><span class="p">(</span>
+                    <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">prefer</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)(</span>
                     <span class="n">joblib</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_frame_parallel</span><span class="p">)(</span><span class="n">f</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> 
                     <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
                 <span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">module</span> <span class="o">!=</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The Dask or Joblib library was not &quot;</span>
-                              <span class="s2">&quot;found, so the native multiprocessing &quot;</span>
-                              <span class="s2">&quot;module will be used instead.&quot;</span><span class="p">)</span>
+                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The Dask or Joblib library was not found, so &quot;</span>
+                        <span class="s2">&quot;the native multiprocessing module will be&quot;</span>
+                        <span class="s2">&quot;used instead.&quot;</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             
             <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">method</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">get_start_method</span><span class="p">()</span>

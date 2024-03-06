@@ -34,6 +34,42 @@ from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.coordinates.base import ReaderBase
 import numpy as np
 
+class Hash(dict):
+
+    """
+    A hash table, or an extension of the built-in `dict` with dot
+    notation for accessing properties.
+    """
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for arg in args:
+            if isinstance(arg, dict):
+                for k, v in arg.items():
+                    self[k] = v
+            else:
+                raise TypeError("Positional arguments must be dictionaries.")
+        if kwargs:
+            for k, v in kwargs.items():
+                self[k] = v
+    
+    def __getattr__(self, attr):
+        return self.get(attr)
+    
+    def __setattr__(self, key, value):
+        self.__setitem__(key, value)
+
+    def __setitem__(self, key, value):
+        super().__setitem__(key, value)
+        self.__dict__.update({key: value})
+
+    def __delattr__(self, item):
+        self.__delitem__(item)
+
+    def __delitem__(self, key):
+        super().__delitem__(key)
+        del self.__dict__[key]
+
 class SerialAnalysisBase(AnalysisBase):
 
     """
@@ -225,8 +261,8 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             Parallel analysis base object.
         """
 
-        _verbose = getattr(self, '_verbose', False) if verbose is None \
-                           else verbose
+        _verbose = (getattr(self, '_verbose', False) if verbose is None 
+                    else verbose)
         logging.basicConfig(format="{asctime} | {levelname:^8s} | {message}", 
                             style="{", 
                             level=logging.INFO if _verbose else logging.WARNING)
@@ -237,9 +273,9 @@ class ParallelAnalysisBase(SerialAnalysisBase):
 
         n_jobs = min(n_jobs or np.inf, self.n_frames, 
                      len(os.sched_getaffinity(0)))
-        frames = frames if frames \
-                 else np.arange(self.start or 0, self.stop or self.n_frames,
-                                self.step)
+        frames = (frames if frames
+                  else np.arange(self.start or 0, self.stop or self.n_frames,
+                                 self.step))
         indices = np.arange(len(frames))
 
         if _verbose:
@@ -255,19 +291,21 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                 if method is None:
                     method = "processes"
                 elif method not in {"distributed", "processes", "threading",
-                                  "threads", "single-threaded", "sync",
-                                  "synchronous"}:
+                                    "threads", "single-threaded", "sync",
+                                    "synchronous"}:
                     raise ValueError("Invalid Dask scheduler.")
                     
                 if method == "distributed":
-                    raise RuntimeError("The Dask distributed client "
-                                       "(client = dask.distributed.Client(...)) "
-                                       "should be instantiated in the main "
-                                       "program (__name__ = '__main__') of "
-                                       "your script.")
+                    emsg = ("The Dask distributed client "
+                            "(client = dask.distributed.Client(...)) "
+                            "should be instantiated in the main "
+                            "program (__name__ = '__main__') of "
+                            "your script.")
+                    raise RuntimeError(emsg)
                 elif method in {"threading", "threads"}:
-                    raise ValueError("The threaded Dask scheduler is not "
-                                     "compatible with MDAnalysis.")
+                    emsg = ("The threaded Dask scheduler is not "
+                            "compatible with MDAnalysis.")
+                    raise ValueError(emsg)
                 elif n_jobs == 1 and method not in {"single-threaded", "sync",
                                                     "synchronous"}:
                     method = "synchronous"
@@ -282,14 +320,13 @@ class ParallelAnalysisBase(SerialAnalysisBase):
 
             jobs = []
             if block:
-                for frame, index in zip(
-                        np.array_split(frames, n_jobs), 
-                        np.array_split(indices, n_jobs)
-                    ):
+                for frame, index in zip(np.array_split(frames, n_jobs),
+                                        np.array_split(indices, n_jobs)):
                     jobs.append(dask.delayed(self._dask_job_block)(frame, index))
             else:
                 for frame, index in zip(frames, indices):
-                    jobs.append(dask.delayed(self._single_frame_parallel)(frame, index))
+                    jobs.append(dask.delayed(self._single_frame_parallel)
+                                (frame, index))
 
             self._results = dask.delayed(jobs).compute(**config)
             if block:
@@ -303,8 +340,9 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             logging.info("Starting analysis using Joblib "
                          f"({n_jobs=}, backend={method})...")           
             if block:
-                self._results = joblib.Parallel(n_jobs=n_jobs, prefer=method, 
-                                                **kwargs)(
+                self._results = joblib.Parallel(
+                    n_jobs=n_jobs, prefer=method, **kwargs
+                )(
                     joblib.delayed(self._single_frame_parallel)(f, i)
                     for frames_, indices_ in zip(
                         np.array_split(frames, n_jobs),
@@ -312,17 +350,19 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                     ) for f, i in zip(frames_, indices_)
                 )
             else:
-                self._results = joblib.Parallel(n_jobs=n_jobs, prefer=method, 
-                                                **kwargs)(
+                self._results = joblib.Parallel(
+                    n_jobs=n_jobs, prefer=method, **kwargs
+                )(
                     joblib.delayed(self._single_frame_parallel)(f, i) 
                     for f, i in zip(frames, indices)
                 )
 
         else:
             if module != "multiprocessing":
-                warnings.warn("The Dask or Joblib library was not "
-                              "found, so the native multiprocessing "
-                              "module will be used instead.")
+                wmsg = ("The Dask or Joblib library was not found, so "
+                        "the native multiprocessing module will be"
+                        "used instead.")
+                warnings.warn(wmsg)
             
             if method is None:
                 method = multiprocessing.get_start_method()

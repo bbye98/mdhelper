@@ -192,6 +192,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.Hash.html">Hash</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -420,9 +421,16 @@
 <dd class="field-odd"><dl>
 <dt><strong>bases</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Fundamental quantities: molar mass (<span class="math notranslate nohighlight">\(m\)</span>), length
 (<span class="math notranslate nohighlight">\(\sigma\)</span>), and energy (<span class="math notranslate nohighlight">\(\epsilon\)</span>).</p>
-<p><strong>Format</strong>: <code class="code docutils literal notranslate"><span class="pre">{&quot;mass&quot;:</span> <span class="pre">&lt;openmm.unit.Quantity&gt;</span> <span class="pre">|</span> <span class="pre">&lt;pint.Quantity&gt;,</span>
-<span class="pre">&quot;length&quot;:</span> <span class="pre">&lt;openmm.unit.Quantity&gt;</span> <span class="pre">|</span> <span class="pre">&lt;pint.Quantity&gt;,</span>
-<span class="pre">&quot;energy&quot;:</span> <span class="pre">&lt;openmm.unit.Quantity&gt;</span> <span class="pre">|</span> <span class="pre">&lt;pint.Quantity&gt;}</span></code>.</p>
+<div class="docutils container">
+<p><strong>Format</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;mass&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="o">&gt;</span> <span class="o">|</span> <span class="o">&lt;</span><span class="n">pint</span><span class="o">.</span><span class="n">Quantity</span><span class="o">&gt;</span><span class="p">,</span>
+  <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="o">&gt;</span> <span class="o">|</span> <span class="o">&lt;</span><span class="n">pint</span><span class="o">.</span><span class="n">Quantity</span><span class="o">&gt;</span><span class="p">,</span>
+  <span class="s2">&quot;energy&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">openmm</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">Quantity</span><span class="o">&gt;</span> <span class="o">|</span> <span class="o">&lt;</span><span class="n">pint</span><span class="o">.</span><span class="n">Quantity</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
 <p><strong>Reference units</strong>: <span class="math notranslate nohighlight">\(\mathrm{g/mol}\)</span>, <span class="math notranslate nohighlight">\(\mathrm{nm}\)</span>,
 and <span class="math notranslate nohighlight">\(\mathrm{kJ/mol}\)</span>.</p>
 </dd>

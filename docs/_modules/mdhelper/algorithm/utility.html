@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   <div class="sidebar-logo-container">
-    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+    <img class="sidebar-logo" src="../../../_static/logo.png" alt="Logo"/>
   </div>
   
   
@@ -190,6 +190,8 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.Hash.html">Hash</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -204,7 +206,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.ParallelSingleChainStructureFactor.html">ParallelSingleChainStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
@@ -219,13 +220,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_structure_factor.html">calculate_structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.zeroth_order_hankel_transform.html">zeroth_order_hankel_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF2D.html">ParallelRDF2D</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -477,7 +474,6 @@
                 <span class="k">break</span>
 
     <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
-        <span class="c1"># Sort factors in descending order, if desired</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">factors</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">factors</span><span class="p">)</span></div>
 
@@ -617,7 +613,6 @@
 <span class="sd">        Scaling factors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Evaluate the custom scaling factors</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">for</span> <span class="n">base</span><span class="p">,</span> <span class="n">power</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
@@ -656,9 +651,17 @@
 <span class="sd">        Fundamental quantities: molar mass (:math:`m`), length</span>
 <span class="sd">        (:math:`\sigma`), and energy (:math:`\epsilon`).</span>
 
-<span class="sd">        **Format**: :code:`{&quot;mass&quot;: &lt;openmm.unit.Quantity&gt; | &lt;pint.Quantity&gt;,</span>
-<span class="sd">        &quot;length&quot;: &lt;openmm.unit.Quantity&gt; | &lt;pint.Quantity&gt;,</span>
-<span class="sd">        &quot;energy&quot;: &lt;openmm.unit.Quantity&gt; | &lt;pint.Quantity&gt;}`.</span>
+<span class="sd">        .. container::</span>
+
+<span class="sd">           **Format**:</span>
+
+<span class="sd">           .. code::</span>
+
+<span class="sd">              {</span>
+<span class="sd">                &quot;mass&quot;: &lt;openmm.unit.Quantity&gt; | &lt;pint.Quantity&gt;,</span>
+<span class="sd">                &quot;length&quot;: &lt;openmm.unit.Quantity&gt; | &lt;pint.Quantity&gt;,</span>
+<span class="sd">                &quot;energy&quot;: &lt;openmm.unit.Quantity&gt; | &lt;pint.Quantity&gt;</span>
+<span class="sd">              }</span>
 
 <span class="sd">        **Reference units**: :math:`\mathrm{g/mol}`, :math:`\mathrm{nm}`,</span>
 <span class="sd">        and :math:`\mathrm{kJ/mol}`.</span>
@@ -731,8 +734,7 @@
 <span class="sd">        unit specified in `unit_`.</span>
 
 <span class="sd">    unit_ : `str`, `openmm.unit.Unit`, or `pint.Unit`, optional</span>
-<span class="sd">        Unit to convert to. Must be consistent with the module used for</span>
-<span class="sd">        `value`. If not specified, the original unit is used.</span>
+<span class="sd">        Unit to convert to. If not specified, the original unit is used.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -741,6 +743,47 @@
 
 <span class="sd">    unit_ : `openmm.unit.Unit` or `pint.Unit`</span>
 <span class="sd">        Unit of the physical quantity.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    For any quantity other than a :obj:`openmm.unit.Quantity` or</span>
+<span class="sd">    :obj:`pint.Quantity` object, the raw quantity and user-specified </span>
+<span class="sd">    unit are returned.</span>
+
+<span class="sd">    &gt;&gt;&gt; strip_unit(90.0, &quot;deg&quot;)</span>
+<span class="sd">    (90.0, &#39;deg&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; strip_unit(90.0, ureg.degree)</span>
+<span class="sd">    (90.0, &lt;Unit(&#39;degree&#39;)&gt;)</span>
+
+<span class="sd">    If no target unit is specified, the magnitude and original unit of </span>
+<span class="sd">    the quantity are returned.</span>
+
+<span class="sd">    &gt;&gt;&gt; strip_unit(1.380649e-23 * ureg.joule * ureg.kelvin ** -1)</span>
+<span class="sd">    (1.380649e-23, &lt;Unit(&#39;joule / kelvin&#39;)&gt;)</span>
+
+<span class="sd">    If a target unit using the same module as the quantity is specified,</span>
+<span class="sd">    the quantity is first converted to the target unit, if necessary,</span>
+<span class="sd">    before its magnitude and unit are returned.</span>
+
+<span class="sd">    &gt;&gt;&gt; g = 9.80665 * ureg.meter / ureg.second ** 2</span>
+<span class="sd">    &gt;&gt;&gt; strip_unit(g, &quot;meter/second**2&quot;)</span>
+<span class="sd">    (9.80665, &lt;Unit(&#39;meter / second ** 2&#39;)&gt;)</span>
+<span class="sd">    &gt;&gt;&gt; strip_unit(g, ureg.foot / ureg.second ** 2)</span>
+<span class="sd">    (32.17404855643044, &lt;Unit(&#39;foot / second ** 2&#39;)&gt;)</span>
+
+<span class="sd">    If a target unit using a different module than the quantity is</span>
+<span class="sd">    specified, the quantity is first converted to the target unit in</span>
+<span class="sd">    the same module as the quantity, if necessary, before its magnitude</span>
+<span class="sd">    and unit are returned.</span>
+
+<span class="sd">    &gt;&gt;&gt; strip_unit(8.205736608095969e-05 * unit.meter ** 3 * unit.atmosphere</span>
+<span class="sd">    ...            / (unit.kelvin * unit.mole),</span>
+<span class="sd">    ...            ureg.joule / (ureg.kelvin * ureg.mole))</span>
+<span class="sd">    (8.31446261815324, &lt;Unit(&#39;joule / kelvin / mole&#39;)&gt;)</span>
+<span class="sd">    &gt;&gt;&gt; strip_unit(8.205736608095969e-05 * ureg.meter ** 3 * ureg.atmosphere</span>
+<span class="sd">    ...            / (ureg.kelvin * ureg.mole),</span>
+<span class="sd">    ...            unit.joule / (unit.kelvin * unit.mole))</span>
+<span class="sd">    (8.31446261815324, Unit({BaseUnit(..., name=&quot;kelvin&quot;, ...): -1.0, ...}))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Q_</span><span class="p">):</span>
@@ -748,15 +791,33 @@
             <span class="n">unit_</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">units</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">magnitude</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;openmm.unit.unit&quot;</span><span class="p">:</span>
+                <span class="n">units</span> <span class="o">=</span> <span class="n">unit_</span><span class="o">.</span><span class="n">iter_base_or_scaled_units</span><span class="p">()</span>
+                <span class="n">unit_</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">units</span><span class="p">:</span>
+                    <span class="n">unit_</span> <span class="o">*=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">**</span> <span class="n">p</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">unit_</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;openmm.unit.quantity&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">unit_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">unit_</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">unit</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">unit_dict</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span><span class="o">.</span><span class="n">_units</span>
-            <span class="n">unit_</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">dimensionless</span>
-            <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">unit_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">unit_</span> <span class="o">*=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span> <span class="o">**</span> <span class="n">p</span>
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;openmm.unit.unit&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">unit_</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="n">unit_</span><span class="o">.</span><span class="n">_units</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">unit_</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">dimensionless</span>
+                <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">units</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">unit_</span> <span class="o">*=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span> <span class="o">**</span> <span class="n">p</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;strip_unit() relies on the pint module for &quot;</span>
+                        <span class="s2">&quot;parsing units. At least one unit in &#39;unit&#39; is &quot;</span>
+                        <span class="s2">&quot;not defined the same way in openmm.unit and pint, &quot;</span>
+                        <span class="s2">&quot;so the unit conversion cannot be performed. Try &quot;</span>
+                        <span class="s2">&quot;specifying a openmm.unit.Quantity object for &quot;</span>
+                        <span class="s2">&quot;&#39;unit&#39; instead.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">unit_</span></div>
 

@@ -72,6 +72,8 @@ def create_atoms(
              determined by the particle size :math:`a`.
            * :code:`"hcp"`: Hexagonal close-packed (HCP) lattice,
              determined by the particle size :math:`a`.
+           * :code:`"cubic"`: Cubic crystal system, determined by the
+             particle size :math:`a`.
            * :code:`"honeycomb"`: Honeycomb lattice (e.g., graphene),
              determined by the bond length :math:`b`.
 
@@ -152,17 +154,13 @@ def create_atoms(
                     f"with {N_p=} particles.")
             raise ValueError(emsg)
 
+        # Generate particle positions for a random melt
         if N_p == 1:
-
-            # Generate particle positions for a random melt
             pos = np.random.rand(N, 3) * dims
-
         else:
 
-            # Determine the total number of segments
-            segments = N // N_p
-
             # Determine unit cell information for each segment
+            segments = N // N_p
             n_cells = utility.get_closest_factors(segments, 3)
             cell_dims = dims / n_cells
 
@@ -174,10 +172,9 @@ def create_atoms(
                 vec = rng.random(3) * 2 - 1
                 cell_pos[i] = cell_pos[i - 1] + length * vec / np.linalg.norm(vec)
 
-            # Replicate unit cell in x-, y-, and z-directions
+            # Replicate unit cell in x-, y-, and z-directions (and
+            # randomize, if desired)
             pos = utility.replicate(cell_dims, cell_pos, n_cells)
-
-            # Randomize order of replicated polymers
             if randomize:
                 pos = np.vstack(rng.permutation(pos.reshape((segments, -1, 3))))
 
@@ -193,45 +190,54 @@ def create_atoms(
                                   for i in range(segments)
                                   for j in range(N_p - 1)])
                 return pos if length_unit is None else pos * length_unit, bonds
+
         return pos if length_unit is None else pos * length_unit
     else:
+        around = np.around if flexible else np.floor
 
         # Set unit cell information
-        if lattice == "fcc":
-            cell_dims = length * np.array((1, np.sqrt(3), 3 * np.sqrt(6) / 3))
-            cell_pos = length * np.array((
-                (0, 0, 0),
-                (0.5, np.sqrt(3) / 2, 0),
-                (0.5, np.sqrt(3) / 6, np.sqrt(6) / 3),
-                (0, 2 * np.sqrt(3) / 3, np.sqrt(6) / 3),
-                (0, np.sqrt(3) / 3, 2 * np.sqrt(6) / 3),
-                (0.5, 5 * np.sqrt(3) / 6, 2 * np.sqrt(6) / 3),
-            ))
-        elif lattice == "hcp":
-            cell_dims = length * np.array((1, np.sqrt(3), 2 * np.sqrt(6) / 3))
-            cell_pos = length * np.array((
-                (0, 0, 0),
-                (0.5, np.sqrt(3) / 2, 0),
-                (0.5, np.sqrt(3) / 6, np.sqrt(6) / 3),
-                (0, 2 * np.sqrt(3) / 3, np.sqrt(6) / 3)
-            ))
-        elif lattice == "honeycomb":
-            cell_dims = length * np.array((np.sqrt(3), 3, np.inf))
-            cell_pos = length * np.array((
-                (0, 0, 0),
-                (0, 1, 0),
-                (np.sqrt(3) / 2, 1.5, 0),
-                (np.sqrt(3) / 2, 2.5, 0)
-            ))
+        if lattice == "cubic":
+            _dims = np.array(dims)
+            _dims[dims == 0] = 1
+            n_cells = around(_dims / length).astype(int)
+            cell_dims = length * np.array((1, 1, 1))
+            x, y, z = (length * np.arange(n) for n in n_cells)
+            pos = np.stack(np.meshgrid(x, y, z), axis=-1).reshape(-1, 3)
+        else:
+            if lattice == "fcc":
+                cell_dims = length * np.array((1, np.sqrt(3), 3 * np.sqrt(6) / 3))
+                cell_pos = length * np.array((
+                    (0, 0, 0),
+                    (0.5, np.sqrt(3) / 2, 0),
+                    (0.5, np.sqrt(3) / 6, np.sqrt(6) / 3),
+                    (0, 2 * np.sqrt(3) / 3, np.sqrt(6) / 3),
+                    (0, np.sqrt(3) / 3, 2 * np.sqrt(6) / 3),
+                    (0.5, 5 * np.sqrt(3) / 6, 2 * np.sqrt(6) / 3),
+                ))
+            elif lattice == "hcp":
+                cell_dims = length * np.array((1, np.sqrt(3), 2 * np.sqrt(6) / 3))
+                cell_pos = length * np.array((
+                    (0, 0, 0),
+                    (0.5, np.sqrt(3) / 2, 0),
+                    (0.5, np.sqrt(3) / 6, np.sqrt(6) / 3),
+                    (0, 2 * np.sqrt(3) / 3, np.sqrt(6) / 3)
+                ))
+            elif lattice == "honeycomb":
+                cell_dims = length * np.array((np.sqrt(3), 3, np.inf))
+                cell_pos = length * np.array((
+                    (0, 0, 0),
+                    (0, 1, 0),
+                    (np.sqrt(3) / 2, 1.5, 0),
+                    (np.sqrt(3) / 2, 2.5, 0)
+                ))
 
-        # Determine unit cell multiples
-        around = np.around if flexible else np.floor
-        n_cells = around(dims / cell_dims).astype(int)
-        n_cells[n_cells == 0] = 1
-        cell_dims[np.isinf(cell_dims)] = 0
+            # Determine unit cell multiples
+            n_cells = around(dims / cell_dims).astype(int)
+            n_cells[n_cells == 0] = 1
+            cell_dims[np.isinf(cell_dims)] = 0
 
-        # Replicate unit cell in x-, y-, and z-directions
-        pos = utility.replicate(cell_dims, cell_pos, n_cells)
+            # Replicate unit cell in x-, y-, and z-directions
+            pos = utility.replicate(cell_dims, cell_pos, n_cells)
 
         # Remove particles outside of system boundaries
         if flexible:

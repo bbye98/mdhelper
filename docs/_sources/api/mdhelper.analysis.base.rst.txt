@@ -21,6 +21,7 @@
       :nosignatures:
    
       DynamicAnalysisBase
+      Hash
       ParallelAnalysisBase
       SerialAnalysisBase
    

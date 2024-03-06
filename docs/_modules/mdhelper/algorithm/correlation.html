@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   <div class="sidebar-logo-container">
-    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+    <img class="sidebar-logo" src="../../../_static/logo.png" alt="Logo"/>
   </div>
   
   
@@ -190,6 +190,8 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.Hash.html">Hash</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -204,7 +206,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.ParallelSingleChainStructureFactor.html">ParallelSingleChainStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
@@ -219,13 +220,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.calculate_structure_factor.html">calculate_structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.zeroth_order_hankel_transform.html">zeroth_order_hankel_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.html">IncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelIncoherentIntermediateScatteringFunction.html">ParallelIncoherentIntermediateScatteringFunction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF.html">ParallelRDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelRDF2D.html">ParallelRDF2D</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.ParallelStructureFactor.html">ParallelStructureFactor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF.html">RDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.RDF2D.html">RDF2D</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
 </li>
@@ -573,11 +570,9 @@
                 <span class="s2">&quot;second axis.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
-    <span class="c1"># Get number of frames</span>
-    <span class="n">N_t</span> <span class="o">=</span> <span class="n">arr1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
-
     <span class="c1"># Calculate the PSD by first zero-padding the arrays for linear</span>
     <span class="c1"># convolution, and then invert it to get the ACF/CCF</span>
+    <span class="n">N_t</span> <span class="o">=</span> <span class="n">arr1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">arr2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">arr1</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">N_t</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
         <span class="n">corr</span> <span class="o">=</span> <span class="p">(</span><span class="n">double</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">fft</span><span class="o">.</span><span class="n">irfft</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">f</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
@@ -625,6 +620,7 @@
         <span class="n">axis_avg</span> <span class="o">=</span> <span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">vector</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="o">!=</span> <span class="n">axis_avg</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">corr</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis_avg</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">corr</span></div>
 
 
@@ -779,10 +775,8 @@
                 <span class="s2">&quot;second axis.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
-    <span class="c1"># Get number of frames</span>
-    <span class="n">N_t</span> <span class="o">=</span> <span class="n">arr1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
-
     <span class="c1"># Calculate the ACF/CCF</span>
+    <span class="n">N_t</span> <span class="o">=</span> <span class="n">arr1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">arr2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
@@ -828,8 +822,8 @@
                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">start</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">stop</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)]</span>
             <span class="p">)</span>
 
-    <span class="c1"># Doubles the ACF or overlaps the CCF for negative and positive</span>
-    <span class="c1"># lags, if desired</span>
+    <span class="c1"># Double the ACF or overlap the CCF for negative and positive lags,</span>
+    <span class="c1"># if desired</span>
     <span class="k">if</span> <span class="n">double</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">arr2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">corr</span> <span class="o">*=</span> <span class="mi">2</span>
@@ -862,6 +856,7 @@
         <span class="n">axis_avg</span> <span class="o">=</span> <span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">vector</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="o">!=</span> <span class="n">axis_avg</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">corr</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis_avg</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">corr</span></div>
 
 
@@ -1026,14 +1021,12 @@
                 <span class="s2">&quot;second axis.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
-    <span class="c1"># Get number of frames</span>
-    <span class="n">N_t</span> <span class="o">=</span> <span class="n">pos1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
-
     <span class="c1"># Get intermediate quantities required for the MSD/CD calculation</span>
     <span class="n">s2</span> <span class="o">=</span> <span class="n">correlation_fft</span><span class="p">(</span><span class="n">pos1</span><span class="p">,</span> <span class="n">pos2</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">double</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                          <span class="n">vector</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">r1r2</span> <span class="o">=</span> <span class="p">(</span><span class="n">pos1</span> <span class="o">*</span> <span class="p">(</span><span class="n">pos1</span> <span class="k">if</span> <span class="n">pos2</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">pos2</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
+    <span class="n">N_t</span> <span class="o">=</span> <span class="n">pos1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">ndim</span> <span class="o">-</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
 
         <span class="c1"># Calculate the MSD/CD for each particle</span>
@@ -1053,7 +1046,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ssum</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                    <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="n">D</span><span class="p">[</span><span class="n">N_t</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> 
+                    <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="n">D</span><span class="p">[</span><span class="n">N_t</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
                                 <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="k">return</span> <span class="n">ssum</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">s2</span>
@@ -1214,10 +1207,8 @@
                 <span class="s2">&quot;second axis.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
-    <span class="c1"># Get number of frames</span>
-    <span class="n">N_t</span> <span class="o">=</span> <span class="n">pos1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
-
     <span class="c1"># Calculate the MSD/CD for each atom</span>
+    <span class="n">N_t</span> <span class="o">=</span> <span class="n">pos1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">pos2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">axis</span><span class="p">:</span>
             <span class="n">disp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>

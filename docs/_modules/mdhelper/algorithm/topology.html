@@ -191,6 +191,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.Hash.html">Hash</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -552,17 +553,13 @@
                     <span class="sa">f</span><span class="s2">&quot;with </span><span class="si">{</span><span class="n">N_p</span><span class="si">=}</span><span class="s2"> particles.&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
+        <span class="c1"># Generate particle positions for a random melt</span>
         <span class="k">if</span> <span class="n">N_p</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-
-            <span class="c1"># Generate particle positions for a random melt</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">dims</span>
-
         <span class="k">else</span><span class="p">:</span>
 
-            <span class="c1"># Determine the total number of segments</span>
-            <span class="n">segments</span> <span class="o">=</span> <span class="n">N</span> <span class="o">//</span> <span class="n">N_p</span>
-
             <span class="c1"># Determine unit cell information for each segment</span>
+            <span class="n">segments</span> <span class="o">=</span> <span class="n">N</span> <span class="o">//</span> <span class="n">N_p</span>
             <span class="n">n_cells</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">get_closest_factors</span><span class="p">(</span><span class="n">segments</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
             <span class="n">cell_dims</span> <span class="o">=</span> <span class="n">dims</span> <span class="o">/</span> <span class="n">n_cells</span>
 
@@ -574,10 +571,9 @@
                 <span class="n">vec</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
                 <span class="n">cell_pos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell_pos</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">length</span> <span class="o">*</span> <span class="n">vec</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
 
-            <span class="c1"># Replicate unit cell in x-, y-, and z-directions</span>
+            <span class="c1"># Replicate unit cell in x-, y-, and z-directions (and</span>
+            <span class="c1"># randomize, if desired)</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">replicate</span><span class="p">(</span><span class="n">cell_dims</span><span class="p">,</span> <span class="n">cell_pos</span><span class="p">,</span> <span class="n">n_cells</span><span class="p">)</span>
-
-            <span class="c1"># Randomize order of replicated polymers</span>
             <span class="k">if</span> <span class="n">randomize</span><span class="p">:</span>
                 <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">segments</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))))</span>
 
@@ -593,6 +589,7 @@
                                   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span>
                                   <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
                 <span class="k">return</span> <span class="n">pos</span> <span class="k">if</span> <span class="n">length_unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">pos</span> <span class="o">*</span> <span class="n">length_unit</span><span class="p">,</span> <span class="n">bonds</span>
+
         <span class="k">return</span> <span class="n">pos</span> <span class="k">if</span> <span class="n">length_unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">pos</span> <span class="o">*</span> <span class="n">length_unit</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">around</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span> <span class="k">if</span> <span class="n">flexible</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span>

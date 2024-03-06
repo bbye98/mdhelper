@@ -75,7 +75,6 @@ def get_closest_factors(
                 break
 
     if reverse:
-        # Sort factors in descending order, if desired
         return np.sort(factors)[::-1]
     return np.sort(factors)
 
@@ -206,7 +205,6 @@ def get_scaling_factors(
         Scaling factors.
     """
 
-    # Evaluate the custom scaling factors
     for name, params in other.items():
         factor = 1
         for base, power in params:
@@ -242,9 +240,17 @@ def get_lj_scaling_factors(
         Fundamental quantities: molar mass (:math:`m`), length
         (:math:`\sigma`), and energy (:math:`\epsilon`).
 
-        **Format**: :code:`{"mass": <openmm.unit.Quantity> | <pint.Quantity>,
-        "length": <openmm.unit.Quantity> | <pint.Quantity>,
-        "energy": <openmm.unit.Quantity> | <pint.Quantity>}`.
+        .. container::
+
+           **Format**:
+
+           .. code::
+
+              {
+                "mass": <openmm.unit.Quantity> | <pint.Quantity>,
+                "length": <openmm.unit.Quantity> | <pint.Quantity>,
+                "energy": <openmm.unit.Quantity> | <pint.Quantity>
+              }
 
         **Reference units**: :math:`\mathrm{g/mol}`, :math:`\mathrm{nm}`,
         and :math:`\mathrm{kJ/mol}`.
@@ -314,8 +320,7 @@ def strip_unit(
         unit specified in `unit_`.
 
     unit_ : `str`, `openmm.unit.Unit`, or `pint.Unit`, optional
-        Unit to convert to. Must be consistent with the module used for
-        `value`. If not specified, the original unit is used.
+        Unit to convert to. If not specified, the original unit is used.
 
     Returns
     -------
@@ -324,6 +329,47 @@ def strip_unit(
 
     unit_ : `openmm.unit.Unit` or `pint.Unit`
         Unit of the physical quantity.
+
+    Examples
+    --------
+    For any quantity other than a :obj:`openmm.unit.Quantity` or
+    :obj:`pint.Quantity` object, the raw quantity and user-specified 
+    unit are returned.
+
+    >>> strip_unit(90.0, "deg")
+    (90.0, 'deg')
+    >>> strip_unit(90.0, ureg.degree)
+    (90.0, <Unit('degree')>)
+
+    If no target unit is specified, the magnitude and original unit of 
+    the quantity are returned.
+
+    >>> strip_unit(1.380649e-23 * ureg.joule * ureg.kelvin ** -1)
+    (1.380649e-23, <Unit('joule / kelvin')>)
+
+    If a target unit using the same module as the quantity is specified,
+    the quantity is first converted to the target unit, if necessary,
+    before its magnitude and unit are returned.
+
+    >>> g = 9.80665 * ureg.meter / ureg.second ** 2
+    >>> strip_unit(g, "meter/second**2")
+    (9.80665, <Unit('meter / second ** 2')>)
+    >>> strip_unit(g, ureg.foot / ureg.second ** 2)
+    (32.17404855643044, <Unit('foot / second ** 2')>)
+
+    If a target unit using a different module than the quantity is
+    specified, the quantity is first converted to the target unit in
+    the same module as the quantity, if necessary, before its magnitude
+    and unit are returned.
+
+    >>> strip_unit(8.205736608095969e-05 * unit.meter ** 3 * unit.atmosphere
+    ...            / (unit.kelvin * unit.mole),
+    ...            ureg.joule / (ureg.kelvin * ureg.mole))
+    (8.31446261815324, <Unit('joule / kelvin / mole')>)
+    >>> strip_unit(8.205736608095969e-05 * ureg.meter ** 3 * ureg.atmosphere
+    ...            / (ureg.kelvin * ureg.mole),
+    ...            unit.joule / (unit.kelvin * unit.mole))
+    (8.31446261815324, Unit({BaseUnit(..., name="kelvin", ...): -1.0, ...}))
     """
 
     if isinstance(value, Q_):
@@ -331,14 +377,32 @@ def strip_unit(
             unit_ = value.units
             value = value.magnitude
         else:
+            if getattr(unit_, "__module__", None) == "openmm.unit.unit":
+                units = unit_.iter_base_or_scaled_units()
+                unit_ = ureg.Unit("")
+                for u, p in units:
+                    unit_ *= ureg.Unit(u.name) ** p
+            elif isinstance(unit_, str):
+                unit_ = ureg.Unit(unit_)
             value = value.m_as(unit_)
     elif getattr(value, "__module__", None) == "openmm.unit.quantity":
         if unit_ is None:
             unit_ = value.unit
-        elif isinstance(unit_, str):
-            unit_dict = ureg.Unit(unit_)._units
-            unit_ = unit.dimensionless
-            for u, p in unit_dict.items():
-                unit_ *= getattr(unit, u) ** p
+        elif getattr(unit_, "__module__", None) != "openmm.unit.unit":
+            if isinstance(unit_, str):
+                unit_ = ureg.Unit(unit_)
+            units = unit_._units
+            try:
+                unit_ = unit.dimensionless
+                for u, p in units.items():
+                    unit_ *= getattr(unit, u) ** p
+            except AttributeError:
+                emsg = ("strip_unit() relies on the pint module for "
+                        "parsing units. At least one unit in 'unit' is "
+                        "not defined the same way in openmm.unit and pint, "
+                        "so the unit conversion cannot be performed. Try "
+                        "specifying a openmm.unit.Quantity object for "
+                        "'unit' instead.")
+                raise ValueError(emsg)
         value = value.value_in_unit(unit_)
     return value, unit_

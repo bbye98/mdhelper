@@ -228,8 +228,6 @@ def center_of_mass(
     # Get particle masses and positions from the trajectory, if necessary
     missing = (masses is None, positions is None)
     if any(missing):
-
-        # Ensure a trajectory is available
         if group is None:
             emsg = ("Either a group of atoms or atom positions and "
                     "masses must be provided.")
@@ -238,8 +236,8 @@ def center_of_mass(
         # Check whether the groups are identical
         if grouping:
             groups = getattr(group, grouping)
-            same = all(r.atoms.n_atoms == groups[0].atoms.n_atoms
-                        for r in groups)
+            same = all(g.atoms.n_atoms == groups[0].atoms.n_atoms
+                       for g in groups)
         else:
             same = True
 
@@ -249,11 +247,9 @@ def center_of_mass(
         if not same and images is None and not raw:
             return np.array([g.atoms.center_of_mass() for g in groups])
 
-        # Get particle positions, if necessary
+        # Get and unwrap particle positions, if necessary
         if missing[1]:
             positions = group.positions
-
-            # Unwrap particle positions, if necessary
             if images is not None:
                 if dims is None:
                     try:
@@ -266,42 +262,30 @@ def center_of_mass(
                         raise ValueError(emsg)
                 positions += images * dims[:3]
 
+        # Get particle masses and ensure correct dimensionality, if
+        # necessary
         if same:
-
-            # Get particle masses, if necessary
             if missing[0]:
                 masses = group.masses
-
-            # Reshape the mass and position arrays, if necessary
             if grouping or n_groups:
                 shape = ((n_groups, -1, 3) if n_groups
                          else (getattr(group, f"n_{grouping}"), -1, 3))
                 masses = masses.reshape(shape[:-1])
                 positions = positions.reshape(shape)
         else:
-
-            # Get particle masses, if necessary
             if missing[0]:
                 masses = [g.atoms.masses for g in groups]
-
-            # Reshape the position array, if necessary
             if missing[1]:
                 positions = [positions[g.atoms.ix] for g in groups]
-
     else:
 
         # Try to convert arrays to NumPy arrays if they are not already
         # to take advantage of vectorized operations later
-        if not isinstance(positions, np.ndarray):
-            try:
-                positions = np.array(positions)
-            except ValueError:
-                pass
-        if not isinstance(masses, np.ndarray):
-            try:
-                masses = np.array(masses)
-            except ValueError:
-                pass
+        try:
+            positions = np.asarray(positions)
+            masses = np.asarray(masses)
+        except ValueError:
+            pass
         if type(masses) != type(positions):
             emsg = ("The shapes of the arrays containing the particle "
                     "masses and positions are incompatible.")
@@ -321,10 +305,7 @@ def center_of_mass(
         com = np.array([np.dot(m, p) / m.sum()
                         for m, p in zip(masses, positions)])
 
-    # Return the center(s) of mass
     if raw and any(missing):
-
-        # Also return the particle masses and positions, if desired
         return com, masses, positions
     return com
 
@@ -549,10 +530,10 @@ def radius_of_gyration(
         if components:
             cpos = (positions
                     - np.expand_dims(com, axis=positions.ndim - 2)) ** 2
-            if grouping or n_groups:
 
-                # Compute the radii of gyration in each direction for
-                # equisized or identical group(s)
+            # Compute the radii of gyration in each direction for
+            # equisized or identical group(s)
+            if grouping or n_groups:
                 return np.sqrt(
                     np.einsum("ga,gad->gd", masses,
                               np.stack((cpos[:, :, (1, 2)].sum(axis=2),
@@ -572,10 +553,10 @@ def radius_of_gyration(
                                cpos[:, (0, 1)].sum(axis=1, keepdims=True)))
                 ) / masses.sum()
             )
-        elif grouping or n_groups:
 
-            # Compute the overall radii of gyration for equisized or
-            # identical group(s)
+        # Compute the overall radii of gyration for equisized or
+        # identical group(s)
+        elif grouping or n_groups:
             return np.sqrt(
                 np.einsum("ga,gad->gd", masses,
                           (positions - com[:, None]) ** 2).sum(axis=1)
@@ -585,10 +566,10 @@ def radius_of_gyration(
         # Compute the overall radius of gyration for all atoms
         return np.sqrt(np.dot(masses, (positions - com) ** 2).sum()
                        / masses.sum())
-    if components:
 
-        # Compute the radii of gyration in each direction for asymmetric
-        # groups
+    # Compute the radii of gyration in each direction for asymmetric
+    # groups
+    if components:
         gyradii = np.empty(com.shape)
         for i, (m, p, c) in enumerate(zip(masses, positions, com)):
             cpos = (p - c) ** 2

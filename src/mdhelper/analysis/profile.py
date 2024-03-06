@@ -214,16 +214,14 @@ def calculate_potential_profile(
                    - dielectric * dV / CONVERSION_FACTOR) / L
 
     if method == "integral":
-
-        # Calculate the first integral of the charge density profile
         potential = integrate.cumulative_trapezoid(charge_density, bins, 
                                                    initial=0)
 
         if sigma_q is None:
-            wmsg = ("No surface charge density information. The value will "
-                    "be extracted from the integrated charge density "
-                    "profile, which may be inaccurate due to numerical "
-                    "errors.")
+            wmsg = ("No surface charge density information. The value "
+                    "will be extracted from the integrated charge "
+                    "density profile, which may be inaccurate due to "
+                    "numerical errors.")
             warnings.warn(wmsg)
 
             # Get surface charge density from the integrated charge
@@ -245,7 +243,6 @@ def calculate_potential_profile(
                     cut_indices[cut_indices >= target_index][0]
                 ].mean()
 
-        # Calculate the second integral of the charge density profile
         return (
             -CONVERSION_FACTOR
             * integrate.cumulative_trapezoid(potential + sigma_q, bins,
@@ -426,6 +423,9 @@ class DensityProfile(DynamicAnalysisBase):
         Specifies whether the data is in reduced units. Affects
         `results.number_densities`, `results.charge_densities`, etc.
 
+    parallel : `bool`, keyword-only, default: :code:`False`
+        Determines whether the calculation is run in parallel.
+
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
 
@@ -600,12 +600,17 @@ class DensityProfile(DynamicAnalysisBase):
                 raise TypeError(emsg)
             self._charges = np.asarray(charges)
         elif hasattr(self.universe.atoms, "charges"):
-            self._charges = np.fromiter(
-                (getattr(g, gr).charges[0]
-                 for g, gr in zip(self._groups, self._groupings)),
-                count=self._n_groups,
-                dtype=float
-            )
+            self._charges = np.empty(self._n_groups)
+            for i, (g, gr) in enumerate(zip(self._groups, self._groupings)):
+                qs = getattr(g, gr).charges
+                if not np.allclose((q := qs[0]), qs):
+                    self._charges = None
+                    wmsg = (f"Not all {gr} in group {i} share the same "
+                            "charge. The charge density profile will "
+                            "be calculated.")
+                    warnings.warn(wmsg)
+                    break
+                self._charges[i] = q
         else:
             self._charges = None
 
@@ -652,7 +657,6 @@ class DensityProfile(DynamicAnalysisBase):
 
     def _prepare(self) -> None:
 
-        # Define the bin centers for all axes
         self.results.bins = [
             np.linspace(
                 self._dimensions[a] / (2 * self._n_bins[i]),
@@ -662,10 +666,11 @@ class DensityProfile(DynamicAnalysisBase):
             ) for i, a in enumerate(self._axes)
         ]
 
-        # Preallocate arrays to store number of boundary crossings for
-        # each particle
         if self._recenter is not None:
             self._trajectory[self.start]
+
+            # Preallocate arrays to store number of boundary crossings for
+            # each particle
             self._positions_old = np.empty((self._N, 3))
             for g, gr, s in zip(self._groups, self._groupings, self._slices):
                 self._positions_old[s] = (g.positions if gr == "atoms"
@@ -673,7 +678,7 @@ class DensityProfile(DynamicAnalysisBase):
             self._images = np.zeros((self._N, 3), dtype=int)
             self._thresholds = self._dimensions / 2
 
-            # Store unwrapped atom positions in a shared memory array
+            # Store unwrapped particle positions in a shared memory array
             # for parallel analysis
             if self._parallel:
                 self._positions = np.empty((self.n_frames, self._N, 3))
@@ -691,7 +696,8 @@ class DensityProfile(DynamicAnalysisBase):
                                thresholds=self._thresholds,
                                images=self._images)
                         
-                        # Calculate difference in center of mass
+                        # Calculate difference in center of mass and
+                        # shift particle positions by the difference
                         scom = center_of_mass(
                             positions=self._positions
                                       [i, self._slices[self._recenter[0]]],
@@ -700,13 +706,12 @@ class DensityProfile(DynamicAnalysisBase):
                                 self._groupings[self._recenter[0]]
                             ).masses
                         )
-                        dcom = np.fromiter((0 if np.isnan(cx) else sx - cx
-                                            for sx, cx 
-                                            in zip(scom, self._recenter[1])),
-                                           dtype=float, count=3)
-
-                        # Shift all particle positions
-                        self._positions[i, s] -= dcom
+                        self._positions[i, s] -= np.fromiter(
+                            (0 if np.isnan(cx) else sx - cx 
+                             for sx, cx in zip(scom, self._recenter[1])), 
+                            dtype=float, 
+                            count=3
+                        )
 
                     # Wrap particles outside of the unit cell into the unit cell
                     self._positions[i, s] += (
@@ -719,11 +724,6 @@ class DensityProfile(DynamicAnalysisBase):
                 del self._images
                 del self._thresholds
 
-        # Store reference units
-        self.results.units = {"results.bins": ureg.angstrom}
-        self.results.units["results.number_densities"] = \
-            self.results.units["results.bins"] ** -3
-
         # Preallocate arrays to hold number density data
         if not self._average:
             self.results.times = self.step * self._dt * np.arange(self.n_frames)
@@ -733,6 +733,11 @@ class DensityProfile(DynamicAnalysisBase):
                 shape.append(self.n_frames)
             self.results.number_densities = [np.zeros((*shape, n)) 
                                              for n in self._n_bins]
+
+        # Store reference units
+        self.results.units = {"results.bins": ureg.angstrom}
+        self.results.units["results.number_densities"] = \
+            self.results.units["results.bins"] ** -3
 
         # Preallocate a list to hold charge density data, if charge
         # information is available
@@ -745,30 +750,28 @@ class DensityProfile(DynamicAnalysisBase):
 
     def _single_frame(self):
 
-        # Store atom positions in the current frame
         positions = np.empty((self._N, 3))
         for g, gr, s in zip(self._groups, self._groupings, self._slices):
             positions[s] = (g.positions if gr == "atoms" 
                             else center_of_mass(g, gr))
 
         if self._recenter is not None:
-
-            # Unwrap all particle positions
             unwrap(positions, self._positions_old, self._dimensions,
                    thresholds=self._thresholds, images=self._images)
 
-            # Calculate difference in center of mass
+            # Calculate difference in center of mass and shift particle
+            # positions by the difference
             scom = center_of_mass(
                 positions=positions[self._slices[self._recenter[0]]],
                 masses=getattr(self._groups[self._recenter[0]], 
                                self._groupings[self._recenter[0]]).masses
             )
-            dcom = np.fromiter((0 if np.isnan(cx) else sx - cx
-                                for sx, cx in zip(scom, self._recenter[1])),
-                               dtype=float, count=3)
-
-            # Shift all particle positions
-            positions -= dcom
+            positions -= np.fromiter(
+                (0 if np.isnan(cx) else sx - cx
+                 for sx, cx in zip(scom, self._recenter[1])),
+                dtype=float,
+                count=3
+            )
         
         # Wrap particles outside of the unit cell into the unit cell
         positions += (
@@ -776,10 +779,9 @@ class DensityProfile(DynamicAnalysisBase):
             - (positions >= self._dimensions).astype(int)
         ) * self._dimensions
 
+        # Compute and tally the bin counts for the current positions
         for i, (gr, s) in enumerate(zip(self._groupings, self._slices)):
             for a, (axis, n_bins) in enumerate(zip(self._axes, self._n_bins)):
-
-                # Compute and tally the bin counts for the current positions
                 if self._average:
                     self.results.number_densities[a][i] += np.histogram(
                         positions[s, axis], n_bins, (0, self._dimensions[axis])
@@ -796,8 +798,6 @@ class DensityProfile(DynamicAnalysisBase):
         results = np.empty((len(self._axes), self._n_groups, self._n_bins[0]))
 
         if self._recenter is None:
-
-            # Store atom positions in the current frame
             positions = np.empty((self._N, 3))
             for g, gr, s in zip(self._groups, self._groupings, self._slices):
                 positions[s] = (g.positions if gr == "atoms" 
@@ -810,14 +810,11 @@ class DensityProfile(DynamicAnalysisBase):
             ) * self._dimensions
 
         else:
-
-            # Get unwrapped positions from shared array
             positions = self._positions[index]
 
+        # Compute and tally the bin counts for the current positions
         for i, (gr, s) in enumerate(zip(self._groupings, self._slices)):
-            for a, axis in enumerate(self._axes):
-
-                # Compute and tally the bin counts for the current positions 
+            for a, axis in enumerate(self._axes): 
                 results[a, i] = np.histogram(
                     positions[s, axis], self._n_bins[0], (0, self._dimensions[axis])
                 )[0]
@@ -835,19 +832,13 @@ class DensityProfile(DynamicAnalysisBase):
                 self.results.number_densities \
                     = self.results.number_densities.sum(axis=1)
 
-        # Compute the volume of the real system
         V = np.prod(self._dimensions)
-
         for a in range(len(self._axes)):
-
-            # Divide the bin counts by the bin volumes and number of
-            # timesteps to obtain the averaged number density profiles
             denom = self._n_bins[a] / V
             if self._average:
                 denom /= self.n_frames
             self.results.number_densities[a] *= denom
 
-            # Compute the charge density profiles
             if self._charges is not None:
                 self.results.charge_densities[a] = np.einsum(
                     "g,g...b->...b",
@@ -926,14 +917,12 @@ class DensityProfile(DynamicAnalysisBase):
 
         if not hasattr(self.results, "charge_densities"):
             emsg = ("Either call run() before calculate_potential_profile() "
-                    "or provide charge information when initializing the "
-                    "DensityProfile object.")
+                    "or provide charge information when initializing "
+                    "the DensityProfile object.")
             raise RuntimeError(emsg)
 
         if not hasattr(self.results, "potentials"):
             self.results.potentials = {}
-
-            # Store reference units
             self.results.units["results.potentials"] = ureg.volt
 
         if isinstance(axis, str):

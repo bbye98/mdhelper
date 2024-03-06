@@ -171,11 +171,9 @@ def correlation_fft(
                 "second axis.")
         raise ValueError(emsg)
 
-    # Get number of frames
-    N_t = arr1.shape[axis]
-
     # Calculate the PSD by first zero-padding the arrays for linear
     # convolution, and then invert it to get the ACF/CCF
+    N_t = arr1.shape[axis]
     if arr2 is None:
         f = fft.rfft(arr1, n=2 * N_t, axis=axis)
         corr = (double + 1) * fft.irfft(f * f.conjugate(), axis=axis)
@@ -223,6 +221,7 @@ def correlation_fft(
         axis_avg = ndim - 1 - vector
         if axis != axis_avg:
             return corr.mean(axis=axis_avg)
+
     return corr
 
 def correlation_shift(
@@ -374,10 +373,8 @@ def correlation_shift(
                 "second axis.")
         raise ValueError(emsg)
 
-    # Get number of frames
-    N_t = arr1.shape[axis]
-
     # Calculate the ACF/CCF
+    N_t = arr1.shape[axis]
     if arr2 is None:
         if ndim == 1:
             corr = np.fromiter(
@@ -423,8 +420,8 @@ def correlation_shift(
                  for i, j, k, m in zip(start[::-1], stop[::-1], start, stop)]
             )
 
-    # Doubles the ACF or overlaps the CCF for negative and positive
-    # lags, if desired
+    # Double the ACF or overlap the CCF for negative and positive lags,
+    # if desired
     if double:
         if arr2 is None:
             corr *= 2
@@ -457,6 +454,7 @@ def correlation_shift(
         axis_avg = ndim - 1 - vector
         if axis != axis_avg:
             return corr.mean(axis=axis_avg)
+
     return corr
 
 def msd_fft(
@@ -618,14 +616,12 @@ def msd_fft(
                 "second axis.")
         raise ValueError(emsg)
 
-    # Get number of frames
-    N_t = pos1.shape[axis]
-
     # Get intermediate quantities required for the MSD/CD calculation
     s2 = correlation_fft(pos1, pos2, axis, average=False, double=True,
                          vector=True)
     r1r2 = (pos1 * (pos1 if pos2 is None else pos2)).sum(axis=-1)
 
+    N_t = pos1.shape[axis]
     if ndim - axis == 3:
 
         # Calculate the MSD/CD for each particle
@@ -645,7 +641,7 @@ def msd_fft(
             else:
                 ssum = (
                     2 * D.sum(axis=axis) * np.ones((N_t, 1))
-                    - np.cumsum(D[range(-1, N_t - 1)] + D[N_t:0:-1], 
+                    - np.cumsum(D[range(-1, N_t - 1)] + D[N_t:0:-1],
                                 axis=axis)
                 )
             return ssum / np.arange(N_t, 0, -1)[:, None] - s2
@@ -803,10 +799,8 @@ def msd_shift(
                 "second axis.")
         raise ValueError(emsg)
 
-    # Get number of frames
-    N_t = pos1.shape[axis]
-
     # Calculate the MSD/CD for each atom
+    N_t = pos1.shape[axis]
     if pos2 is None:
         if axis:
             disp = np.stack(

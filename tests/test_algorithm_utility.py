@@ -2,8 +2,10 @@ import pathlib
 import sys
 
 import numpy as np
+from openmm import unit
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
+from mdhelper import ureg
 from mdhelper.algorithm import utility # noqa: E402
 
 rng = np.random.default_rng()
@@ -42,3 +44,43 @@ def test_func_rebin():
     # TEST CASE 2: Rebin 2D array
     assert np.allclose(utility.rebin(np.tile(arr[None, :], (5, 1))), 
                        np.tile(ref[None, :], (5, 1)))
+    
+def test_func_strip_unit():
+
+    # TEST CASE 1: Strip unit from non-Quantity
+    assert utility.strip_unit(90.0, "deg") == (90.0, "deg")
+    assert utility.strip_unit(90.0, ureg.degree) == (90.0, ureg.degree)
+    assert utility.strip_unit(90.0, unit.degree) == (90.0, unit.degree)
+
+    # TEST CASE 2: Strip unit from Quantity
+    k_ = 1.380649e-23
+    assert utility.strip_unit(k_) == (k_, None)
+    assert utility.strip_unit(k_ * ureg.joule * ureg.kelvin ** -1) \
+           == (k_, ureg.joule * ureg.kelvin ** -1)
+    assert utility.strip_unit(k_ * unit.joule * unit.kelvin ** -1) \
+           == (k_, unit.joule * unit.kelvin ** -1)
+
+    # TEST CASE 3: Strip unit from Quantity with compatible unit specified
+    g_ = 32.17404855643044
+    g = 9.80665 * ureg.meter / ureg.second ** 2
+    assert utility.strip_unit(g_, "foot/second**2") \
+           == (g_, ureg.foot / ureg.second ** 2)
+    assert utility.strip_unit(g, ureg.foot / ureg.second ** 2) \
+           == (g_, ureg.foot / ureg.second ** 2)
+    g = 9.80665 * unit.meter / unit.second ** 2
+    assert utility.strip_unit(g, "foot/second**2") \
+           == (g_, unit.foot / unit.second ** 2)
+    assert utility.strip_unit(g, unit.foot / unit.second ** 2) \
+           == (g_, unit.foot / unit.second ** 2)
+    
+    # TEST CASE 4: Strip unit from Quantity with incompatible unit specified
+    R_ = 8.31446261815324
+    R__ = 8.205736608095969e-05
+    assert utility.strip_unit(
+        R__ * ureg.meter ** 3 * ureg.atmosphere / (ureg.kelvin * ureg.mole), 
+        unit.joule / (unit.kelvin * unit.mole)
+    ) == (R_, ureg.joule / (ureg.kelvin * ureg.mole))
+    assert utility.strip_unit(
+        R__ * unit.meter ** 3 * unit.atmosphere / (unit.kelvin * unit.mole), 
+        ureg.joule / (ureg.kelvin * ureg.mole)
+    ) == (R_, unit.joule / (unit.kelvin * unit.mole))
