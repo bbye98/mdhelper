@@ -41,7 +41,7 @@ def calculate_potential_profile(
 
     .. math::
 
-       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=\rho_q(z)
+       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_q(z)
 
     where :math:`\varepsilon_0` is the vacuum permittivity,
     :math:`\varepsilon_\mathrm{r}` is the relative permittivity,
@@ -287,9 +287,9 @@ def calculate_potential_profile(
 class DensityProfile(DynamicAnalysisBase):
 
     """
-    A serial implementation to calculate the number and charge density
-    profiles :math:`\\rho_i(z)` and :math:`\\rho_q(z)` of a system
-    along the specified axes.
+    Serial and parallel implementations to calculate the number and 
+    charge density profiles :math:`\\rho_i(z)` and :math:`\\rho_q(z)` of
+    a system along the specified axes.
 
     The microscopic number density profile of species :math:`i` in a
     constant-volume system is calculated by binning particle positions
@@ -297,10 +297,10 @@ class DensityProfile(DynamicAnalysisBase):
 
     .. math::
 
-       \\rho_i(z)=\\frac{V}{N_\mathrm{bin}}\left\langle
+       \\rho_i(z)=\\frac{V}{N_\\mathrm{bin}}\left\langle
        \sum_\\alpha\delta(z-z_\\alpha)\\right\\rangle
 
-    where :math:`V` is the system volume and :math:`N_\mathrm{bins}` is
+    where :math:`V` is the system volume and :math:`N_\\mathrm{bins}` is
     the number of bins. The angular brackets denote an ensemble average.
 
     If the species carry charges, the charge density profile can be
@@ -332,7 +332,7 @@ class DensityProfile(DynamicAnalysisBase):
            wrapped into the primary simulation cell. If you think your
            system may have split bonds, use
            :class:`MDAnalysis.transformations.wrap.unwrap` to unwrap
-           the trajectory before passing :code:`AtomGroup`s to this
+           the trajectory before passing an :code:`AtomGroup` to this
            class.
 
     groupings : `str` or array-like, default: :code:`"atoms"`
@@ -398,12 +398,12 @@ class DensityProfile(DynamicAnalysisBase):
 
     dt : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
     keyword-only, optional
-        Time between frames :math:`\Delta t`. While this is normally
+        Time between frames :math:`\\Delta t`. While this is normally
         determined from the trajectory, the trajectory may not have the
         correct information if the data is in reduced units. For
         example, if your reduced timestep is :math:`0.01` and you output
         trajectory data every :math:`10,000` timesteps, then
-        :math:`\Delta t = 100`.
+        :math:`\\Delta t = 100`.
 
         **Reference unit**: :math:`\\mathrm{ps}`.
 
@@ -676,7 +676,11 @@ class DensityProfile(DynamicAnalysisBase):
         ]
 
         if self._recenter is not None:
-            self._trajectory[self.start]
+            self.universe.trajectory[
+                self._sliced_trajectory.frames[0]
+                if hasattr(self._sliced_trajectory, "frames")
+                else (self.start or 0)
+            ]
 
             # Preallocate arrays to store number of boundary crossings for
             # each particle
@@ -692,10 +696,10 @@ class DensityProfile(DynamicAnalysisBase):
             if self._parallel:
                 self._positions = np.empty((self.n_frames, self._N, 3))
                 for i, _ in enumerate(self.universe.trajectory[
-                    list(self._sliced_trajectory.frames)
-                    if hasattr(self._sliced_trajectory, "frames")
-                    else slice(self.start, self.stop, self.step)
-                ]):
+                        list(self._sliced_trajectory.frames)
+                        if hasattr(self._sliced_trajectory, "frames")
+                        else slice(self.start, self.stop, self.step)
+                    ]):
                     for g, gr, s in zip(self._groups, self._groupings, self._slices):
                         self._positions[i, s] = (g.positions if gr == "atoms"
                                                  else center_of_mass(g, gr))
@@ -881,7 +885,7 @@ class DensityProfile(DynamicAnalysisBase):
 
         dV : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, optional
-            Potential difference :math:`\Delta\Psi` across the system
+            Potential difference :math:`\\Delta\Psi` across the system
             dimension specified in `axis`. Has no effect if `sigma_q` is
             provided since this value is used solely to calculate
             `sigma_q`.

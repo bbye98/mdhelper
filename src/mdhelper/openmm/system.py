@@ -347,7 +347,7 @@ def add_slab_correction(
             integrator.addComputeSum("M_zz", "q*x^2")
 
             # Give particle charge information to integrator
-            q_vectors = np.zeros((len(qs), 3), dtype=float)
+            q_vectors = np.zeros((len(qs), 3))
             q_vectors[:, axis] = qs
             integrator.setPerDofVariableByName("q", q_vectors)
 
@@ -1049,7 +1049,7 @@ def estimate_pressure_tensor(
         p_kinetic = (masses * velocities ** 2).sum(axis=0)
 
         # Estimate the virial contribution with a central finite difference
-        p_virial = np.zeros(3, dtype=float) * unit.kilojoule_per_mole
+        p_virial = np.zeros(3) * unit.kilojoule_per_mole
         for i in range(3):
             box_ = box.copy()
             box_[i, i] += dh
@@ -1078,7 +1078,7 @@ def estimate_pressure_tensor(
         p_kinetic = (masses * velocities * velocities[:, :, None]).sum(axis=0)
 
         # Estimate the virial contribution with a central finite difference
-        p_virial = np.zeros((3, 3), dtype=float) * unit.kilojoule_per_mole
+        p_virial = np.zeros((3, 3)) * unit.kilojoule_per_mole
         for i in range(3):
             for j in range(i + 1):
                 box_ = box.copy()

@@ -25,8 +25,7 @@ def test_class_onsager_msd():
 
     # TEST CASE 1: MSD and diffusion coefficients of a random walk
     # calculated using the Einstein relation
-    universe.dimensions = np.array((np.inf, np.inf, np.inf, 90, 90, 90), 
-                                   dtype=float)
+    universe.dimensions = np.array((np.inf, np.inf, np.inf, 90, 90, 90))
     onsager_shift = transport.Onsager(universe.atoms, fft=False, reduced=True).run()
     onsager_shift.calculate_transport_coefficients(start, stop, scale="linear")
     assert np.allclose(onsager_shift.results.msd_self[0, 0], msd)
@@ -34,8 +33,7 @@ def test_class_onsager_msd():
 
     # TEST CASE 2: MSD and diffusion coefficients of a random walk
     # calculated using the FFT-based algorithm
-    universe.dimensions = np.array((np.inf, np.inf, np.inf, 90, 90, 90), 
-                                   dtype=float)
+    universe.dimensions = np.array((np.inf, np.inf, np.inf, 90, 90, 90))
     onsager_fft = transport.Onsager(universe.atoms, reduced=True).run()
     onsager_fft.calculate_transport_coefficients(start, stop, scale="linear")
     assert np.allclose(onsager_fft.results.msd_self[0, 0], msd)
@@ -146,8 +144,8 @@ def test_class_onsager_transport_coefficients():
 
     universe = mda.Universe("system.data", glob.glob("*.dcd"), format="LAMMPS")
     groups = [universe.select_atoms(f"type {i}") for i in range(1, 3)]
-    positions = [np.zeros((universe.trajectory.n_frames - start, g.n_atoms, 3), 
-                          dtype=float) for g in groups]
+    positions = [np.zeros((universe.trajectory.n_frames - start, g.n_atoms, 3))
+                 for g in groups]
     for i, _ in enumerate(universe.trajectory[40:]):
         com = universe.atoms.center_of_mass(wrap=True)
         for g, p in zip(groups, positions):

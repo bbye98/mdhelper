@@ -436,9 +436,9 @@ def test_func_correlation_shift_double():
     )
 
 # Generate simple trajectories and calculate their MSDs
-traj_1 = np.array(((0, 0, 0), (1, 1, 1), (2, 2, 2), (3, 3, 3)), dtype=float)
+traj_1 = np.array(((0, 0, 0), (1, 1, 1), (2, 2, 2), (3, 3, 3)))
 msd_1 = np.einsum("td,td->t", traj_1, traj_1)
-traj_2 = np.array(((0, 1, 2), (2, 3, 4), (4, 5, 6), (6, 7, 8)), dtype=float)
+traj_2 = np.array(((0, 1, 2), (2, 3, 4), (4, 5, 6), (6, 7, 8)))
 msd_2 = ((traj_2 - traj_2[0]) ** 2).sum(axis=1)
 cd = (traj_1 * (traj_2 - traj_2[0])).sum(axis=1)
 

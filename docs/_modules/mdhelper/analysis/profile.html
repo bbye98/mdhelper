@@ -206,8 +206,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.EndToEndVector.html">EndToEndVector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
 </li>
@@ -441,7 +441,7 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=\rho_q(z)</span>
+<span class="sd">       \varepsilon_0\varepsilon_\mathrm{r}\nabla^2\Psi(z)=-\rho_q(z)</span>
 
 <span class="sd">    where :math:`\varepsilon_0` is the vacuum permittivity,</span>
 <span class="sd">    :math:`\varepsilon_\mathrm{r}` is the relative permittivity,</span>
@@ -690,9 +690,9 @@
 <span class="k">class</span> <span class="nc">DensityProfile</span><span class="p">(</span><span class="n">DynamicAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A serial implementation to calculate the number and charge density</span>
-<span class="sd">    profiles :math:`\\rho_i(z)` and :math:`\\rho_q(z)` of a system</span>
-<span class="sd">    along the specified axes.</span>
+<span class="sd">    Serial and parallel implementations to calculate the number and </span>
+<span class="sd">    charge density profiles :math:`\\rho_i(z)` and :math:`\\rho_q(z)` of</span>
+<span class="sd">    a system along the specified axes.</span>
 
 <span class="sd">    The microscopic number density profile of species :math:`i` in a</span>
 <span class="sd">    constant-volume system is calculated by binning particle positions</span>
@@ -700,10 +700,10 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \\rho_i(z)=\\frac{V}{N_\mathrm{bin}}\left\langle</span>
+<span class="sd">       \\rho_i(z)=\\frac{V}{N_\\mathrm{bin}}\left\langle</span>
 <span class="sd">       \sum_\\alpha\delta(z-z_\\alpha)\\right\\rangle</span>
 
-<span class="sd">    where :math:`V` is the system volume and :math:`N_\mathrm{bins}` is</span>
+<span class="sd">    where :math:`V` is the system volume and :math:`N_\\mathrm{bins}` is</span>
 <span class="sd">    the number of bins. The angular brackets denote an ensemble average.</span>
 
 <span class="sd">    If the species carry charges, the charge density profile can be</span>
@@ -735,7 +735,7 @@
 <span class="sd">           wrapped into the primary simulation cell. If you think your</span>
 <span class="sd">           system may have split bonds, use</span>
 <span class="sd">           :class:`MDAnalysis.transformations.wrap.unwrap` to unwrap</span>
-<span class="sd">           the trajectory before passing :code:`AtomGroup`s to this</span>
+<span class="sd">           the trajectory before passing an :code:`AtomGroup` to this</span>
 <span class="sd">           class.</span>
 
 <span class="sd">    groupings : `str` or array-like, default: :code:`&quot;atoms&quot;`</span>
@@ -801,12 +801,12 @@
 
 <span class="sd">    dt : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">    keyword-only, optional</span>
-<span class="sd">        Time between frames :math:`\Delta t`. While this is normally</span>
+<span class="sd">        Time between frames :math:`\\Delta t`. While this is normally</span>
 <span class="sd">        determined from the trajectory, the trajectory may not have the</span>
 <span class="sd">        correct information if the data is in reduced units. For</span>
 <span class="sd">        example, if your reduced timestep is :math:`0.01` and you output</span>
 <span class="sd">        trajectory data every :math:`10,000` timesteps, then</span>
-<span class="sd">        :math:`\Delta t = 100`.</span>
+<span class="sd">        :math:`\\Delta t = 100`.</span>
 
 <span class="sd">        **Reference unit**: :math:`\\mathrm{ps}`.</span>
 
@@ -1079,7 +1079,11 @@
         <span class="p">]</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">)</span>
+                <span class="k">else</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="p">]</span>
 
             <span class="c1"># Preallocate arrays to store number of boundary crossings for</span>
             <span class="c1"># each particle</span>
@@ -1095,10 +1099,10 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span>
-                    <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">)</span>
-                    <span class="k">else</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
-                <span class="p">]):</span>
+                        <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">)</span>
+                        <span class="k">else</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+                    <span class="p">]):</span>
                     <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
                                                  <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">))</span>
@@ -1286,7 +1290,7 @@
 
 <span class="sd">        dV : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">        keyword-only, optional</span>
-<span class="sd">            Potential difference :math:`\Delta\Psi` across the system</span>
+<span class="sd">            Potential difference :math:`\\Delta\Psi` across the system</span>
 <span class="sd">            dimension specified in `axis`. Has no effect if `sigma_q` is</span>
 <span class="sd">            provided since this value is used solely to calculate</span>
 <span class="sd">            `sigma_q`.</span>

@@ -30,8 +30,8 @@ polymer
       :template: autosummary/class.rst
       :nosignatures:
    
+      EndToEndVector
       Gyradius
-      Relaxation
       SingleChainStructureFactor
    
    

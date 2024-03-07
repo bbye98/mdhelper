@@ -358,9 +358,9 @@ def strip_unit(
     (32.17404855643044, <Unit('foot / second ** 2')>)
 
     If a target unit using a different module than the quantity is
-    specified, the quantity is first converted to the target unit in
-    the same module as the quantity, if necessary, before its magnitude
-    and unit are returned.
+    specified, the quantity is converted to the specified target unit in
+    the new module, if necessary, before its magnitude and unit are 
+    returned.
 
     >>> strip_unit(8.205736608095969e-05 * unit.meter ** 3 * unit.atmosphere
     ...            / (unit.kelvin * unit.mole),
@@ -373,29 +373,54 @@ def strip_unit(
     """
 
     if isinstance(value, Q_):
+
+        # No target unit (unit_) specified; return Pint magnitude and
+        # unit (unit__)
         if unit_ is None:
-            unit_ = value.units
+            unit__ = value.units
             value = value.magnitude
         else:
+
+            # Convert OpenMM target unit (unit__ = unit_) to Pint unit
+            # (unit_) and return unit__
             if getattr(unit_, "__module__", None) == "openmm.unit.unit":
-                units = unit_.iter_base_or_scaled_units()
-                unit_ = ureg.Unit("")
-                for u, p in units:
+                unit_, unit__ = ureg.Unit(""), unit_
+                for u, p in unit__.iter_base_or_scaled_units():
                     unit_ *= ureg.Unit(u.name) ** p
-            elif isinstance(unit_, str):
-                unit_ = ureg.Unit(unit_)
+
+            # Convert str or Pint target unit (unit_) to Pint unit 
+            # (unit__)
+            else:
+                unit__ = ureg.Unit(unit_)
+
+            # Get magnitude of Pint quantity in Pint unit (unit_)
             value = value.m_as(unit_)
+
     elif getattr(value, "__module__", None) == "openmm.unit.quantity":
+        swap = False
+
+        # No target unit (unit_) specified; return OpenMM magnitude and
+        # unit (unit__)
         if unit_ is None:
-            unit_ = value.unit
-        elif getattr(unit_, "__module__", None) != "openmm.unit.unit":
-            if isinstance(unit_, str):
-                unit_ = ureg.Unit(unit_)
-            units = unit_._units
+            unit_ = unit__ = value.unit
+
+        # Store OpenMM target unit (unit_) in return value (unit__)
+        elif getattr(unit_, "__module__", None) == "openmm.unit.unit":
+            unit__ = unit_
+        else:
+
+            # Determine whether unit_ and unit__ need to be swapped at
+            # the end; str target unit should give OpenMM unit, while
+            # Pint target unit should give Pint unit
+            swap = not isinstance(unit_, str)
+
+            # Convert str or Pint target unit (unit_) to OpenMM unit 
+            # (unit__)
+            unit_ = ureg.Unit(unit_)
             try:
-                unit_ = unit.dimensionless
-                for u, p in units.items():
-                    unit_ *= getattr(unit, u) ** p
+                unit__ = unit.dimensionless
+                for u, p in unit_._units.items():
+                    unit__ *= getattr(unit, u) ** p
             except AttributeError:
                 emsg = ("strip_unit() relies on the pint module for "
                         "parsing units. At least one unit in 'unit' is "
@@ -404,5 +429,9 @@ def strip_unit(
                         "specifying a openmm.unit.Quantity object for "
                         "'unit' instead.")
                 raise ValueError(emsg)
-        value = value.value_in_unit(unit_)
-    return value, unit_
+        value = value.value_in_unit(unit__)
+        if swap:
+            unit_, unit__ = unit__, unit_
+    else:
+        unit__ = unit_
+    return value, unit__

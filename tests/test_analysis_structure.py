@@ -16,7 +16,7 @@ def test_func_radial_histogram():
     L = 20
     half_L = L // 2
     dims = np.array((L, L, L, 90, 90, 90), dtype=int)
-    origin = half_L * np.ones(3, dtype=float)
+    origin = half_L * np.ones(3)
 
     N = 1000
     norm = L // 2 * rng.random(N)

@@ -176,6 +176,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.topology.wrap.html">wrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -206,8 +207,8 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.EndToEndVector.html">EndToEndVector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
 </li>
@@ -423,11 +424,11 @@ and dynamical properties of polymeric systems.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.analysis.polymer.Gyradius.html#mdhelper.analysis.polymer.Gyradius" title="mdhelper.analysis.polymer.Gyradius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Gyradius</span></code></a></p></td>
-<td><p>A serial implementation to calculate the radius of gyration <span class="math notranslate nohighlight">\(R_\mathrm{g}\)</span> of a polymer.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.analysis.polymer.Relaxation.html#mdhelper.analysis.polymer.Relaxation" title="mdhelper.analysis.polymer.Relaxation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Relaxation</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.analysis.polymer.EndToEndVector.html#mdhelper.analysis.polymer.EndToEndVector" title="mdhelper.analysis.polymer.EndToEndVector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EndToEndVector</span></code></a></p></td>
 <td><p>A serial implementation to calculate the end-to-end vector autocorrelation function (ACF) <span class="math notranslate nohighlight">\(C_\mathrm{ee}(t)\)</span> and estimate the orientational relaxation time <span class="math notranslate nohighlight">\(\tau_\mathrm{r}\)</span> of a polymer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.analysis.polymer.Gyradius.html#mdhelper.analysis.polymer.Gyradius" title="mdhelper.analysis.polymer.Gyradius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Gyradius</span></code></a></p></td>
+<td><p>Serial and parallel implementations to calculate the radius of gyration <span class="math notranslate nohighlight">\(R_\mathrm{g}\)</span> of a polymer.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.analysis.polymer.SingleChainStructureFactor.html#mdhelper.analysis.polymer.SingleChainStructureFactor" title="mdhelper.analysis.polymer.SingleChainStructureFactor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleChainStructureFactor</span></code></a></p></td>
 <td><p>Serial and parallel implementations to calculate the single-chain structure factor <span class="math notranslate nohighlight">\(S_\mathrm{sc}(q)\)</span> of a homopolymer.</p></td>

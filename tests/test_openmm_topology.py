@@ -28,7 +28,7 @@ def test_func_subset_polymer():
     M = 100
     N_p = 25
     N = M * N_p
-    dims = np.array([10, 10, 10], dtype=float)
+    dims = np.array((10, 10, 10))
     positions = t.create_atoms(dims, M * N_p, N_p)
     system = openmm.System()
     topology = app.Topology()

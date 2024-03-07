@@ -206,8 +206,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.EndToEndVector.html">EndToEndVector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
 </li>
@@ -773,9 +773,9 @@
 <span class="sd">    (32.17404855643044, &lt;Unit(&#39;foot / second ** 2&#39;)&gt;)</span>
 
 <span class="sd">    If a target unit using a different module than the quantity is</span>
-<span class="sd">    specified, the quantity is first converted to the target unit in</span>
-<span class="sd">    the same module as the quantity, if necessary, before its magnitude</span>
-<span class="sd">    and unit are returned.</span>
+<span class="sd">    specified, the quantity is converted to the specified target unit in</span>
+<span class="sd">    the new module, if necessary, before its magnitude and unit are </span>
+<span class="sd">    returned.</span>
 
 <span class="sd">    &gt;&gt;&gt; strip_unit(8.205736608095969e-05 * unit.meter ** 3 * unit.atmosphere</span>
 <span class="sd">    ...            / (unit.kelvin * unit.mole),</span>
@@ -788,29 +788,54 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Q_</span><span class="p">):</span>
+
+        <span class="c1"># No target unit (unit_) specified; return Pint magnitude and</span>
+        <span class="c1"># unit (unit__)</span>
         <span class="k">if</span> <span class="n">unit_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">unit_</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">units</span>
+            <span class="n">unit__</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">units</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">magnitude</span>
         <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Convert OpenMM target unit (unit__ = unit_) to Pint unit</span>
+            <span class="c1"># (unit_) and return unit__</span>
             <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;openmm.unit.unit&quot;</span><span class="p">:</span>
-                <span class="n">units</span> <span class="o">=</span> <span class="n">unit_</span><span class="o">.</span><span class="n">iter_base_or_scaled_units</span><span class="p">()</span>
-                <span class="n">unit_</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">units</span><span class="p">:</span>
+                <span class="n">unit_</span><span class="p">,</span> <span class="n">unit__</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">unit_</span>
+                <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">unit__</span><span class="o">.</span><span class="n">iter_base_or_scaled_units</span><span class="p">():</span>
                     <span class="n">unit_</span> <span class="o">*=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">**</span> <span class="n">p</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="n">unit_</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
+
+            <span class="c1"># Convert str or Pint target unit (unit_) to Pint unit </span>
+            <span class="c1"># (unit__)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">unit__</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
+
+            <span class="c1"># Get magnitude of Pint quantity in Pint unit (unit_)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
+
     <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;openmm.unit.quantity&quot;</span><span class="p">:</span>
+        <span class="n">swap</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># No target unit (unit_) specified; return OpenMM magnitude and</span>
+        <span class="c1"># unit (unit__)</span>
         <span class="k">if</span> <span class="n">unit_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">unit_</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">unit</span>
-        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;openmm.unit.unit&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="n">unit_</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
-            <span class="n">units</span> <span class="o">=</span> <span class="n">unit_</span><span class="o">.</span><span class="n">_units</span>
+            <span class="n">unit_</span> <span class="o">=</span> <span class="n">unit__</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">unit</span>
+
+        <span class="c1"># Store OpenMM target unit (unit_) in return value (unit__)</span>
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;openmm.unit.unit&quot;</span><span class="p">:</span>
+            <span class="n">unit__</span> <span class="o">=</span> <span class="n">unit_</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Determine whether unit_ and unit__ need to be swapped at</span>
+            <span class="c1"># the end; str target unit should give OpenMM unit, while</span>
+            <span class="c1"># Pint target unit should give Pint unit</span>
+            <span class="n">swap</span> <span class="o">=</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+            <span class="c1"># Convert str or Pint target unit (unit_) to OpenMM unit </span>
+            <span class="c1"># (unit__)</span>
+            <span class="n">unit_</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">unit_</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">dimensionless</span>
-                <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">units</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">unit_</span> <span class="o">*=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span> <span class="o">**</span> <span class="n">p</span>
+                <span class="n">unit__</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">dimensionless</span>
+                <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">unit_</span><span class="o">.</span><span class="n">_units</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">unit__</span> <span class="o">*=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span> <span class="o">**</span> <span class="n">p</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;strip_unit() relies on the pint module for &quot;</span>
                         <span class="s2">&quot;parsing units. At least one unit in &#39;unit&#39; is &quot;</span>
@@ -819,8 +844,12 @@
                         <span class="s2">&quot;specifying a openmm.unit.Quantity object for &quot;</span>
                         <span class="s2">&quot;&#39;unit&#39; instead.&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">unit_</span></div>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">unit__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">swap</span><span class="p">:</span>
+            <span class="n">unit_</span><span class="p">,</span> <span class="n">unit__</span> <span class="o">=</span> <span class="n">unit__</span><span class="p">,</span> <span class="n">unit_</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">unit__</span> <span class="o">=</span> <span class="n">unit_</span>
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">unit__</span></div>
 
 </pre></div>
         </article>

@@ -380,7 +380,7 @@ def correlation_shift(
             corr = np.fromiter(
                 (np.dot(arr1[i:], arr1[:-i if i else None])
                  for i in range(N_t)),
-                count=N_t, dtype=float
+                dtype=float, count=N_t,
             )
         elif axis:
             axes = f"bt...{'d' * vector}"
@@ -404,7 +404,7 @@ def correlation_shift(
             corr = np.fromiter(
                 (np.dot(arr1[i:j], arr2[k:m])
                  for i, j, k, m in zip(start[::-1], stop[::-1], start, stop)),
-                count=2 * N_t - 1, dtype=float
+                dtype=float, count=2 * N_t - 1
             )
         elif axis:
             axes = f"bt...{'d' * vector}"

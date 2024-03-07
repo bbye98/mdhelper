@@ -928,7 +928,11 @@ class Onsager(SerialAnalysisBase):
         # boundary crossings) for each AtomGroup
         self._positions = np.empty((self.n_frames, self._N, 3))
         if self._unwrap:
-            self._trajectory[self.start]
+            self.universe.trajectory[
+                self._sliced_trajectory.frames[0]
+                if hasattr(self._sliced_trajectory, "frames")
+                else (self.start or 0)
+            ]
             self._positions_old = self.universe.atoms.positions
             self._images = np.zeros((self.universe.atoms.n_atoms, 3), dtype=int)
             self._thresholds = self._dimensions / 2

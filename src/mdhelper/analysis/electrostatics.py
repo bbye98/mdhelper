@@ -319,7 +319,11 @@ class DipoleMoment(SerialAnalysisBase):
         # Preallocate arrays to number of boundary crossings for each
         # atom
         if self._unwrap:
-            self._trajectory[self.start]
+            self.universe.trajectory[
+                self._sliced_trajectory.frames[0]
+                if hasattr(self._sliced_trajectory, "frames")
+                else (self.start or 0)
+            ]
             self._positions_old = self.universe.atoms.positions
             self._images = np.zeros((self.universe.atoms.n_atoms, 3), dtype=int)
             self._thresholds = self._dimensions / 2
