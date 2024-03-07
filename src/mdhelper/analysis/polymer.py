@@ -539,7 +539,7 @@ class Relaxation(_PolymerAnalysisBase):
 
         self._n_blocks = n_blocks
         self._fft = fft
-        self._dt = strip_unit(dt or self._trajectory.dt, "picosecond")
+        self._dt = strip_unit(dt or self._trajectory.dt, "picosecond")[0]
 
     def _prepare(self) -> None:
 
@@ -615,9 +615,9 @@ class Relaxation(_PolymerAnalysisBase):
         for i, M in ProgressBar(enumerate(self._n_chains)):
             e2e = np.diff(self._positions_end[i], axis=2)[:, :, 0]
             self.results.acf[i] = _acf(
-                (e2e / np.linalg.norm(e2e, axis=2, keepdims=True))
-                .reshape(self._n_blocks, -1, M, 3)
+                e2e.reshape(self._n_blocks, -1, M, 3), vector=True, average=True
             )
+            self.results.acf[i] /= self.results.acf[i, 0, 0]
 
     def calculate_relaxation_time(self) -> None:
 
