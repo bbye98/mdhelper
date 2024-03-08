@@ -9,6 +9,7 @@ import numpy as np
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
 from mdhelper.analysis import polymer # noqa: E402
 
+rng = np.random.default_rng()
 universe = mda.Universe(PSF, DCD)
 protein = universe.select_atoms("protein")
 

@@ -210,14 +210,14 @@ class _PolymerAnalysisBase(DynamicAnalysisBase):
                     raise ValueError(emsg)
             self._groupings = groupings
 
-        if hasattr(self.universe, "segments"):
+        if n_chains is None or n_monomers is None:
             self._n_chains = np.empty(self._n_groups, dtype=int)
             self._n_monomers = np.empty_like(self._n_chains)
             for i, g in enumerate(self._groups):
                 self._n_chains[i] = g.segments.n_segments
                 self._n_monomers[i] = g.n_atoms // self._n_chains[i]
         else:
-            if isinstance(n_chains, np.integer):
+            if isinstance(n_chains, (int, np.integer)):
                 self._n_chains = n_chains * np.ones(self._n_groups, dtype=int)
             elif self._n_groups == len(n_chains):
                 self._n_chains = n_chains
@@ -225,7 +225,7 @@ class _PolymerAnalysisBase(DynamicAnalysisBase):
                 emsg = ("The number of polymer counts is not equal to the "
                         "number of groups.")
                 raise ValueError(emsg)
-            if isinstance(n_monomers, np.integer):
+            if isinstance(n_monomers, (int, np.integer)):
                 self._n_monomers = n_monomers * np.ones(n_monomers, dtype=int)
             elif self._n_groups == len(n_monomers):
                 self._n_monomers = n_monomers
@@ -549,9 +549,6 @@ class EndToEndVector(_PolymerAnalysisBase):
     unwrap : `bool`, keyword-only, default: :code:`False`
         Determines whether atom positions are unwrapped.
 
-    parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the analysis is performed in parallel.
-
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
 
@@ -606,12 +603,21 @@ class EndToEndVector(_PolymerAnalysisBase):
             n_chains: Union[int, tuple[int]] = None,
             n_monomers: Union[int, tuple[int]] = None, *, n_blocks: int = 1,
             dt: Union[float, "unit.Quantity", Q_] = None, fft: bool = True,
-            unwrap: bool = False, parallel: bool = False, verbose: bool = True,
-            **kwargs) -> None:
+            unwrap: bool = False, verbose: bool = True, **kwargs) -> None:
+
+        # Disable parallel support for this analysis class
+        if "parallel" in kwargs:
+            del kwargs["parallel"]
 
         super().__init__(groups, groupings, n_chains, n_monomers,
-                         unwrap=unwrap, parallel=parallel, verbose=verbose,
-                         **kwargs)
+                         unwrap=unwrap, verbose=verbose, **kwargs)
+
+        self._N_chains = self._n_chains.sum()
+        self._slices = []
+        index = 0
+        for N in self._n_chains:
+            self._slices.append(slice(index, index + N))
+            index += N
 
         self._n_blocks = n_blocks
         self._dt = strip_unit(dt or self._trajectory.dt, "picosecond")[0]
@@ -633,60 +639,52 @@ class EndToEndVector(_PolymerAnalysisBase):
                     "blocks.")
             warnings.warn(wmsg)
 
-        # Preallocate array(s) to store positions of first and last
-        # monomers of each polymer chain (and number of boundary
-        # crossings)
-        self._positions_end = [np.empty((self.n_frames, M, 2, 3))
-                               for M in self._n_chains]
-
-        # Unwrap particle positions if necessary
+        self._e2e = np.empty((self.n_frames, self._N_chains, 3))
         if self._unwrap:
             self.universe.trajectory[
                 self._sliced_trajectory.frames[0]
                 if hasattr(self._sliced_trajectory, "frames")
                 else (self.start or 0)
             ]
-            self._positions_end_prev = [np.empty((M, 2, 3))
-                                        for M in self._n_chains]
-            for i, (g, gr, N_p) in enumerate(zip(self._groups, self._groupings,
-                                                 self._n_monomers)):
-                self._positions_end_prev[i] = (
-                    g.positions if gr == "atoms" else center_of_mass(g, gr)
-                ).reshape(-1, N_p, 3)[:, (0, -1)]
-            self._images = [np.zeros(p.shape, dtype=int)
-                            for p in self._positions_end_prev]
+
+            # Preallocate arrays to store number of boundary crossings for
+            # the first and last monomer in each chain
+            self._positions_end_old = np.empty((self._N_chains, 2, 3))
+            for g, gr, s, M, N_p in zip(self._groups, self._groupings, 
+                                        self._slices, self._n_chains, 
+                                        self._n_monomers):
+                positions = g.positions.reshape(M, N_p, -1, 3)[:, (0, -1)]
+                self._positions_end_old[s] = (
+                    positions[:, :, 0] if gr == "atoms" 
+                    else center_of_mass(
+                        positions=positions, 
+                        masses=g.masses.reshape(M, N_p, -1)[:, (0, -1)]
+                    )
+                )
+            self._images = np.zeros((self._N_chains, 3), dtype=int)
             self._thresholds = self._dimensions / 2
 
-        # Preallocate arrays to store results
         self.results.times = self.step * self._dt * np.arange(self._n_frames //
                                                               self._n_blocks)
         self.results.acf = np.empty(
             (self._n_groups, self._n_blocks, self._n_frames_block)
         )
+        self.results.units = {"results.times": ureg.picosecond}
 
     def _single_frame(self) -> None:
 
-        # TODO: Use contiguous NumPy array to store positions.
-        for i, (g, gr, N_p) in enumerate(zip(self._groups, self._groupings,
-                                             self._n_monomers)):
-
-            # Store atom or center-of-mass positions in the current frame
-            self._positions_end[i][self._frame_index] = (
-                g.positions if gr == "atoms" else center_of_mass(g, gr)
-            ).reshape(-1, N_p, 3)[:, (0, -1)]
-
-            # Unwrap particle positions if necessary
-            if self._unwrap:
-                unwrap(
-                    self._positions_end[i][self._frame_index],
-                    self._positions_end_prev[i],
-                    self._dimensions,
-                    thresholds=self._thresholds,
-                    images=self._images[i],
-                )
-
-    def _single_frame_parallel(self) -> np.ndarray[float]:
-        pass # TODO: Implement.
+        for g, gr, s, M, N_p in zip(self._groups, self._groupings, 
+                                    self._slices, self._n_chains, 
+                                    self._n_monomers):
+            positions = g.positions.reshape(M, N_p, -1, 3)[:, (0, -1)]
+            self._e2e[self._frame_index, s] = np.diff(
+                positions[:, :, 0] if gr == "atoms"
+                else center_of_mass(
+                    positions=positions, 
+                    masses=g.masses.reshape(M, N_p, -1)[:, (0, -1)]
+                ), 
+                axis=1
+            )[:, 0]
 
     def _conclude(self) -> None:
 
@@ -694,10 +692,10 @@ class EndToEndVector(_PolymerAnalysisBase):
         # Compute the end-to-end vector autocorrelation function
         _acf = correlation_fft if self._fft else correlation_shift
         for i, M in ProgressBar(enumerate(self._n_chains)):
-            e2e = np.diff(self._positions_end[i], axis=2)[:, :, 0]
             self.results.acf[i] = _acf(
-                (e2e / np.linalg.norm(e2e, axis=2, keepdims=True))
-                .reshape(self._n_blocks, -1, M, 3)
+                (self._e2e / np.linalg.norm(self._e2e, axis=-1, keepdims=True))
+                .reshape(self._n_blocks, -1, M, 3),
+                average=True, vector=True
             )
 
     def calculate_relaxation_time(self) -> None:
@@ -863,18 +861,18 @@ class SingleChainStructureFactor(DynamicAnalysisBase):
             raise ValueError("No system dimensions found or provided.")
 
         self._grouping = grouping
-        if hasattr(self.universe, "segments"):
+        if n_chains is None or n_monomers is None:
             self._n_chains = self._group.segments.n_segments
             self._n_monomers = self._group.n_atoms // self._n_chains
         else:
-            if isinstance(n_chains, np.integer):
+            if isinstance(n_chains, (int, np.integer)):
                 self._n_chains = n_chains
             else:
                 emsg = ("The number of chains must be specified when "
                         "the universe does not contain segment "
                         "information.")
                 raise ValueError(emsg)
-            if isinstance(n_monomers, np.integer):
+            if isinstance(n_monomers, (int, np.integer)):
                 self._n_monomers = n_monomers
             else:
                 emsg = ("The number of monomers per chain must be "
