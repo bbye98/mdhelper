@@ -973,6 +973,14 @@
 <span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
 <span class="sd">        value is used for all `groups`.</span>
 
+<span class="sd">        .. note::</span>
+
+<span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
+<span class="sd">           residues (or molecules), and residues contain atoms. This</span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           function correctly, unless your selected grouping is always</span>
+<span class="sd">           :code:`&quot;atoms&quot;`.</span>
+
 <span class="sd">        .. container::</span>
 
 <span class="sd">           **Valid values**:</span>
@@ -1450,11 +1458,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        S(\\mathbf{q})&amp;=\\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N</span>
-<span class="sd">        \exp{[-i\\mathbf{q}\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\</span>
-<span class="sd">        &amp;=\\frac{1}{N}\left\langle\left[</span>
-<span class="sd">        \sum_{j=1}^N\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2+\left[</span>
-<span class="sd">        \sum_{j=1}^N\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2\\right\\rangle</span>
+<span class="sd">        S(\\mathbf{q})&amp;=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N\\sum_{k=1}^N</span>
+<span class="sd">        \\exp{[-i\\mathbf{q}\\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\</span>
+<span class="sd">        &amp;=\\frac{1}{N}\\left\\langle\\left[</span>
+<span class="sd">        \\sum_{j=1}^N\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2+\\left[</span>
+<span class="sd">        \\sum_{j=1}^N\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2\\right\\rangle</span>
 
 <span class="sd">    where :math:`N` is the number of particles, :math:`\\mathbf{q}` is</span>
 <span class="sd">    the scattering wavevector, and :math:`\\mathbf{r}_i` is the position</span>
@@ -1465,11 +1473,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       S_{\\alpha\\beta}(\\mathbf{q})=\\frac{1}{\sqrt{N_\\alpha N_\\beta}}</span>
-<span class="sd">       \left\langle\sum_{j=1}^{N_\\alpha}\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}</span>
-<span class="sd">       \sum_{k=1}^{N_\\beta}\cos{(\\mathbf{q}\cdot\\mathbf{r}_k)}</span>
-<span class="sd">       +\sum_{j=1}^{N_\\alpha}\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}</span>
-<span class="sd">       \sum_{k=1}^{N_\\beta}\sin{(\\mathbf{q}\cdot\\mathbf{r}_k)}\\right\\rangle</span>
+<span class="sd">       S_{\\alpha\\beta}(\\mathbf{q})=\\frac{1}{\\sqrt{N_\\alpha N_\\beta}}</span>
+<span class="sd">       \\left\\langle\\sum_{j=1}^{N_\\alpha}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}</span>
+<span class="sd">       \\sum_{k=1}^{N_\\beta}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_k)}</span>
+<span class="sd">       +\\sum_{j=1}^{N_\\alpha}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}</span>
+<span class="sd">       \\sum_{k=1}^{N_\\beta}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_k)}\\right\\rangle</span>
 
 <span class="sd">    where :math:`N_\\alpha` and :math:`N_\\beta` are the numbers of</span>
 <span class="sd">    particles for species :math:`\\alpha` and :math:`\\beta`.</span>
@@ -1486,6 +1494,14 @@
 <span class="sd">        Determines whether the centers of mass are used in lieu of</span>
 <span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
 <span class="sd">        value is used for all `groups`.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
+<span class="sd">           residues (or molecules), and residues contain atoms. This</span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           function correctly, unless your selected grouping is always</span>
+<span class="sd">           :code:`&quot;atoms&quot;`.</span>
 
 <span class="sd">        .. container::</span>
 
@@ -1581,8 +1597,8 @@
 <span class="sd">        Static structure factor :math:`S(q)` or partial structure</span>
 <span class="sd">        factor(s) :math:`S_{\\alpha\\beta}(q)`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{w},)`, :math:`(1,\,N_\\mathrm{w})`,</span>
-<span class="sd">        or :math:`(C(N_\\mathrm{g}+1,\,2),\,N_\\mathrm{w})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{w},)`, :math:`(1,\\,N_\\mathrm{w})`,</span>
+<span class="sd">        or :math:`(C(N_\\mathrm{g}+1,\\,2),\\,N_\\mathrm{w})`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1898,8 +1914,8 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        F_\\mathrm{s}(\\mathbf{q},t)=\\frac{1}{N}\left\langle\sum_{j=1}^N</span>
-<span class="sd">        \exp\left[i\\mathbf{q}\cdot\left(\\mathbf{r}_j(t_0+t)</span>
+<span class="sd">        F_\\mathrm{s}(\\mathbf{q},t)=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N</span>
+<span class="sd">        \\exp\\left[i\\mathbf{q}\\cdot\\left(\\mathbf{r}_j(t_0+t)</span>
 <span class="sd">        -\\mathbf{r}_j(t_0)\\right)\\right]\\right\\rangle</span>
 
 <span class="sd">    where :math:`N` is the number of particles, :math:`\\mathbf{q}` is</span>
@@ -1910,7 +1926,7 @@
 <span class="sd">    .. note::</span>
 
 <span class="sd">       The simulation must have been run with a constant timestep</span>
-<span class="sd">       :math:`\Delta t` and the frames to be analyzed must be evenly</span>
+<span class="sd">       :math:`\\Delta t` and the frames to be analyzed must be evenly</span>
 <span class="sd">       spaced and proceed forward in time for this analysis module to</span>
 <span class="sd">       function correctly.</span>
 
@@ -1924,6 +1940,14 @@
 <span class="sd">        Determines whether the centers of mass are used in lieu of</span>
 <span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
 <span class="sd">        value is used for all `groups`.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
+<span class="sd">           residues (or molecules), and residues contain atoms. This</span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           function correctly, unless your selected grouping is always</span>
+<span class="sd">           :code:`&quot;atoms&quot;`.</span>
 
 <span class="sd">        .. container::</span>
 
@@ -2016,7 +2040,7 @@
 <span class="sd">        Incoherent (self) intermediate scattering function</span>
 <span class="sd">        :math:`F_\\mathrm{s}(q,\\,t)`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{t},\,N_\\mathrm{w})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{t},\\,N_\\mathrm{w})`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>

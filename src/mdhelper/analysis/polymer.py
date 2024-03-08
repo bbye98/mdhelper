@@ -122,6 +122,16 @@ class _PolymerAnalysisBase(DynamicAnalysisBase):
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
 
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This 
+           heirarchy must be adhered to for this analysis module to 
+           function correctly. If your trajectory file does not contain
+           the correct segment or residue information, provide the 
+           number of chains and chain lengths in `n_chains` and 
+           `n_monomers`, respectively.
+
         .. container::
 
            **Valid values**:
@@ -159,20 +169,6 @@ class _PolymerAnalysisBase(DynamicAnalysisBase):
     universe : `MDAnalysis.Universe`
         :class:`MDAnalysis.core.universe.Universe` object containing all
         information describing the system.
-
-    results.units : `dict`
-        Reference units for the results. For example, to get the
-        reference units for :code:`results.times`, call
-        :code:`results.units["results.times"]`.
-
-    Notes
-    -----
-    In a standard trajectory file, segments (or chains) contain
-    residues, and residues contain atoms. This heirarchy must be adhered
-    to for this analysis module to function correctly. If your
-    trajectory file does not contain the correct segment or residue
-    information, provide the number of chains and chain lengths in
-    `n_chains` and `n_monomers`, respectively.
     """
 
     def __init__(
@@ -211,12 +207,14 @@ class _PolymerAnalysisBase(DynamicAnalysisBase):
             self._groupings = groupings
 
         if n_chains is None or n_monomers is None:
+            self._internal = True
             self._n_chains = np.empty(self._n_groups, dtype=int)
             self._n_monomers = np.empty_like(self._n_chains)
             for i, g in enumerate(self._groups):
                 self._n_chains[i] = g.segments.n_segments
                 self._n_monomers[i] = g.n_atoms // self._n_chains[i]
         else:
+            self._internal = False
             if isinstance(n_chains, (int, np.integer)):
                 self._n_chains = n_chains * np.ones(self._n_groups, dtype=int)
             elif self._n_groups == len(n_chains):
@@ -240,7 +238,7 @@ class _PolymerAnalysisBase(DynamicAnalysisBase):
 class Gyradius(_PolymerAnalysisBase):
 
     r"""
-    Serial and parallel implementations to calculate the radius of 
+    Serial and parallel implementations to calculate the radius of
     gyration :math:`R_\mathrm{g}` of a polymer.
 
     The radius of gyration is used to describe the dimensions of a
@@ -266,6 +264,16 @@ class Gyradius(_PolymerAnalysisBase):
         Determines whether the centers of mass are used in lieu of
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
+
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This 
+           heirarchy must be adhered to for this analysis module to 
+           function correctly. If your trajectory file does not contain
+           the correct segment or residue information, provide the 
+           number of chains and chain lengths in `n_chains` and 
+           `n_monomers`, respectively.
 
         .. container::
 
@@ -323,15 +331,6 @@ class Gyradius(_PolymerAnalysisBase):
         (:code:`components=True`).
 
         **Reference unit**: :math:`\textrm{Å}`.
-
-    Notes
-    -----
-    In a standard trajectory file, segments (or chains) contain
-    residues, and residues contain atoms. This heirarchy must be adhered
-    to for this analysis module to function correctly. If your
-    trajectory file does not contain the correct segment or residue
-    information, provide the number of chains and chain lengths in
-    `n_chains` and `n_monomers`, respectively.
     """
 
     def __init__(
@@ -348,9 +347,12 @@ class Gyradius(_PolymerAnalysisBase):
 
         # Determine the number of particles in each group and their
         # corresponding indices
-        self._Ns = tuple(getattr(a, f"n_{g}")
-                         for (a, g) in zip(self._groups, self._groupings))
-        self._N = sum(self._Ns)
+        self._Ns = np.fromiter(
+            (M * N_p for M, N_p in zip(self._n_chains, self._n_monomers)),
+            dtype=int,
+            count=self._n_groups
+        )
+        self._N = self._Ns.sum()
         self._slices = []
         index = 0
         for N in self._Ns:
@@ -371,9 +373,19 @@ class Gyradius(_PolymerAnalysisBase):
             # Preallocate arrays to store number of boundary crossings for
             # each particle
             self._positions_old = np.empty((self._N, 3))
-            for g, gr, s in zip(self._groups, self._groupings, self._slices):
-                self._positions_old[s] = (g.positions if gr == "atoms"
-                                          else center_of_mass(g, gr))
+            for g, gr, s, M, N_p in zip(self._groups, self._groupings,
+                                        self._slices, self._n_chains,
+                                        self._n_monomers):
+                if self._internal and gr == "residues":
+                    self._positions_old[s] = center_of_mass(g, gr)
+                else:
+                    self._positions_old[s] = (
+                        g.positions if gr == "atoms"
+                        else center_of_mass(
+                            positions=g.positions.reshape(M, N_p, -1, 3),
+                            masses=g.masses.reshape(M, N_p, -1)
+                        )
+                    )
             self._images = np.zeros((self._N, 3), dtype=int)
             self._thresholds = self._dimensions / 2
 
@@ -387,13 +399,19 @@ class Gyradius(_PolymerAnalysisBase):
                         else slice(self.start, self.stop, self.step)
                     ]):
                     for g, gr, s in zip(self._groups, self._groupings, self._slices):
-                        self._positions[i, s] = (g.positions if gr == "atoms"
-                                                 else center_of_mass(g, gr))
-                        
-                    unwrap(self._positions[i],
-                           self._positions_old,
-                           self._dimensions,
-                           thresholds=self._thresholds,
+                        if self._internal and gr == "residues":
+                            self._positions[i, s] = center_of_mass(g, gr)
+                        else:
+                            self._positions[i, s] = (
+                                g.positions if gr == "atoms"
+                                else center_of_mass(
+                                    positions=g.positions.reshape(M, N_p, -1, 3),
+                                    masses=g.masses.reshape(M, N_p, -1)
+                                )
+                            )
+
+                    unwrap(self._positions[i], self._positions_old,
+                           self._dimensions, thresholds=self._thresholds,
                            images=self._images)
 
                 # Clean up memory
@@ -414,15 +432,19 @@ class Gyradius(_PolymerAnalysisBase):
                 zip(self._groups, self._groupings, self._n_chains,
                     self._n_monomers, self._slices)
             ):
-            positions = g.positions if gr == "atoms" else center_of_mass(g, gr)
-            if self._unwrap:
-                unwrap(
-                    positions,
-                    self._positions_old[s],
-                    self._dimensions,
-                    thresholds=self._thresholds,
-                    images=self._images[s]
+            if self._internal and gr == "residues":
+                positions = center_of_mass(g, gr)
+            else:
+                positions = (
+                    g.positions if gr == "atoms"
+                    else center_of_mass(
+                        positions=g.positions.reshape(M, N_p, -1, 3),
+                        masses=g.masses.reshape(M, N_p, -1)
+                    )
                 )
+            if self._unwrap:
+                unwrap(positions, self._positions_old[s], self._dimensions,
+                       thresholds=self._thresholds, images=self._images[s])
 
             self.results.gyradii[i, self._frame_index] \
                 = radius_of_gyration(
@@ -440,18 +462,27 @@ class Gyradius(_PolymerAnalysisBase):
         if self._components:
             shape.append(3)
         results = np.empty(shape)
-        
+
         for i, (g, gr, M, N_p, s) in enumerate(
                 zip(self._groups, self._groupings, self._n_chains,
                     self._n_monomers, self._slices)
             ):
+            if self._unwrap:
+                positions = self._positions[index, s]
+            elif self._internal and gr == "residues":
+                positions = center_of_mass(g, gr)
+            else:
+                positions = (
+                    g.positions if gr == "atoms"
+                    else center_of_mass(
+                        positions=g.positions.reshape(M, N_p, -1, 3),
+                        masses=g.masses.reshape(M, N_p, -1)
+                    )
+                )
+
             results[i] = radius_of_gyration(
                 grouping="segments",
-                positions=(
-                    self._positions[index, s] if self._unwrap 
-                    else (g.positions if gr == "atoms" 
-                          else center_of_mass(g, gr))
-                ).reshape((M, N_p, 3)),
+                positions=positions.reshape((M, N_p, 3)),
                 masses=g.masses.reshape((M, N_p)),
                 components=self._components
             )
@@ -509,6 +540,16 @@ class EndToEndVector(_PolymerAnalysisBase):
         Determines whether the centers of mass are used in lieu of
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
+
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This 
+           heirarchy must be adhered to for this analysis module to 
+           function correctly. If your trajectory file does not contain
+           the correct segment or residue information, provide the 
+           number of chains and chain lengths in `n_chains` and 
+           `n_monomers`, respectively.
 
         .. container::
 
@@ -650,18 +691,24 @@ class EndToEndVector(_PolymerAnalysisBase):
             # Preallocate arrays to store number of boundary crossings for
             # the first and last monomer in each chain
             self._positions_end_old = np.empty((self._N_chains, 2, 3))
-            for g, gr, s, M, N_p in zip(self._groups, self._groupings, 
-                                        self._slices, self._n_chains, 
+            for g, gr, s, M, N_p in zip(self._groups, self._groupings,
+                                        self._slices, self._n_chains,
                                         self._n_monomers):
-                positions = g.positions.reshape(M, N_p, -1, 3)[:, (0, -1)]
-                self._positions_end_old[s] = (
-                    positions[:, :, 0] if gr == "atoms" 
-                    else center_of_mass(
-                        positions=positions, 
-                        masses=g.masses.reshape(M, N_p, -1)[:, (0, -1)]
+                if self._internal and gr == "residues":
+                    self._positions_end_old[s] = np.stack(
+                        [center_of_mass(s.residues[[0, -1]].atoms, "residues")
+                         for s in g.segments]
                     )
-                )
-            self._images = np.zeros((self._N_chains, 3), dtype=int)
+                else:
+                    positions = g.positions.reshape(M, N_p, -1, 3)[:, (0, -1)]
+                    self._positions_end_old[s] = (
+                        positions[:, :, 0] if gr == "atoms"
+                        else center_of_mass(
+                            positions=positions,
+                            masses=g.masses.reshape(M, N_p, -1)[:, (0, -1)]
+                        )
+                    )
+            self._images = np.zeros((self._N_chains, 2, 3), dtype=int)
             self._thresholds = self._dimensions / 2
 
         self.results.times = self.step * self._dt * np.arange(self._n_frames //
@@ -673,23 +720,32 @@ class EndToEndVector(_PolymerAnalysisBase):
 
     def _single_frame(self) -> None:
 
-        for g, gr, s, M, N_p in zip(self._groups, self._groupings, 
-                                    self._slices, self._n_chains, 
+        for g, gr, s, M, N_p in zip(self._groups, self._groupings,
+                                    self._slices, self._n_chains,
                                     self._n_monomers):
-            positions = g.positions.reshape(M, N_p, -1, 3)[:, (0, -1)]
-            self._e2e[self._frame_index, s] = np.diff(
-                positions[:, :, 0] if gr == "atoms"
-                else center_of_mass(
-                    positions=positions, 
-                    masses=g.masses.reshape(M, N_p, -1)[:, (0, -1)]
-                ), 
-                axis=1
-            )[:, 0]
+            if self._internal and gr == "residues":
+                positions_end = np.stack(
+                    center_of_mass(s.residues[[0, -1]].atoms, "residues")
+                    for s in g.segments
+                )
+            else:
+                positions_end = g.positions.reshape(M, N_p, -1, 3)[:, (0, -1)]
+                positions_end = (
+                    positions_end[:, :, 0] if gr == "atoms"
+                    else center_of_mass(
+                        positions=positions_end,
+                        masses=g.masses.reshape(M, N_p, -1)[:, (0, -1)]
+                    )
+                )
+            if self._unwrap:
+                unwrap(positions_end, self._positions_end_old[s],
+                       self._dimensions, thresholds=self._thresholds,
+                       images=self._images[s])
+            self._e2e[self._frame_index, s] \
+                = np.diff(positions_end, axis=1)[:, 0]
 
     def _conclude(self) -> None:
 
-        # TODO: Completely broken logic. Fix it.
-        # Compute the end-to-end vector autocorrelation function
         _acf = correlation_fft if self._fft else correlation_shift
         for i, M in ProgressBar(enumerate(self._n_chains)):
             self.results.acf[i] = _acf(
@@ -709,9 +765,8 @@ class EndToEndVector(_PolymerAnalysisBase):
                     "EndToEndVector.calculate_relaxation_time().")
             raise RuntimeError(emsg)
 
-        self.results.relaxation_times = np.empty(
-            (self._n_groups, self._n_blocks)
-        )
+        self.results.relaxation_times = np.empty((self._n_groups,
+                                                  self._n_blocks))
         self.results.units["results.relaxation_times"] = ureg.picosecond
 
         for i, g in enumerate(self.results.acf):
@@ -757,11 +812,22 @@ class SingleChainStructureFactor(DynamicAnalysisBase):
     Parameters
     ----------
     group : `MDAnalysis.AtomGroup`
-        Group of polymers to be analyzed.
+        Group of polymers to be analyzed. All polymers in the group
+        must have the same chain length.
 
     grouping : `str`, default: :code:`"atoms"`
         Determines whether the centers of mass are used in lieu of
         individual atom positions.
+
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This 
+           heirarchy must be adhered to for this analysis module to 
+           function correctly. If your trajectory file does not contain
+           the correct segment or residue information, provide the 
+           number of chains and chain lengths in `n_chains` and 
+           `n_monomers`, respectively.
 
         .. container::
 
@@ -860,11 +926,18 @@ class SingleChainStructureFactor(DynamicAnalysisBase):
         else:
             raise ValueError("No system dimensions found or provided.")
 
+        if grouping not in (groupings := {"atoms", "residues"}):
+            emsg = (f"Invalid grouping '{grouping}'. Valid values: "
+                    f"{', '.join(groupings)}.")
+            raise ValueError(emsg)
         self._grouping = grouping
+
         if n_chains is None or n_monomers is None:
+            self._internal = True
             self._n_chains = self._group.segments.n_segments
             self._n_monomers = self._group.n_atoms // self._n_chains
         else:
+            self._internal = False
             if isinstance(n_chains, (int, np.integer)):
                 self._n_chains = n_chains
             else:
@@ -901,10 +974,22 @@ class SingleChainStructureFactor(DynamicAnalysisBase):
                 if hasattr(self._sliced_trajectory, "frames")
                 else (self.start or 0)
             ]
-            self._positions_old = (
-                self._group.positions if self._grouping == "atoms"
-                else center_of_mass(self._group, self._grouping)
-            )
+
+            if self._internal and self._grouping == "residues":
+                self._positions_old = center_of_mass(self._group,
+                                                     self._grouping)
+            else:
+                self._positions_old = (
+                    self._group.positions if self._grouping == "atoms"
+                    else center_of_mass(
+                        positions=self._group.positions.reshape(
+                            self._n_chains, self._n_monomers, -1, 3
+                        ),
+                        masses=self._group.masses.reshape(
+                            self._n_chains, self._n_monomers, -1
+                        )
+                    )
+                )
             self._images = np.zeros(self._positions_old.shape, dtype=int)
             self._thresholds = self._dimensions / 2
 
@@ -927,20 +1012,27 @@ class SingleChainStructureFactor(DynamicAnalysisBase):
                 ]):
 
                 # Store atom or center-of-mass positions in the current frame
-                self._positions[i] = (
-                    self._group.positions if self._grouping == "atoms"
-                    else center_of_mass(self._group, self._grouping)
-                )
+                if self._internal and self._grouping == "residues":
+                    self._positions[i] = center_of_mass(self._group,
+                                                        self._grouping)
+                else:
+                    self._positions[i] = (
+                        self._group.positions if self._grouping == "atoms"
+                        else center_of_mass(
+                            positions=self._group.positions.reshape(
+                                self._n_chains, self._n_monomers, -1, 3
+                            ),
+                            masses=self._group.masses.reshape(
+                                self._n_chains, self._n_monomers, -1
+                            )
+                        )
+                    )
 
                 # Unwrap particle positions if necessary
                 if self._unwrap:
-                    unwrap(
-                        self._positions[i],
-                        self._positions_old,
-                        self._dimensions,
-                        thresholds=self._thresholds,
-                        images=self._images
-                    )
+                    unwrap(self._positions[i], self._positions_old,
+                           self._dimensions, thresholds=self._thresholds,
+                           images=self._images)
 
             # Clean up memory
             del self._positions_old
@@ -954,16 +1046,25 @@ class SingleChainStructureFactor(DynamicAnalysisBase):
     def _single_frame(self) -> None:
 
         # Get atom or center-of-mass positions in the current frame
-        positions = (self._group.positions if self._grouping == "atoms"
-                     else center_of_mass(self._group, self._grouping))
+        if self._internal and self._grouping == "residues":
+            positions = center_of_mass(self._group, self._grouping)
+        else:
+            positions = (
+                self._group.positions if self._grouping == "atoms"
+                else center_of_mass(
+                    positions=self._group.positions.reshape(
+                        self._n_chains, self._n_monomers, -1, 3
+                    ),
+                    masses=self._group.masses.reshape(
+                        self._n_chains, self._n_monomers, -1
+                    )
+                )
+            )
 
         # Unwrap particle positions if necessary
         if self._unwrap:
-            unwrap(positions,
-                   self._positions_old,
-                   self._dimensions,
-                   thresholds=self._thresholds,
-                   images=self._images)
+            unwrap(positions, self._positions_old, self._dimensions,
+                   thresholds=self._thresholds, images=self._images)
 
         # Calculate single-chain structure factor contributions
         for chain in positions.reshape((self._n_chains, self._n_monomers, 3)):
@@ -971,7 +1072,8 @@ class SingleChainStructureFactor(DynamicAnalysisBase):
             self.results.scsf += (np.sin(arg).sum(axis=0) ** 2
                                   + np.cos(arg).sum(axis=0) ** 2)
 
-    def _single_frame_parallel(self, frame: int, index: int) -> np.ndarray[float]:
+    def _single_frame_parallel(
+            self, frame: int, index: int) -> np.ndarray[float]:
 
         # Compute the single-chain structure factor by squaring the
         # cosine and sine terms and adding them together

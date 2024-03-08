@@ -297,8 +297,8 @@ class DensityProfile(DynamicAnalysisBase):
 
     .. math::
 
-       \\rho_i(z)=\\frac{V}{N_\\mathrm{bin}}\left\langle
-       \sum_\\alpha\delta(z-z_\\alpha)\\right\\rangle
+       \\rho_i(z)=\\frac{V}{N_\\mathrm{bin}}\\left\\langle
+       \\sum_\\alpha\\delta(z-z_\\alpha)\\right\\rangle
 
     where :math:`V` is the system volume and :math:`N_\\mathrm{bins}` is
     the number of bins. The angular brackets denote an ensemble average.
@@ -308,7 +308,7 @@ class DensityProfile(DynamicAnalysisBase):
 
     .. math::
 
-       \\rho_q(z)=\sum_i z_ie\\rho_i(z)
+       \\rho_q(z)=\\sum_i z_ie\\rho_i(z)
 
     where :math:`z_i` is the charge number of species :math:`i` and
     :math:`e` is the elementary charge.
@@ -319,7 +319,7 @@ class DensityProfile(DynamicAnalysisBase):
 
     .. math::
 
-       \\varepsilon_0\\varepsilon_\\mathrm{r}\\nabla^2\Psi(z)=-\\rho_q(z)
+       \\varepsilon_0\\varepsilon_\\mathrm{r}\\nabla^2\\Psi(z)=-\\rho_q(z)
 
     Parameters
     ----------
@@ -339,6 +339,14 @@ class DensityProfile(DynamicAnalysisBase):
         Determines whether the centers of mass are used in lieu of
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
+
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to 
+           function correctly, unless your selected grouping is always
+           :code:`"atoms"`.
 
         .. container::
 
@@ -899,7 +907,7 @@ class DensityProfile(DynamicAnalysisBase):
 
         dV : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, optional
-            Potential difference :math:`\\Delta\Psi` across the system
+            Potential difference :math:`\\Delta\\Psi` across the system
             dimension specified in `axis`. Has no effect if `sigma_q` is
             provided since this value is used solely to calculate
             `sigma_q`.
@@ -914,7 +922,7 @@ class DensityProfile(DynamicAnalysisBase):
 
         V0 : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
         keyword-only, default: :code:`0`
-            Potential :math:`\Psi_0` at the left boundary.
+            Potential :math:`\\Psi_0` at the left boundary.
 
             **Reference unit**: :math:`\\mathrm{V}`.
 

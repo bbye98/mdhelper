@@ -700,8 +700,8 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \\rho_i(z)=\\frac{V}{N_\\mathrm{bin}}\left\langle</span>
-<span class="sd">       \sum_\\alpha\delta(z-z_\\alpha)\\right\\rangle</span>
+<span class="sd">       \\rho_i(z)=\\frac{V}{N_\\mathrm{bin}}\\left\\langle</span>
+<span class="sd">       \\sum_\\alpha\\delta(z-z_\\alpha)\\right\\rangle</span>
 
 <span class="sd">    where :math:`V` is the system volume and :math:`N_\\mathrm{bins}` is</span>
 <span class="sd">    the number of bins. The angular brackets denote an ensemble average.</span>
@@ -711,7 +711,7 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \\rho_q(z)=\sum_i z_ie\\rho_i(z)</span>
+<span class="sd">       \\rho_q(z)=\\sum_i z_ie\\rho_i(z)</span>
 
 <span class="sd">    where :math:`z_i` is the charge number of species :math:`i` and</span>
 <span class="sd">    :math:`e` is the elementary charge.</span>
@@ -722,7 +722,7 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \\varepsilon_0\\varepsilon_\\mathrm{r}\\nabla^2\Psi(z)=-\\rho_q(z)</span>
+<span class="sd">       \\varepsilon_0\\varepsilon_\\mathrm{r}\\nabla^2\\Psi(z)=-\\rho_q(z)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -742,6 +742,14 @@
 <span class="sd">        Determines whether the centers of mass are used in lieu of</span>
 <span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
 <span class="sd">        value is used for all `groups`.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
+<span class="sd">           residues (or molecules), and residues contain atoms. This</span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           function correctly, unless your selected grouping is always</span>
+<span class="sd">           :code:`&quot;atoms&quot;`.</span>
 
 <span class="sd">        .. container::</span>
 
@@ -1304,7 +1312,7 @@
 
 <span class="sd">        dV : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">        keyword-only, optional</span>
-<span class="sd">            Potential difference :math:`\\Delta\Psi` across the system</span>
+<span class="sd">            Potential difference :math:`\\Delta\\Psi` across the system</span>
 <span class="sd">            dimension specified in `axis`. Has no effect if `sigma_q` is</span>
 <span class="sd">            provided since this value is used solely to calculate</span>
 <span class="sd">            `sigma_q`.</span>
@@ -1319,7 +1327,7 @@
 
 <span class="sd">        V0 : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
 <span class="sd">        keyword-only, default: :code:`0`</span>
-<span class="sd">            Potential :math:`\Psi_0` at the left boundary.</span>
+<span class="sd">            Potential :math:`\\Psi_0` at the left boundary.</span>
 
 <span class="sd">            **Reference unit**: :math:`\\mathrm{V}`.</span>
 

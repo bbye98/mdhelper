@@ -433,10 +433,21 @@ exponent <span class="math notranslate nohighlight">\(\nu\)</span> via <span cla
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>group</strong><span class="classifier"><cite>MDAnalysis.AtomGroup</cite></span></dt><dd><p>Group of polymers to be analyzed.</p>
+<dt><strong>group</strong><span class="classifier"><cite>MDAnalysis.AtomGroup</cite></span></dt><dd><p>Group of polymers to be analyzed. All polymers in the group
+must have the same chain length.</p>
 </dd>
 <dt><strong>grouping</strong><span class="classifier"><cite>str</cite>, default: <code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code></span></dt><dd><p>Determines whether the centers of mass are used in lieu of
 individual atom positions.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In a standard trajectory file, segments (or chains) contain
+residues (or molecules), and residues contain atoms. This
+heirarchy must be adhered to for this analysis module to
+function correctly. If your trajectory file does not contain
+the correct segment or residue information, provide the
+number of chains and chain lengths in <cite>n_chains</cite> and
+<cite>n_monomers</cite>, respectively.</p>
+</div>
 <div class="docutils container">
 <p><strong>Valid values</strong>:</p>
 <ul class="simple">

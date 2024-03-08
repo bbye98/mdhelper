@@ -425,6 +425,16 @@ must have the same chain length.</p>
 <dt><strong>groupings</strong><span class="classifier"><cite>str</cite> or array-like, default: <code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code></span></dt><dd><p>Determines whether the centers of mass are used in lieu of
 individual atom positions. If <cite>groupings</cite> is a <cite>str</cite>, the same
 value is used for all <cite>groups</cite>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In a standard trajectory file, segments (or chains) contain
+residues (or molecules), and residues contain atoms. This
+heirarchy must be adhered to for this analysis module to
+function correctly. If your trajectory file does not contain
+the correct segment or residue information, provide the
+number of chains and chain lengths in <cite>n_chains</cite> and
+<cite>n_monomers</cite>, respectively.</p>
+</div>
 <div class="docutils container">
 <p><strong>Valid values</strong>:</p>
 <ul class="simple">
@@ -457,17 +467,8 @@ calculated and returned instead.</p>
 </dd>
 </dl>
 </dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>In a standard trajectory file, segments (or chains) contain
-residues, and residues contain atoms. This heirarchy must be adhered
-to for this analysis module to function correctly. If your
-trajectory file does not contain the correct segment or residue
-information, provide the number of chains and chain lengths in
-<cite>n_chains</cite> and <cite>n_monomers</cite>, respectively.</p>
-<dl class="field-list">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
 <dt><strong>universe</strong><span class="classifier"><cite>MDAnalysis.Universe</cite></span></dt><dd><p><a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v2.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a> object containing all
 information describing the system.</p>
 </dd>

@@ -558,6 +558,14 @@ class RDF(DynamicAnalysisBase):
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
 
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to 
+           function correctly, unless your selected grouping is always
+           :code:`"atoms"`.
+
         .. container::
 
            **Valid values**:
@@ -1023,11 +1031,11 @@ class StructureFactor(DynamicAnalysisBase):
 
     .. math::
 
-        S(\\mathbf{q})&=\\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N
-        \exp{[-i\\mathbf{q}\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\
-        &=\\frac{1}{N}\left\langle\left[
-        \sum_{j=1}^N\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2+\left[
-        \sum_{j=1}^N\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2\\right\\rangle
+        S(\\mathbf{q})&=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N\\sum_{k=1}^N
+        \\exp{[-i\\mathbf{q}\\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\
+        &=\\frac{1}{N}\\left\\langle\\left[
+        \\sum_{j=1}^N\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2+\\left[
+        \\sum_{j=1}^N\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2\\right\\rangle
 
     where :math:`N` is the number of particles, :math:`\\mathbf{q}` is
     the scattering wavevector, and :math:`\\mathbf{r}_i` is the position
@@ -1038,11 +1046,11 @@ class StructureFactor(DynamicAnalysisBase):
 
     .. math::
 
-       S_{\\alpha\\beta}(\\mathbf{q})=\\frac{1}{\sqrt{N_\\alpha N_\\beta}}
-       \left\langle\sum_{j=1}^{N_\\alpha}\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}
-       \sum_{k=1}^{N_\\beta}\cos{(\\mathbf{q}\cdot\\mathbf{r}_k)}
-       +\sum_{j=1}^{N_\\alpha}\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}
-       \sum_{k=1}^{N_\\beta}\sin{(\\mathbf{q}\cdot\\mathbf{r}_k)}\\right\\rangle
+       S_{\\alpha\\beta}(\\mathbf{q})=\\frac{1}{\\sqrt{N_\\alpha N_\\beta}}
+       \\left\\langle\\sum_{j=1}^{N_\\alpha}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
+       \\sum_{k=1}^{N_\\beta}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_k)}
+       +\\sum_{j=1}^{N_\\alpha}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
+       \\sum_{k=1}^{N_\\beta}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_k)}\\right\\rangle
 
     where :math:`N_\\alpha` and :math:`N_\\beta` are the numbers of
     particles for species :math:`\\alpha` and :math:`\\beta`.
@@ -1059,6 +1067,14 @@ class StructureFactor(DynamicAnalysisBase):
         Determines whether the centers of mass are used in lieu of
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
+
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to 
+           function correctly, unless your selected grouping is always
+           :code:`"atoms"`.
 
         .. container::
 
@@ -1154,8 +1170,8 @@ class StructureFactor(DynamicAnalysisBase):
         Static structure factor :math:`S(q)` or partial structure
         factor(s) :math:`S_{\\alpha\\beta}(q)`.
 
-        **Shape**: :math:`(N_\\mathrm{w},)`, :math:`(1,\,N_\\mathrm{w})`,
-        or :math:`(C(N_\\mathrm{g}+1,\,2),\,N_\\mathrm{w})`.
+        **Shape**: :math:`(N_\\mathrm{w},)`, :math:`(1,\\,N_\\mathrm{w})`,
+        or :math:`(C(N_\\mathrm{g}+1,\\,2),\\,N_\\mathrm{w})`.
     """
 
     def __init__(
@@ -1468,8 +1484,8 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
 
     .. math::
 
-        F_\\mathrm{s}(\\mathbf{q},t)=\\frac{1}{N}\left\langle\sum_{j=1}^N
-        \exp\left[i\\mathbf{q}\cdot\left(\\mathbf{r}_j(t_0+t)
+        F_\\mathrm{s}(\\mathbf{q},t)=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N
+        \\exp\\left[i\\mathbf{q}\\cdot\\left(\\mathbf{r}_j(t_0+t)
         -\\mathbf{r}_j(t_0)\\right)\\right]\\right\\rangle
 
     where :math:`N` is the number of particles, :math:`\\mathbf{q}` is
@@ -1480,7 +1496,7 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
     .. note::
 
        The simulation must have been run with a constant timestep
-       :math:`\Delta t` and the frames to be analyzed must be evenly
+       :math:`\\Delta t` and the frames to be analyzed must be evenly
        spaced and proceed forward in time for this analysis module to
        function correctly.
 
@@ -1494,6 +1510,14 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
         Determines whether the centers of mass are used in lieu of
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
+
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to 
+           function correctly, unless your selected grouping is always
+           :code:`"atoms"`.
 
         .. container::
 
@@ -1586,7 +1610,7 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
         Incoherent (self) intermediate scattering function
         :math:`F_\\mathrm{s}(q,\\,t)`.
 
-        **Shape**: :math:`(N_\\mathrm{t},\,N_\\mathrm{w})`.
+        **Shape**: :math:`(N_\\mathrm{t},\\,N_\\mathrm{w})`.
     """
 
     def __init__(

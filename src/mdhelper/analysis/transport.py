@@ -560,6 +560,14 @@ class Onsager(SerialAnalysisBase):
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
 
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to 
+           function correctly, unless your selected grouping is always
+           :code:`"atoms"`.
+
         .. container::
 
            **Valid values**:
