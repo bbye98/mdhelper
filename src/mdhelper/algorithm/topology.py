@@ -257,7 +257,7 @@ def unwrap(
     ) -> Union[None, tuple[np.ndarray[float], np.ndarray[int]]]:
 
     """
-    Unwraps particle positions.
+    Globally unwraps particle positions.
 
     Parameters
     ----------

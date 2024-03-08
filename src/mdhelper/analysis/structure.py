@@ -447,12 +447,11 @@ class RDF(DynamicAnalysisBase):
 
     .. math::
 
-       g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}\sum_{\alpha=1}^{N_i}
-       \sum_{\beta=1}^{N_j}\left\langle
+       g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}
+       \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle
        \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
-       \right\rangle\\
-       g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}\sum_{\alpha=1}^{N_i}
-       \sum_{\beta=1}^{N_j}\left\langle
+       \right\rangle g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}
+       \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle
        \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
        \right\rangle
 
@@ -587,7 +586,7 @@ class RDF(DynamicAnalysisBase):
            be negligible.
 
     parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the calculation is run in parallel.
+        Determines whether the analysis is performed in parallel.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -1121,7 +1120,7 @@ class StructureFactor(DynamicAnalysisBase):
         in a single pass.
 
     parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the calculation is run in parallel.
+        Determines whether the analysis is performed in parallel.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -1426,11 +1425,9 @@ class StructureFactor(DynamicAnalysisBase):
 
     def _conclude(self) -> None:
 
-        # Tally structure factors over all frames
+        # Consolidate parallel results
         if self._parallel:
             self.results.ssf = np.vstack(self._results).sum(axis=0)
-
-        # Free up memory used by the atom position array
         else:
             del self._positions
 
@@ -1551,7 +1548,7 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
         evaluate the auto- and cross-correlations.
 
     parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the calculation is run in parallel.
+        Determines whether the analysis is performed in parallel.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -1768,7 +1765,7 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
 
     def _conclude(self) -> None:
 
-        # Combine results from parallel runs
+        # Consolidate parallel results
         if self._parallel:
             trig_sums = np.stack(self._results)
             cos_sum = trig_sums[:, 0]

@@ -924,8 +924,8 @@ class Onsager(SerialAnalysisBase):
             itertools.combinations_with_replacement(range(self._n_groups), 2)
         )
 
-        # Preallocate array(s) to store positions (and number of
-        # boundary crossings) for each AtomGroup
+        # Preallocate arrays to store positions and number of boundary
+        # crossings
         self._positions = np.empty((self.n_frames, self._N, 3))
         if self._unwrap:
             self.universe.trajectory[

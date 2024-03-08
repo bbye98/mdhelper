@@ -57,7 +57,7 @@ def calculate_potential_profile(
        \left.\Psi\right\rvert_{z=0}&=\Psi_0
 
     The first BC is used to ensure that the electric field in the bulk
-    of the solution is zero, while the second BC is used to set the 
+    of the solution is zero, while the second BC is used to set the
     potential on the left electrode.
 
     Poisson's equation can be evaluated by using the trapezoidal rule
@@ -73,17 +73,17 @@ def calculate_potential_profile(
     resolve the potential profile.
 
     Alternatively, Poisson's equation can be written as a system of
-    linear equations 
+    linear equations
 
     .. math::
 
        A\mathbf{\Psi}=\mathbf{b}
-    
+
     using second-order finite differences. :math:`A` is a tridiagonal
     matrix and :math:`b` is a vector containing the charge density
-    profile, with boundary conditions applied in the first and last 
+    profile, with boundary conditions applied in the first and last
     rows.
-    
+
     The inner equations are given by
 
     .. math::
@@ -97,7 +97,7 @@ def calculate_potential_profile(
     equations are given by
 
     .. math::
-    
+
        \Psi_0^{''}&=\frac{\Psi_{N-1}-2\Psi_0+\Psi_1}{h^2}
        =-\frac{1}{\varepsilon_0\varepsilon_\mathrm{r}}\rho_{q,\,0}\\
        \Psi_{N-1}^{''}&=\frac{\Psi_{N-2}-2\Psi_{N-1}+\Psi_0}{h^2}
@@ -214,7 +214,7 @@ def calculate_potential_profile(
                    - dielectric * dV / CONVERSION_FACTOR) / L
 
     if method == "integral":
-        potential = integrate.cumulative_trapezoid(charge_density, bins, 
+        potential = integrate.cumulative_trapezoid(charge_density, bins,
                                                    initial=0)
 
         if sigma_q is None:
@@ -259,14 +259,14 @@ def calculate_potential_profile(
         h = bins[1] - bins[0]
         if not np.allclose(np.diff(bins), h):
             raise ValueError("'bins' must be uniformly spaced.")
-        
+
         # Set up matrix and load vector for second-order finite
         # difference method
         N = len(bins)
         A = sparse.diags((1, -2, 1), (-1, 0, 1), shape=(N, N), format="csc")
         b = charge_density.copy()
         with warnings.catch_warnings():
-            warnings.simplefilter("ignore", 
+            warnings.simplefilter("ignore",
                                   category=sparse.SparseEfficiencyWarning)
             if pbc:
                 A[0, -1] = A[-1, 0] = 1
@@ -287,7 +287,7 @@ def calculate_potential_profile(
 class DensityProfile(DynamicAnalysisBase):
 
     """
-    Serial and parallel implementations to calculate the number and 
+    Serial and parallel implementations to calculate the number and
     charge density profiles :math:`\\rho_i(z)` and :math:`\\rho_q(z)` of
     a system along the specified axes.
 
@@ -332,7 +332,7 @@ class DensityProfile(DynamicAnalysisBase):
            wrapped into the primary simulation cell. If you think your
            system may have split bonds, use
            :class:`MDAnalysis.transformations.wrap.unwrap` to unwrap
-           the trajectory before passing an :code:`AtomGroup` to this
+           the trajectory before passing any :code:`AtomGroup` to this
            class.
 
     groupings : `str` or array-like, default: :code:`"atoms"`
@@ -421,7 +421,7 @@ class DensityProfile(DynamicAnalysisBase):
         Constrains the center of mass of an atom group by adjusting the
         particle coordinates every analysis frame. Either specify an
         :class:`MDAnalysis.core.groups.AtomGroup`, its index within
-        `groups`, or a tuple containing an 
+        `groups`, or a tuple containing an
         :class:`MDAnalysis.core.groups.AtomGroup` or `int` and the fixed
         center of mass coordinates, in that order. If the center of mass
         is not specified, the center of the simulation box is used.
@@ -433,7 +433,7 @@ class DensityProfile(DynamicAnalysisBase):
         `results.number_densities`, `results.charge_densities`, etc.
 
     parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the calculation is run in parallel.
+        Determines whether the analysis is performed in parallel.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -491,7 +491,7 @@ class DensityProfile(DynamicAnalysisBase):
         direction if :code:`axes="yz"`). Only available after running
         :meth:`calculate_potential_profile`.
 
-        **Shape**: :math:`(N_\\mathrm{bins},)` for the potential 
+        **Shape**: :math:`(N_\\mathrm{bins},)` for the potential
         profiles.
 
         **Reference unit**: :math:`\\mathrm{V}`.
@@ -631,7 +631,7 @@ class DensityProfile(DynamicAnalysisBase):
             self._recenter = (recenter, self._dimensions / 2)
         elif isinstance(recenter, mda.AtomGroup):
             try:
-                self._recenter = (self._groups.index(recenter), 
+                self._recenter = (self._groups.index(recenter),
                                   self._dimensions / 2)
             except ValueError:
                 emsg = ("The specified AtomGroup in 'recenter' is not "
@@ -642,7 +642,7 @@ class DensityProfile(DynamicAnalysisBase):
                 and len(recenter) == 2:
             if isinstance(recenter[0], mda.AtomGroup):
                 try:
-                    self._recenter = (self._groups.index(recenter[0]), 
+                    self._recenter = (self._groups.index(recenter[0]),
                                       np.asarray(recenter[1]))
                 except ValueError:
                     emsg = ("The specified AtomGroup in 'recenter' is not "
@@ -703,44 +703,51 @@ class DensityProfile(DynamicAnalysisBase):
                     for g, gr, s in zip(self._groups, self._groupings, self._slices):
                         self._positions[i, s] = (g.positions if gr == "atoms"
                                                  else center_of_mass(g, gr))
-                        unwrap(self._positions[i, s], 
-                               self._positions_old, 
-                               self._dimensions,
-                               thresholds=self._thresholds,
-                               images=self._images)
-                        
-                        # Calculate difference in center of mass and
-                        # shift particle positions by the difference
-                        scom = center_of_mass(
-                            positions=self._positions
-                                      [i, self._slices[self._recenter[0]]],
-                            masses=getattr(
-                                self._groups[self._recenter[0]], 
-                                self._groupings[self._recenter[0]]
-                            ).masses
-                        )
-                        self._positions[i, s] -= np.fromiter(
-                            (0 if np.isnan(cx) else sx - cx 
-                             for sx, cx in zip(scom, self._recenter[1])), 
-                            dtype=float, 
-                            count=3
-                        )
+
+                    unwrap(self._positions[i],
+                           self._positions_old,
+                           self._dimensions,
+                           thresholds=self._thresholds,
+                           images=self._images)
+
+                    # Calculate difference in center of mass and
+                    # shift particle positions by the difference
+                    scom = center_of_mass(
+                        positions=self._positions
+                                  [i, self._slices[self._recenter[0]]],
+                        masses=getattr(
+                            self._groups[self._recenter[0]],
+                            self._groupings[self._recenter[0]]
+                        ).masses
+                    )
+                    self._positions[i, s] -= np.fromiter(
+                        (0 if np.isnan(cx) else sx - cx
+                         for sx, cx in zip(scom, self._recenter[1])),
+                        dtype=float,
+                        count=3
+                    )
 
                     wrap(self._positions[i], self._dimensions)
 
-                # Clean up memory
                 del self._positions_old
                 del self._images
                 del self._thresholds
 
         # Preallocate arrays to hold number density data
         if not self._average:
-            self.results.times = self.step * self._dt * np.arange(self.n_frames)
+            self.results.times = (self.step * self._dt
+                                  * np.arange(self.n_frames))
         if not self._parallel:
+
+            # Create a persisting array to hold atom positions for a
+            # given frame so that it doesn't have to be recreated each
+            # frame
+            self._positions = np.empty((self._N, 3))
+
             shape = [self._n_groups]
             if not self._average:
                 shape.append(self.n_frames)
-            self.results.number_densities = [np.zeros((*shape, n)) 
+            self.results.number_densities = [np.zeros((*shape, n))
                                              for n in self._n_bins]
 
         # Store reference units
@@ -759,53 +766,52 @@ class DensityProfile(DynamicAnalysisBase):
 
     def _single_frame(self):
 
-        positions = np.empty((self._N, 3))
         for g, gr, s in zip(self._groups, self._groupings, self._slices):
-            positions[s] = (g.positions if gr == "atoms" 
-                            else center_of_mass(g, gr))
+            self._positions[s] = (g.positions if gr == "atoms"
+                                  else center_of_mass(g, gr))
 
         if self._recenter is not None:
-            unwrap(positions, self._positions_old, self._dimensions,
+            unwrap(self._positions, self._positions_old, self._dimensions,
                    thresholds=self._thresholds, images=self._images)
 
             # Calculate difference in center of mass and shift particle
             # positions by the difference
             scom = center_of_mass(
-                positions=positions[self._slices[self._recenter[0]]],
-                masses=getattr(self._groups[self._recenter[0]], 
+                positions=self._positions[self._slices[self._recenter[0]]],
+                masses=getattr(self._groups[self._recenter[0]],
                                self._groupings[self._recenter[0]]).masses
             )
-            positions -= np.fromiter(
+            self._positions -= np.fromiter(
                 (0 if np.isnan(cx) else sx - cx
                  for sx, cx in zip(scom, self._recenter[1])),
                 dtype=float,
                 count=3
             )
 
-        wrap(positions, self._dimensions)
+        wrap(self._positions, self._dimensions)
 
         # Compute and tally the bin counts for the current positions
         for i, (gr, s) in enumerate(zip(self._groupings, self._slices)):
             for a, (axis, n_bins) in enumerate(zip(self._axes, self._n_bins)):
                 if self._average:
                     self.results.number_densities[a][i] += np.histogram(
-                        positions[s, axis], n_bins, (0, self._dimensions[axis])
+                        self._positions[s, axis], n_bins, (0, self._dimensions[axis])
                     )[0]
                 else:
                     self.results.number_densities[a][i, self._frame_index] \
-                        = np.histogram(positions[s, axis], n_bins,
+                        = np.histogram(self._positions[s, axis], n_bins,
                                        (0, self._dimensions[axis]))[0]
-                    
+
     def _single_frame_parallel(
             self, frame: int, index: int) -> tuple[int, np.ndarray[float]]:
-        
+
         self._trajectory[frame]
         results = np.empty((len(self._axes), self._n_groups, self._n_bins[0]))
 
         if self._recenter is None:
             positions = np.empty((self._N, 3))
             for g, gr, s in zip(self._groups, self._groupings, self._slices):
-                positions[s] = (g.positions if gr == "atoms" 
+                positions[s] = (g.positions if gr == "atoms"
                                 else center_of_mass(g, gr))
             wrap(positions, self._dimensions)
         else:
@@ -813,23 +819,31 @@ class DensityProfile(DynamicAnalysisBase):
 
         # Compute and tally the bin counts for the current positions
         for i, (gr, s) in enumerate(zip(self._groupings, self._slices)):
-            for a, axis in enumerate(self._axes): 
+            for a, axis in enumerate(self._axes):
                 results[a, i] = np.histogram(
                     positions[s, axis], self._n_bins[0], (0, self._dimensions[axis])
                 )[0]
 
-        return (index, results)
+        return index, results
 
     def _conclude(self):
 
         # Consolidate parallel results
         if self._parallel:
+            if self._recenter is not None:
+                del self._positions
             self.results.number_densities = np.stack(
                 [r[1] for r in sorted(self._results)], axis=1
             )
             if self._average:
                 self.results.number_densities \
                     = self.results.number_densities.sum(axis=1)
+        else:
+            del self._positions
+            if self._recenter is not None:
+                del self._positions_old
+                del self._images
+                del self._thresholds
 
         V = np.prod(self._dimensions)
         for a in range(len(self._axes)):
@@ -929,7 +943,7 @@ class DensityProfile(DynamicAnalysisBase):
         index = np.where(self._axes == axis)[0][0]
 
         if sigma_q is not None:
-            sigma_q, unit_ = strip_unit(sigma_q, 
+            sigma_q, unit_ = strip_unit(sigma_q,
                                         "elementary_charge/angstrom**2")
             if self._reduced and not isinstance(unit_, str):
                 emsg = "'sigma_q' cannot have units when reduced=True."

@@ -457,7 +457,7 @@
 <span class="sd">       \left.\Psi\right\rvert_{z=0}&amp;=\Psi_0</span>
 
 <span class="sd">    The first BC is used to ensure that the electric field in the bulk</span>
-<span class="sd">    of the solution is zero, while the second BC is used to set the </span>
+<span class="sd">    of the solution is zero, while the second BC is used to set the</span>
 <span class="sd">    potential on the left electrode.</span>
 
 <span class="sd">    Poisson&#39;s equation can be evaluated by using the trapezoidal rule</span>
@@ -473,17 +473,17 @@
 <span class="sd">    resolve the potential profile.</span>
 
 <span class="sd">    Alternatively, Poisson&#39;s equation can be written as a system of</span>
-<span class="sd">    linear equations </span>
+<span class="sd">    linear equations</span>
 
 <span class="sd">    .. math::</span>
 
 <span class="sd">       A\mathbf{\Psi}=\mathbf{b}</span>
-<span class="sd">    </span>
+
 <span class="sd">    using second-order finite differences. :math:`A` is a tridiagonal</span>
 <span class="sd">    matrix and :math:`b` is a vector containing the charge density</span>
-<span class="sd">    profile, with boundary conditions applied in the first and last </span>
+<span class="sd">    profile, with boundary conditions applied in the first and last</span>
 <span class="sd">    rows.</span>
-<span class="sd">    </span>
+
 <span class="sd">    The inner equations are given by</span>
 
 <span class="sd">    .. math::</span>
@@ -497,7 +497,7 @@
 <span class="sd">    equations are given by</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">    </span>
+
 <span class="sd">       \Psi_0^{&#39;&#39;}&amp;=\frac{\Psi_{N-1}-2\Psi_0+\Psi_1}{h^2}</span>
 <span class="sd">       =-\frac{1}{\varepsilon_0\varepsilon_\mathrm{r}}\rho_{q,\,0}\\</span>
 <span class="sd">       \Psi_{N-1}^{&#39;&#39;}&amp;=\frac{\Psi_{N-2}-2\Psi_{N-1}+\Psi_0}{h^2}</span>
@@ -614,7 +614,7 @@
                    <span class="o">-</span> <span class="n">dielectric</span> <span class="o">*</span> <span class="n">dV</span> <span class="o">/</span> <span class="n">CONVERSION_FACTOR</span><span class="p">)</span> <span class="o">/</span> <span class="n">L</span>
 
     <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;integral&quot;</span><span class="p">:</span>
-        <span class="n">potential</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">cumulative_trapezoid</span><span class="p">(</span><span class="n">charge_density</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> 
+        <span class="n">potential</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">cumulative_trapezoid</span><span class="p">(</span><span class="n">charge_density</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span>
                                                    <span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">sigma_q</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -659,14 +659,14 @@
         <span class="n">h</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">bins</span><span class="p">),</span> <span class="n">h</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;bins&#39; must be uniformly spaced.&quot;</span><span class="p">)</span>
-        
+
         <span class="c1"># Set up matrix and load vector for second-order finite</span>
         <span class="c1"># difference method</span>
         <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">diags</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csc&quot;</span><span class="p">)</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">charge_density</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> 
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span>
                                   <span class="n">category</span><span class="o">=</span><span class="n">sparse</span><span class="o">.</span><span class="n">SparseEfficiencyWarning</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
                 <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
@@ -690,7 +690,7 @@
 <span class="k">class</span> <span class="nc">DensityProfile</span><span class="p">(</span><span class="n">DynamicAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Serial and parallel implementations to calculate the number and </span>
+<span class="sd">    Serial and parallel implementations to calculate the number and</span>
 <span class="sd">    charge density profiles :math:`\\rho_i(z)` and :math:`\\rho_q(z)` of</span>
 <span class="sd">    a system along the specified axes.</span>
 
@@ -735,7 +735,7 @@
 <span class="sd">           wrapped into the primary simulation cell. If you think your</span>
 <span class="sd">           system may have split bonds, use</span>
 <span class="sd">           :class:`MDAnalysis.transformations.wrap.unwrap` to unwrap</span>
-<span class="sd">           the trajectory before passing an :code:`AtomGroup` to this</span>
+<span class="sd">           the trajectory before passing any :code:`AtomGroup` to this</span>
 <span class="sd">           class.</span>
 
 <span class="sd">    groupings : `str` or array-like, default: :code:`&quot;atoms&quot;`</span>
@@ -824,7 +824,7 @@
 <span class="sd">        Constrains the center of mass of an atom group by adjusting the</span>
 <span class="sd">        particle coordinates every analysis frame. Either specify an</span>
 <span class="sd">        :class:`MDAnalysis.core.groups.AtomGroup`, its index within</span>
-<span class="sd">        `groups`, or a tuple containing an </span>
+<span class="sd">        `groups`, or a tuple containing an</span>
 <span class="sd">        :class:`MDAnalysis.core.groups.AtomGroup` or `int` and the fixed</span>
 <span class="sd">        center of mass coordinates, in that order. If the center of mass</span>
 <span class="sd">        is not specified, the center of the simulation box is used.</span>
@@ -836,7 +836,7 @@
 <span class="sd">        `results.number_densities`, `results.charge_densities`, etc.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the calculation is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -894,7 +894,7 @@
 <span class="sd">        direction if :code:`axes=&quot;yz&quot;`). Only available after running</span>
 <span class="sd">        :meth:`calculate_potential_profile`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{bins},)` for the potential </span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{bins},)` for the potential</span>
 <span class="sd">        profiles.</span>
 
 <span class="sd">        **Reference unit**: :math:`\\mathrm{V}`.</span>
@@ -1034,7 +1034,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span> <span class="o">=</span> <span class="p">(</span><span class="n">recenter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">recenter</span><span class="p">,</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">recenter</span><span class="p">),</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">recenter</span><span class="p">),</span>
                                   <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The specified AtomGroup in &#39;recenter&#39; is not &quot;</span>
@@ -1045,7 +1045,7 @@
                 <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">recenter</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> 
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                                       <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">recenter</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                     <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The specified AtomGroup in &#39;recenter&#39; is not &quot;</span>
@@ -1106,44 +1106,51 @@
                     <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
                                                  <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">))</span>
-                        <span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">],</span> 
-                               <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span> 
-                               <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
-                               <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
-                               <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
-                        
-                        <span class="c1"># Calculate difference in center of mass and</span>
-                        <span class="c1"># shift particle positions by the difference</span>
-                        <span class="n">scom</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span>
-                            <span class="n">positions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span>
-                                      <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]]],</span>
-                            <span class="n">masses</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> 
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-                            <span class="p">)</span><span class="o">.</span><span class="n">masses</span>
-                        <span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
-                            <span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span> <span class="k">else</span> <span class="n">sx</span> <span class="o">-</span> <span class="n">cx</span> 
-                             <span class="k">for</span> <span class="n">sx</span><span class="p">,</span> <span class="n">cx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">scom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> 
-                            <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> 
-                            <span class="n">count</span><span class="o">=</span><span class="mi">3</span>
-                        <span class="p">)</span>
+
+                    <span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
+                           <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
+                           <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
+
+                    <span class="c1"># Calculate difference in center of mass and</span>
+                    <span class="c1"># shift particle positions by the difference</span>
+                    <span class="n">scom</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span>
+                        <span class="n">positions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span>
+                                  <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]]],</span>
+                        <span class="n">masses</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">masses</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+                        <span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span> <span class="k">else</span> <span class="n">sx</span> <span class="o">-</span> <span class="n">cx</span>
+                         <span class="k">for</span> <span class="n">sx</span><span class="p">,</span> <span class="n">cx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">scom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
+                        <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+                        <span class="n">count</span><span class="o">=</span><span class="mi">3</span>
+                    <span class="p">)</span>
 
                     <span class="n">wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span>
 
-                <span class="c1"># Clean up memory</span>
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span>
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span>
 
         <span class="c1"># Preallocate arrays to hold number density data</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_average</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span>
+                                  <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
+
+            <span class="c1"># Create a persisting array to hold atom positions for a</span>
+            <span class="c1"># given frame so that it doesn&#39;t have to be recreated each</span>
+            <span class="c1"># frame</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
             <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_average</span><span class="p">:</span>
                 <span class="n">shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">number_densities</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">number_densities</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
                                              <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_bins</span><span class="p">]</span>
 
         <span class="c1"># Store reference units</span>
@@ -1162,53 +1169,52 @@
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
-            <span class="n">positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> 
-                            <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
+                                  <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">unwrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
+            <span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
                    <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
 
             <span class="c1"># Calculate difference in center of mass and shift particle</span>
             <span class="c1"># positions by the difference</span>
             <span class="n">scom</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span>
-                <span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]]],</span>
-                <span class="n">masses</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> 
+                <span class="n">positions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]]],</span>
+                <span class="n">masses</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
                                <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span><span class="o">.</span><span class="n">masses</span>
             <span class="p">)</span>
-            <span class="n">positions</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
                 <span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span> <span class="k">else</span> <span class="n">sx</span> <span class="o">-</span> <span class="n">cx</span>
                  <span class="k">for</span> <span class="n">sx</span><span class="p">,</span> <span class="n">cx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">scom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
                 <span class="n">count</span><span class="o">=</span><span class="mi">3</span>
             <span class="p">)</span>
 
-        <span class="n">wrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span>
+        <span class="n">wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span>
 
         <span class="c1"># Compute and tally the bin counts for the current positions</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_bins</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_average</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">number_densities</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
-                        <span class="n">positions</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="p">],</span> <span class="n">n_bins</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">[</span><span class="n">axis</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="p">],</span> <span class="n">n_bins</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">[</span><span class="n">axis</span><span class="p">])</span>
                     <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">number_densities</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> \
-                        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="p">],</span> <span class="n">n_bins</span><span class="p">,</span>
+                        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="p">],</span> <span class="n">n_bins</span><span class="p">,</span>
                                        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">[</span><span class="n">axis</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span>
-                    
+
     <span class="k">def</span> <span class="nf">_single_frame_parallel</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
-                <span class="n">positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> 
+                <span class="n">positions</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
                                 <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">))</span>
             <span class="n">wrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1216,23 +1222,31 @@
 
         <span class="c1"># Compute and tally the bin counts for the current positions</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">)):</span>
-            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">axis</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">):</span> 
+            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">axis</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">):</span>
                 <span class="n">results</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
                     <span class="n">positions</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">[</span><span class="n">axis</span><span class="p">])</span>
                 <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">index</span><span class="p">,</span> <span class="n">results</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># Consolidate parallel results</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">number_densities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
                 <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_average</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">number_densities</span> \
                     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">number_densities</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span>
 
         <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">)):</span>
@@ -1334,7 +1348,7 @@
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">==</span> <span class="n">axis</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">sigma_q</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">sigma_q</span><span class="p">,</span> <span class="n">unit_</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">sigma_q</span><span class="p">,</span> 
+            <span class="n">sigma_q</span><span class="p">,</span> <span class="n">unit_</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">sigma_q</span><span class="p">,</span>
                                         <span class="s2">&quot;elementary_charge/angstrom**2&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">emsg</span> <span class="o">=</span> <span class="s2">&quot;&#39;sigma_q&#39; cannot have units when reduced=True.&quot;</span>

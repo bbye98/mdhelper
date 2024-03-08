@@ -552,7 +552,7 @@
 <span class="sd">        Determines whether atom positions are unwrapped.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the analysis is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -703,7 +703,7 @@
 <span class="sd">        Determines whether atom positions are unwrapped.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the analysis is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -798,11 +798,12 @@
                     <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
                                                  <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">))</span>
-                        <span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">],</span>
-                               <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span>
-                               <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
-                               <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
-                               <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
+                        
+                    <span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
+                           <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
+                           <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
 
                 <span class="c1"># Clean up memory</span>
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span>
@@ -864,7 +865,7 @@
                 <span class="n">components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">index</span><span class="p">,</span> <span class="n">results</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -961,7 +962,7 @@
 <span class="sd">        Determines whether atom positions are unwrapped.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the analysis is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -1077,6 +1078,7 @@
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
+        <span class="c1"># TODO: Use contiguous NumPy array to store positions.</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">N_p</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span>
                                              <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">)):</span>
 
@@ -1095,7 +1097,7 @@
                     <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                 <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_single_frame_parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_single_frame_parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="k">pass</span> <span class="c1"># TODO: Implement.</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1119,8 +1121,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;acf&quot;</span><span class="p">):</span>
-            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Call Relaxation.run() before &quot;</span>
-                    <span class="s2">&quot;Relaxation.calculate_relaxation_time().&quot;</span><span class="p">)</span>
+            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Call EndToEndVector.run() before &quot;</span>
+                    <span class="s2">&quot;EndToEndVector.calculate_relaxation_time().&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">relaxation_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
@@ -1215,7 +1217,7 @@
 <span class="sd">        Determines whether atom positions are unwrapped.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the analysis is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>

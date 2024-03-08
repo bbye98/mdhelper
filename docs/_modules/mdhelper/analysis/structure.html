@@ -175,6 +175,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.wrap.html">wrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -205,8 +206,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.EndToEndVector.html">EndToEndVector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
 </li>
@@ -861,12 +862,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}\sum_{\alpha=1}^{N_i}</span>
-<span class="sd">       \sum_{\beta=1}^{N_j}\left\langle</span>
+<span class="sd">       g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}</span>
+<span class="sd">       \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle</span>
 <span class="sd">       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)</span>
-<span class="sd">       \right\rangle\\</span>
-<span class="sd">       g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}\sum_{\alpha=1}^{N_i}</span>
-<span class="sd">       \sum_{\beta=1}^{N_j}\left\langle</span>
+<span class="sd">       \right\rangle g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}</span>
+<span class="sd">       \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle</span>
 <span class="sd">       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)</span>
 <span class="sd">       \right\rangle</span>
 
@@ -1001,7 +1001,7 @@
 <span class="sd">           be negligible.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the calculation is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -1547,7 +1547,7 @@
 <span class="sd">        in a single pass.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the calculation is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -1852,11 +1852,9 @@
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Tally structure factors over all frames</span>
+        <span class="c1"># Consolidate parallel results</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="c1"># Free up memory used by the atom position array</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span>
 
@@ -1980,7 +1978,7 @@
 <span class="sd">        evaluate the auto- and cross-correlations.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the calculation is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -2197,7 +2195,7 @@
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Combine results from parallel runs</span>
+        <span class="c1"># Consolidate parallel results</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
             <span class="n">trig_sums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span>
             <span class="n">cos_sum</span> <span class="o">=</span> <span class="n">trig_sums</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>

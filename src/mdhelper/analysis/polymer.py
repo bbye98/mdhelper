@@ -145,7 +145,7 @@ class _PolymerAnalysisBase(DynamicAnalysisBase):
         Determines whether atom positions are unwrapped.
 
     parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the analysis is run in parallel.
+        Determines whether the analysis is performed in parallel.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -294,7 +294,7 @@ class Gyradius(_PolymerAnalysisBase):
         Determines whether atom positions are unwrapped.
 
     parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the analysis is run in parallel.
+        Determines whether the analysis is performed in parallel.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -389,11 +389,12 @@ class Gyradius(_PolymerAnalysisBase):
                     for g, gr, s in zip(self._groups, self._groupings, self._slices):
                         self._positions[i, s] = (g.positions if gr == "atoms"
                                                  else center_of_mass(g, gr))
-                        unwrap(self._positions[i, s],
-                               self._positions_old,
-                               self._dimensions,
-                               thresholds=self._thresholds,
-                               images=self._images)
+                        
+                    unwrap(self._positions[i],
+                           self._positions_old,
+                           self._dimensions,
+                           thresholds=self._thresholds,
+                           images=self._images)
 
                 # Clean up memory
                 del self._positions_old
@@ -455,7 +456,7 @@ class Gyradius(_PolymerAnalysisBase):
                 components=self._components
             )
 
-        return (index, results)
+        return index, results
 
     def _conclude(self) -> None:
 
@@ -549,7 +550,7 @@ class EndToEndVector(_PolymerAnalysisBase):
         Determines whether atom positions are unwrapped.
 
     parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the analysis is run in parallel.
+        Determines whether the analysis is performed in parallel.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -706,8 +707,8 @@ class EndToEndVector(_PolymerAnalysisBase):
         """
 
         if not hasattr(self.results, "acf"):
-            emsg = ("Call Relaxation.run() before "
-                    "Relaxation.calculate_relaxation_time().")
+            emsg = ("Call EndToEndVector.run() before "
+                    "EndToEndVector.calculate_relaxation_time().")
             raise RuntimeError(emsg)
 
         self.results.relaxation_times = np.empty(
@@ -798,7 +799,7 @@ class SingleChainStructureFactor(DynamicAnalysisBase):
         Determines whether atom positions are unwrapped.
 
     parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the analysis is run in parallel.
+        Determines whether the analysis is performed in parallel.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
