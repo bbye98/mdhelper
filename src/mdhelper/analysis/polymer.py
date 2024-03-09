@@ -749,7 +749,7 @@ class EndToEndVector(_PolymerAnalysisBase):
         _acf = correlation_fft if self._fft else correlation_shift
         for i, M in ProgressBar(enumerate(self._n_chains)):
             self.results.acf[i] = _acf(
-                (self._e2e / np.linalg.norm(self._e2e, axis=-1, keepdims=True))
+                (self._e2e)
                 .reshape(self._n_blocks, -1, M, 3),
                 average=True, vector=True
             )
