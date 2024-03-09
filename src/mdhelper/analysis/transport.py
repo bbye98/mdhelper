@@ -560,6 +560,14 @@ class Onsager(SerialAnalysisBase):
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
 
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to 
+           function correctly, unless your selected grouping is always
+           :code:`"atoms"`.
+
         .. container::
 
            **Valid values**:
@@ -924,11 +932,15 @@ class Onsager(SerialAnalysisBase):
             itertools.combinations_with_replacement(range(self._n_groups), 2)
         )
 
-        # Preallocate array(s) to store positions (and number of
-        # boundary crossings) for each AtomGroup
+        # Preallocate arrays to store positions and number of boundary
+        # crossings
         self._positions = np.empty((self.n_frames, self._N, 3))
         if self._unwrap:
-            self._trajectory[self.start]
+            self.universe.trajectory[
+                self._sliced_trajectory.frames[0]
+                if hasattr(self._sliced_trajectory, "frames")
+                else (self.start or 0)
+            ]
             self._positions_old = self.universe.atoms.positions
             self._images = np.zeros((self.universe.atoms.n_atoms, 3), dtype=int)
             self._thresholds = self._dimensions / 2

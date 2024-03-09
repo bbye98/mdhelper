@@ -61,7 +61,7 @@ def test_center_of_mass_mda():
     c, m, p = molecule.center_of_mass(
         universe.atoms,
         images=np.zeros((universe.atoms.n_atoms, 3), dtype=int),
-        dims=np.array((0, 0, 0), dtype=float),
+        dims=np.array((0, 0, 0)),
         raw=True
     )
     assert np.allclose(c, com)

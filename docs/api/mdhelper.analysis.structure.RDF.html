@@ -176,6 +176,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.topology.wrap.html">wrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -206,8 +207,8 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.EndToEndVector.html">EndToEndVector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
 </li>
@@ -409,14 +410,13 @@ and three-dimensional systems.</p>
 <p>The RDF is given by</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
-\[\begin{split}g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}\sum_{\alpha=1}^{N_i}
-\sum_{\beta=1}^{N_j}\left\langle
+\[g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}
+\sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle
 \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
-\right\rangle\\
-g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}\sum_{\alpha=1}^{N_i}
-\sum_{\beta=1}^{N_j}\left\langle
+\right\rangle g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}
+\sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle
 \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
-\right\rangle\end{split}\]</div>
+\right\rangle\]</div>
 </div>
 <p>where <span class="math notranslate nohighlight">\(V\)</span> and <span class="math notranslate nohighlight">\(A\)</span> are the system volume and area,
 <span class="math notranslate nohighlight">\(N_i\)</span> and <span class="math notranslate nohighlight">\(N_j\)</span> are the number of particles, and
@@ -502,6 +502,14 @@ radial histogram bins is returned.</p></li>
 <dt><strong>groupings</strong><span class="classifier"><cite>str</cite> or array-like, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code></span></dt><dd><p>Determines whether the centers of mass are used in lieu of
 individual atom positions. If <cite>groupings</cite> is a <cite>str</cite>, the same
 value is used for all <cite>groups</cite>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In a standard trajectory file, segments (or chains) contain
+residues (or molecules), and residues contain atoms. This
+heirarchy must be adhered to for this analysis module to
+function correctly, unless your selected grouping is always
+<code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code>.</p>
+</div>
 <div class="docutils container">
 <p><strong>Valid values</strong>:</p>
 <ul class="simple">
@@ -528,7 +536,7 @@ long trajectory with many particles, the difference should
 be negligible.</p>
 </div>
 </dd>
-<dt><strong>parallel</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Determines whether the calculation is run in parallel.</p>
+<dt><strong>parallel</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Determines whether the analysis is performed in parallel.</p>
 </dd>
 <dt><strong>verbose</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether detailed progress is shown.</p>
 </dd>

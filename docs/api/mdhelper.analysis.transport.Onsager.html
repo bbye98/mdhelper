@@ -207,8 +207,8 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.EndToEndVector.html">EndToEndVector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
 </li>
@@ -514,6 +514,14 @@ analogs) are calculated.</p>
 <dt><strong>groupings</strong><span class="classifier"><cite>str</cite> or array-like, default: <code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code></span></dt><dd><p>Determines whether the centers of mass are used in lieu of
 individual atom positions. If <cite>groupings</cite> is a <cite>str</cite>, the same
 value is used for all <cite>groups</cite>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In a standard trajectory file, segments (or chains) contain
+residues (or molecules), and residues contain atoms. This
+heirarchy must be adhered to for this analysis module to
+function correctly, unless your selected grouping is always
+<code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code>.</p>
+</div>
 <div class="docutils container">
 <p><strong>Valid values</strong>:</p>
 <ul class="simple">

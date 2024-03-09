@@ -447,12 +447,11 @@ class RDF(DynamicAnalysisBase):
 
     .. math::
 
-       g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}\sum_{\alpha=1}^{N_i}
-       \sum_{\beta=1}^{N_j}\left\langle
+       g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}
+       \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle
        \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
-       \right\rangle\\
-       g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}\sum_{\alpha=1}^{N_i}
-       \sum_{\beta=1}^{N_j}\left\langle
+       \right\rangle g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}
+       \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle
        \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
        \right\rangle
 
@@ -559,6 +558,14 @@ class RDF(DynamicAnalysisBase):
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
 
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to 
+           function correctly, unless your selected grouping is always
+           :code:`"atoms"`.
+
         .. container::
 
            **Valid values**:
@@ -587,7 +594,7 @@ class RDF(DynamicAnalysisBase):
            be negligible.
 
     parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the calculation is run in parallel.
+        Determines whether the analysis is performed in parallel.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -1024,11 +1031,11 @@ class StructureFactor(DynamicAnalysisBase):
 
     .. math::
 
-        S(\\mathbf{q})&=\\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N
-        \exp{[-i\\mathbf{q}\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\
-        &=\\frac{1}{N}\left\langle\left[
-        \sum_{j=1}^N\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2+\left[
-        \sum_{j=1}^N\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2\\right\\rangle
+        S(\\mathbf{q})&=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N\\sum_{k=1}^N
+        \\exp{[-i\\mathbf{q}\\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\
+        &=\\frac{1}{N}\\left\\langle\\left[
+        \\sum_{j=1}^N\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2+\\left[
+        \\sum_{j=1}^N\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2\\right\\rangle
 
     where :math:`N` is the number of particles, :math:`\\mathbf{q}` is
     the scattering wavevector, and :math:`\\mathbf{r}_i` is the position
@@ -1039,11 +1046,11 @@ class StructureFactor(DynamicAnalysisBase):
 
     .. math::
 
-       S_{\\alpha\\beta}(\\mathbf{q})=\\frac{1}{\sqrt{N_\\alpha N_\\beta}}
-       \left\langle\sum_{j=1}^{N_\\alpha}\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}
-       \sum_{k=1}^{N_\\beta}\cos{(\\mathbf{q}\cdot\\mathbf{r}_k)}
-       +\sum_{j=1}^{N_\\alpha}\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}
-       \sum_{k=1}^{N_\\beta}\sin{(\\mathbf{q}\cdot\\mathbf{r}_k)}\\right\\rangle
+       S_{\\alpha\\beta}(\\mathbf{q})=\\frac{1}{\\sqrt{N_\\alpha N_\\beta}}
+       \\left\\langle\\sum_{j=1}^{N_\\alpha}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
+       \\sum_{k=1}^{N_\\beta}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_k)}
+       +\\sum_{j=1}^{N_\\alpha}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
+       \\sum_{k=1}^{N_\\beta}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_k)}\\right\\rangle
 
     where :math:`N_\\alpha` and :math:`N_\\beta` are the numbers of
     particles for species :math:`\\alpha` and :math:`\\beta`.
@@ -1060,6 +1067,14 @@ class StructureFactor(DynamicAnalysisBase):
         Determines whether the centers of mass are used in lieu of
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
+
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to 
+           function correctly, unless your selected grouping is always
+           :code:`"atoms"`.
 
         .. container::
 
@@ -1121,7 +1136,7 @@ class StructureFactor(DynamicAnalysisBase):
         in a single pass.
 
     parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the calculation is run in parallel.
+        Determines whether the analysis is performed in parallel.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -1155,8 +1170,8 @@ class StructureFactor(DynamicAnalysisBase):
         Static structure factor :math:`S(q)` or partial structure
         factor(s) :math:`S_{\\alpha\\beta}(q)`.
 
-        **Shape**: :math:`(N_\\mathrm{w},)`, :math:`(1,\,N_\\mathrm{w})`,
-        or :math:`(C(N_\\mathrm{g}+1,\,2),\,N_\\mathrm{w})`.
+        **Shape**: :math:`(N_\\mathrm{w},)`, :math:`(1,\\,N_\\mathrm{w})`,
+        or :math:`(C(N_\\mathrm{g}+1,\\,2),\\,N_\\mathrm{w})`.
     """
 
     def __init__(
@@ -1426,11 +1441,9 @@ class StructureFactor(DynamicAnalysisBase):
 
     def _conclude(self) -> None:
 
-        # Tally structure factors over all frames
+        # Consolidate parallel results
         if self._parallel:
             self.results.ssf = np.vstack(self._results).sum(axis=0)
-
-        # Free up memory used by the atom position array
         else:
             del self._positions
 
@@ -1471,8 +1484,8 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
 
     .. math::
 
-        F_\\mathrm{s}(\\mathbf{q},t)=\\frac{1}{N}\left\langle\sum_{j=1}^N
-        \exp\left[i\\mathbf{q}\cdot\left(\\mathbf{r}_j(t_0+t)
+        F_\\mathrm{s}(\\mathbf{q},t)=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N
+        \\exp\\left[i\\mathbf{q}\\cdot\\left(\\mathbf{r}_j(t_0+t)
         -\\mathbf{r}_j(t_0)\\right)\\right]\\right\\rangle
 
     where :math:`N` is the number of particles, :math:`\\mathbf{q}` is
@@ -1483,7 +1496,7 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
     .. note::
 
        The simulation must have been run with a constant timestep
-       :math:`\Delta t` and the frames to be analyzed must be evenly
+       :math:`\\Delta t` and the frames to be analyzed must be evenly
        spaced and proceed forward in time for this analysis module to
        function correctly.
 
@@ -1497,6 +1510,14 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
         Determines whether the centers of mass are used in lieu of
         individual atom positions. If `groupings` is a `str`, the same
         value is used for all `groups`.
+
+        .. note::
+
+           In a standard trajectory file, segments (or chains) contain
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to 
+           function correctly, unless your selected grouping is always
+           :code:`"atoms"`.
 
         .. container::
 
@@ -1551,7 +1572,7 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
         evaluate the auto- and cross-correlations.
 
     parallel : `bool`, keyword-only, default: :code:`False`
-        Determines whether the calculation is run in parallel.
+        Determines whether the analysis is performed in parallel.
 
     verbose : `bool`, keyword-only, default: :code:`True`
         Determines whether detailed progress is shown.
@@ -1589,7 +1610,7 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
         Incoherent (self) intermediate scattering function
         :math:`F_\\mathrm{s}(q,\\,t)`.
 
-        **Shape**: :math:`(N_\\mathrm{t},\,N_\\mathrm{w})`.
+        **Shape**: :math:`(N_\\mathrm{t},\\,N_\\mathrm{w})`.
     """
 
     def __init__(
@@ -1768,7 +1789,7 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
 
     def _conclude(self) -> None:
 
-        # Combine results from parallel runs
+        # Consolidate parallel results
         if self._parallel:
             trig_sums = np.stack(self._results)
             cos_sum = trig_sums[:, 0]

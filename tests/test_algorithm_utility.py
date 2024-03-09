@@ -18,7 +18,7 @@ def test_func_closest_factors():
 
     # TEST CASE 2: Three closest factors in ascending order
     factors = utility.get_closest_factors(35904, 3)
-    assert factors.tolist() == [32, 33, 34] 
+    assert factors.tolist() == [32, 33, 34]
 
     # TEST CASE 3: Four closest factors in descending order
     factors = utility.get_closest_factors(73440, 4, reverse=True)
@@ -29,8 +29,7 @@ def test_func_replicate():
     # TEST CASE 1: Replicate two vectors
     dims = rng.integers(1, 5, size=3)
     n_cells = rng.integers(2, 10, size=3)
-    pos = utility.replicate(dims, np.array(((0, 0, 0), dims // 2), dtype=float),
-                            n_cells)
+    pos = utility.replicate(dims, np.array(((0, 0, 0), dims // 2)), n_cells)
     assert pos.shape[0] == 2 * n_cells.prod()
     assert np.allclose(pos[2], (dims[0], 0, 0))
 
@@ -42,9 +41,9 @@ def test_func_rebin():
     assert np.allclose(utility.rebin(arr), ref)
 
     # TEST CASE 2: Rebin 2D array
-    assert np.allclose(utility.rebin(np.tile(arr[None, :], (5, 1))), 
+    assert np.allclose(utility.rebin(np.tile(arr[None, :], (5, 1))),
                        np.tile(ref[None, :], (5, 1)))
-    
+
 def test_func_strip_unit():
 
     # TEST CASE 1: Strip unit from non-Quantity
@@ -72,15 +71,15 @@ def test_func_strip_unit():
            == (g_, unit.foot / unit.second ** 2)
     assert utility.strip_unit(g, unit.foot / unit.second ** 2) \
            == (g_, unit.foot / unit.second ** 2)
-    
+
     # TEST CASE 4: Strip unit from Quantity with incompatible unit specified
     R_ = 8.31446261815324
     R__ = 8.205736608095969e-05
     assert utility.strip_unit(
-        R__ * ureg.meter ** 3 * ureg.atmosphere / (ureg.kelvin * ureg.mole), 
+        R__ * ureg.meter ** 3 * ureg.atmosphere / (ureg.kelvin * ureg.mole),
         unit.joule / (unit.kelvin * unit.mole)
-    ) == (R_, ureg.joule / (ureg.kelvin * ureg.mole))
-    assert utility.strip_unit(
-        R__ * unit.meter ** 3 * unit.atmosphere / (unit.kelvin * unit.mole), 
-        ureg.joule / (ureg.kelvin * ureg.mole)
     ) == (R_, unit.joule / (unit.kelvin * unit.mole))
+    assert utility.strip_unit(
+        R__ * unit.meter ** 3 * unit.atmosphere / (unit.kelvin * unit.mole),
+        ureg.joule / (ureg.kelvin * ureg.mole)
+    ) == (R_, ureg.joule / (ureg.kelvin * ureg.mole))

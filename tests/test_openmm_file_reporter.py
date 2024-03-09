@@ -33,7 +33,7 @@ def test_classes_netcdffile_netcdfreporter():
         "mass": mass
     })
 
-    dims = 10 * size * np.ones(3, dtype=float)
+    dims = 10 * size * np.ones(3)
     dims_nd = [L / unit.nanometer for L in dims]
     system = openmm.System()
     system.setDefaultPeriodicBoxVectors(
@@ -102,7 +102,7 @@ def test_classes_netcdffile_netcdfreporter():
     cell_lengths, cell_angles = ncdf.get_dimensions(0)
     assert ncdf._nc.program in ("MDHelper", b"MDHelper")
     assert np.allclose(cell_lengths, dims)
-    assert np.allclose(cell_angles, 90 * np.ones(3, dtype=float))
+    assert np.allclose(cell_angles, 90 * np.ones(3))
     assert np.allclose(
         ncdf.get_positions(0) - ncdf.get_times(0) * ncdf.get_velocities(0),
         dims / 2,

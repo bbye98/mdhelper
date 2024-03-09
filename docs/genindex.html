@@ -205,8 +205,8 @@
 <li class="toctree-l4"><a class="reference internal" href="api/mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/mdhelper.analysis.polymer.EndToEndVector.html">EndToEndVector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
 </li>
@@ -464,7 +464,7 @@
         <li><a href="api/mdhelper.analysis.polymer.calculate_relaxation_time.html#mdhelper.analysis.polymer.calculate_relaxation_time">calculate_relaxation_time() (in module mdhelper.analysis.polymer)</a>
 
         <ul>
-          <li><a href="api/mdhelper.analysis.polymer.Relaxation.html#mdhelper.analysis.polymer.Relaxation.calculate_relaxation_time">(mdhelper.analysis.polymer.Relaxation method)</a>
+          <li><a href="api/mdhelper.analysis.polymer.EndToEndVector.html#mdhelper.analysis.polymer.EndToEndVector.calculate_relaxation_time">(mdhelper.analysis.polymer.EndToEndVector method)</a>
 </li>
         </ul></li>
         <li><a href="api/mdhelper.analysis.structure.calculate_structure_factor.html#mdhelper.analysis.structure.calculate_structure_factor">calculate_structure_factor() (in module mdhelper.analysis.structure)</a>
@@ -543,12 +543,14 @@
   <h2>E</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/mdhelper.openmm.system.estimate_pressure_tensor.html#mdhelper.openmm.system.estimate_pressure_tensor">estimate_pressure_tensor() (in module mdhelper.openmm.system)</a>
+        <li><a href="api/mdhelper.analysis.polymer.EndToEndVector.html#mdhelper.analysis.polymer.EndToEndVector">EndToEndVector (class in mdhelper.analysis.polymer)</a>
 </li>
-        <li><a href="api/mdhelper.fit.exponential.exp.html#mdhelper.fit.exponential.exp">exp() (in module mdhelper.fit.exponential)</a>
+        <li><a href="api/mdhelper.openmm.system.estimate_pressure_tensor.html#mdhelper.openmm.system.estimate_pressure_tensor">estimate_pressure_tensor() (in module mdhelper.openmm.system)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/mdhelper.fit.exponential.exp.html#mdhelper.fit.exponential.exp">exp() (in module mdhelper.fit.exponential)</a>
+</li>
         <li><a href="api/mdhelper.fit.exponential.exp1.html#mdhelper.fit.exponential.exp1">exp1() (in module mdhelper.fit.exponential)</a>
 </li>
         <li><a href="api/mdhelper.fit.exponential.exp2.html#mdhelper.fit.exponential.exp2">exp2() (in module mdhelper.fit.exponential)</a>
@@ -1113,8 +1115,6 @@
 </li>
         <li><a href="api/mdhelper.openmm.system.register_particles.html#mdhelper.openmm.system.register_particles">register_particles() (in module mdhelper.openmm.system)</a>
 </li>
-        <li><a href="api/mdhelper.analysis.polymer.Relaxation.html#mdhelper.analysis.polymer.Relaxation">Relaxation (class in mdhelper.analysis.polymer)</a>
-</li>
         <li><a href="api/mdhelper.algorithm.utility.replicate.html#mdhelper.algorithm.utility.replicate">replicate() (in module mdhelper.algorithm.utility)</a>
 </li>
         <li><a href="api/mdhelper.openmm.reporter.NetCDFReporter.html#mdhelper.openmm.reporter.NetCDFReporter.report">report() (mdhelper.openmm.reporter.NetCDFReporter method)</a>
@@ -1128,9 +1128,9 @@
 </li>
           <li><a href="api/mdhelper.analysis.electrostatics.DipoleMoment.html#mdhelper.analysis.electrostatics.DipoleMoment.run">(mdhelper.analysis.electrostatics.DipoleMoment method)</a>
 </li>
-          <li><a href="api/mdhelper.analysis.polymer.Gyradius.html#mdhelper.analysis.polymer.Gyradius.run">(mdhelper.analysis.polymer.Gyradius method)</a>
+          <li><a href="api/mdhelper.analysis.polymer.EndToEndVector.html#mdhelper.analysis.polymer.EndToEndVector.run">(mdhelper.analysis.polymer.EndToEndVector method)</a>
 </li>
-          <li><a href="api/mdhelper.analysis.polymer.Relaxation.html#mdhelper.analysis.polymer.Relaxation.run">(mdhelper.analysis.polymer.Relaxation method)</a>
+          <li><a href="api/mdhelper.analysis.polymer.Gyradius.html#mdhelper.analysis.polymer.Gyradius.run">(mdhelper.analysis.polymer.Gyradius method)</a>
 </li>
           <li><a href="api/mdhelper.analysis.polymer.SingleChainStructureFactor.html#mdhelper.analysis.polymer.SingleChainStructureFactor.run">(mdhelper.analysis.polymer.SingleChainStructureFactor method)</a>
 </li>
@@ -1164,9 +1164,9 @@
 </li>
           <li><a href="api/mdhelper.analysis.electrostatics.DipoleMoment.html#mdhelper.analysis.electrostatics.DipoleMoment.save">(mdhelper.analysis.electrostatics.DipoleMoment method)</a>
 </li>
-          <li><a href="api/mdhelper.analysis.polymer.Gyradius.html#mdhelper.analysis.polymer.Gyradius.save">(mdhelper.analysis.polymer.Gyradius method)</a>
+          <li><a href="api/mdhelper.analysis.polymer.EndToEndVector.html#mdhelper.analysis.polymer.EndToEndVector.save">(mdhelper.analysis.polymer.EndToEndVector method)</a>
 </li>
-          <li><a href="api/mdhelper.analysis.polymer.Relaxation.html#mdhelper.analysis.polymer.Relaxation.save">(mdhelper.analysis.polymer.Relaxation method)</a>
+          <li><a href="api/mdhelper.analysis.polymer.Gyradius.html#mdhelper.analysis.polymer.Gyradius.save">(mdhelper.analysis.polymer.Gyradius method)</a>
 </li>
           <li><a href="api/mdhelper.analysis.polymer.SingleChainStructureFactor.html#mdhelper.analysis.polymer.SingleChainStructureFactor.save">(mdhelper.analysis.polymer.SingleChainStructureFactor method)</a>
 </li>

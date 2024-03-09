@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   <div class="sidebar-logo-container">
-    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+    <img class="sidebar-logo" src="../../../_static/logo.png" alt="Logo"/>
   </div>
   
   
@@ -175,6 +175,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.wrap.html">wrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -191,6 +192,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.Hash.html">Hash</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html">ParallelAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html">SerialAnalysisBase</a></li>
 </ul>
@@ -204,8 +206,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.EndToEndVector.html">EndToEndVector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
 </li>
@@ -411,7 +413,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span><span class="p">,</span> <span class="n">special</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">SerialAnalysisBase</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">DynamicAnalysisBase</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">FOUND_OPENMM</span><span class="p">,</span> <span class="n">Q_</span><span class="p">,</span> <span class="n">ureg</span>
 <span class="kn">from</span> <span class="nn">..algorithm</span> <span class="kn">import</span> <span class="n">correlation</span>
 <span class="kn">from</span> <span class="nn">..algorithm.molecule</span> <span class="kn">import</span> <span class="n">center_of_mass</span><span class="p">,</span> <span class="n">radius_of_gyration</span>
@@ -511,7 +513,7 @@
     <span class="k">return</span> <span class="n">tau_r</span> <span class="o">*</span> <span class="n">time</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">special</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<span class="k">class</span> <span class="nc">_PolymerAnalysisBase</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_PolymerAnalysisBase</span><span class="p">(</span><span class="n">DynamicAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An analysis base object for polymer systems.</span>
@@ -526,6 +528,16 @@
 <span class="sd">        Determines whether the centers of mass are used in lieu of</span>
 <span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
 <span class="sd">        value is used for all `groups`.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
+<span class="sd">           residues (or molecules), and residues contain atoms. This </span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           function correctly. If your trajectory file does not contain</span>
+<span class="sd">           the correct segment or residue information, provide the </span>
+<span class="sd">           number of chains and chain lengths in `n_chains` and </span>
+<span class="sd">           `n_monomers`, respectively.</span>
 
 <span class="sd">        .. container::</span>
 
@@ -549,6 +561,9 @@
 <span class="sd">    unwrap : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Determines whether atom positions are unwrapped.</span>
 
+<span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
+
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
 
@@ -561,20 +576,6 @@
 <span class="sd">    universe : `MDAnalysis.Universe`</span>
 <span class="sd">        :class:`MDAnalysis.core.universe.Universe` object containing all</span>
 <span class="sd">        information describing the system.</span>
-
-<span class="sd">    results.units : `dict`</span>
-<span class="sd">        Reference units for the results. For example, to get the</span>
-<span class="sd">        reference units for :code:`results.times`, call</span>
-<span class="sd">        :code:`results.units[&quot;results.times&quot;]`.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    In a standard trajectory file, segments (or chains) contain</span>
-<span class="sd">    residues, and residues contain atoms. This heirarchy must be adhered</span>
-<span class="sd">    to for this analysis module to function correctly. If your</span>
-<span class="sd">    trajectory file does not contain the correct segment or residue</span>
-<span class="sd">    information, provide the number of chains and chain lengths in</span>
-<span class="sd">    `n_chains` and `n_monomers`, respectively.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -582,42 +583,46 @@
             <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span>
             <span class="n">n_chains</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">n_monomers</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">parallel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">)</span> <span class="k">else</span> <span class="n">groups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groupings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">groupings</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">}:</span>
-                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">groupings</span><span class="si">}</span><span class="s2">&#39;. The options are &quot;</span>
-                        <span class="s2">&quot;&#39;atoms&#39; and &#39;residues&#39;.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">groupings</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">GROUPINGS</span> <span class="o">:=</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">}):</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">groupings</span><span class="si">}</span><span class="s2">&#39;. Valid values: &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">GROUPINGS</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">*</span> <span class="p">[</span><span class="n">groupings</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">groupings</span><span class="p">):</span>
-                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The number of grouping values is not equal to the &quot;</span>
-                        <span class="s2">&quot;number of groups.&quot;</span><span class="p">)</span>
+                <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The number of grouping values is not equal to &quot;</span>
+                        <span class="s2">&quot;the number of groups.&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groupings</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">g</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">}:</span>
-                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&#39;. The options are &quot;</span>
-                            <span class="s2">&quot;&#39;atoms&#39; and &#39;residues&#39;.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">g</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">GROUPINGS</span> <span class="o">:=</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">}):</span>
+                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&#39;. Valid values: &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">GROUPINGS</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span> <span class="o">=</span> <span class="n">groupings</span>
 
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="s2">&quot;segments&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_chains</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">n_monomers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">n_segments</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_chains</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_chains</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span> <span class="o">=</span> <span class="n">n_chains</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_chains</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span> <span class="o">=</span> <span class="n">n_chains</span>
@@ -625,7 +630,7 @@
                 <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The number of polymer counts is not equal to the &quot;</span>
                         <span class="s2">&quot;number of groups.&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_monomers</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_monomers</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span> <span class="o">=</span> <span class="n">n_monomers</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_monomers</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_monomers</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span> <span class="o">=</span> <span class="n">n_monomers</span>
@@ -637,15 +642,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span> <span class="o">=</span> <span class="n">unwrap</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_dimensions&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span><span class="p">}</span>
-
 <div class="viewcode-block" id="Gyradius">
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.polymer.Gyradius.html#mdhelper.analysis.polymer.Gyradius">[docs]</a>
 <span class="k">class</span> <span class="nc">Gyradius</span><span class="p">(</span><span class="n">_PolymerAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A serial implementation to calculate the radius of gyration</span>
-<span class="sd">    :math:`R_\mathrm{g}` of a polymer.</span>
+<span class="sd">    Serial and parallel implementations to calculate the radius of</span>
+<span class="sd">    gyration :math:`R_\mathrm{g}` of a polymer.</span>
 
 <span class="sd">    The radius of gyration is used to describe the dimensions of a</span>
 <span class="sd">    polymer chain, and is defined as</span>
@@ -670,6 +673,16 @@
 <span class="sd">        Determines whether the centers of mass are used in lieu of</span>
 <span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
 <span class="sd">        value is used for all `groups`.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
+<span class="sd">           residues (or molecules), and residues contain atoms. This </span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           function correctly. If your trajectory file does not contain</span>
+<span class="sd">           the correct segment or residue information, provide the </span>
+<span class="sd">           number of chains and chain lengths in `n_chains` and </span>
+<span class="sd">           `n_monomers`, respectively.</span>
 
 <span class="sd">        .. container::</span>
 
@@ -696,6 +709,9 @@
 
 <span class="sd">    unwrap : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Determines whether atom positions are unwrapped.</span>
+
+<span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -724,15 +740,6 @@
 <span class="sd">        (:code:`components=True`).</span>
 
 <span class="sd">        **Reference unit**: :math:`\textrm{Å}`.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    In a standard trajectory file, segments (or chains) contain</span>
-<span class="sd">    residues, and residues contain atoms. This heirarchy must be adhered</span>
-<span class="sd">    to for this analysis module to function correctly. If your</span>
-<span class="sd">    trajectory file does not contain the correct segment or residue</span>
-<span class="sd">    information, provide the number of chains and chain lengths in</span>
-<span class="sd">    `n_chains` and `n_monomers`, respectively.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -741,71 +748,168 @@
             <span class="n">n_chains</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">n_monomers</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
             <span class="n">components</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">parallel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">groupings</span><span class="p">,</span> <span class="n">n_chains</span><span class="p">,</span> <span class="n">n_monomers</span><span class="p">,</span>
-                         <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                         <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Determine the number of particles in each group and their</span>
+        <span class="c1"># corresponding indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">M</span> <span class="o">*</span> <span class="n">N_p</span> <span class="k">for</span> <span class="n">M</span><span class="p">,</span> <span class="n">N_p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">)),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+            <span class="n">count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="n">N</span><span class="p">))</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="n">N</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_components</span> <span class="o">=</span> <span class="n">components</span>
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Unwrap particle positions if necessary</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">)</span>
                 <span class="k">else</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
             <span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">M</span> <span class="o">*</span> <span class="n">N_p</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-                                   <span class="k">for</span> <span class="n">M</span><span class="p">,</span> <span class="n">N_p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span>
-                                                     <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">)]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">)):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
-                                          <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-                            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">]</span>
+
+            <span class="c1"># Preallocate arrays to store number of boundary crossings for</span>
+            <span class="c1"># each particle</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N_p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="ow">and</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;residues&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
+                        <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span>
+                            <span class="n">positions</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                            <span class="n">masses</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">/</span> <span class="mi">2</span>
 
-        <span class="c1"># Preallocate arrays to store results</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span>
-                 <span class="k">else</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">gyradii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+            <span class="c1"># Store unwrapped particle positions in a shared memory array</span>
+            <span class="c1"># for parallel analysis</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span>
+                        <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">)</span>
+                        <span class="k">else</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+                    <span class="p">]):</span>
+                    <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="ow">and</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;residues&quot;</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
+                                <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span>
+                                    <span class="n">positions</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                                    <span class="n">masses</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
 
-        <span class="c1"># Store reference units</span>
+                    <span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
+                           <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
+
+                <span class="c1"># Clean up memory</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">:</span>
+                <span class="n">shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">gyradii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;results.gyradii&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
                 <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">)):</span>
-
-            <span class="c1"># Store atom or center-of-mass positions in the current frame</span>
-            <span class="n">positions</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
-
-            <span class="c1"># Unwrap particle positions if necessary</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
-                <span class="n">unwrap</span><span class="p">(</span>
-                    <span class="n">positions</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
-                    <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
-                    <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">)</span>
+            <span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="ow">and</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;residues&quot;</span><span class="p">:</span>
+                <span class="n">positions</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
+                    <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span>
+                        <span class="n">positions</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                        <span class="n">masses</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="p">)</span>
                 <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
+                <span class="n">unwrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
+                       <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
 
-            <span class="c1"># Calculate radius of gyration</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">gyradii</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> \
                 <span class="o">=</span> <span class="n">radius_of_gyration</span><span class="p">(</span>
                     <span class="n">grouping</span><span class="o">=</span><span class="s2">&quot;segments&quot;</span><span class="p">,</span>
                     <span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
                     <span class="n">masses</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">)),</span>
                     <span class="n">components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span>
-                <span class="p">)</span></div>
+                <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame_parallel</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">:</span>
+            <span class="n">shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">)</span>
+            <span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
+                <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="ow">and</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;residues&quot;</span><span class="p">:</span>
+                <span class="n">positions</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
+                    <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span>
+                        <span class="n">positions</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                        <span class="n">masses</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">radius_of_gyration</span><span class="p">(</span>
+                <span class="n">grouping</span><span class="o">=</span><span class="s2">&quot;segments&quot;</span><span class="p">,</span>
+                <span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+                <span class="n">masses</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">)),</span>
+                <span class="n">components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">index</span><span class="p">,</span> <span class="n">results</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># Consolidate parallel results</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">gyradii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+            <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Relaxation">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.polymer.Relaxation.html#mdhelper.analysis.polymer.Relaxation">[docs]</a>
-<span class="k">class</span> <span class="nc">Relaxation</span><span class="p">(</span><span class="n">_PolymerAnalysisBase</span><span class="p">):</span>
+<div class="viewcode-block" id="EndToEndVector">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.polymer.EndToEndVector.html#mdhelper.analysis.polymer.EndToEndVector">[docs]</a>
+<span class="k">class</span> <span class="nc">EndToEndVector</span><span class="p">(</span><span class="n">_PolymerAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A serial implementation to calculate the end-to-end vector</span>
@@ -849,6 +953,16 @@
 <span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
 <span class="sd">        value is used for all `groups`.</span>
 
+<span class="sd">        .. note::</span>
+
+<span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
+<span class="sd">           residues (or molecules), and residues contain atoms. This </span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           function correctly. If your trajectory file does not contain</span>
+<span class="sd">           the correct segment or residue information, provide the </span>
+<span class="sd">           number of chains and chain lengths in `n_chains` and </span>
+<span class="sd">           `n_monomers`, respectively.</span>
+
 <span class="sd">        .. container::</span>
 
 <span class="sd">           **Valid values**:</span>
@@ -871,10 +985,6 @@
 <span class="sd">    n_blocks : `int`, keyword-only, default: :code:`1`</span>
 <span class="sd">        Number of blocks to split the trajectory into.</span>
 
-<span class="sd">    fft : `bool`, keyword-only, default: :code:`True`</span>
-<span class="sd">        Determines whether fast Fourier transforms (FFT) are used to</span>
-<span class="sd">        evaluate the ACFs.</span>
-
 <span class="sd">    dt : `float` or `openmm.unit.Quantity`, keyword-only, optional</span>
 <span class="sd">        Time between frames :math:`\Delta t`. While this is normally</span>
 <span class="sd">        determined from the trajectory, the trajectory may not have the</span>
@@ -884,6 +994,10 @@
 <span class="sd">        :math:`\Delta t=100`.</span>
 
 <span class="sd">        **Reference unit**: :math:`\mathrm{ps}`.</span>
+
+<span class="sd">    fft : `bool`, keyword-only, default: :code:`True`</span>
+<span class="sd">        Determines whether fast Fourier transforms (FFT) are used to</span>
+<span class="sd">        evaluate the ACFs.</span>
 
 <span class="sd">    unwrap : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Determines whether atom positions are unwrapped.</span>
@@ -941,15 +1055,26 @@
             <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span>
             <span class="n">n_chains</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">n_monomers</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_blocks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="n">fft</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">dt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fft</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># Disable parallel support for this analysis class</span>
+        <span class="k">if</span> <span class="s2">&quot;parallel&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;parallel&quot;</span><span class="p">]</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">groupings</span><span class="p">,</span> <span class="n">n_chains</span><span class="p">,</span> <span class="n">n_monomers</span><span class="p">,</span>
                          <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_N_chains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="n">N</span><span class="p">))</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="n">N</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span> <span class="o">=</span> <span class="n">n_blocks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">dt</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span> <span class="s2">&quot;picosecond&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fft</span> <span class="o">=</span> <span class="n">fft</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">dt</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span> <span class="s2">&quot;picosecond&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -967,70 +1092,82 @@
                     <span class="s2">&quot;blocks.&quot;</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
 
-        <span class="c1"># Preallocate array(s) to store positions of first and last</span>
-        <span class="c1"># monomers of each polymer chain (and number of boundary</span>
-        <span class="c1"># crossings)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_positions_end</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-                               <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">]</span>
-
-        <span class="c1"># Unwrap particle positions if necessary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_e2e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N_chains</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">)</span>
                 <span class="k">else</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
             <span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_positions_end_prev</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> 
-                                        <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">N_p</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span>
-                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">)):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_positions_end_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="mi">3</span><span class="p">)[:,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-                            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_end_prev</span><span class="p">]</span>
+
+            <span class="c1"># Preallocate arrays to store number of boundary crossings for</span>
+            <span class="c1"># the first and last monomer in each chain</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_positions_end_old</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N_chains</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N_p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="ow">and</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;residues&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions_end_old</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">residues</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">)</span>
+                         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">segments</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">positions</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)[:,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions_end_old</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">positions</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
+                        <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span>
+                            <span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="p">,</span>
+                            <span class="n">masses</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[:,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N_chains</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">/</span> <span class="mi">2</span>
 
-        <span class="c1"># Preallocate arrays to store results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">//</span>
                                                               <span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">acf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames_block</span><span class="p">)</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;results.times&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picosecond</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">N_p</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span>
-                                             <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">)):</span>
-
-            <span class="c1"># Store atom or center-of-mass positions in the current frame</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_positions_end</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="mi">3</span><span class="p">)[:,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
-
-            <span class="c1"># Unwrap particle positions if necessary</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
-                <span class="n">unwrap</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions_end</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">],</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions_end_prev</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
-                    <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
-                    <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N_p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="ow">and</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;residues&quot;</span><span class="p">:</span>
+                <span class="n">positions_end</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                    <span class="n">center_of_mass</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">residues</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">segments</span>
                 <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">positions_end</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)[:,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+                <span class="n">positions_end</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">positions_end</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
+                    <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span>
+                        <span class="n">positions</span><span class="o">=</span><span class="n">positions_end</span><span class="p">,</span>
+                        <span class="n">masses</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N_p</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[:,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
+                <span class="n">unwrap</span><span class="p">(</span><span class="n">positions_end</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_end_old</span><span class="p">[</span><span class="n">s</span><span class="p">],</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
+                       <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_e2e</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> \
+                <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">positions_end</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Compute the end-to-end vector autocorrelation function</span>
         <span class="n">_acf</span> <span class="o">=</span> <span class="n">correlation_fft</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fft</span> <span class="k">else</span> <span class="n">correlation_shift</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">M</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">)):</span>
-            <span class="n">e2e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions_end</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">acf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_acf</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">e2e</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">e2e</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-                <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_e2e</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_e2e</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                <span class="n">average</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">vector</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="Relaxation.calculate_relaxation_time">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.polymer.Relaxation.html#mdhelper.analysis.polymer.Relaxation.calculate_relaxation_time">[docs]</a>
+<div class="viewcode-block" id="EndToEndVector.calculate_relaxation_time">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.polymer.EndToEndVector.html#mdhelper.analysis.polymer.EndToEndVector.calculate_relaxation_time">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_relaxation_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1038,13 +1175,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;acf&quot;</span><span class="p">):</span>
-            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Call Relaxation.run() before &quot;</span>
-                    <span class="s2">&quot;Relaxation.calculate_relaxation_time().&quot;</span><span class="p">)</span>
+            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Call EndToEndVector.run() before &quot;</span>
+                    <span class="s2">&quot;EndToEndVector.calculate_relaxation_time().&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">relaxation_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">relaxation_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">_n_blocks</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.relaxation_times&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picosecond</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">acf</span><span class="p">):</span>
@@ -1058,7 +1194,7 @@
 
 <div class="viewcode-block" id="SingleChainStructureFactor">
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html#mdhelper.analysis.polymer.SingleChainStructureFactor">[docs]</a>
-<span class="k">class</span> <span class="nc">SingleChainStructureFactor</span><span class="p">(</span><span class="n">ParallelAnalysisBase</span><span class="p">,</span> <span class="n">SerialAnalysisBase</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SingleChainStructureFactor</span><span class="p">(</span><span class="n">DynamicAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Serial and parallel implementations to calculate the single-chain</span>
@@ -1094,11 +1230,22 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    group : `MDAnalysis.AtomGroup`</span>
-<span class="sd">        Group of polymers to be analyzed.</span>
+<span class="sd">        Group of polymers to be analyzed. All polymers in the group</span>
+<span class="sd">        must have the same chain length.</span>
 
 <span class="sd">    grouping : `str`, default: :code:`&quot;atoms&quot;`</span>
 <span class="sd">        Determines whether the centers of mass are used in lieu of</span>
 <span class="sd">        individual atom positions.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
+<span class="sd">           residues (or molecules), and residues contain atoms. This </span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           function correctly. If your trajectory file does not contain</span>
+<span class="sd">           the correct segment or residue information, provide the </span>
+<span class="sd">           number of chains and chain lengths in `n_chains` and </span>
+<span class="sd">           `n_monomers`, respectively.</span>
 
 <span class="sd">        .. container::</span>
 
@@ -1106,14 +1253,14 @@
 
 <span class="sd">           * :code:`&quot;atoms&quot;`: Atom positions (for coarse-grained polymer</span>
 <span class="sd">             simulations).</span>
-<span class="sd">           * :code:`&quot;residues&quot;`: Residues&#39; centers of mass (for </span>
+<span class="sd">           * :code:`&quot;residues&quot;`: Residues&#39; centers of mass (for</span>
 <span class="sd">             atomistic polymer simulations).</span>
 
 <span class="sd">    n_points : `int`, default: :code:`32`</span>
 <span class="sd">        Number of points to sample the wavevector space.</span>
 
 <span class="sd">    n_chains : `int`, optional</span>
-<span class="sd">        Number of chains in `group`. Must be provided if the topology </span>
+<span class="sd">        Number of chains in `group`. Must be provided if the topology</span>
 <span class="sd">        does not contain segment information.</span>
 
 <span class="sd">    n_monomers : `int`, optional</span>
@@ -1121,7 +1268,7 @@
 <span class="sd">        does not contain segment information.</span>
 
 <span class="sd">    dimensions : `numpy.ndarray` or `openmm.unit.Quantity`, optional</span>
-<span class="sd">        System dimensions. If the </span>
+<span class="sd">        System dimensions. If the</span>
 <span class="sd">        :class:`MDAnalysis.core.universe.Universe` object that `group`</span>
 <span class="sd">        belongs to does not contain dimensionality information, provide</span>
 <span class="sd">        it here.</span>
@@ -1134,7 +1281,7 @@
 <span class="sd">        Determines whether atom positions are unwrapped.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the analysis is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -1186,12 +1333,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_group</span> <span class="o">=</span> <span class="n">group</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> <span class="o">=</span> <span class="n">parallel</span>
-        <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="n">parallel</span> <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_dimensions&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span><span class="p">}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dimensions</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
@@ -1202,19 +1344,26 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No system dimensions found or provided.&quot;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">grouping</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">groupings</span> <span class="o">:=</span> <span class="p">{</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;residues&quot;</span><span class="p">}):</span>
+            <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">grouping</span><span class="si">}</span><span class="s2">&#39;. Valid values: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">groupings</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span> <span class="o">=</span> <span class="n">grouping</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="s2">&quot;segments&quot;</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">n_chains</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">n_monomers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">n_segments</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_chains</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_chains</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span> <span class="o">=</span> <span class="n">n_chains</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The number of chains must be specified when &quot;</span>
                         <span class="s2">&quot;the universe does not contain segment &quot;</span>
                         <span class="s2">&quot;information.&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_monomers</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_monomers</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span> <span class="o">=</span> <span class="n">n_monomers</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The number of monomers per chain must be &quot;</span>
@@ -1236,23 +1385,35 @@
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Unwrap particle positions if necessary</span>
+        <span class="c1"># Unwrap particle positions, if necessary</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">)</span>
                 <span class="k">else</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
             <span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
-                <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span><span class="p">)</span>
-            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span> <span class="o">==</span> <span class="s2">&quot;residues&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">,</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
+                    <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span>
+                        <span class="n">positions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+                        <span class="p">),</span>
+                        <span class="n">masses</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">/</span> <span class="mi">2</span>
 
         <span class="c1"># Determine the unique wavenumbers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">11</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.wavenumbers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;results.wavenumbers&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
 
         <span class="c1"># Store unwrapped atom positions in a shared memory array for</span>
         <span class="c1"># parallel analysis</span>
@@ -1269,25 +1430,32 @@
                 <span class="p">]):</span>
 
                 <span class="c1"># Store atom or center-of-mass positions in the current frame</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
-                    <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span><span class="p">)</span>
-                <span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span> <span class="o">==</span> <span class="s2">&quot;residues&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">,</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
+                        <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span>
+                            <span class="n">positions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+                            <span class="p">),</span>
+                            <span class="n">masses</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
 
                 <span class="c1"># Unwrap particle positions if necessary</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
-                    <span class="n">unwrap</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
-                        <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
-                        <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
-                    <span class="p">)</span>
+                    <span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
+                           <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
 
-                <span class="c1"># Clean up memory</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
+            <span class="c1"># Clean up memory</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
 
         <span class="c1"># Preallocate arrays to store results</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1296,16 +1464,25 @@
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="c1"># Get atom or center-of-mass positions in the current frame</span>
-        <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
-                     <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span> <span class="o">==</span> <span class="s2">&quot;residues&quot;</span><span class="p">:</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouping</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
+                <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span>
+                    <span class="n">positions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+                    <span class="p">),</span>
+                    <span class="n">masses</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_group</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># Unwrap particle positions if necessary</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
-            <span class="n">unwrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span>
-                   <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span>
-                   <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
-                   <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span>
-                   <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
+            <span class="n">unwrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
+                   <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
 
         <span class="c1"># Calculate single-chain structure factor contributions</span>
         <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_chains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_monomers</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
@@ -1313,7 +1490,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">scsf</span> <span class="o">+=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
                                   <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_single_frame_parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_single_frame_parallel</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
         <span class="c1"># Compute the single-chain structure factor by squaring the</span>
         <span class="c1"># cosine and sine terms and adding them together</span>
@@ -1341,52 +1519,7 @@
              <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">),</span>
             <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
             <span class="n">count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span><span class="p">)</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="SingleChainStructureFactor.run">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html#mdhelper.analysis.polymer.SingleChainStructureFactor.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SerialAnalysisBase</span><span class="p">,</span> <span class="n">ParallelAnalysisBase</span><span class="p">]:</span>
-
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Performs the calculation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        start : `int`, optional</span>
-<span class="sd">            Starting frame for analysis.</span>
-<span class="sd">        </span>
-<span class="sd">        stop : `int`, optional</span>
-<span class="sd">            Ending frame for analysis.</span>
-
-<span class="sd">        step : `int`, optional</span>
-<span class="sd">            Number of frames to skip between each analyzed frame.</span>
-
-<span class="sd">        frames : `slice` or array-like, optional</span>
-<span class="sd">            Index or logical array of the desired trajectory frames.</span>
-
-<span class="sd">        verbose : `bool`, optional</span>
-<span class="sd">            Determines whether detailed progress is shown.</span>
-<span class="sd">        </span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments to pass to</span>
-<span class="sd">            :class:`MDAnalysis.lib.log.ProgressBar`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        self : `SerialAnalysisBase` or `ParallelAnalysisBase`</span>
-<span class="sd">            Analysis object with results.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> 
-                <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span></div>
-</div>
 
 </pre></div>
         </article>

@@ -1,4 +1,4 @@
-﻿topology
+topology
 ========
 
 .. automodule:: mdhelper.algorithm.topology

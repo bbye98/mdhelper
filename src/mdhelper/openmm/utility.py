@@ -271,8 +271,8 @@ def optimize_pme(
     ).astype(int) + 6)
     times = {}
     for arch, cut in cutoffs.items():
-        cutoffs[arch] = np.array(sorted(cut), dtype=float)
-        times[arch] = np.empty(cutoffs[arch].shape, dtype=float)
+        cutoffs[arch] = np.array(sorted(cut))
+        times[arch] = np.empty(cutoffs[arch].shape)
         times[arch][:] = np.nan
         for i, cutoff in enumerate(cutoffs[arch]):
             pmeforce.setCutoffDistance(cutoff)

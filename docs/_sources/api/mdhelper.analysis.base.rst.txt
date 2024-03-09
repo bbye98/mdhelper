@@ -1,4 +1,4 @@
-﻿base
+base
 ====
 
 .. automodule:: mdhelper.analysis.base

@@ -207,8 +207,8 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.EndToEndVector.html">EndToEndVector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
 </li>
@@ -450,9 +450,9 @@ before its magnitude and unit are returned.</p>
 </pre></div>
 </div>
 <p>If a target unit using a different module than the quantity is
-specified, the quantity is first converted to the target unit in
-the same module as the quantity, if necessary, before its magnitude
-and unit are returned.</p>
+specified, the quantity is converted to the specified target unit in
+the new module, if necessary, before its magnitude and unit are
+returned.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">strip_unit</span><span class="p">(</span><span class="mf">8.205736608095969e-05</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">meter</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">atmosphere</span>
 <span class="gp">... </span>           <span class="o">/</span> <span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">kelvin</span> <span class="o">*</span> <span class="n">unit</span><span class="o">.</span><span class="n">mole</span><span class="p">),</span>
 <span class="gp">... </span>           <span class="n">ureg</span><span class="o">.</span><span class="n">joule</span> <span class="o">/</span> <span class="p">(</span><span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">mole</span><span class="p">))</span>

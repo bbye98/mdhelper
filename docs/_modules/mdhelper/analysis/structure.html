@@ -175,6 +175,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.wrap.html">wrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -205,8 +206,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.EndToEndVector.html">EndToEndVector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
 </li>
@@ -861,12 +862,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}\sum_{\alpha=1}^{N_i}</span>
-<span class="sd">       \sum_{\beta=1}^{N_j}\left\langle</span>
+<span class="sd">       g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}</span>
+<span class="sd">       \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle</span>
 <span class="sd">       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)</span>
-<span class="sd">       \right\rangle\\</span>
-<span class="sd">       g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}\sum_{\alpha=1}^{N_i}</span>
-<span class="sd">       \sum_{\beta=1}^{N_j}\left\langle</span>
+<span class="sd">       \right\rangle g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}</span>
+<span class="sd">       \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle</span>
 <span class="sd">       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)</span>
 <span class="sd">       \right\rangle</span>
 
@@ -973,6 +973,14 @@
 <span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
 <span class="sd">        value is used for all `groups`.</span>
 
+<span class="sd">        .. note::</span>
+
+<span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
+<span class="sd">           residues (or molecules), and residues contain atoms. This</span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           function correctly, unless your selected grouping is always</span>
+<span class="sd">           :code:`&quot;atoms&quot;`.</span>
+
 <span class="sd">        .. container::</span>
 
 <span class="sd">           **Valid values**:</span>
@@ -1001,7 +1009,7 @@
 <span class="sd">           be negligible.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the calculation is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -1450,11 +1458,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        S(\\mathbf{q})&amp;=\\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N</span>
-<span class="sd">        \exp{[-i\\mathbf{q}\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\</span>
-<span class="sd">        &amp;=\\frac{1}{N}\left\langle\left[</span>
-<span class="sd">        \sum_{j=1}^N\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2+\left[</span>
-<span class="sd">        \sum_{j=1}^N\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}\\right]^2\\right\\rangle</span>
+<span class="sd">        S(\\mathbf{q})&amp;=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N\\sum_{k=1}^N</span>
+<span class="sd">        \\exp{[-i\\mathbf{q}\\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\</span>
+<span class="sd">        &amp;=\\frac{1}{N}\\left\\langle\\left[</span>
+<span class="sd">        \\sum_{j=1}^N\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2+\\left[</span>
+<span class="sd">        \\sum_{j=1}^N\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2\\right\\rangle</span>
 
 <span class="sd">    where :math:`N` is the number of particles, :math:`\\mathbf{q}` is</span>
 <span class="sd">    the scattering wavevector, and :math:`\\mathbf{r}_i` is the position</span>
@@ -1465,11 +1473,11 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       S_{\\alpha\\beta}(\\mathbf{q})=\\frac{1}{\sqrt{N_\\alpha N_\\beta}}</span>
-<span class="sd">       \left\langle\sum_{j=1}^{N_\\alpha}\cos{(\\mathbf{q}\cdot\\mathbf{r}_j)}</span>
-<span class="sd">       \sum_{k=1}^{N_\\beta}\cos{(\\mathbf{q}\cdot\\mathbf{r}_k)}</span>
-<span class="sd">       +\sum_{j=1}^{N_\\alpha}\sin{(\\mathbf{q}\cdot\\mathbf{r}_j)}</span>
-<span class="sd">       \sum_{k=1}^{N_\\beta}\sin{(\\mathbf{q}\cdot\\mathbf{r}_k)}\\right\\rangle</span>
+<span class="sd">       S_{\\alpha\\beta}(\\mathbf{q})=\\frac{1}{\\sqrt{N_\\alpha N_\\beta}}</span>
+<span class="sd">       \\left\\langle\\sum_{j=1}^{N_\\alpha}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}</span>
+<span class="sd">       \\sum_{k=1}^{N_\\beta}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_k)}</span>
+<span class="sd">       +\\sum_{j=1}^{N_\\alpha}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}</span>
+<span class="sd">       \\sum_{k=1}^{N_\\beta}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_k)}\\right\\rangle</span>
 
 <span class="sd">    where :math:`N_\\alpha` and :math:`N_\\beta` are the numbers of</span>
 <span class="sd">    particles for species :math:`\\alpha` and :math:`\\beta`.</span>
@@ -1486,6 +1494,14 @@
 <span class="sd">        Determines whether the centers of mass are used in lieu of</span>
 <span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
 <span class="sd">        value is used for all `groups`.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
+<span class="sd">           residues (or molecules), and residues contain atoms. This</span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           function correctly, unless your selected grouping is always</span>
+<span class="sd">           :code:`&quot;atoms&quot;`.</span>
 
 <span class="sd">        .. container::</span>
 
@@ -1547,7 +1563,7 @@
 <span class="sd">        in a single pass.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the calculation is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -1581,8 +1597,8 @@
 <span class="sd">        Static structure factor :math:`S(q)` or partial structure</span>
 <span class="sd">        factor(s) :math:`S_{\\alpha\\beta}(q)`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{w},)`, :math:`(1,\,N_\\mathrm{w})`,</span>
-<span class="sd">        or :math:`(C(N_\\mathrm{g}+1,\,2),\,N_\\mathrm{w})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{w},)`, :math:`(1,\\,N_\\mathrm{w})`,</span>
+<span class="sd">        or :math:`(C(N_\\mathrm{g}+1,\\,2),\\,N_\\mathrm{w})`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1852,11 +1868,9 @@
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Tally structure factors over all frames</span>
+        <span class="c1"># Consolidate parallel results</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="c1"># Free up memory used by the atom position array</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span>
 
@@ -1900,8 +1914,8 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        F_\\mathrm{s}(\\mathbf{q},t)=\\frac{1}{N}\left\langle\sum_{j=1}^N</span>
-<span class="sd">        \exp\left[i\\mathbf{q}\cdot\left(\\mathbf{r}_j(t_0+t)</span>
+<span class="sd">        F_\\mathrm{s}(\\mathbf{q},t)=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N</span>
+<span class="sd">        \\exp\\left[i\\mathbf{q}\\cdot\\left(\\mathbf{r}_j(t_0+t)</span>
 <span class="sd">        -\\mathbf{r}_j(t_0)\\right)\\right]\\right\\rangle</span>
 
 <span class="sd">    where :math:`N` is the number of particles, :math:`\\mathbf{q}` is</span>
@@ -1912,7 +1926,7 @@
 <span class="sd">    .. note::</span>
 
 <span class="sd">       The simulation must have been run with a constant timestep</span>
-<span class="sd">       :math:`\Delta t` and the frames to be analyzed must be evenly</span>
+<span class="sd">       :math:`\\Delta t` and the frames to be analyzed must be evenly</span>
 <span class="sd">       spaced and proceed forward in time for this analysis module to</span>
 <span class="sd">       function correctly.</span>
 
@@ -1926,6 +1940,14 @@
 <span class="sd">        Determines whether the centers of mass are used in lieu of</span>
 <span class="sd">        individual atom positions. If `groupings` is a `str`, the same</span>
 <span class="sd">        value is used for all `groups`.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
+<span class="sd">           residues (or molecules), and residues contain atoms. This</span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           function correctly, unless your selected grouping is always</span>
+<span class="sd">           :code:`&quot;atoms&quot;`.</span>
 
 <span class="sd">        .. container::</span>
 
@@ -1980,7 +2002,7 @@
 <span class="sd">        evaluate the auto- and cross-correlations.</span>
 
 <span class="sd">    parallel : `bool`, keyword-only, default: :code:`False`</span>
-<span class="sd">        Determines whether the calculation is run in parallel.</span>
+<span class="sd">        Determines whether the analysis is performed in parallel.</span>
 
 <span class="sd">    verbose : `bool`, keyword-only, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
@@ -2018,7 +2040,7 @@
 <span class="sd">        Incoherent (self) intermediate scattering function</span>
 <span class="sd">        :math:`F_\\mathrm{s}(q,\\,t)`.</span>
 
-<span class="sd">        **Shape**: :math:`(N_\\mathrm{t},\,N_\\mathrm{w})`.</span>
+<span class="sd">        **Shape**: :math:`(N_\\mathrm{t},\\,N_\\mathrm{w})`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -2197,7 +2219,7 @@
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Combine results from parallel runs</span>
+        <span class="c1"># Consolidate parallel results</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
             <span class="n">trig_sums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span>
             <span class="n">cos_sum</span> <span class="o">=</span> <span class="n">trig_sums</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>

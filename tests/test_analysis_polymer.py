@@ -9,6 +9,7 @@ import numpy as np
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
 from mdhelper.analysis import polymer # noqa: E402
 
+rng = np.random.default_rng()
 universe = mda.Universe(PSF, DCD)
 protein = universe.select_atoms("protein")
 
@@ -30,12 +31,25 @@ def test_class_gyradius():
                           (r_sq[:, [0, 2]]).sum(axis=1),
                           (r_sq[:, [0, 1]]).sum(axis=1)))
         return np.sqrt((masses * r_ssq).sum(axis=1) / masses.sum())
-    rog = AnalysisFromFunction(radius_of_gyration, universe.trajectory, protein).run()
+    
+    rog = AnalysisFromFunction(radius_of_gyration, universe.trajectory, 
+                               protein).run()
     gyradius = polymer.Gyradius(protein, grouping="residues").run()
+    gyradius_parallel = polymer.Gyradius(protein, grouping="residues", 
+                                         parallel=True).run()
 
     # TEST CASE 1: Time series of overall radii of gyration
-    assert np.allclose(rog.results["timeseries"][:, 0], gyradius.results.gyradii[0])
+    assert np.allclose(rog.results["timeseries"][:, 0], 
+                       gyradius.results.gyradii[0])
+    assert np.allclose(rog.results["timeseries"][:, 0], 
+                       gyradius_parallel.results.gyradii[0])
 
     # TEST CASE 2: Time series of radius of gyration components
-    gyradius = polymer.Gyradius(protein, grouping="residues", components=True).run()
-    assert np.allclose(rog.results["timeseries"][:, 1:], gyradius.results.gyradii[0])
+    gyradius = polymer.Gyradius(protein, grouping="residues", 
+                                components=True).run()
+    gyradius_parallel = polymer.Gyradius(protein, grouping="residues", 
+                                         components=True, paralle=True).run()
+    assert np.allclose(rog.results["timeseries"][:, 1:], 
+                       gyradius.results.gyradii[0])
+    assert np.allclose(rog.results["timeseries"][:, 1:], 
+                       gyradius_parallel.results.gyradii[0])
