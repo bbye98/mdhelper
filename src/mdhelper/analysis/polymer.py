@@ -576,7 +576,7 @@ class Relaxation(_PolymerAnalysisBase):
                                                  self._n_monomers)):
                 self._positions_end_prev[i] = (
                     g.positions if gr == "atoms" else center_of_mass(g, gr)
-                ).reshape(-1, N_p, 3)[:, (0, -1)]
+                ).reshape(-1, N_p, 3)[:, (0, -1), :]
             self._images = [np.zeros(p.shape, dtype=int)
                             for p in self._positions_end_prev]
             self._thresholds = self._dimensions / 2
@@ -596,7 +596,7 @@ class Relaxation(_PolymerAnalysisBase):
             # Store atom or center-of-mass positions in the current frame
             self._positions_end[i][self._frame_index] = (
                 g.positions if gr == "atoms" else center_of_mass(g, gr)
-            ).reshape(-1, N_p, 3)[:, (0, -1)]
+            ).reshape(-1, N_p, 3)[:, (0, -1), :]
 
             # Unwrap particle positions if necessary
             if self._unwrap:
