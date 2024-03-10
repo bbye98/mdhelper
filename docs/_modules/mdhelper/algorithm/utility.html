@@ -748,7 +748,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    For any quantity other than a :obj:`openmm.unit.Quantity` or</span>
-<span class="sd">    :obj:`pint.Quantity` object, the raw quantity and user-specified </span>
+<span class="sd">    :obj:`pint.Quantity` object, the raw quantity and user-specified</span>
 <span class="sd">    unit are returned.</span>
 
 <span class="sd">    &gt;&gt;&gt; strip_unit(90.0, &quot;deg&quot;)</span>
@@ -756,7 +756,7 @@
 <span class="sd">    &gt;&gt;&gt; strip_unit(90.0, ureg.degree)</span>
 <span class="sd">    (90.0, &lt;Unit(&#39;degree&#39;)&gt;)</span>
 
-<span class="sd">    If no target unit is specified, the magnitude and original unit of </span>
+<span class="sd">    If no target unit is specified, the magnitude and original unit of</span>
 <span class="sd">    the quantity are returned.</span>
 
 <span class="sd">    &gt;&gt;&gt; strip_unit(1.380649e-23 * ureg.joule * ureg.kelvin ** -1)</span>
@@ -774,7 +774,7 @@
 
 <span class="sd">    If a target unit using a different module than the quantity is</span>
 <span class="sd">    specified, the quantity is converted to the specified target unit in</span>
-<span class="sd">    the new module, if necessary, before its magnitude and unit are </span>
+<span class="sd">    the new module, if necessary, before its magnitude and unit are</span>
 <span class="sd">    returned.</span>
 
 <span class="sd">    &gt;&gt;&gt; strip_unit(8.205736608095969e-05 * unit.meter ** 3 * unit.atmosphere</span>
@@ -803,7 +803,7 @@
                 <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">unit__</span><span class="o">.</span><span class="n">iter_base_or_scaled_units</span><span class="p">():</span>
                     <span class="n">unit_</span> <span class="o">*=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">**</span> <span class="n">p</span>
 
-            <span class="c1"># Convert str or Pint target unit (unit_) to Pint unit </span>
+            <span class="c1"># Convert str or Pint target unit (unit_) to Pint unit</span>
             <span class="c1"># (unit__)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">unit__</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
@@ -829,7 +829,7 @@
             <span class="c1"># Pint target unit should give Pint unit</span>
             <span class="n">swap</span> <span class="o">=</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
 
-            <span class="c1"># Convert str or Pint target unit (unit_) to OpenMM unit </span>
+            <span class="c1"># Convert str or Pint target unit (unit_) to OpenMM unit</span>
             <span class="c1"># (unit__)</span>
             <span class="n">unit_</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit_</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>

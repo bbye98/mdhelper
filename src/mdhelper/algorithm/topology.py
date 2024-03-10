@@ -21,9 +21,9 @@ def create_atoms(
         dims: Union[np.ndarray[float], "unit.Quantity", "app.Topology"],
         N: int = None, N_p: int = 1, *, lattice: str = None,
         length: Union[float, "unit.Quantity"] = 0.34,
-        flexible: bool = False, connectivity: bool = False,
-        randomize: bool = False, length_unit: "unit.Unit" = None,
-        wrap: bool = False) -> Any:
+        flexible: bool = False, bonds: bool = False, angles: bool = False,
+        dihedrals: bool = False, randomize: bool = False, 
+        length_unit: "unit.Unit" = None, wrap: bool = False) -> Any:
 
     r"""
     Generates initial particle positions for coarse-grained simulations.
@@ -94,8 +94,16 @@ def create_atoms(
         make that dimension constant), such as when creating walls, set
         that dimension to :code:`0` in `dims`.
 
-    connectivity : `bool`, default: :code:`False`
+    bonds : `bool`, default: :code:`False`
         Determines whether bond information is returned for polymeric
+        systems. Has no effect if :code:`N_p=1`.
+
+    angles : `bool`, default: :code:`False`
+        Determines whether angle information is returned for polymeric
+        systems. Has no effect if :code:`N_p=1`.
+
+    dihedrals : `bool`, default: :code:`False`
+        Determines whether dihedral information is returned for polymeric
         systems. Has no effect if :code:`N_p=1`.
 
     randomize : `bool`, default: :code:`False`
@@ -121,9 +129,23 @@ def create_atoms(
 
     bonds : `numpy.ndarray`
         Pairs of all bonded particle indices. Only returned if
-        :code:`connectivity=True`.
+        :code:`bonds=True`.
 
-    dims : `numpy.ndarray` or `openmm.unit.Quantity`
+        **Shape**: :math:`(N_\mathrm{bonds},\,2)`.
+
+    angles : `numpy.ndarray`
+        Triples of all particle indices that form an angle. Only
+        returned if :code:`angles=True`.
+
+        **Shape**: :math:`(N_\mathrm{angles},\,3)`.
+
+    dihedrals : `numpy.ndarray`
+        Quadruples of all particle indices that form a dihedral. Only
+        returned if :code:`dihedrals=True`.
+
+        **Shape**: :math:`(N_\mathrm{dihedrals},\,4)`.
+
+    dimensions : `numpy.ndarray` or `openmm.unit.Quantity`
         Dimensions for lattice systems. Only returned if `lattice` is
         not :code:`None`.
 
@@ -137,6 +159,7 @@ def create_atoms(
         dims = dims.getUnitCellDimensions()
     dims, length_unit = utility.strip_unit(dims, length_unit)
     length, length_unit = utility.strip_unit(length, length_unit)
+    length_unit = length_unit or 1
 
     if lattice is None:
 
@@ -156,8 +179,9 @@ def create_atoms(
 
         # Generate particle positions for a random melt
         if N_p == 1:
-            pos = np.random.rand(N, 3) * dims
+            return np.random.rand(N, 3) * dims * length_unit
         else:
+            topo = []
 
             # Determine unit cell information for each segment
             segments = N // N_p
@@ -183,15 +207,28 @@ def create_atoms(
                 for i in range(3):
                     pos[pos[:, i] < 0, i] += dims[i]
                     pos[pos[:, i] > dims[i], i] -= dims[i]
+            
+            topo.append(pos * length_unit)
 
             # Determine all bonds
-            if connectivity:
-                bonds = np.array([(i * N_p + j, i * N_p + j + 1)
-                                  for i in range(segments)
-                                  for j in range(N_p - 1)])
-                return pos if length_unit is None else pos * length_unit, bonds
-
-        return pos if length_unit is None else pos * length_unit
+            if bonds:
+                topo.append(np.array([(i * N_p + j, i * N_p + j + 1)
+                                      for i in range(segments)
+                                      for j in range(N_p - 1)]))
+            
+            # Determine all angles
+            if angles:
+                topo.append(np.array([np.arange(i * N_p + j, i * N_p + j + 3)
+                                      for i in range(segments)
+                                      for j in range(N_p - 2)]))
+            
+            # Determine all dihedrals
+            if dihedrals:
+                topo.append(np.array([np.arange(i * N_p + j, i * N_p + j + 4)
+                                      for i in range(segments)
+                                      for j in range(N_p - 3)]))
+                
+            return topo[0] if len(topo) == 1 else tuple(topo)
     else:
         around = np.around if flexible else np.floor
 
@@ -245,16 +282,15 @@ def create_atoms(
             pos = pos[~np.any(pos[:, dims == 0] > 0, axis=1)]
         else:
             pos = pos[~np.any(pos > dims, axis=1)]
-
-    if length_unit is None:
-        return pos, n_cells * cell_dims
-    return pos * length_unit, n_cells * cell_dims * length_unit
+        
+        return pos * length_unit, n_cells * cell_dims * length_unit
 
 def unwrap(
         positions: np.ndarray[float], positions_old: np.ndarray[float],
         dimensions: np.ndarray[float], *, thresholds: float = None,
         images: np.ndarray[int] = None, in_place: bool = True
-    ) -> Union[None, tuple[np.ndarray[float], np.ndarray[int]]]:
+    ) -> Union[None, tuple[np.ndarray[float], np.ndarray[float], 
+                           np.ndarray[int]]]:
 
     """
     Globally unwraps particle positions.
@@ -306,6 +342,14 @@ def unwrap(
 
         **Reference unit**: :math:`\mathrm{nm}`.
 
+    positions_old : `numpy.ndarray`
+        Updated previous particle positions. Only returned if
+        :code:`in_place=False`.
+
+        **Shape**: :math:`(N,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+
     images : `numpy.ndarray`
         Updated image flags (or number of boundary crossings). Only
         returned if :code:`in_place=False`.
@@ -331,11 +375,11 @@ def unwrap(
         images[mask] -= np.sign(dpos[mask]).astype(int)
         positions += images * dimensions
         return positions, positions_old, images
-    
+
 def wrap(
         positions: np.ndarray[float], dimensions: np.ndarray[float], *,
         in_place: bool = True) -> np.ndarray[float]:
-    
+
     """
     Wraps particle positions back into the primary simulation cell.
 
@@ -368,7 +412,7 @@ def wrap(
 
         **Reference unit**: :math:`\mathrm{nm}`.
     """
-    
+
     wrap_indices = (positions < 0) | (positions > dimensions)
     if in_place:
         positions[wrap_indices] -= (

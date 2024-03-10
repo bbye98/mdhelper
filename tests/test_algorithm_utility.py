@@ -3,6 +3,7 @@ import sys
 
 import numpy as np
 from openmm import unit
+import pytest
 
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
 from mdhelper import ureg
@@ -43,6 +44,10 @@ def test_func_rebin():
     # TEST CASE 2: Rebin 2D array
     assert np.allclose(utility.rebin(np.tile(arr[None, :], (5, 1))),
                        np.tile(ref[None, :], (5, 1)))
+    
+    # TEST CASE 3: No factor specified
+    with pytest.raises(ValueError):
+        utility.rebin(np.empty((17,)), 3)
 
 def test_func_strip_unit():
 

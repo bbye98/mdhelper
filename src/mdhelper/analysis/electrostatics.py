@@ -104,8 +104,8 @@ def calculate_relative_permittivity(
 class DipoleMoment(DynamicAnalysisBase):
 
     r"""
-    A serial implementation to calculate the instantaneous dipole moment
-    vectors :math:`\mathbf{M}(t)`.
+    Serial and parallel implementations to calculate the instantaneous
+    dipole moment vectors :math:`\mathbf{M}(t)`.
 
     For a system with :math:`N` atoms or molecules, the dipole moment is
     given by
@@ -338,7 +338,7 @@ class DipoleMoment(DynamicAnalysisBase):
                 else (self.start or 0)
             ]
 
-            # Preallocate arrays to store positions and number of 
+            # Preallocate arrays to store positions and number of
             # boundary crossings
             self._positions_old = np.empty((self._N, 3))
             for g, s in zip(self._groups, self._slices):
@@ -358,8 +358,8 @@ class DipoleMoment(DynamicAnalysisBase):
                     for g, s in zip(self._groups, self._slices):
                         self._positions[i, s] = g.positions
 
-                    unwrap(self._positions[i], self._positions_old, 
-                           self._dimensions, thresholds=self._thresholds, 
+                    unwrap(self._positions[i], self._positions_old,
+                           self._dimensions, thresholds=self._thresholds,
                            images=self._images)
 
                 del self._positions_old
@@ -385,32 +385,33 @@ class DipoleMoment(DynamicAnalysisBase):
         for i, (g, s, q) in enumerate(zip(self._groups, self._slices,
                                           self._charges)):
             self._positions[s] = g.positions
+            self._positions[0, 0] += self._dimensions[0] / 2
             if self._unwrap:
-                unwrap(self._positions[s], self._positions_old[s], 
+                unwrap(self._positions[s], self._positions_old[s],
                        self._dimensions, thresholds=self._thresholds,
                        images=self._images[s])
             if self._neutralize:
-                q -= q * np.concatenate([r.atoms.masses / r.mass 
+                q -= q * np.concatenate([r.atoms.masses / r.mass
                                          for r in g.residues])
             self.results.dipoles[self._frame_index, i] \
                 += q @ self._positions[s]
 
         self.results.volumes[self._frame_index] \
             = self.universe.trajectory.ts.volume
-        
+
     def _single_frame_parallel(
             self, frame: int, index: int
         ) -> tuple[int, float, np.ndarray[float]]:
-        
+
         self._trajectory[frame]
         results = np.empty((self._n_groups, 3))
 
         for i, (g, s, q) in enumerate(zip(self._groups, self._slices,
                                           self._charges)):
-            positions = (self._positions[index, s] if self._unwrap 
+            positions = (self._positions[index, s] if self._unwrap
                          else g.positions)
             if self._neutralize:
-                q -= q * np.concatenate([r.atoms.masses / r.mass 
+                q -= q * np.concatenate([r.atoms.masses / r.mass
                                          for r in g.residues])
             results[i] = q @ positions
 
@@ -452,9 +453,9 @@ class DipoleMoment(DynamicAnalysisBase):
             .. note::
 
                If :code:`reduced=True` was set in the
-               :class:`DipoleMoment` constructor, `temperature` should 
-               be equal to the energy scale. When the Lennard-Jones 
-               potential is used, it generally means that 
+               :class:`DipoleMoment` constructor, `temperature` should
+               be equal to the energy scale. When the Lennard-Jones
+               potential is used, it generally means that
                :math:`T^* = 1`, or `temperature=1`.
 
             **Reference unit**: :math:`\mathrm{K}`.

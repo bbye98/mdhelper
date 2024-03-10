@@ -102,7 +102,7 @@ def zeroth_order_hankel_transform(
     ) -> np.ndarray[float]:
 
     r"""
-    Computes the Hankel transform :math:`F_0(q)` of discrete data 
+    Computes the Hankel transform :math:`F_0(q)` of discrete data
     :math:`f(r)` using the zeroth-order Bessel function :math:`J_0`.
 
     .. math::
@@ -201,14 +201,14 @@ def calculate_coordination_numbers(
     .. math::
 
        n_k=2\pi\rho_j\int_{r_{k-1}}^{r_k}rg_{ij}(r)\,dr
-    
+
     for two-dimensional systems, where :math:`k` is the index,
     :math:`\rho_j` is the bulk number density of species :math:`j` and
-    :math:`r_k` is the :math:`(k + 1)`-th local minimum of 
+    :math:`r_k` is the :math:`(k + 1)`-th local minimum of
     :math:`g_{ij}(r)`.
 
     If the radial distribution function :math:`g_{ij}(r)` does not
-    contain as many local minima as `n_coord_nums`, this method will 
+    contain as many local minima as `n_coord_nums`, this method will
     return `numpy.nan` for the coordination numbers that could not be
     calculated.
 
@@ -250,7 +250,7 @@ def calculate_coordination_numbers(
 
     if n_dims not in {2, 3}:
         raise ValueError("Invalid number of dimensions.")
-        
+
     def f(r, rdf, rho, start, stop):
         if n_dims == 3:
             return 4 * np.pi * rho * simpson(r ** 2 * rdf[start:stop], r)
@@ -281,7 +281,7 @@ def calculate_coordination_numbers(
 def calculate_structure_factor(
         r: np.ndarray[float], g: np.ndarray[float], equal: bool, rho: float,
         x_i: float = 1, x_j: float = None, q: np.ndarray[float] = None, *,
-        q_lower: float = None, q_upper: float = None, n_q: int = 1_000, 
+        q_lower: float = None, q_upper: float = None, n_q: int = 1_000,
         n_dims: int = 3, formalism: str = "FZ"
     ) -> tuple[np.ndarray[float], np.ndarray[float]]:
 
@@ -309,11 +309,11 @@ def calculate_structure_factor(
         `x_j`.
 
     rho : `float`
-        Bulk number density :math:`\rho`, surface density 
-        :math:`\sigma`, or line density :math:`\lambda`.
+        Bulk number density :math:`\rho` or surface density
+        :math:`\sigma`.
 
-        **Reference unit**: :math:`\mathrm{Å}^{-3}`, 
-        :math:`\mathrm{Å}^{-2}`, or :math:`\mathrm{Å}^{-1}`.
+        **Reference unit**: :math:`\mathrm{Å}^{-3}` or
+        :math:`\mathrm{Å}^{-2}`.
 
     x_i : `float`, default: :code:`1`
         Number concentration of species :math:`i`. Required if
@@ -375,14 +375,14 @@ def calculate_structure_factor(
 
                 S_{ij}(q)=\delta_{ij}+(x_ix_j)^{1/2}\frac{4\pi\rho}{q}
                 \int_0^\infty (g_{ij}(r)-1)\sin{(qr)}r\,dr
-           
+
            In two-dimensional systems, the second term is
 
            .. math::
 
               2\pi\rho\int_0^\infty (g_{ij}(r)-1)J_0(qr)r\,dr
 
-           instead, where :math:`J_0` is the zeroth-order Bessel 
+           instead, where :math:`J_0` is the zeroth-order Bessel
            function.
 
     Returns
@@ -438,8 +438,8 @@ def calculate_structure_factor(
 class RDF(DynamicAnalysisBase):
 
     r"""
-    Serial and parallel implementations to calculate the radial 
-    distribution function (RDF) :math:`g_{ij}(r)` between types 
+    Serial and parallel implementations to calculate the radial
+    distribution function (RDF) :math:`g_{ij}(r)` between types
     :math:`i` and :math:`j` and its related properties for two-
     and three-dimensional systems.
 
@@ -450,7 +450,8 @@ class RDF(DynamicAnalysisBase):
        g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}
        \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle
        \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
-       \right\rangle g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}
+       \right\rangle\\
+       g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}
        \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle
        \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)
        \right\rangle
@@ -562,7 +563,7 @@ class RDF(DynamicAnalysisBase):
 
            In a standard trajectory file, segments (or chains) contain
            residues (or molecules), and residues contain atoms. This
-           heirarchy must be adhered to for this analysis module to 
+           heirarchy must be adhered to for this analysis module to
            function correctly, unless your selected grouping is always
            :code:`"atoms"`.
 
@@ -678,7 +679,7 @@ class RDF(DynamicAnalysisBase):
             drop_axis: Union[int, str] = None, norm: str = "rdf",
             exclusion: tuple[int] = None,
             groupings: Union[str, tuple[str]] = "atoms",
-            reduced: bool = False, n_batches: int = None, 
+            reduced: bool = False, n_batches: int = None,
             parallel: bool = False, verbose: bool = True, **kwargs) -> None:
 
         self.ag1 = ag1
@@ -687,7 +688,7 @@ class RDF(DynamicAnalysisBase):
         if self.universe.dimensions is None and self._ts.dimensions is None:
             raise ValueError("Trajectory does not contain system "
                              "dimension information.")
-        
+
         super().__init__(self.universe.trajectory, parallel, verbose, **kwargs)
 
         if isinstance(groupings, str):
@@ -702,14 +703,14 @@ class RDF(DynamicAnalysisBase):
                     emsg = (f"Invalid grouping '{g}'. The options are "
                             "'atoms', 'residues', and 'segments'.")
                     raise ValueError(emsg)
-            self._groupings = (2 * groupings if len(groupings) == 1 
+            self._groupings = (2 * groupings if len(groupings) == 1
                                else groupings)
 
         self._drop_axis = (ord(drop_axis) - 120 if isinstance(drop_axis, str)
                            else drop_axis)
         if self._drop_axis not in {0, 1, 2, None}:
             raise ValueError("Invalid axis to drop.")
-        
+
         self._n_bins = n_bins
         self._range = range
         self._norm = norm
@@ -729,7 +730,7 @@ class RDF(DynamicAnalysisBase):
                               "results.edges": ureg.angstrom}
 
         # Preallocate floating-point number for total volume (or area)
-        # analyzed (for when system dimensions can change, such as 
+        # analyzed (for when system dimensions can change, such as
         # during NpT equilibration)
         if not self._parallel and self._norm == "rdf":
             self._area_or_volume = 0.0
@@ -747,7 +748,7 @@ class RDF(DynamicAnalysisBase):
                 self._area_or_volume += self._ts.volume
         else:
 
-            # Apply corrections to avoid including periodic images in 
+            # Apply corrections to avoid including periodic images in
             # the dimension to exclude
             pos1[:, self._drop_axis] = pos2[:, self._drop_axis] = 0
             dims[self._drop_axis] = dims[:3].max()
@@ -809,7 +810,7 @@ class RDF(DynamicAnalysisBase):
             }
             for r, i in ranges_indices.items():
                 result[i] = radial_histogram(
-                    pos1=pos1, pos2=pos2, n_bins=i.shape[0], range=r, 
+                    pos1=pos1, pos2=pos2, n_bins=i.shape[0], range=r,
                     dims=_ts.dimensions, exclusion=self._exclusion
                 )
         else:
@@ -923,7 +924,7 @@ class RDF(DynamicAnalysisBase):
 
                If :code:`reduced=True` was set in the :class:`RDF`
                constructor, `temperature` should be equal to the energy
-               scale. When the Lennard-Jones potential is used, it 
+               scale. When the Lennard-Jones potential is used, it
                generally means that :math:`T^*=1`, or `temperature=1`.
 
             **Reference unit**: :math:`\mathrm{K}`.
@@ -939,7 +940,7 @@ class RDF(DynamicAnalysisBase):
             kBT = temperature
         else:
             kBT = (
-                ureg.avogadro_constant * ureg.boltzmann_constant 
+                ureg.avogadro_constant * ureg.boltzmann_constant
                 * temperature * ureg.kelvin
             ).m_as(self.results.units["results.pmf"])
         self.results.pmf = -kBT * np.log(self._get_rdf())
@@ -1007,7 +1008,7 @@ class RDF(DynamicAnalysisBase):
 
                .. seealso::
 
-                  For more information, see 
+                  For more information, see
                   :func:`calculate_structure_factor`.
         """
 
@@ -1020,9 +1021,9 @@ class RDF(DynamicAnalysisBase):
 class StructureFactor(DynamicAnalysisBase):
 
     """
-    Serial and parallel implementations to calculate the static 
-    structure factor :math:`S(q)` or partial structure factor 
-    :math:`S_{\\alpha\\beta}(q)` for species :math:`\\alpha` and 
+    Serial and parallel implementations to calculate the static
+    structure factor :math:`S(q)` or partial structure factor
+    :math:`S_{\\alpha\\beta}(q)` for species :math:`\\alpha` and
     :math:`\\beta`.
 
     The static structure factor is a measure of how a material scatters
@@ -1072,7 +1073,7 @@ class StructureFactor(DynamicAnalysisBase):
 
            In a standard trajectory file, segments (or chains) contain
            residues (or molecules), and residues contain atoms. This
-           heirarchy must be adhered to for this analysis module to 
+           heirarchy must be adhered to for this analysis module to
            function correctly, unless your selected grouping is always
            :code:`"atoms"`.
 
@@ -1176,11 +1177,11 @@ class StructureFactor(DynamicAnalysisBase):
 
     def __init__(
             self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
-            groupings: Union[str, tuple[str]] = "atoms", 
+            groupings: Union[str, tuple[str]] = "atoms",
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             n_points: int = 32, mode: str = None, *, n_surfaces: int = None,
             n_surface_points: int = 8, wavevectors: np.ndarray[float] = None,
-            n_batches: int = None, parallel: bool = False, 
+            n_batches: int = None, parallel: bool = False,
             verbose: bool = True, **kwargs) -> None:
 
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
@@ -1287,14 +1288,14 @@ class StructureFactor(DynamicAnalysisBase):
 
         if not self._parallel:
 
-            # Create a persisting array to hold atom positions for a 
+            # Create a persisting array to hold atom positions for a
             # given frame so that it doesn't have to be recreated each
             # frame
             self._positions = np.empty((self._N, 3))
 
             # Preallocate arrays to store results
             self.results.ssf = np.zeros(
-                len(self._wavenumbers) if self._mode is None 
+                len(self._wavenumbers) if self._mode is None
                 else (len(self.results.pairs), len(self._wavenumbers))
             )
 
@@ -1515,7 +1516,7 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
 
            In a standard trajectory file, segments (or chains) contain
            residues (or molecules), and residues contain atoms. This
-           heirarchy must be adhered to for this analysis module to 
+           heirarchy must be adhered to for this analysis module to
            function correctly, unless your selected grouping is always
            :code:`"atoms"`.
 
@@ -1615,11 +1616,11 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
 
     def __init__(
             self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
-            groupings: Union[str, tuple[str]] = "atoms", 
+            groupings: Union[str, tuple[str]] = "atoms",
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             n_points: int = 32, *, n_surfaces: int = None, n_surface_points: int = 8,
             wavevectors: np.ndarray[float] = None, n_batches: int = None,
-            fft: bool = True, parallel: bool = False, verbose: bool = True, 
+            fft: bool = True, parallel: bool = False, verbose: bool = True,
             **kwargs) -> None:
 
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups

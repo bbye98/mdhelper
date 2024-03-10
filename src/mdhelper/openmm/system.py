@@ -880,7 +880,7 @@ def add_image_charges(
 def add_electric_field(
         system: openmm.System, nbforce: openmm.NonbondedForce,
         E: Union[float, unit.Quantity], *, axis: int = 2,
-        dielectric: float = 1, charge_index: int = 0, 
+        dielectric: float = 1, charge_index: int = 0,
         atom_indices: Union[int, np.ndarray[int]] = None
     ) -> None:
 
@@ -932,8 +932,8 @@ def add_electric_field(
         respectively.
 
     dielectric : `float`, keyword-only, default: :code:`1`
-        Relative permittivity :math:`\varepsilon_\mathrm{r}` of the 
-        medium. Used to scale the particle charges by 
+        Relative permittivity :math:`\varepsilon_\mathrm{r}` of the
+        medium. Used to scale the particle charges by
         :math:`\sqrt{\varepsilon_\mathrm{r}}` and recover the original
         values.
 

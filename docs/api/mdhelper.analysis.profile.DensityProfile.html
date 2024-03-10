@@ -441,13 +441,21 @@ electrostatics:</p>
 wrapped into the primary simulation cell. If you think your
 system may have split bonds, use
 <a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/transformations/wrap.html#MDAnalysis.transformations.wrap.unwrap" title="(in MDAnalysis v2.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap.unwrap</span></code></a> to unwrap
-the trajectory before passing an <code class="code docutils literal notranslate"><span class="pre">AtomGroup</span></code> to this
+the trajectory before passing any <code class="code docutils literal notranslate"><span class="pre">AtomGroup</span></code> to this
 class.</p>
 </div>
 </dd>
 <dt><strong>groupings</strong><span class="classifier"><cite>str</cite> or array-like, default: <code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code></span></dt><dd><p>Determines whether the centers of mass are used in lieu of
 individual atom positions. If <cite>groupings</cite> is a <cite>str</cite>, the same
 value is used for all <cite>groups</cite>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In a standard trajectory file, segments (or chains) contain
+residues (or molecules), and residues contain atoms. This
+heirarchy must be adhered to for this analysis module to
+function correctly, unless your selected grouping is always
+<code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code>.</p>
+</div>
 <div class="docutils container">
 <p><strong>Valid values</strong>:</p>
 <ul class="simple">
@@ -524,7 +532,7 @@ is not specified, the center of the simulation box is used.</p>
 <dt><strong>reduced</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Specifies whether the data is in reduced units. Affects
 <cite>results.number_densities</cite>, <cite>results.charge_densities</cite>, etc.</p>
 </dd>
-<dt><strong>parallel</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Determines whether the calculation is run in parallel.</p>
+<dt><strong>parallel</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Determines whether the analysis is performed in parallel.</p>
 </dd>
 <dt><strong>verbose</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether detailed progress is shown.</p>
 </dd>

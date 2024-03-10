@@ -421,9 +421,9 @@
         <span class="n">dims</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="s2">&quot;app.Topology&quot;</span><span class="p">],</span>
         <span class="n">N</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">N_p</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">length</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.34</span><span class="p">,</span>
-        <span class="n">flexible</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">connectivity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">randomize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">:</span> <span class="s2">&quot;unit.Unit&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">wrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="n">flexible</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">bonds</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">dihedrals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">randomize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+        <span class="n">length_unit</span><span class="p">:</span> <span class="s2">&quot;unit.Unit&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">wrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates initial particle positions for coarse-grained simulations.</span>
@@ -494,8 +494,16 @@
 <span class="sd">        make that dimension constant), such as when creating walls, set</span>
 <span class="sd">        that dimension to :code:`0` in `dims`.</span>
 
-<span class="sd">    connectivity : `bool`, default: :code:`False`</span>
+<span class="sd">    bonds : `bool`, default: :code:`False`</span>
 <span class="sd">        Determines whether bond information is returned for polymeric</span>
+<span class="sd">        systems. Has no effect if :code:`N_p=1`.</span>
+
+<span class="sd">    angles : `bool`, default: :code:`False`</span>
+<span class="sd">        Determines whether angle information is returned for polymeric</span>
+<span class="sd">        systems. Has no effect if :code:`N_p=1`.</span>
+
+<span class="sd">    dihedrals : `bool`, default: :code:`False`</span>
+<span class="sd">        Determines whether dihedral information is returned for polymeric</span>
 <span class="sd">        systems. Has no effect if :code:`N_p=1`.</span>
 
 <span class="sd">    randomize : `bool`, default: :code:`False`</span>
@@ -521,9 +529,23 @@
 
 <span class="sd">    bonds : `numpy.ndarray`</span>
 <span class="sd">        Pairs of all bonded particle indices. Only returned if</span>
-<span class="sd">        :code:`connectivity=True`.</span>
+<span class="sd">        :code:`bonds=True`.</span>
 
-<span class="sd">    dims : `numpy.ndarray` or `openmm.unit.Quantity`</span>
+<span class="sd">        **Shape**: :math:`(N_\mathrm{bonds},\,2)`.</span>
+
+<span class="sd">    angles : `numpy.ndarray`</span>
+<span class="sd">        Triples of all particle indices that form an angle. Only</span>
+<span class="sd">        returned if :code:`angles=True`.</span>
+
+<span class="sd">        **Shape**: :math:`(N_\mathrm{angles},\,3)`.</span>
+
+<span class="sd">    dihedrals : `numpy.ndarray`</span>
+<span class="sd">        Quadruples of all particle indices that form a dihedral. Only</span>
+<span class="sd">        returned if :code:`dihedrals=True`.</span>
+
+<span class="sd">        **Shape**: :math:`(N_\mathrm{dihedrals},\,4)`.</span>
+
+<span class="sd">    dimensions : `numpy.ndarray` or `openmm.unit.Quantity`</span>
 <span class="sd">        Dimensions for lattice systems. Only returned if `lattice` is</span>
 <span class="sd">        not :code:`None`.</span>
 
@@ -537,6 +559,7 @@
         <span class="n">dims</span> <span class="o">=</span> <span class="n">dims</span><span class="o">.</span><span class="n">getUnitCellDimensions</span><span class="p">()</span>
     <span class="n">dims</span><span class="p">,</span> <span class="n">length_unit</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">strip_unit</span><span class="p">(</span><span class="n">dims</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
     <span class="n">length</span><span class="p">,</span> <span class="n">length_unit</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">strip_unit</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
+    <span class="n">length_unit</span> <span class="o">=</span> <span class="n">length_unit</span> <span class="ow">or</span> <span class="mi">1</span>
 
     <span class="k">if</span> <span class="n">lattice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -556,8 +579,9 @@
 
         <span class="c1"># Generate particle positions for a random melt</span>
         <span class="k">if</span> <span class="n">N_p</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">dims</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">dims</span> <span class="o">*</span> <span class="n">length_unit</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">topo</span> <span class="o">=</span> <span class="p">[]</span>
 
             <span class="c1"># Determine unit cell information for each segment</span>
             <span class="n">segments</span> <span class="o">=</span> <span class="n">N</span> <span class="o">//</span> <span class="n">N_p</span>
@@ -583,15 +607,28 @@
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
                     <span class="n">pos</span><span class="p">[</span><span class="n">pos</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                     <span class="n">pos</span><span class="p">[</span><span class="n">pos</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">dims</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            
+            <span class="n">topo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos</span> <span class="o">*</span> <span class="n">length_unit</span><span class="p">)</span>
 
             <span class="c1"># Determine all bonds</span>
-            <span class="k">if</span> <span class="n">connectivity</span><span class="p">:</span>
-                <span class="n">bonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">i</span> <span class="o">*</span> <span class="n">N_p</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">N_p</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                                  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span>
-                                  <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
-                <span class="k">return</span> <span class="n">pos</span> <span class="k">if</span> <span class="n">length_unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">pos</span> <span class="o">*</span> <span class="n">length_unit</span><span class="p">,</span> <span class="n">bonds</span>
-
-        <span class="k">return</span> <span class="n">pos</span> <span class="k">if</span> <span class="n">length_unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">pos</span> <span class="o">*</span> <span class="n">length_unit</span>
+            <span class="k">if</span> <span class="n">bonds</span><span class="p">:</span>
+                <span class="n">topo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">i</span> <span class="o">*</span> <span class="n">N_p</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">N_p</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                                      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span>
+                                      <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]))</span>
+            
+            <span class="c1"># Determine all angles</span>
+            <span class="k">if</span> <span class="n">angles</span><span class="p">:</span>
+                <span class="n">topo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">N_p</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">N_p</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+                                      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span>
+                                      <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_p</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)]))</span>
+            
+            <span class="c1"># Determine all dihedrals</span>
+            <span class="k">if</span> <span class="n">dihedrals</span><span class="p">:</span>
+                <span class="n">topo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">N_p</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">N_p</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
+                                      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span>
+                                      <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_p</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)]))</span>
+                
+            <span class="k">return</span> <span class="n">topo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">topo</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">topo</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">around</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span> <span class="k">if</span> <span class="n">flexible</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span>
 
@@ -645,10 +682,8 @@
             <span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">pos</span><span class="p">[:,</span> <span class="n">dims</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">pos</span> <span class="o">&gt;</span> <span class="n">dims</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
-
-    <span class="k">if</span> <span class="n">length_unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">pos</span><span class="p">,</span> <span class="n">n_cells</span> <span class="o">*</span> <span class="n">cell_dims</span>
-    <span class="k">return</span> <span class="n">pos</span> <span class="o">*</span> <span class="n">length_unit</span><span class="p">,</span> <span class="n">n_cells</span> <span class="o">*</span> <span class="n">cell_dims</span> <span class="o">*</span> <span class="n">length_unit</span></div>
+        
+        <span class="k">return</span> <span class="n">pos</span> <span class="o">*</span> <span class="n">length_unit</span><span class="p">,</span> <span class="n">n_cells</span> <span class="o">*</span> <span class="n">cell_dims</span> <span class="o">*</span> <span class="n">length_unit</span></div>
 
 
 <div class="viewcode-block" id="unwrap">
@@ -657,7 +692,8 @@
         <span class="n">positions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">positions_old</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
         <span class="n">dimensions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">images</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> 
+                           <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Globally unwraps particle positions.</span>
@@ -709,6 +745,14 @@
 
 <span class="sd">        **Reference unit**: :math:`\mathrm{nm}`.</span>
 
+<span class="sd">    positions_old : `numpy.ndarray`</span>
+<span class="sd">        Updated previous particle positions. Only returned if</span>
+<span class="sd">        :code:`in_place=False`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,\,3)`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{nm}`.</span>
+
 <span class="sd">    images : `numpy.ndarray`</span>
 <span class="sd">        Updated image flags (or number of boundary crossings). Only</span>
 <span class="sd">        returned if :code:`in_place=False`.</span>
@@ -735,13 +779,13 @@
         <span class="n">positions</span> <span class="o">+=</span> <span class="n">images</span> <span class="o">*</span> <span class="n">dimensions</span>
         <span class="k">return</span> <span class="n">positions</span><span class="p">,</span> <span class="n">positions_old</span><span class="p">,</span> <span class="n">images</span></div>
 
-    
+
 <div class="viewcode-block" id="wrap">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.topology.wrap.html#mdhelper.algorithm.topology.wrap">[docs]</a>
 <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span>
         <span class="n">positions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">dimensions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span>
         <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">    </span>
+
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wraps particle positions back into the primary simulation cell.</span>
 
@@ -774,7 +818,7 @@
 
 <span class="sd">        **Reference unit**: :math:`\mathrm{nm}`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="n">wrap_indices</span> <span class="o">=</span> <span class="p">(</span><span class="n">positions</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">positions</span> <span class="o">&gt;</span> <span class="n">dimensions</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">in_place</span><span class="p">:</span>
         <span class="n">positions</span><span class="p">[</span><span class="n">wrap_indices</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span>

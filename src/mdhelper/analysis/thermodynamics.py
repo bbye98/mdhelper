@@ -24,7 +24,7 @@ if FOUND_OPENMM:
 
 class ConstantVolumeHeatCapacity:
 
-    r"""
+    """
     A serial implementation to caluclate the constant-volume heat
     capacity :math:`C_V` for a canonical (:math:`NVT`) system.
 
@@ -32,13 +32,13 @@ class ConstantVolumeHeatCapacity:
 
     .. math::
 
-       C_V=\frac{\langle U^2\rangle-\langle U\rangle^2}
-       {k_\mathrm{B}T^2}
+       C_V=\\frac{\\langle U^2\\rangle-\\langle U\\rangle^2}
+       {k_\\mathrm{B}T^2}
 
     where :math:`U` is the total potential energy of the system,
-    :math:`\langle\cdot\rangle` denotes the ensemble average,
-    :math:`k_\mathrm{B}` is the Boltzmann constant, and :math:`T` is the
-    system temperature.
+    :math:`\\langle\\cdot\\rangle` denotes the ensemble average,
+    :math:`k_\\mathrm{B}` is the Boltzmann constant, and :math:`T` is
+    the system temperature.
 
     Parameters
     ----------
@@ -56,30 +56,45 @@ class ConstantVolumeHeatCapacity:
         Potential energies. If not provided, the log file must be
         provided in `log_file`.
 
-    temperature : `float` or `pint.Quantity`, optional
+    temperature : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
+    optional
         System temperature. If not provided, the averaged temperature
         from the log file (if available) is used.
 
     reduced : `bool`, keyword-only, default: :code:`False`
         Specifies whether the data is in reduced units.
 
+    sep : `str`, keyword-only, default: :code:`","`
+        Delimiter for OpenMM log files.
+
     Attributes
     ----------
-    results : `dict`
-        Analysis results:
+    results.units : `dict`
+        Reference units for the results. For example, to get the
+        reference units for :code:`results.temperature`, call
+        :code:`results.units["results.temperature"]`.
 
-        .. container::
+    results.energies : `numpy.ndarray`
+        Total (kinetic + potential) energy values.
 
-           * :code:`"energies"`: Potential energy values.
-           * :code:`"heat_capacity"`: Constant-volume heat capacity.
-           * :code:`"units"`: Reference units. For example, to get the
-             reference units for the heat capacity, use key
-             :code:`results.heat_capacity`.
+        **Reference unit**: :math:`\\mathrm{kcal/mol}` or
+        :math:`\\mathrm{kJ/mol}`.
+
+    results.temperature : `float`
+        System temperature.
+
+        **Reference unit**: :math:`\\mathrm{K}`.
+
+    results.heat_capacity : `float`
+        Constant-volume heat capacity.
+
+        **Reference unit**: :math:`\\mathrm{kcal/K}` or
+        :math:`\\mathrm{kJ/K}`.
     """
 
     _COLUMNS = {
         "lammps": {
-            "energy": ["TotEng", "KinEng", "PotEng", "E_angle", "E_bond", 
+            "energy": ["TotEng", "KinEng", "PotEng", "E_angle", "E_bond",
                        "E_coul", "E_dihed", "E_impro", "E_long", "E_vdwl"],
             "temperature": "Temp"
         },
@@ -93,8 +108,8 @@ class ConstantVolumeHeatCapacity:
     def __init__(
             self, log_file: Union[str, Path] = None, log_format: str = None, *,
             energies: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
-            temperature: Union[float, "unit.Quantity", Q_] = None, 
-            reduced: bool = False) -> None:
+            temperature: Union[float, "unit.Quantity", Q_] = None,
+            reduced: bool = False, sep: str = ",") -> None:
 
         self.results = Hash(units={})
         self._reduced = reduced
@@ -102,7 +117,7 @@ class ConstantVolumeHeatCapacity:
         if energies:
             self.results.units["results.energy"] = ureg.kilojoule / ureg.mole
             self.results.energies = strip_unit(
-                energies, 
+                energies,
                 self.results.units["results.energy"]
             )[0]
         elif log_file:
@@ -110,7 +125,7 @@ class ConstantVolumeHeatCapacity:
             with open(self._file, "r") as f:
                 log = f.read()
 
-            # Determine the simulation toolkit used to write the log 
+            # Determine the simulation toolkit used to write the log
             # file.
             if log_format is None:
                 for f, cs in self._COLUMNS.items():
@@ -126,19 +141,31 @@ class ConstantVolumeHeatCapacity:
                 if "minimize" in log:
                     log = log[log.index("Minimization stats:"):]
                 log = log.split("\n")
+                valid = False
                 for i, line in enumerate(log):
                     if "Step" in line:
                         log = log[i:]
+                        valid = True
                         break
+                if not valid:
+                    emsg = ("No thermodynamic data found in log file "
+                            f"'{log_file}'.")
+                    raise ValueError(emsg)
                 log = "\n".join(log)
                 log = log[:log.index("Loop time of ")]
                 kwargs = {"delim_whitespace": True}
-                self.results.units["results.energies"] = ureg.kilocalorie / ureg.mole
+                self.results.units["results.energies"] \
+                    = ureg.kilocalorie / ureg.mole
+                self.results.units["results.heat_capacity"] \
+                    = ureg.kilocalorie / ureg.kelvin
             elif self._format == "openmm":
-                kwargs = {"sep": ","}
+                kwargs = {"sep": sep}
                 if reduced:
                     warnings.warn("OpenMM simulations always use real units.")
-                self.results.units["results.energies"] = ureg.kilojoule / ureg.mole
+                self.results.units["results.energies"] \
+                    = ureg.kilojoule / ureg.mole
+                self.results.units["results.heat_capacity"] \
+                    = ureg.kilojoule / ureg.kelvin
 
             # Determine which columns to keep.
             if self._COLUMNS[self._format]["energy"][0] in log:
@@ -147,33 +174,32 @@ class ConstantVolumeHeatCapacity:
                 cols = self._COLUMNS[self._format]["energy"][1:2]
                 if self._COLUMNS[self._format]["energy"][2] in log:
                     cols.append(self._COLUMNS[self._format]["energy"][2])
-                elif any(e in log for e in self._COLUMNS[self._format]["energy"][3:]):
+                elif any(e in log
+                         for e in self._COLUMNS[self._format]["energy"][3:]):
                     for e in self._COLUMNS[self._format]["energy"][3:]:
                         if e in log:
                             cols.append(e)
                 else:
                     raise ValueError("Potential energy column not found.")
             else:
-                emsg = "Total energy and kinetic energy columns not found."
-                raise ValueError(emsg)
+                raise ValueError("Total or kinetic energy column not found.")
 
             df = pd.read_csv(StringIO(log), **kwargs)
             self.results.energies = df[cols].sum(axis=1).to_numpy()
         else:
             raise ValueError("No log file or energy values provided.")
 
-        if isinstance(temperature, Q_):
-            self.temperature = temperature.magnitude
-            self.results.units["temperature"] = self.temperature.units
-        else:
-            if temperature is None:
-                if log_file is None:
-                    raise ValueError("No log file or temperature value provided.")
-                self.temperature = df[self._COLUMNS[self._format]["temperature"]].mean()
-            else:
-                self.temperature = temperature
-            if not reduced:
+        if temperature is not None:
+            self.temperature, self.results.units["temperature"] \
+                = strip_unit(temperature)
+            if self.results.units["temperature"] is None:
                 self.results.units["temperature"] = ureg.kelvin
+        elif log_file is None:
+            raise ValueError("No log file or temperature value provided.")
+        else:
+            self.temperature \
+                = df[self._COLUMNS[self._format]["temperature"]].mean()
+            self.results.units["temperature"] = ureg.kelvin
 
     def run(
             self, start: int = None, stop: int = None, step: int = None,
@@ -186,7 +212,7 @@ class ConstantVolumeHeatCapacity:
         ----------
         start : `int`, optional
             Starting frame for analysis.
-        
+
         stop : `int`, optional
             Ending frame for analysis.
 
@@ -198,7 +224,7 @@ class ConstantVolumeHeatCapacity:
 
         verbose : `bool`, optional
             Determines whether detailed progress is shown.
-        
+
         **kwargs
             Additional keyword arguments to pass to
             :class:`MDAnalysis.lib.log.ProgressBar`.
@@ -210,19 +236,22 @@ class ConstantVolumeHeatCapacity:
         """
 
         if frames is None:
-            frames = np.arange(start or 0,
-                               stop or len(self.results.energies),
+            frames = np.arange(start or 0, stop or len(self.results.energies),
                                step)
-        U = self.results.energies[frames] * self.results.units["results.energies"]
+
+        U = self.results.energies[frames]
         if self._reduced:
-            pass # TODO
+            self.results.heat_capacity = (((U ** 2).mean() - U.mean() ** 2)
+                                          / self.temperature ** 2)
         else:
-            C_V = (
-                ((U ** 2).mean() - U.mean() ** 2)
-                / (ureg.avogadro_constant ** 2 * ureg.boltzmann_constant
-                * (self.temperature * self.results.units["temperature"]) ** 2)
-            ).to(ureg.kilojoule / ureg.kelvin)
-            self.results.heat_capacity = C_V.magnitude
-            self.results.units["results.heat_capacity"] = C_V.units
+            U *= self.results.units["results.energies"]
+            self.results.heat_capacity \
+                = strip_unit(
+                    ((U ** 2).mean() - U.mean() ** 2)
+                    / (ureg.avogadro_constant ** 2 * ureg.boltzmann_constant
+                    * (self.temperature
+                       * self.results.units["temperature"]) ** 2),
+                    self.results.units["results.heat_capacity"]
+                )[0]
 
         return self

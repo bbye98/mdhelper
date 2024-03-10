@@ -333,7 +333,7 @@ def strip_unit(
     Examples
     --------
     For any quantity other than a :obj:`openmm.unit.Quantity` or
-    :obj:`pint.Quantity` object, the raw quantity and user-specified 
+    :obj:`pint.Quantity` object, the raw quantity and user-specified
     unit are returned.
 
     >>> strip_unit(90.0, "deg")
@@ -341,7 +341,7 @@ def strip_unit(
     >>> strip_unit(90.0, ureg.degree)
     (90.0, <Unit('degree')>)
 
-    If no target unit is specified, the magnitude and original unit of 
+    If no target unit is specified, the magnitude and original unit of
     the quantity are returned.
 
     >>> strip_unit(1.380649e-23 * ureg.joule * ureg.kelvin ** -1)
@@ -359,7 +359,7 @@ def strip_unit(
 
     If a target unit using a different module than the quantity is
     specified, the quantity is converted to the specified target unit in
-    the new module, if necessary, before its magnitude and unit are 
+    the new module, if necessary, before its magnitude and unit are
     returned.
 
     >>> strip_unit(8.205736608095969e-05 * unit.meter ** 3 * unit.atmosphere
@@ -388,7 +388,7 @@ def strip_unit(
                 for u, p in unit__.iter_base_or_scaled_units():
                     unit_ *= ureg.Unit(u.name) ** p
 
-            # Convert str or Pint target unit (unit_) to Pint unit 
+            # Convert str or Pint target unit (unit_) to Pint unit
             # (unit__)
             else:
                 unit__ = ureg.Unit(unit_)
@@ -414,7 +414,7 @@ def strip_unit(
             # Pint target unit should give Pint unit
             swap = not isinstance(unit_, str)
 
-            # Convert str or Pint target unit (unit_) to OpenMM unit 
+            # Convert str or Pint target unit (unit_) to OpenMM unit
             # (unit__)
             unit_ = ureg.Unit(unit_)
             try:

@@ -344,7 +344,7 @@ class DensityProfile(DynamicAnalysisBase):
 
            In a standard trajectory file, segments (or chains) contain
            residues (or molecules), and residues contain atoms. This
-           heirarchy must be adhered to for this analysis module to 
+           heirarchy must be adhered to for this analysis module to
            function correctly, unless your selected grouping is always
            :code:`"atoms"`.
 

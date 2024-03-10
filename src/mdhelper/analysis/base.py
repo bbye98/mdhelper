@@ -4,8 +4,8 @@ Analysis base classes
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains custom base classes :class:`SerialAnalysisBase` and
-:class:`ParallelAnalysisBase` for serial and multithreaded data 
-analysis, respectively, with the latter supporting the native 
+:class:`ParallelAnalysisBase` for serial and multithreaded data
+analysis, respectively, with the latter supporting the native
 multiprocessing, Dask, and Joblib libraries for parallelization.
 """
 
@@ -40,7 +40,7 @@ class Hash(dict):
     A hash table, or an extension of the built-in `dict` with dot
     notation for accessing properties.
     """
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for arg in args:
@@ -52,10 +52,10 @@ class Hash(dict):
         if kwargs:
             for k, v in kwargs.items():
                 self[k] = v
-    
+
     def __getattr__(self, attr):
         return self.get(attr)
-    
+
     def __setattr__(self, key, value):
         self.__setitem__(key, value)
 
@@ -79,7 +79,7 @@ class SerialAnalysisBase(AnalysisBase):
     ----------
     trajectory : `MDAnalysis.coordinates.base.ReaderBase`
         Simulation trajectory.
-    
+
     verbose : `bool`, default: :code:`True`
         Determines whether detailed progress is shown.
 
@@ -96,7 +96,7 @@ class SerialAnalysisBase(AnalysisBase):
             self, start: int = None, stop: int = None, step: int = None,
             frames: Union[slice, np.ndarray[int]] = None,
             verbose: bool = None, **kwargs) -> "SerialAnalysisBase":
-        
+
         """
         Performs the calculation in serial.
 
@@ -104,7 +104,7 @@ class SerialAnalysisBase(AnalysisBase):
         ----------
         start : `int`, optional
             Starting frame for analysis.
-        
+
         stop : `int`, optional
             Ending frame for analysis.
 
@@ -116,7 +116,7 @@ class SerialAnalysisBase(AnalysisBase):
 
         verbose : `bool`, optional
             Determines whether detailed progress is shown.
-        
+
         **kwargs
             Additional keyword arguments to pass to
             :class:`MDAnalysis.lib.log.ProgressBar`.
@@ -140,10 +140,10 @@ class SerialAnalysisBase(AnalysisBase):
         ----------
         file : `str` or `file`
             Filename or file-like object where the data will be saved.
-            If `file` is a `str`, the :code:`.npy` or :code:`.npz` 
+            If `file` is a `str`, the :code:`.npy` or :code:`.npz`
             extension will be appended automatically if not already
             present.
-        
+
         archive : `bool`, default: :code:`True`
             Determines whether the results are saved to a single archive
             file. If `True`, the data is stored in a :code:`.npz` file.
@@ -176,7 +176,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
     ----------
     trajectory : `MDAnalysis.coordinates.base.ReaderBase`
         Simulation trajectory.
-    
+
     verbose : `bool`, default: :code:`True`
         Determines whether detailed progress is shown.
 
@@ -190,7 +190,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
         super().__init__(trajectory, verbose, **kwargs)
 
     def _dask_job_block(
-            self, frames: Union[slice, np.ndarray[int]], 
+            self, frames: Union[slice, np.ndarray[int]],
             indices: np.ndarray[int]) -> list:
         return [self._single_frame_parallel(f, i) for f, i in zip(frames, indices)]
 
@@ -212,7 +212,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
         ----------
         start : `int`, optional
             Starting frame for analysis.
-        
+
         stop : `int`, optional
             Ending frame for analysis.
 
@@ -234,7 +234,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
         module : `str`, keyword-only, default: :code:`"joblib"`
             Parallelization module to use for analysis.
 
-            **Valid values**: :code:`"dask"`, :code:`"joblib"`, and 
+            **Valid values**: :code:`"dask"`, :code:`"joblib"`, and
             :code:`"multiprocessing"`.
 
         block : `bool`, keyword-only, default: :code:`True`
@@ -244,11 +244,11 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             faster since the trajectory attributes do not have to be
             packaged for each analysis run. Has no effect if
             :code:`module="multiprocessing"`.
-        
+
         method : `str`, keyword-only, optional
             Specifies which Dask scheduler, Joblib backend, or
             multiprocessing start method is used.
-        
+
         **kwargs
             Additional keyword arguments to pass to
             :func:`dask.compute`, :class:`joblib.Parallel`, or
@@ -261,17 +261,17 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             Parallel analysis base object.
         """
 
-        _verbose = (getattr(self, '_verbose', False) if verbose is None 
+        _verbose = (getattr(self, '_verbose', False) if verbose is None
                     else verbose)
-        logging.basicConfig(format="{asctime} | {levelname:^8s} | {message}", 
-                            style="{", 
+        logging.basicConfig(format="{asctime} | {levelname:^8s} | {message}",
+                            style="{",
                             level=logging.INFO if _verbose else logging.WARNING)
 
         self._setup_frames(self._trajectory, start=start, stop=stop,
                            step=step, frames=frames)
         self._prepare()
 
-        n_jobs = min(n_jobs or np.inf, self.n_frames, 
+        n_jobs = min(n_jobs or np.inf, self.n_frames,
                      len(os.sched_getaffinity(0)))
         frames = (frames if frames
                   else np.arange(self.start or 0, self.stop or self.n_frames,
@@ -285,7 +285,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             try:
                 config = {"scheduler": distributed.worker.get_client(),
                           **kwargs}
-                n_jobs = min(len(config["scheduler"].get_worker_logs()), 
+                n_jobs = min(len(config["scheduler"].get_worker_logs()),
                              n_jobs)
             except ValueError:
                 if method is None:
@@ -294,7 +294,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                                     "threads", "single-threaded", "sync",
                                     "synchronous"}:
                     raise ValueError("Invalid Dask scheduler.")
-                    
+
                 if method == "distributed":
                     emsg = ("The Dask distributed client "
                             "(client = dask.distributed.Client(...)) "
@@ -333,12 +333,12 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                 self._results = [r for b in self._results for r in b]
 
         elif module == "joblib" and FOUND_JOBLIB:
-            if method is not None and method not in {"processes", "threads", 
+            if method is not None and method not in {"processes", "threads",
                                                      None}:
                 raise ValueError("Invalid Joblib backend.")
 
             logging.info("Starting analysis using Joblib "
-                         f"({n_jobs=}, backend={method})...")           
+                         f"({n_jobs=}, backend={method})...")
             if block:
                 self._results = joblib.Parallel(
                     n_jobs=n_jobs, prefer=method, **kwargs
@@ -353,7 +353,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                 self._results = joblib.Parallel(
                     n_jobs=n_jobs, prefer=method, **kwargs
                 )(
-                    joblib.delayed(self._single_frame_parallel)(f, i) 
+                    joblib.delayed(self._single_frame_parallel)(f, i)
                     for f, i in zip(frames, indices)
                 )
 
@@ -363,7 +363,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                         "the native multiprocessing module will be"
                         "used instead.")
                 warnings.warn(wmsg)
-            
+
             if method is None:
                 method = multiprocessing.get_start_method()
             elif method not in {"fork", "forkserver", "spawn"}:
@@ -372,15 +372,15 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             logging.info("Starting analysis using multiprocessing "
                          f"({n_jobs=}, {method=})...")
             with multiprocessing.get_context(method).Pool(n_jobs, **kwargs) as p:
-                self._results = p.starmap(self._single_frame_parallel, 
+                self._results = p.starmap(self._single_frame_parallel,
                                           zip(frames, indices))
         logging.info(f"Analysis finished in {datetime.now() - time_start}.")
 
         self._conclude()
         return self
-    
+
 class DynamicAnalysisBase(ParallelAnalysisBase, SerialAnalysisBase):
-    
+
     """
     A dynamic analysis base object.
 
@@ -391,7 +391,7 @@ class DynamicAnalysisBase(ParallelAnalysisBase, SerialAnalysisBase):
 
     parallel : `bool`
         Determines whether the analysis is performed in parallel.
-    
+
     verbose : `bool`, default: :code:`True`
         Determines whether detailed progress is shown.
 
@@ -401,9 +401,9 @@ class DynamicAnalysisBase(ParallelAnalysisBase, SerialAnalysisBase):
     """
 
     def __init__(
-            self, trajectory: ReaderBase, parallel: bool, 
+            self, trajectory: ReaderBase, parallel: bool,
             verbose: bool = False, **kwargs) -> None:
-        
+
         self._parallel = parallel
         (ParallelAnalysisBase if parallel else SerialAnalysisBase).__init__(
             self, trajectory, verbose=verbose, **kwargs
@@ -422,7 +422,7 @@ class DynamicAnalysisBase(ParallelAnalysisBase, SerialAnalysisBase):
         ----------
         start : `int`, optional
             Starting frame for analysis.
-        
+
         stop : `int`, optional
             Ending frame for analysis.
 
@@ -434,7 +434,7 @@ class DynamicAnalysisBase(ParallelAnalysisBase, SerialAnalysisBase):
 
         verbose : `bool`, optional
             Determines whether detailed progress is shown.
-        
+
         **kwargs
             Additional keyword arguments to pass to
             :class:`MDAnalysis.lib.log.ProgressBar`.
@@ -445,7 +445,7 @@ class DynamicAnalysisBase(ParallelAnalysisBase, SerialAnalysisBase):
             Analysis object with results.
         """
 
-        return (ParallelAnalysisBase if self._parallel 
+        return (ParallelAnalysisBase if self._parallel
                 else SerialAnalysisBase).run(
             self, start=start, stop=stop, step=step, frames=frames,
             verbose=verbose, **kwargs

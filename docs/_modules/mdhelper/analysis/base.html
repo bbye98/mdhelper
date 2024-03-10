@@ -402,8 +402,8 @@
 <span class="sd">.. moduleauthor:: Benjamin Ye &lt;GitHub: @bbye98&gt;</span>
 
 <span class="sd">This module contains custom base classes :class:`SerialAnalysisBase` and</span>
-<span class="sd">:class:`ParallelAnalysisBase` for serial and multithreaded data </span>
-<span class="sd">analysis, respectively, with the latter supporting the native </span>
+<span class="sd">:class:`ParallelAnalysisBase` for serial and multithreaded data</span>
+<span class="sd">analysis, respectively, with the latter supporting the native</span>
 <span class="sd">multiprocessing, Dask, and Joblib libraries for parallelization.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -433,14 +433,14 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="Hash">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.Hash.html#mdhelper.analysis.base.Hash">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.Hash.html#mdhelper.analysis.polymer.Hash">[docs]</a>
 <span class="k">class</span> <span class="nc">Hash</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A hash table, or an extension of the built-in `dict` with dot</span>
 <span class="sd">    notation for accessing properties.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
@@ -452,10 +452,10 @@
         <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-    
+
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-    
+
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
@@ -472,7 +472,7 @@
 
 
 <div class="viewcode-block" id="SerialAnalysisBase">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.base.SerialAnalysisBase">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.polymer.SerialAnalysisBase">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialAnalysisBase</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -482,7 +482,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    trajectory : `MDAnalysis.coordinates.base.ReaderBase`</span>
 <span class="sd">        Simulation trajectory.</span>
-<span class="sd">    </span>
+
 <span class="sd">    verbose : `bool`, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
 
@@ -496,12 +496,12 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SerialAnalysisBase.run">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.base.SerialAnalysisBase.run">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.polymer.SerialAnalysisBase.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SerialAnalysisBase&quot;</span><span class="p">:</span>
-<span class="w">        </span>
+
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Performs the calculation in serial.</span>
 
@@ -509,7 +509,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        start : `int`, optional</span>
 <span class="sd">            Starting frame for analysis.</span>
-<span class="sd">        </span>
+
 <span class="sd">        stop : `int`, optional</span>
 <span class="sd">            Ending frame for analysis.</span>
 
@@ -521,7 +521,7 @@
 
 <span class="sd">        verbose : `bool`, optional</span>
 <span class="sd">            Determines whether detailed progress is shown.</span>
-<span class="sd">        </span>
+
 <span class="sd">        **kwargs</span>
 <span class="sd">            Additional keyword arguments to pass to</span>
 <span class="sd">            :class:`MDAnalysis.lib.log.ProgressBar`.</span>
@@ -536,7 +536,7 @@
 
 
 <div class="viewcode-block" id="SerialAnalysisBase.save">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.base.SerialAnalysisBase.save">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.polymer.SerialAnalysisBase.save">[docs]</a>
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">],</span> <span class="n">archive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">compress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -548,10 +548,10 @@
 <span class="sd">        ----------</span>
 <span class="sd">        file : `str` or `file`</span>
 <span class="sd">            Filename or file-like object where the data will be saved.</span>
-<span class="sd">            If `file` is a `str`, the :code:`.npy` or :code:`.npz` </span>
+<span class="sd">            If `file` is a `str`, the :code:`.npy` or :code:`.npz`</span>
 <span class="sd">            extension will be appended automatically if not already</span>
 <span class="sd">            present.</span>
-<span class="sd">        </span>
+
 <span class="sd">        archive : `bool`, default: :code:`True`</span>
 <span class="sd">            Determines whether the results are saved to a single archive</span>
 <span class="sd">            file. If `True`, the data is stored in a :code:`.npz` file.</span>
@@ -578,7 +578,7 @@
 
 
 <div class="viewcode-block" id="ParallelAnalysisBase">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html#mdhelper.analysis.base.ParallelAnalysisBase">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html#mdhelper.analysis.polymer.ParallelAnalysisBase">[docs]</a>
 <span class="k">class</span> <span class="nc">ParallelAnalysisBase</span><span class="p">(</span><span class="n">SerialAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -588,7 +588,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    trajectory : `MDAnalysis.coordinates.base.ReaderBase`</span>
 <span class="sd">        Simulation trajectory.</span>
-<span class="sd">    </span>
+
 <span class="sd">    verbose : `bool`, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
 
@@ -602,7 +602,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_dask_job_block</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> 
+            <span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
             <span class="n">indices</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_frame_parallel</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">indices</span><span class="p">)]</span>
 
@@ -611,7 +611,7 @@
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="ParallelAnalysisBase.run">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html#mdhelper.analysis.base.ParallelAnalysisBase.run">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.ParallelAnalysisBase.html#mdhelper.analysis.polymer.ParallelAnalysisBase.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -626,7 +626,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        start : `int`, optional</span>
 <span class="sd">            Starting frame for analysis.</span>
-<span class="sd">        </span>
+
 <span class="sd">        stop : `int`, optional</span>
 <span class="sd">            Ending frame for analysis.</span>
 
@@ -648,7 +648,7 @@
 <span class="sd">        module : `str`, keyword-only, default: :code:`&quot;joblib&quot;`</span>
 <span class="sd">            Parallelization module to use for analysis.</span>
 
-<span class="sd">            **Valid values**: :code:`&quot;dask&quot;`, :code:`&quot;joblib&quot;`, and </span>
+<span class="sd">            **Valid values**: :code:`&quot;dask&quot;`, :code:`&quot;joblib&quot;`, and</span>
 <span class="sd">            :code:`&quot;multiprocessing&quot;`.</span>
 
 <span class="sd">        block : `bool`, keyword-only, default: :code:`True`</span>
@@ -658,11 +658,11 @@
 <span class="sd">            faster since the trajectory attributes do not have to be</span>
 <span class="sd">            packaged for each analysis run. Has no effect if</span>
 <span class="sd">            :code:`module=&quot;multiprocessing&quot;`.</span>
-<span class="sd">        </span>
+
 <span class="sd">        method : `str`, keyword-only, optional</span>
 <span class="sd">            Specifies which Dask scheduler, Joblib backend, or</span>
 <span class="sd">            multiprocessing start method is used.</span>
-<span class="sd">        </span>
+
 <span class="sd">        **kwargs</span>
 <span class="sd">            Additional keyword arguments to pass to</span>
 <span class="sd">            :func:`dask.compute`, :class:`joblib.Parallel`, or</span>
@@ -675,17 +675,17 @@
 <span class="sd">            Parallel analysis base object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">_verbose</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_verbose&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span> 
+        <span class="n">_verbose</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_verbose&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span>
                     <span class="k">else</span> <span class="n">verbose</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{asctime}</span><span class="s2"> | </span><span class="si">{levelname:^8s}</span><span class="s2"> | </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">,</span> 
-                            <span class="n">style</span><span class="o">=</span><span class="s2">&quot;{&quot;</span><span class="p">,</span> 
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{asctime}</span><span class="s2"> | </span><span class="si">{levelname:^8s}</span><span class="s2"> | </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">style</span><span class="o">=</span><span class="s2">&quot;{&quot;</span><span class="p">,</span>
                             <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span> <span class="k">if</span> <span class="n">_verbose</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_frames</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span>
                            <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">()</span>
 
-        <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_jobs</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> 
+        <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_jobs</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
                      <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sched_getaffinity</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
         <span class="n">frames</span> <span class="o">=</span> <span class="p">(</span><span class="n">frames</span> <span class="k">if</span> <span class="n">frames</span>
                   <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
@@ -699,7 +699,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="n">distributed</span><span class="o">.</span><span class="n">worker</span><span class="o">.</span><span class="n">get_client</span><span class="p">(),</span>
                           <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
-                <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get_worker_logs</span><span class="p">()),</span> 
+                <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get_worker_logs</span><span class="p">()),</span>
                              <span class="n">n_jobs</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -708,7 +708,7 @@
                                     <span class="s2">&quot;threads&quot;</span><span class="p">,</span> <span class="s2">&quot;single-threaded&quot;</span><span class="p">,</span> <span class="s2">&quot;sync&quot;</span><span class="p">,</span>
                                     <span class="s2">&quot;synchronous&quot;</span><span class="p">}:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid Dask scheduler.&quot;</span><span class="p">)</span>
-                    
+
                 <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;distributed&quot;</span><span class="p">:</span>
                     <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The Dask distributed client &quot;</span>
                             <span class="s2">&quot;(client = dask.distributed.Client(...)) &quot;</span>
@@ -747,12 +747,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">b</span><span class="p">]</span>
 
         <span class="k">elif</span> <span class="n">module</span> <span class="o">==</span> <span class="s2">&quot;joblib&quot;</span> <span class="ow">and</span> <span class="n">FOUND_JOBLIB</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;processes&quot;</span><span class="p">,</span> <span class="s2">&quot;threads&quot;</span><span class="p">,</span> 
+            <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;processes&quot;</span><span class="p">,</span> <span class="s2">&quot;threads&quot;</span><span class="p">,</span>
                                                      <span class="kc">None</span><span class="p">}:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid Joblib backend.&quot;</span><span class="p">)</span>
 
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting analysis using Joblib &quot;</span>
-                         <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">n_jobs</span><span class="si">=}</span><span class="s2">, backend=</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">)...&quot;</span><span class="p">)</span>           
+                         <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">n_jobs</span><span class="si">=}</span><span class="s2">, backend=</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">)...&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">Parallel</span><span class="p">(</span>
                     <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">prefer</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -767,7 +767,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">Parallel</span><span class="p">(</span>
                     <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">prefer</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
                 <span class="p">)(</span>
-                    <span class="n">joblib</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_frame_parallel</span><span class="p">)(</span><span class="n">f</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> 
+                    <span class="n">joblib</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_frame_parallel</span><span class="p">)(</span><span class="n">f</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
                 <span class="p">)</span>
 
@@ -777,7 +777,7 @@
                         <span class="s2">&quot;the native multiprocessing module will be&quot;</span>
                         <span class="s2">&quot;used instead.&quot;</span><span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
-            
+
             <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">method</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">get_start_method</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;fork&quot;</span><span class="p">,</span> <span class="s2">&quot;forkserver&quot;</span><span class="p">,</span> <span class="s2">&quot;spawn&quot;</span><span class="p">}:</span>
@@ -786,7 +786,7 @@
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting analysis using multiprocessing &quot;</span>
                          <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">n_jobs</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">method</span><span class="si">=}</span><span class="s2">)...&quot;</span><span class="p">)</span>
             <span class="k">with</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">get_context</span><span class="p">(</span><span class="n">method</span><span class="p">)</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_frame_parallel</span><span class="p">,</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_frame_parallel</span><span class="p">,</span>
                                           <span class="nb">zip</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">indices</span><span class="p">))</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analysis finished in </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">time_start</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
@@ -794,11 +794,11 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 </div>
 
-    
+
 <div class="viewcode-block" id="DynamicAnalysisBase">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html#mdhelper.analysis.base.DynamicAnalysisBase">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html#mdhelper.analysis.polymer.DynamicAnalysisBase">[docs]</a>
 <span class="k">class</span> <span class="nc">DynamicAnalysisBase</span><span class="p">(</span><span class="n">ParallelAnalysisBase</span><span class="p">,</span> <span class="n">SerialAnalysisBase</span><span class="p">):</span>
-<span class="w">    </span>
+
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A dynamic analysis base object.</span>
 
@@ -809,7 +809,7 @@
 
 <span class="sd">    parallel : `bool`</span>
 <span class="sd">        Determines whether the analysis is performed in parallel.</span>
-<span class="sd">    </span>
+
 <span class="sd">    verbose : `bool`, default: :code:`True`</span>
 <span class="sd">        Determines whether detailed progress is shown.</span>
 
@@ -819,16 +819,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">:</span> <span class="n">ReaderBase</span><span class="p">,</span> <span class="n">parallel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">:</span> <span class="n">ReaderBase</span><span class="p">,</span> <span class="n">parallel</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
             <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> <span class="o">=</span> <span class="n">parallel</span>
         <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="n">parallel</span> <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="DynamicAnalysisBase.run">
-<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html#mdhelper.analysis.base.DynamicAnalysisBase.run">[docs]</a>
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.base.DynamicAnalysisBase.html#mdhelper.analysis.polymer.DynamicAnalysisBase.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -842,7 +842,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        start : `int`, optional</span>
 <span class="sd">            Starting frame for analysis.</span>
-<span class="sd">        </span>
+
 <span class="sd">        stop : `int`, optional</span>
 <span class="sd">            Ending frame for analysis.</span>
 
@@ -854,7 +854,7 @@
 
 <span class="sd">        verbose : `bool`, optional</span>
 <span class="sd">            Determines whether detailed progress is shown.</span>
-<span class="sd">        </span>
+
 <span class="sd">        **kwargs</span>
 <span class="sd">            Additional keyword arguments to pass to</span>
 <span class="sd">            :class:`MDAnalysis.lib.log.ProgressBar`.</span>
@@ -865,7 +865,7 @@
 <span class="sd">            Analysis object with results.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> 
+        <span class="k">return</span> <span class="p">(</span><span class="n">ParallelAnalysisBase</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span>
                 <span class="k">else</span> <span class="n">SerialAnalysisBase</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span>
             <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>

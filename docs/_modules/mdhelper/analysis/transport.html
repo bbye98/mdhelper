@@ -878,7 +878,7 @@
 
 <span class="sd">    relates the flux :math:`\\pmb{J}_i` of species :math:`i` to the</span>
 <span class="sd">    Onsager transport coefficients :math:`L_{ij}` and the</span>
-<span class="sd">    electrochemical potential :math:`\\bar{\\mu}_j` of species </span>
+<span class="sd">    electrochemical potential :math:`\\bar{\\mu}_j` of species</span>
 <span class="sd">    :math:`j`. There is an Onsager transport coefficient for each pair</span>
 <span class="sd">    of species that, unlike the Nernst–Einstein equation, captures the</span>
 <span class="sd">    strong cross-correlations in electrolytes.</span>
@@ -896,9 +896,9 @@
 
 <span class="sd">    where :math:`k_\\mathrm{B}` is the Boltzmann constant, :math:`T` is</span>
 <span class="sd">    the system temperature, :math:`V` is the system volume, :math:`t` is</span>
-<span class="sd">    time, and :math:`\\pmb{r}_\\alpha` and :math:`\\pmb{r}_\\beta` are </span>
-<span class="sd">    the positions of particles :math:`\\alpha` and :math:`\\beta` </span>
-<span class="sd">    belonging to species :math:`i` and :math:`j`, respectively. The </span>
+<span class="sd">    time, and :math:`\\pmb{r}_\\alpha` and :math:`\\pmb{r}_\\beta` are</span>
+<span class="sd">    the positions of particles :math:`\\alpha` and :math:`\\beta`</span>
+<span class="sd">    belonging to species :math:`i` and :math:`j`, respectively. The</span>
 <span class="sd">    angular brackets denote the ensemble average. It is evident that</span>
 <span class="sd">    :math:`L_{ij}=L_{ji}`; hence, the equation above is an Onsager</span>
 <span class="sd">    reciprocal relation.</span>
@@ -982,7 +982,7 @@
 
 <span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
 <span class="sd">           residues (or molecules), and residues contain atoms. This</span>
-<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to</span>
 <span class="sd">           function correctly, unless your selected grouping is always</span>
 <span class="sd">           :code:`&quot;atoms&quot;`.</span>
 
@@ -1139,7 +1139,7 @@
 <span class="sd">        Onsager transport coefficients :math:`L_{ij}`. Only available</span>
 <span class="sd">        after running :meth:`calculate_transport_coefficients`.</span>
 
-<span class="sd">        **Shape**: </span>
+<span class="sd">        **Shape**:</span>
 <span class="sd">        :math:`(N_\\mathrm{b},\\,N_\\mathrm{g},\\,N_\\mathrm{g})`.</span>
 
 <span class="sd">        **Reference unit**:</span>
@@ -1154,7 +1154,7 @@
 
 <span class="sd">            L_{ii}^\\mathrm{self}=\\dfrac{N}{k_\\mathrm{B}TV}D_i</span>
 
-<span class="sd">        Only available after running </span>
+<span class="sd">        Only available after running</span>
 <span class="sd">        :meth:`calculate_transport_coefficients`.</span>
 
 <span class="sd">        **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.</span>
@@ -1400,7 +1400,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
             <span class="n">unwrap</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
                    <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span><span class="p">,</span> <span class="n">images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)</span>
-            
+
         <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">positions</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span>
@@ -1421,14 +1421,14 @@
                                       <span class="n">masses</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_wrap</span><span class="p">:</span>
-                    <span class="n">positions</span> <span class="o">=</span> <span class="n">wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">],</span> 
+                    <span class="n">positions</span> <span class="o">=</span> <span class="n">wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">],</span>
                                      <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span>
                 <span class="n">scom</span> <span class="o">=</span> <span class="n">center_of_mass</span><span class="p">(</span>
                     <span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="p">,</span>
                     <span class="n">masses</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
-                        <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span><span class="o">.</span><span class="n">masses</span> 
+                        <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span><span class="o">.</span><span class="n">masses</span>
                          <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">)]</span>
                     <span class="p">)</span>
                 <span class="p">)</span>

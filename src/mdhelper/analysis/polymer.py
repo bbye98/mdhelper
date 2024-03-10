@@ -125,11 +125,11 @@ class _PolymerAnalysisBase(DynamicAnalysisBase):
         .. note::
 
            In a standard trajectory file, segments (or chains) contain
-           residues (or molecules), and residues contain atoms. This 
-           heirarchy must be adhered to for this analysis module to 
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to
            function correctly. If your trajectory file does not contain
-           the correct segment or residue information, provide the 
-           number of chains and chain lengths in `n_chains` and 
+           the correct segment or residue information, provide the
+           number of chains and chain lengths in `n_chains` and
            `n_monomers`, respectively.
 
         .. container::
@@ -268,11 +268,11 @@ class Gyradius(_PolymerAnalysisBase):
         .. note::
 
            In a standard trajectory file, segments (or chains) contain
-           residues (or molecules), and residues contain atoms. This 
-           heirarchy must be adhered to for this analysis module to 
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to
            function correctly. If your trajectory file does not contain
-           the correct segment or residue information, provide the 
-           number of chains and chain lengths in `n_chains` and 
+           the correct segment or residue information, provide the
+           number of chains and chain lengths in `n_chains` and
            `n_monomers`, respectively.
 
         .. container::
@@ -544,11 +544,11 @@ class EndToEndVector(_PolymerAnalysisBase):
         .. note::
 
            In a standard trajectory file, segments (or chains) contain
-           residues (or molecules), and residues contain atoms. This 
-           heirarchy must be adhered to for this analysis module to 
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to
            function correctly. If your trajectory file does not contain
-           the correct segment or residue information, provide the 
-           number of chains and chain lengths in `n_chains` and 
+           the correct segment or residue information, provide the
+           number of chains and chain lengths in `n_chains` and
            `n_monomers`, respectively.
 
         .. container::
@@ -746,10 +746,18 @@ class EndToEndVector(_PolymerAnalysisBase):
 
     def _conclude(self) -> None:
 
+        # Clean up memory
+        if self._unwrap:
+            del self._positions_end_old
+            del self._images
+            del self._thresholds
+
         _acf = correlation_fft if self._fft else correlation_shift
-        for i, M in ProgressBar(enumerate(self._n_chains)):
+        for i, (s, M) in ProgressBar(enumerate(zip(self._slices, 
+                                                   self._n_chains))):
             self.results.acf[i] = _acf(
-                (self._e2e / np.linalg.norm(self._e2e, axis=-1, keepdims=True))
+                (self._e2e[s] 
+                 / np.linalg.norm(self._e2e[s], axis=-1, keepdims=True))
                 .reshape(self._n_blocks, -1, M, 3),
                 average=True, vector=True
             )
@@ -822,11 +830,11 @@ class SingleChainStructureFactor(DynamicAnalysisBase):
         .. note::
 
            In a standard trajectory file, segments (or chains) contain
-           residues (or molecules), and residues contain atoms. This 
-           heirarchy must be adhered to for this analysis module to 
+           residues (or molecules), and residues contain atoms. This
+           heirarchy must be adhered to for this analysis module to
            function correctly. If your trajectory file does not contain
-           the correct segment or residue information, provide the 
-           number of chains and chain lengths in `n_chains` and 
+           the correct segment or residue information, provide the
+           number of chains and chain lengths in `n_chains` and
            `n_monomers`, respectively.
 
         .. container::

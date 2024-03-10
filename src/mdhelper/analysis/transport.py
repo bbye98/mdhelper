@@ -460,7 +460,7 @@ class Onsager(SerialAnalysisBase):
 
     relates the flux :math:`\\pmb{J}_i` of species :math:`i` to the
     Onsager transport coefficients :math:`L_{ij}` and the
-    electrochemical potential :math:`\\bar{\\mu}_j` of species 
+    electrochemical potential :math:`\\bar{\\mu}_j` of species
     :math:`j`. There is an Onsager transport coefficient for each pair
     of species that, unlike the Nernst–Einstein equation, captures the
     strong cross-correlations in electrolytes.
@@ -478,9 +478,9 @@ class Onsager(SerialAnalysisBase):
 
     where :math:`k_\\mathrm{B}` is the Boltzmann constant, :math:`T` is
     the system temperature, :math:`V` is the system volume, :math:`t` is
-    time, and :math:`\\pmb{r}_\\alpha` and :math:`\\pmb{r}_\\beta` are 
-    the positions of particles :math:`\\alpha` and :math:`\\beta` 
-    belonging to species :math:`i` and :math:`j`, respectively. The 
+    time, and :math:`\\pmb{r}_\\alpha` and :math:`\\pmb{r}_\\beta` are
+    the positions of particles :math:`\\alpha` and :math:`\\beta`
+    belonging to species :math:`i` and :math:`j`, respectively. The
     angular brackets denote the ensemble average. It is evident that
     :math:`L_{ij}=L_{ji}`; hence, the equation above is an Onsager
     reciprocal relation.
@@ -564,7 +564,7 @@ class Onsager(SerialAnalysisBase):
 
            In a standard trajectory file, segments (or chains) contain
            residues (or molecules), and residues contain atoms. This
-           heirarchy must be adhered to for this analysis module to 
+           heirarchy must be adhered to for this analysis module to
            function correctly, unless your selected grouping is always
            :code:`"atoms"`.
 
@@ -721,7 +721,7 @@ class Onsager(SerialAnalysisBase):
         Onsager transport coefficients :math:`L_{ij}`. Only available
         after running :meth:`calculate_transport_coefficients`.
 
-        **Shape**: 
+        **Shape**:
         :math:`(N_\\mathrm{b},\\,N_\\mathrm{g},\\,N_\\mathrm{g})`.
 
         **Reference unit**:
@@ -736,7 +736,7 @@ class Onsager(SerialAnalysisBase):
 
             L_{ii}^\\mathrm{self}=\\dfrac{N}{k_\\mathrm{B}TV}D_i
 
-        Only available after running 
+        Only available after running
         :meth:`calculate_transport_coefficients`.
 
         **Shape**: :math:`(N_\\mathrm{b},\\,N_\\mathrm{g})`.
@@ -982,7 +982,7 @@ class Onsager(SerialAnalysisBase):
         if self._unwrap:
             unwrap(positions, self._positions_old, self._dimensions,
                    thresholds=self._thresholds, images=self._images)
-            
+
         for g, gr, s in zip(self._groups, self._groupings, self._slices):
             self._positions[self._frame_index, s] = (
                 positions[g.indices] if gr == "atoms"
@@ -1003,14 +1003,14 @@ class Onsager(SerialAnalysisBase):
                                       masses=self.universe.atoms.masses)
             else:
                 if self._center_wrap:
-                    positions = wrap(self._positions[self._frame_index], 
+                    positions = wrap(self._positions[self._frame_index],
                                      self._dimensions, in_place=False)
                 else:
                     positions = self._positions[self._frame_index]
                 scom = center_of_mass(
                     positions=positions,
                     masses=np.concatenate(
-                        [getattr(g, gr).masses 
+                        [getattr(g, gr).masses
                          for g, gr in zip(self._groups, self._groupings)]
                     )
                 )

@@ -22,13 +22,14 @@ def test_class_dipole_moment():
     diel = DielectricConstant(universe.atoms)
     diel.run()
 
-    rp = electrostatics.DipoleMoment(universe.atoms, unwrap=True).run()
+    rp = electrostatics.DipoleMoment(universe.atoms).run()
     rp.calculate_relative_permittivity(300)
 
-    prp = electrostatics.DipoleMoment(universe.atoms, unwrap=True, 
-                                      parallel=True).run()
+    prp = electrostatics.DipoleMoment(universe.atoms, parallel=True).run()
     prp.calculate_relative_permittivity(300)
 
     # TEST CASE 1: Relative permittivity of water system
     assert np.isclose(diel.results.eps_mean, rp.results.dielectric)
     assert np.isclose(diel.results.eps_mean, prp.results.dielectric)
+
+test_class_dipole_moment()

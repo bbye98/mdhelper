@@ -175,6 +175,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.html">topology</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of topology</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.create_atoms.html">create_atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.unwrap.html">unwrap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.topology.wrap.html">wrap</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.utility.html">utility</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of utility</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -205,8 +206,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.calculate_relaxation_time.html">calculate_relaxation_time</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_fft.html">correlation_fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.correlation_shift.html">correlation_shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.EndToEndVector.html">EndToEndVector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Gyradius.html">Gyradius</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.Relaxation.html">Relaxation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.analysis.polymer.SingleChainStructureFactor.html">SingleChainStructureFactor</a></li>
 </ul>
 </li>
@@ -423,7 +424,7 @@
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.thermodynamics.ConstantVolumeHeatCapacity.html#mdhelper.analysis.thermodynamics.ConstantVolumeHeatCapacity">[docs]</a>
 <span class="k">class</span> <span class="nc">ConstantVolumeHeatCapacity</span><span class="p">:</span>
 
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A serial implementation to caluclate the constant-volume heat</span>
 <span class="sd">    capacity :math:`C_V` for a canonical (:math:`NVT`) system.</span>
 
@@ -431,13 +432,13 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       C_V=\frac{\langle U^2\rangle-\langle U\rangle^2}</span>
-<span class="sd">       {k_\mathrm{B}T^2}</span>
+<span class="sd">       C_V=\\frac{\\langle U^2\\rangle-\\langle U\\rangle^2}</span>
+<span class="sd">       {k_\\mathrm{B}T^2}</span>
 
 <span class="sd">    where :math:`U` is the total potential energy of the system,</span>
-<span class="sd">    :math:`\langle\cdot\rangle` denotes the ensemble average,</span>
-<span class="sd">    :math:`k_\mathrm{B}` is the Boltzmann constant, and :math:`T` is the</span>
-<span class="sd">    system temperature.</span>
+<span class="sd">    :math:`\\langle\\cdot\\rangle` denotes the ensemble average,</span>
+<span class="sd">    :math:`k_\\mathrm{B}` is the Boltzmann constant, and :math:`T` is</span>
+<span class="sd">    the system temperature.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -455,30 +456,45 @@
 <span class="sd">        Potential energies. If not provided, the log file must be</span>
 <span class="sd">        provided in `log_file`.</span>
 
-<span class="sd">    temperature : `float` or `pint.Quantity`, optional</span>
+<span class="sd">    temperature : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \</span>
+<span class="sd">    optional</span>
 <span class="sd">        System temperature. If not provided, the averaged temperature</span>
 <span class="sd">        from the log file (if available) is used.</span>
 
 <span class="sd">    reduced : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Specifies whether the data is in reduced units.</span>
 
+<span class="sd">    sep : `str`, keyword-only, default: :code:`&quot;,&quot;`</span>
+<span class="sd">        Delimiter for OpenMM log files.</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    results : `dict`</span>
-<span class="sd">        Analysis results:</span>
+<span class="sd">    results.units : `dict`</span>
+<span class="sd">        Reference units for the results. For example, to get the</span>
+<span class="sd">        reference units for :code:`results.temperature`, call</span>
+<span class="sd">        :code:`results.units[&quot;results.temperature&quot;]`.</span>
 
-<span class="sd">        .. container::</span>
+<span class="sd">    results.energies : `numpy.ndarray`</span>
+<span class="sd">        Total (kinetic + potential) energy values.</span>
 
-<span class="sd">           * :code:`&quot;energies&quot;`: Potential energy values.</span>
-<span class="sd">           * :code:`&quot;heat_capacity&quot;`: Constant-volume heat capacity.</span>
-<span class="sd">           * :code:`&quot;units&quot;`: Reference units. For example, to get the</span>
-<span class="sd">             reference units for the heat capacity, use key</span>
-<span class="sd">             :code:`results.heat_capacity`.</span>
+<span class="sd">        **Reference unit**: :math:`\\mathrm{kcal/mol}` or</span>
+<span class="sd">        :math:`\\mathrm{kJ/mol}`.</span>
+
+<span class="sd">    results.temperature : `float`</span>
+<span class="sd">        System temperature.</span>
+
+<span class="sd">        **Reference unit**: :math:`\\mathrm{K}`.</span>
+
+<span class="sd">    results.heat_capacity : `float`</span>
+<span class="sd">        Constant-volume heat capacity.</span>
+
+<span class="sd">        **Reference unit**: :math:`\\mathrm{kcal/K}` or</span>
+<span class="sd">        :math:`\\mathrm{kJ/K}`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_COLUMNS</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;lammps&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;energy&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;TotEng&quot;</span><span class="p">,</span> <span class="s2">&quot;KinEng&quot;</span><span class="p">,</span> <span class="s2">&quot;PotEng&quot;</span><span class="p">,</span> <span class="s2">&quot;E_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;E_bond&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;energy&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;TotEng&quot;</span><span class="p">,</span> <span class="s2">&quot;KinEng&quot;</span><span class="p">,</span> <span class="s2">&quot;PotEng&quot;</span><span class="p">,</span> <span class="s2">&quot;E_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;E_bond&quot;</span><span class="p">,</span>
                        <span class="s2">&quot;E_coul&quot;</span><span class="p">,</span> <span class="s2">&quot;E_dihed&quot;</span><span class="p">,</span> <span class="s2">&quot;E_impro&quot;</span><span class="p">,</span> <span class="s2">&quot;E_long&quot;</span><span class="p">,</span> <span class="s2">&quot;E_vdwl&quot;</span><span class="p">],</span>
             <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="s2">&quot;Temp&quot;</span>
         <span class="p">},</span>
@@ -492,8 +508,8 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">log_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">log_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
             <span class="n">energies</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">temperature</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
-            <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">temperature</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">Hash</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="p">{})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span> <span class="o">=</span> <span class="n">reduced</span>
@@ -501,7 +517,7 @@
         <span class="k">if</span> <span class="n">energies</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.energy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">mole</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">energies</span> <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span>
-                <span class="n">energies</span><span class="p">,</span> 
+                <span class="n">energies</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.energy&quot;</span><span class="p">]</span>
             <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">log_file</span><span class="p">:</span>
@@ -509,7 +525,7 @@
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">log</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
-            <span class="c1"># Determine the simulation toolkit used to write the log </span>
+            <span class="c1"># Determine the simulation toolkit used to write the log</span>
             <span class="c1"># file.</span>
             <span class="k">if</span> <span class="n">log_format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">cs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_COLUMNS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -525,19 +541,31 @@
                 <span class="k">if</span> <span class="s2">&quot;minimize&quot;</span> <span class="ow">in</span> <span class="n">log</span><span class="p">:</span>
                     <span class="n">log</span> <span class="o">=</span> <span class="n">log</span><span class="p">[</span><span class="n">log</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;Minimization stats:&quot;</span><span class="p">):]</span>
                 <span class="n">log</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">log</span><span class="p">):</span>
                     <span class="k">if</span> <span class="s2">&quot;Step&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                         <span class="n">log</span> <span class="o">=</span> <span class="n">log</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+                        <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">break</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
+                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;No thermodynamic data found in log file &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">log_file</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
                 <span class="n">log</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
                 <span class="n">log</span> <span class="o">=</span> <span class="n">log</span><span class="p">[:</span><span class="n">log</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;Loop time of &quot;</span><span class="p">)]</span>
                 <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;delim_whitespace&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.energies&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kilocalorie</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">mole</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.energies&quot;</span><span class="p">]</span> \
+                    <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kilocalorie</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">mole</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.heat_capacity&quot;</span><span class="p">]</span> \
+                    <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kilocalorie</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">==</span> <span class="s2">&quot;openmm&quot;</span><span class="p">:</span>
-                <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sep&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="p">}</span>
+                <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sep&quot;</span><span class="p">:</span> <span class="n">sep</span><span class="p">}</span>
                 <span class="k">if</span> <span class="n">reduced</span><span class="p">:</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;OpenMM simulations always use real units.&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.energies&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">mole</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.energies&quot;</span><span class="p">]</span> \
+                    <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">mole</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.heat_capacity&quot;</span><span class="p">]</span> \
+                    <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span>
 
             <span class="c1"># Determine which columns to keep.</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_COLUMNS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">][</span><span class="s2">&quot;energy&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">log</span><span class="p">:</span>
@@ -546,33 +574,32 @@
                 <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_COLUMNS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">][</span><span class="s2">&quot;energy&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_COLUMNS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">][</span><span class="s2">&quot;energy&quot;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="n">log</span><span class="p">:</span>
                     <span class="n">cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_COLUMNS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">][</span><span class="s2">&quot;energy&quot;</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
-                <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">e</span> <span class="ow">in</span> <span class="n">log</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_COLUMNS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">][</span><span class="s2">&quot;energy&quot;</span><span class="p">][</span><span class="mi">3</span><span class="p">:]):</span>
+                <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">e</span> <span class="ow">in</span> <span class="n">log</span>
+                         <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_COLUMNS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">][</span><span class="s2">&quot;energy&quot;</span><span class="p">][</span><span class="mi">3</span><span class="p">:]):</span>
                     <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_COLUMNS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">][</span><span class="s2">&quot;energy&quot;</span><span class="p">][</span><span class="mi">3</span><span class="p">:]:</span>
                         <span class="k">if</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">log</span><span class="p">:</span>
                             <span class="n">cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Potential energy column not found.&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">emsg</span> <span class="o">=</span> <span class="s2">&quot;Total energy and kinetic energy columns not found.&quot;</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Total or kinetic energy column not found.&quot;</span><span class="p">)</span>
 
             <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">log</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">energies</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No log file or energy values provided.&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="n">Q_</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span><span class="o">.</span><span class="n">magnitude</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">units</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">temperature</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">log_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No log file or temperature value provided.&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_COLUMNS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">][</span><span class="s2">&quot;temperature&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">reduced</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">temperature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> \
+                <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span><span class="n">temperature</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span>
+        <span class="k">elif</span> <span class="n">log_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No log file or temperature value provided.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> \
+                <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_COLUMNS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">][</span><span class="s2">&quot;temperature&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span>
 
 <div class="viewcode-block" id="ConstantVolumeHeatCapacity.run">
 <a class="viewcode-back" href="../../../api/mdhelper.analysis.thermodynamics.ConstantVolumeHeatCapacity.html#mdhelper.analysis.thermodynamics.ConstantVolumeHeatCapacity.run">[docs]</a>
@@ -587,7 +614,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        start : `int`, optional</span>
 <span class="sd">            Starting frame for analysis.</span>
-<span class="sd">        </span>
+
 <span class="sd">        stop : `int`, optional</span>
 <span class="sd">            Ending frame for analysis.</span>
 
@@ -599,7 +626,7 @@
 
 <span class="sd">        verbose : `bool`, optional</span>
 <span class="sd">            Determines whether detailed progress is shown.</span>
-<span class="sd">        </span>
+
 <span class="sd">        **kwargs</span>
 <span class="sd">            Additional keyword arguments to pass to</span>
 <span class="sd">            :class:`MDAnalysis.lib.log.ProgressBar`.</span>
@@ -611,20 +638,23 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span>
-                               <span class="n">stop</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">energies</span><span class="p">),</span>
+            <span class="n">frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="n">stop</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">energies</span><span class="p">),</span>
                                <span class="n">step</span><span class="p">)</span>
-        <span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">energies</span><span class="p">[</span><span class="n">frames</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.energies&quot;</span><span class="p">]</span>
+
+        <span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">energies</span><span class="p">[</span><span class="n">frames</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reduced</span><span class="p">:</span>
-            <span class="k">pass</span> <span class="c1"># TODO</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">heat_capacity</span> <span class="o">=</span> <span class="p">(((</span><span class="n">U</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">U</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+                                          <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">C_V</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="p">((</span><span class="n">U</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">U</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-                <span class="o">/</span> <span class="p">(</span><span class="n">ureg</span><span class="o">.</span><span class="n">avogadro_constant</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">boltzmann_constant</span>
-                <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">ureg</span><span class="o">.</span><span class="n">kilojoule</span> <span class="o">/</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">heat_capacity</span> <span class="o">=</span> <span class="n">C_V</span><span class="o">.</span><span class="n">magnitude</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.heat_capacity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">C_V</span><span class="o">.</span><span class="n">units</span>
+            <span class="n">U</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.energies&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">heat_capacity</span> \
+                <span class="o">=</span> <span class="n">strip_unit</span><span class="p">(</span>
+                    <span class="p">((</span><span class="n">U</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">U</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="o">/</span> <span class="p">(</span><span class="n">ureg</span><span class="o">.</span><span class="n">avogadro_constant</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">boltzmann_constant</span>
+                    <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span>
+                       <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.heat_capacity&quot;</span><span class="p">]</span>
+                <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 </div>

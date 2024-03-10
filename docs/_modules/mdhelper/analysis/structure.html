@@ -505,7 +505,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the Hankel transform :math:`F_0(q)` of discrete data </span>
+<span class="sd">    Computes the Hankel transform :math:`F_0(q)` of discrete data</span>
 <span class="sd">    :math:`f(r)` using the zeroth-order Bessel function :math:`J_0`.</span>
 
 <span class="sd">    .. math::</span>
@@ -610,14 +610,14 @@
 <span class="sd">    .. math::</span>
 
 <span class="sd">       n_k=2\pi\rho_j\int_{r_{k-1}}^{r_k}rg_{ij}(r)\,dr</span>
-<span class="sd">    </span>
+
 <span class="sd">    for two-dimensional systems, where :math:`k` is the index,</span>
 <span class="sd">    :math:`\rho_j` is the bulk number density of species :math:`j` and</span>
-<span class="sd">    :math:`r_k` is the :math:`(k + 1)`-th local minimum of </span>
+<span class="sd">    :math:`r_k` is the :math:`(k + 1)`-th local minimum of</span>
 <span class="sd">    :math:`g_{ij}(r)`.</span>
 
 <span class="sd">    If the radial distribution function :math:`g_{ij}(r)` does not</span>
-<span class="sd">    contain as many local minima as `n_coord_nums`, this method will </span>
+<span class="sd">    contain as many local minima as `n_coord_nums`, this method will</span>
 <span class="sd">    return `numpy.nan` for the coordination numbers that could not be</span>
 <span class="sd">    calculated.</span>
 
@@ -659,7 +659,7 @@
 
     <span class="k">if</span> <span class="n">n_dims</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid number of dimensions.&quot;</span><span class="p">)</span>
-        
+
     <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rdf</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">n_dims</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">simpson</span><span class="p">(</span><span class="n">r</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rdf</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">],</span> <span class="n">r</span><span class="p">)</span>
@@ -693,7 +693,7 @@
 <span class="k">def</span> <span class="nf">calculate_structure_factor</span><span class="p">(</span>
         <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">g</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">equal</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">rho</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">x_i</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_j</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-        <span class="n">q_lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">q_upper</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_q</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1_000</span><span class="p">,</span> 
+        <span class="n">q_lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">q_upper</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_q</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1_000</span><span class="p">,</span>
         <span class="n">n_dims</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">formalism</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FZ&quot;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 
@@ -721,11 +721,11 @@
 <span class="sd">        `x_j`.</span>
 
 <span class="sd">    rho : `float`</span>
-<span class="sd">        Bulk number density :math:`\rho`, surface density </span>
-<span class="sd">        :math:`\sigma`, or line density :math:`\lambda`.</span>
+<span class="sd">        Bulk number density :math:`\rho` or surface density</span>
+<span class="sd">        :math:`\sigma`.</span>
 
-<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^{-3}`, </span>
-<span class="sd">        :math:`\mathrm{Å}^{-2}`, or :math:`\mathrm{Å}^{-1}`.</span>
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}^{-3}` or</span>
+<span class="sd">        :math:`\mathrm{Å}^{-2}`.</span>
 
 <span class="sd">    x_i : `float`, default: :code:`1`</span>
 <span class="sd">        Number concentration of species :math:`i`. Required if</span>
@@ -787,14 +787,14 @@
 
 <span class="sd">                S_{ij}(q)=\delta_{ij}+(x_ix_j)^{1/2}\frac{4\pi\rho}{q}</span>
 <span class="sd">                \int_0^\infty (g_{ij}(r)-1)\sin{(qr)}r\,dr</span>
-<span class="sd">           </span>
+
 <span class="sd">           In two-dimensional systems, the second term is</span>
 
 <span class="sd">           .. math::</span>
 
 <span class="sd">              2\pi\rho\int_0^\infty (g_{ij}(r)-1)J_0(qr)r\,dr</span>
 
-<span class="sd">           instead, where :math:`J_0` is the zeroth-order Bessel </span>
+<span class="sd">           instead, where :math:`J_0` is the zeroth-order Bessel</span>
 <span class="sd">           function.</span>
 
 <span class="sd">    Returns</span>
@@ -853,8 +853,8 @@
 <span class="k">class</span> <span class="nc">RDF</span><span class="p">(</span><span class="n">DynamicAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Serial and parallel implementations to calculate the radial </span>
-<span class="sd">    distribution function (RDF) :math:`g_{ij}(r)` between types </span>
+<span class="sd">    Serial and parallel implementations to calculate the radial</span>
+<span class="sd">    distribution function (RDF) :math:`g_{ij}(r)` between types</span>
 <span class="sd">    :math:`i` and :math:`j` and its related properties for two-</span>
 <span class="sd">    and three-dimensional systems.</span>
 
@@ -865,7 +865,8 @@
 <span class="sd">       g_{ij}^\mathrm{3D}(r)=\frac{V}{4\pi r^2N_iN_j}</span>
 <span class="sd">       \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle</span>
 <span class="sd">       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)</span>
-<span class="sd">       \right\rangle g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}</span>
+<span class="sd">       \right\rangle\\</span>
+<span class="sd">       g_{ij}^\mathrm{2D}(r)=\frac{A}{2\pi rN_iN_j}</span>
 <span class="sd">       \sum_{\alpha=1}^{N_i}\sum_{\beta=1}^{N_j}\left\langle</span>
 <span class="sd">       \delta\left(|\mathbf{r}_\alpha-\mathbf{r}_\beta|-r\right)</span>
 <span class="sd">       \right\rangle</span>
@@ -977,7 +978,7 @@
 
 <span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
 <span class="sd">           residues (or molecules), and residues contain atoms. This</span>
-<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to</span>
 <span class="sd">           function correctly, unless your selected grouping is always</span>
 <span class="sd">           :code:`&quot;atoms&quot;`.</span>
 
@@ -1093,7 +1094,7 @@
             <span class="n">drop_axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rdf&quot;</span><span class="p">,</span>
             <span class="n">exclusion</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span>
-            <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+            <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">parallel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span> <span class="o">=</span> <span class="n">ag1</span>
@@ -1102,7 +1103,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trajectory does not contain system &quot;</span>
                              <span class="s2">&quot;dimension information.&quot;</span><span class="p">)</span>
-        
+
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groupings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -1117,14 +1118,14 @@
                     <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid grouping &#39;</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&#39;. The options are &quot;</span>
                             <span class="s2">&quot;&#39;atoms&#39;, &#39;residues&#39;, and &#39;segments&#39;.&quot;</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">groupings</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groupings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">groupings</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groupings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
                                <span class="k">else</span> <span class="n">groupings</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_drop_axis</span> <span class="o">=</span> <span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">drop_axis</span><span class="p">)</span> <span class="o">-</span> <span class="mi">120</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">drop_axis</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
                            <span class="k">else</span> <span class="n">drop_axis</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drop_axis</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">}:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid axis to drop.&quot;</span><span class="p">)</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_bins</span> <span class="o">=</span> <span class="n">n_bins</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_range</span> <span class="o">=</span> <span class="nb">range</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span> <span class="o">=</span> <span class="n">norm</span>
@@ -1144,7 +1145,7 @@
                               <span class="s2">&quot;results.edges&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span><span class="p">}</span>
 
         <span class="c1"># Preallocate floating-point number for total volume (or area)</span>
-        <span class="c1"># analyzed (for when system dimensions can change, such as </span>
+        <span class="c1"># analyzed (for when system dimensions can change, such as</span>
         <span class="c1"># during NpT equilibration)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span> <span class="o">==</span> <span class="s2">&quot;rdf&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_area_or_volume</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -1162,7 +1163,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_area_or_volume</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">volume</span>
         <span class="k">else</span><span class="p">:</span>
 
-            <span class="c1"># Apply corrections to avoid including periodic images in </span>
+            <span class="c1"># Apply corrections to avoid including periodic images in</span>
             <span class="c1"># the dimension to exclude</span>
             <span class="n">pos1</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drop_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos2</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drop_axis</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">dims</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_drop_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">dims</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
@@ -1224,7 +1225,7 @@
             <span class="p">}</span>
             <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ranges_indices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">radial_histogram</span><span class="p">(</span>
-                    <span class="n">pos1</span><span class="o">=</span><span class="n">pos1</span><span class="p">,</span> <span class="n">pos2</span><span class="o">=</span><span class="n">pos2</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">range</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> 
+                    <span class="n">pos1</span><span class="o">=</span><span class="n">pos1</span><span class="p">,</span> <span class="n">pos2</span><span class="o">=</span><span class="n">pos2</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">range</span><span class="o">=</span><span class="n">r</span><span class="p">,</span>
                     <span class="n">dims</span><span class="o">=</span><span class="n">_ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">exclusion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_exclusion</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1343,7 +1344,7 @@
 
 <span class="sd">               If :code:`reduced=True` was set in the :class:`RDF`</span>
 <span class="sd">               constructor, `temperature` should be equal to the energy</span>
-<span class="sd">               scale. When the Lennard-Jones potential is used, it </span>
+<span class="sd">               scale. When the Lennard-Jones potential is used, it</span>
 <span class="sd">               generally means that :math:`T^*=1`, or `temperature=1`.</span>
 
 <span class="sd">            **Reference unit**: :math:`\mathrm{K}`.</span>
@@ -1359,7 +1360,7 @@
             <span class="n">kBT</span> <span class="o">=</span> <span class="n">temperature</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">kBT</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">ureg</span><span class="o">.</span><span class="n">avogadro_constant</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">boltzmann_constant</span> 
+                <span class="n">ureg</span><span class="o">.</span><span class="n">avogadro_constant</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">boltzmann_constant</span>
                 <span class="o">*</span> <span class="n">temperature</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span>
             <span class="p">)</span><span class="o">.</span><span class="n">m_as</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;results.pmf&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pmf</span> <span class="o">=</span> <span class="o">-</span><span class="n">kBT</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_rdf</span><span class="p">())</span></div>
@@ -1430,7 +1431,7 @@
 
 <span class="sd">               .. seealso::</span>
 
-<span class="sd">                  For more information, see </span>
+<span class="sd">                  For more information, see</span>
 <span class="sd">                  :func:`calculate_structure_factor`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1447,9 +1448,9 @@
 <span class="k">class</span> <span class="nc">StructureFactor</span><span class="p">(</span><span class="n">DynamicAnalysisBase</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Serial and parallel implementations to calculate the static </span>
-<span class="sd">    structure factor :math:`S(q)` or partial structure factor </span>
-<span class="sd">    :math:`S_{\\alpha\\beta}(q)` for species :math:`\\alpha` and </span>
+<span class="sd">    Serial and parallel implementations to calculate the static</span>
+<span class="sd">    structure factor :math:`S(q)` or partial structure factor</span>
+<span class="sd">    :math:`S_{\\alpha\\beta}(q)` for species :math:`\\alpha` and</span>
 <span class="sd">    :math:`\\beta`.</span>
 
 <span class="sd">    The static structure factor is a measure of how a material scatters</span>
@@ -1499,7 +1500,7 @@
 
 <span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
 <span class="sd">           residues (or molecules), and residues contain atoms. This</span>
-<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to</span>
 <span class="sd">           function correctly, unless your selected grouping is always</span>
 <span class="sd">           :code:`&quot;atoms&quot;`.</span>
 
@@ -1603,11 +1604,11 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]],</span>
-            <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span> 
+            <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span>
             <span class="n">dimensions</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">n_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_surfaces</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">n_surface_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">wavevectors</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+            <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">)</span> <span class="k">else</span> <span class="n">groups</span>
@@ -1714,14 +1715,14 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parallel</span><span class="p">:</span>
 
-            <span class="c1"># Create a persisting array to hold atom positions for a </span>
+            <span class="c1"># Create a persisting array to hold atom positions for a</span>
             <span class="c1"># given frame so that it doesn&#39;t have to be recreated each</span>
             <span class="c1"># frame</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
             <span class="c1"># Preallocate arrays to store results</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="kc">None</span> 
+                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="kc">None</span>
                 <span class="k">else</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">))</span>
             <span class="p">)</span>
 
@@ -1945,7 +1946,7 @@
 
 <span class="sd">           In a standard trajectory file, segments (or chains) contain</span>
 <span class="sd">           residues (or molecules), and residues contain atoms. This</span>
-<span class="sd">           heirarchy must be adhered to for this analysis module to </span>
+<span class="sd">           heirarchy must be adhered to for this analysis module to</span>
 <span class="sd">           function correctly, unless your selected grouping is always</span>
 <span class="sd">           :code:`&quot;atoms&quot;`.</span>
 
@@ -2045,11 +2046,11 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]],</span>
-            <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span> 
+            <span class="n">groupings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span>
             <span class="n">dimensions</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="s2">&quot;unit.Quantity&quot;</span><span class="p">,</span> <span class="n">Q_</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">n_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_surfaces</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_surface_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
             <span class="n">wavevectors</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">fft</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> 
+            <span class="n">fft</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">)</span> <span class="k">else</span> <span class="n">groups</span>

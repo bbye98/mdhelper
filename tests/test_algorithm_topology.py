@@ -9,7 +9,7 @@ sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/sr
 from mdhelper.algorithm import topology # noqa: E402
 
 rng = np.random.default_rng()
-dims = np.array((10, 10, 10))
+dims = np.array((10.0, 10.0, 10.0))
 
 def test_func_create_atoms_error():
 
@@ -50,6 +50,8 @@ def test_func_create_atoms_random():
     pos = topology.create_atoms(topo, N)
     assert pos.shape == (N, 3)
 
+test_func_create_atoms_random()
+
 def test_func_create_atoms_polymer():
 
     # TEST CASE 1: Random polymer melt
@@ -61,7 +63,7 @@ def test_func_create_atoms_polymer():
 
     # TEST CASE 2: Random polymer melt with bond information and wrapped
     # positions
-    pos, bonds = topology.create_atoms(dims, N, N_p, connectivity=True,
+    pos, bonds = topology.create_atoms(dims, N, N_p, bonds=True,
                                        randomize=True, wrap=True)
     assert pos.shape == (N, 3)
     assert bonds.shape[0] == N - M
@@ -95,3 +97,38 @@ def test_func_create_atoms_lattice():
     assert pos[1, 1] == 0.142 * unit.nanometer
     assert np.allclose(dims[:2], new_dims[:2], atol=1)
     assert new_dims[2] == 0 * unit.nanometer
+
+    # TEST CASE 5: Cubic crystal lattice
+    pos, new_dims = topology.create_atoms(dims, lattice="cubic", length=1)
+    assert np.allclose(pos[-1], dims - 1)
+    
+def test_func_unwrap():
+
+    pos_old = np.array(((2.0, 2.0, 2.0),))
+    images = np.zeros_like(pos_old, dtype=int)
+    thresholds = dims / 2
+    pos = np.array(((8.0, 8.0, 8.0),))
+
+    # TEST CASE 1: Unwrap not in-place
+    pos_unwrapped, pos_old_updated, images = topology.unwrap(
+        pos, pos_old, dims, thresholds=thresholds, images=images, 
+        in_place=False
+    )
+    assert (np.allclose(pos_unwrapped[0], -2)
+            and np.allclose(pos, pos_old_updated))
+
+    # TEST CASE 2: Unwrap in-place
+    topology.unwrap(pos, pos_old, dims)
+    assert np.allclose(pos[0], -2)
+
+def test_func_wrap():
+    
+    pos = np.array(((9.0, 10.0, 11.0),))
+
+    # TEST CASE 1: Wrap not in-place
+    pos_wrapped = topology.wrap(pos, dims, in_place=False)
+    assert np.allclose(pos_wrapped[0], (9, 10, 1))
+
+    # TEST CASE 2: Wrap in-place
+    topology.wrap(pos, dims)
+    assert np.allclose(pos[0], (9, 10, 1))
