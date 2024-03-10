@@ -48,7 +48,7 @@ def test_class_gyradius():
     gyradius = polymer.Gyradius(protein, grouping="residues", 
                                 components=True).run()
     gyradius_parallel = polymer.Gyradius(protein, grouping="residues", 
-                                         components=True, paralle=True).run()
+                                         components=True, parallel=True).run()
     assert np.allclose(rog.results["timeseries"][:, 1:], 
                        gyradius.results.gyradii[0])
     assert np.allclose(rog.results["timeseries"][:, 1:], 

@@ -452,7 +452,7 @@ class Gyradius(_PolymerAnalysisBase):
                     positions=positions.reshape((M, N_p, 3)),
                     masses=g.masses.reshape((M, N_p)),
                     components=self._components
-                )
+                ).mean(axis=0)
 
     def _single_frame_parallel(
             self, frame: int, index: int) -> tuple[int, np.ndarray[float]]:
@@ -485,7 +485,7 @@ class Gyradius(_PolymerAnalysisBase):
                 positions=positions.reshape((M, N_p, 3)),
                 masses=g.masses.reshape((M, N_p)),
                 components=self._components
-            )
+            ).mean(axis=0)
 
         return index, results
 
