@@ -50,23 +50,25 @@ def test_func_create_atoms_random():
     pos = topology.create_atoms(topo, N)
     assert pos.shape == (N, 3)
 
-test_func_create_atoms_random()
-
 def test_func_create_atoms_polymer():
 
     # TEST CASE 1: Random polymer melt
     M = rng.integers(1, 100)
-    N_p = rng.integers(2, 100)
+    N_p = rng.integers(4, 100)
     N = M * N_p
     pos = topology.create_atoms(dims, N, N_p)
     assert pos.shape == (N, 3)
 
-    # TEST CASE 2: Random polymer melt with bond information and wrapped
-    # positions
-    pos, bonds = topology.create_atoms(dims, N, N_p, bonds=True,
-                                       randomize=True, wrap=True)
+    # TEST CASE 2: Random polymer melt with bond, angle, and dihedral 
+    # nformation and wrapped positions
+    pos, bonds, angles, dihedrals = topology.create_atoms(
+        dims, N, N_p, bonds=True, angles=True, dihedrals=True, randomize=True,
+        wrap=True
+    )
     assert pos.shape == (N, 3)
     assert bonds.shape[0] == N - M
+    assert angles.shape[0] == N - 2 * M
+    assert dihedrals.shape[0] == N - 3 * M
     assert np.all((pos[:, 0] > 0) & (pos[:, 0] < dims[0]))
     assert np.all((pos[:, 1] > 0) & (pos[:, 2] < dims[1]))
     assert np.all((pos[:, 1] > 0) & (pos[:, 2] < dims[2]))

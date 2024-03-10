@@ -45,9 +45,27 @@ def test_func_rebin():
     assert np.allclose(utility.rebin(np.tile(arr[None, :], (5, 1))),
                        np.tile(ref[None, :], (5, 1)))
     
-    # TEST CASE 3: No factor specified
+    # TEST CASE 3: No factor specified and cannot be determined
     with pytest.raises(ValueError):
-        utility.rebin(np.empty((17,)), 3)
+        utility.rebin(np.empty((17,)))
+
+def test_func_get_lj_scaling_factors():
+    
+    # TEST CASE 1: Lennard-Jones scaling factors
+    pint_factors = utility.get_lj_scaling_factors({
+        "mass": 39.948 * ureg.gram / ureg.mole,
+        "energy": 3.9520829798737548e-25 * ureg.kilocalorie,
+        "length": 3.4 * ureg.angstrom
+    })
+    openmm_factors = utility.get_lj_scaling_factors({
+        "mass": 39.948 * unit.gram / unit.mole,
+        "energy": 0.238 * unit.kilocalorie_per_mole / unit.AVOGADRO_CONSTANT_NA,
+        "length": 3.4 * unit.angstrom
+    })
+    for key in openmm_factors.keys():
+        value, unit_ = utility.strip_unit(openmm_factors[key])
+        assert np.isclose(utility.strip_unit(pint_factors[key], unit_)[0],
+                          value)
 
 def test_func_strip_unit():
 
@@ -88,3 +106,11 @@ def test_func_strip_unit():
         R__ * unit.meter ** 3 * unit.atmosphere / (unit.kelvin * unit.mole),
         ureg.joule / (ureg.kelvin * ureg.mole)
     ) == (R_, ureg.joule / (ureg.kelvin * ureg.mole))
+
+    # TEST CASE 5: Strip unit from Quantity with non-standard 
+    # incompatible unit specified
+    with pytest.raises(ValueError):
+        utility.strip_unit(
+            R_ * unit.joule / (unit.kelvin * unit.mole),
+            ureg.meter ** 3 * ureg.atmosphere / (ureg.kelvin * ureg.mole)
+        )

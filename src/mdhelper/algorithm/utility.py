@@ -153,7 +153,7 @@ def rebin(x: np.ndarray[float], factor: int = None) -> np.ndarray[float]:
     """
 
     if factor is None:
-        factors = np.array(sympy.divisors(x.shape[-1]))
+        factors = np.array(sympy.divisors(x.shape[-1])[1:])
         factor_indices = np.where(factors < 10)[0]
         if len(factor_indices):
             factor = factors[factor_indices[-1]]
@@ -188,7 +188,7 @@ def get_scaling_factors(
               }
 
         **Reference units**: :math:`\mathrm{g/mol}`, :math:`\mathrm{nm}`,
-        and :math:`\mathrm{kJ/mol}`.
+        and :math:`\mathrm{kJ}`.
 
     other : `dict`, optional
         Other scaling factors to compute. The key should be the name of
@@ -253,7 +253,7 @@ def get_lj_scaling_factors(
               }
 
         **Reference units**: :math:`\mathrm{g/mol}`, :math:`\mathrm{nm}`,
-        and :math:`\mathrm{kJ/mol}`.
+        and :math:`\mathrm{kJ}`.
 
     other : `dict`, optional
         Other scaling factors to compute. The key should be the name of
@@ -386,7 +386,7 @@ def strip_unit(
             if getattr(unit_, "__module__", None) == "openmm.unit.unit":
                 unit_, unit__ = ureg.Unit(""), unit_
                 for u, p in unit__.iter_base_or_scaled_units():
-                    unit_ *= ureg.Unit(u.name) ** p
+                    unit_ *= ureg.Unit(u.name.replace(" ", "_")) ** p
 
             # Convert str or Pint target unit (unit_) to Pint unit
             # (unit__)

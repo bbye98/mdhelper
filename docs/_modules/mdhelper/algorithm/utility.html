@@ -559,7 +559,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">factor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">factors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">divisors</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">factors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">divisors</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="n">factor_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">factors</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">factor_indices</span><span class="p">):</span>
             <span class="n">factor</span> <span class="o">=</span> <span class="n">factors</span><span class="p">[</span><span class="n">factor_indices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
@@ -597,7 +597,7 @@
 <span class="sd">              }</span>
 
 <span class="sd">        **Reference units**: :math:`\mathrm{g/mol}`, :math:`\mathrm{nm}`,</span>
-<span class="sd">        and :math:`\mathrm{kJ/mol}`.</span>
+<span class="sd">        and :math:`\mathrm{kJ}`.</span>
 
 <span class="sd">    other : `dict`, optional</span>
 <span class="sd">        Other scaling factors to compute. The key should be the name of</span>
@@ -665,7 +665,7 @@
 <span class="sd">              }</span>
 
 <span class="sd">        **Reference units**: :math:`\mathrm{g/mol}`, :math:`\mathrm{nm}`,</span>
-<span class="sd">        and :math:`\mathrm{kJ/mol}`.</span>
+<span class="sd">        and :math:`\mathrm{kJ}`.</span>
 
 <span class="sd">    other : `dict`, optional</span>
 <span class="sd">        Other scaling factors to compute. The key should be the name of</span>
@@ -801,7 +801,7 @@
             <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unit_</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;openmm.unit.unit&quot;</span><span class="p">:</span>
                 <span class="n">unit_</span><span class="p">,</span> <span class="n">unit__</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">unit_</span>
                 <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">unit__</span><span class="o">.</span><span class="n">iter_base_or_scaled_units</span><span class="p">():</span>
-                    <span class="n">unit_</span> <span class="o">*=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">**</span> <span class="n">p</span>
+                    <span class="n">unit_</span> <span class="o">*=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">))</span> <span class="o">**</span> <span class="n">p</span>
 
             <span class="c1"># Convert str or Pint target unit (unit_) to Pint unit</span>
             <span class="c1"># (unit__)</span>
