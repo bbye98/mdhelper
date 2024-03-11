@@ -29,6 +29,7 @@
    mdhelper.algorithm
    mdhelper.analysis
    mdhelper.fit
+   mdhelper.lammps
    mdhelper.openmm
    mdhelper.plot
 

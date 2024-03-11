@@ -1,4 +1,4 @@
-r"""
+"""
 Curve fitting
 =============
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
