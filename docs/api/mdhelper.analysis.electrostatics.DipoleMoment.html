@@ -436,15 +436,6 @@ the system temperature.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>groups</strong><span class="classifier"><cite>MDAnalysis.AtomGroup</cite> or array-like</span></dt><dd><p>Group(s) of atoms for which the dipole moments are calculated.</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>Ensure that no bonds are split over images when atoms are
-wrapped into the primary simulation cell. If you think your
-system may have split bonds, use
-<a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/transformations/wrap.html#MDAnalysis.transformations.wrap.unwrap" title="(in MDAnalysis v2.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap.unwrap</span></code></a> to unwrap
-the trajectory before passing any <code class="code docutils literal notranslate"><span class="pre">AtomGroup</span></code> to this
-class.</p>
-</div>
 </dd>
 <dt><strong>charges</strong><span class="classifier">array-like, keyword-only, optional</span></dt><dd><p>Charge information for the atoms in the <span class="math notranslate nohighlight">\(N_\mathrm{g}\)</span>
 groups in <cite>groups</cite>. If not provided, it should be available in

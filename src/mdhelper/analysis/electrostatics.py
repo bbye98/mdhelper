@@ -11,6 +11,7 @@ from numbers import Real
 from typing import Union
 
 import MDAnalysis as mda
+from MDAnalysis.lib.mdamath import make_whole
 import numpy as np
 
 from .base import DynamicAnalysisBase
@@ -136,15 +137,6 @@ class DipoleMoment(DynamicAnalysisBase):
     ----------
     groups : `MDAnalysis.AtomGroup` or array-like
         Group(s) of atoms for which the dipole moments are calculated.
-
-        .. important::
-
-           Ensure that no bonds are split over images when atoms are
-           wrapped into the primary simulation cell. If you think your
-           system may have split bonds, use
-           :class:`MDAnalysis.transformations.wrap.unwrap` to unwrap
-           the trajectory before passing any :code:`AtomGroup` to this
-           class.
 
     charges : array-like, keyword-only, optional
         Charge information for the atoms in the :math:`N_\mathrm{g}`
@@ -342,6 +334,8 @@ class DipoleMoment(DynamicAnalysisBase):
             # boundary crossings
             self._positions_old = np.empty((self._N, 3))
             for g, s in zip(self._groups, self._slices):
+                for f in g.fragments:
+                    make_whole(f)
                 self._positions_old[s] = g.positions
             self._images = np.zeros((self._N, 3), dtype=int)
             self._thresholds = self._dimensions / 2

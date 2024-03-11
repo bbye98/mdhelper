@@ -12,6 +12,7 @@ import warnings
 
 import MDAnalysis as mda
 from MDAnalysis.lib.distances import minimize_vectors
+from MDAnalysis.lib.mdamath import make_whole
 import numpy as np
 
 from .. import FOUND_OPENMM
@@ -297,7 +298,7 @@ def unwrap(
     ) -> Union[None, tuple[np.ndarray[float], np.ndarray[float], 
                            np.ndarray[int]]]:
 
-    """
+    r"""
     Globally unwraps particle positions.
 
     Parameters
@@ -387,7 +388,7 @@ def unwrap_edge(
         thresholds: np.ndarray[float] = None, masses: np.ndarray[float] = None,
     ) -> np.ndarray[float]:
 
-    """
+    r"""
     Locally unwraps the positions of molecules at the edge of the
     simulation box.
 
@@ -449,7 +450,7 @@ def unwrap_edge(
         for fragment in group.fragments:
 
             # Get locally unwrapped atom positions for fragment
-            fragment_positions = mda.lib.mdamath.make_whole(fragment)
+            fragment_positions = make_whole(fragment)
 
             # Find fragment atoms that are actually in the AtomGroup
             fragment_mask = np.in1d(fragment.ix, group.ix, assume_unique=True)
@@ -531,7 +532,7 @@ def wrap(
         positions: np.ndarray[float], dimensions: np.ndarray[float], *,
         in_place: bool = True) -> np.ndarray[float]:
 
-    """
+    r"""
     Wraps particle positions back into the primary simulation cell.
 
     Parameters

@@ -13,6 +13,7 @@ from typing import Any, Union
 import warnings
 
 import MDAnalysis as mda
+from MDAnalysis.lib.mdamath import make_whole
 import numpy as np
 from scipy import integrate, sparse
 
@@ -325,15 +326,6 @@ class DensityProfile(DynamicAnalysisBase):
     ----------
     groups : `MDAnalysis.AtomGroup` or array-like
         Groups of atoms for which density profiles are calculated.
-
-        .. important::
-
-           Ensure that no bonds are split over images when atoms are
-           wrapped into the primary simulation cell. If you think your
-           system may have split bonds, use
-           :class:`MDAnalysis.transformations.wrap.unwrap` to unwrap
-           the trajectory before passing any :code:`AtomGroup` to this
-           class.
 
     groupings : `str` or array-like, default: :code:`"atoms"`
         Determines whether the centers of mass are used in lieu of
@@ -694,6 +686,8 @@ class DensityProfile(DynamicAnalysisBase):
             # each particle
             self._positions_old = np.empty((self._N, 3))
             for g, gr, s in zip(self._groups, self._groupings, self._slices):
+                for f in g.fragments:
+                    make_whole(f)
                 self._positions_old[s] = (g.positions if gr == "atoms"
                                           else center_of_mass(g, gr))
             self._images = np.zeros((self._N, 3), dtype=int)

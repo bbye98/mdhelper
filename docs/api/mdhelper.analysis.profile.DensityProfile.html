@@ -441,15 +441,6 @@ electrostatics:</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>groups</strong><span class="classifier"><cite>MDAnalysis.AtomGroup</cite> or array-like</span></dt><dd><p>Groups of atoms for which density profiles are calculated.</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>Ensure that no bonds are split over images when atoms are
-wrapped into the primary simulation cell. If you think your
-system may have split bonds, use
-<a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/transformations/wrap.html#MDAnalysis.transformations.wrap.unwrap" title="(in MDAnalysis v2.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap.unwrap</span></code></a> to unwrap
-the trajectory before passing any <code class="code docutils literal notranslate"><span class="pre">AtomGroup</span></code> to this
-class.</p>
-</div>
 </dd>
 <dt><strong>groupings</strong><span class="classifier"><cite>str</cite> or array-like, default: <code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code></span></dt><dd><p>Determines whether the centers of mass are used in lieu of
 individual atom positions. If <cite>groupings</cite> is a <cite>str</cite>, the same

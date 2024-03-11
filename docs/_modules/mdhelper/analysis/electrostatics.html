@@ -415,6 +415,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.mdamath</span> <span class="kn">import</span> <span class="n">make_whole</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">DynamicAnalysisBase</span>
@@ -545,15 +546,6 @@
 <span class="sd">    ----------</span>
 <span class="sd">    groups : `MDAnalysis.AtomGroup` or array-like</span>
 <span class="sd">        Group(s) of atoms for which the dipole moments are calculated.</span>
-
-<span class="sd">        .. important::</span>
-
-<span class="sd">           Ensure that no bonds are split over images when atoms are</span>
-<span class="sd">           wrapped into the primary simulation cell. If you think your</span>
-<span class="sd">           system may have split bonds, use</span>
-<span class="sd">           :class:`MDAnalysis.transformations.wrap.unwrap` to unwrap</span>
-<span class="sd">           the trajectory before passing any :code:`AtomGroup` to this</span>
-<span class="sd">           class.</span>
 
 <span class="sd">    charges : array-like, keyword-only, optional</span>
 <span class="sd">        Charge information for the atoms in the :math:`N_\mathrm{g}`</span>
@@ -751,6 +743,8 @@
             <span class="c1"># boundary crossings</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">fragments</span><span class="p">:</span>
+                    <span class="n">make_whole</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_positions_old</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">positions</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_thresholds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span> <span class="o">/</span> <span class="mi">2</span>

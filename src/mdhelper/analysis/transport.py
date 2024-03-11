@@ -13,6 +13,7 @@ import warnings
 
 import MDAnalysis as mda
 from MDAnalysis.lib.log import ProgressBar
+from MDAnalysis.lib.mdamath import make_whole
 import numpy as np
 from scipy import optimize
 
@@ -941,6 +942,8 @@ class Onsager(SerialAnalysisBase):
                 if hasattr(self._sliced_trajectory, "frames")
                 else (self.start or 0)
             ]
+            for f in self.universe.atoms.fragments:
+                make_whole(f)
             self._positions_old = self.universe.atoms.positions
             self._images = np.zeros((self.universe.atoms.n_atoms, 3), dtype=int)
             self._thresholds = self._dimensions / 2

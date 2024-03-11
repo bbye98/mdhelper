@@ -12,6 +12,7 @@ import warnings
 
 import MDAnalysis as mda
 from MDAnalysis.lib.log import ProgressBar
+from MDAnalysis.lib.mdamath import make_whole
 import numpy as np
 from scipy import optimize, special
 
@@ -377,12 +378,21 @@ class Gyradius(_PolymerAnalysisBase):
                                         self._slices, self._n_chains,
                                         self._n_monomers):
                 if self._internal and gr == "residues":
+                    for f in g.fragments:
+                        make_whole(f)
                     self._positions_old[s] = center_of_mass(g, gr)
                 else:
+                    positions = unwrap_edge(
+                        positions=g.positions, 
+                        bonds=np.array([(i * N_p + j, i * N_p + j + 1) 
+                                        for i in range(M) for j in range(N_p - 1)]), 
+                        dimensions=self._dimensions, 
+                        masses=g.masses
+                    )
                     self._positions_old[s] = (
-                        g.positions if gr == "atoms"
+                        positions if gr == "atoms"
                         else center_of_mass(
-                            positions=g.positions.reshape(M, N_p, -1, 3),
+                            positions=positions.reshape(M, N_p, -1, 3),
                             masses=g.masses.reshape(M, N_p, -1)
                         )
                     )
@@ -696,7 +706,7 @@ class EndToEndVector(_PolymerAnalysisBase):
                                         self._n_monomers):
                 if self._internal and gr == "residues":
                     for f in g.fragments:
-                        mda.lib.mdamath.make_whole(f)
+                        make_whole(f)
                     self._positions_end_old[s] = np.stack(
                         [center_of_mass(s.residues[[0, -1]].atoms, "residues")
                          for s in g.segments]
