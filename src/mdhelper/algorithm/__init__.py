@@ -9,4 +9,4 @@ modules.
 
 from . import correlation, molecule, topology, utility
 
-__all__ = ["correlation", "molecule", "topology", "utility"]
+__all__ = ["correlation", "molecule", "topology", "unit", "utility"]

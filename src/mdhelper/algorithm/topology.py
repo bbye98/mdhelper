@@ -8,11 +8,16 @@ transformations, like the generation of initial particle positions.
 """
 
 from typing import Any, Union
+import warnings
 
+import MDAnalysis as mda
+from MDAnalysis.lib.distances import minimize_vectors
 import numpy as np
 
 from .. import FOUND_OPENMM
-from . import utility
+from .molecule import center_of_mass
+from .utility import get_closest_factors, replicate, find_connected_nodes
+from .unit import strip_unit
 
 if FOUND_OPENMM:
     from openmm import app, unit
@@ -157,8 +162,8 @@ def create_atoms(
     # Get raw numerical dimensions and length
     if isinstance(dims, app.Topology):
         dims = dims.getUnitCellDimensions()
-    dims, length_unit = utility.strip_unit(dims, length_unit)
-    length, length_unit = utility.strip_unit(length, length_unit)
+    dims, length_unit = strip_unit(dims, length_unit)
+    length, length_unit = strip_unit(length, length_unit)
     length_unit = length_unit or 1
 
     if lattice is None:
@@ -185,7 +190,7 @@ def create_atoms(
 
             # Determine unit cell information for each segment
             segments = N // N_p
-            n_cells = utility.get_closest_factors(segments, 3)
+            n_cells = get_closest_factors(segments, 3)
             cell_dims = dims / n_cells
 
             # Randomly generate a segment within the unit cell
@@ -198,7 +203,7 @@ def create_atoms(
 
             # Replicate unit cell in x-, y-, and z-directions (and
             # randomize, if desired)
-            pos = utility.replicate(cell_dims, cell_pos, n_cells)
+            pos = replicate(cell_dims, cell_pos, n_cells)
             if randomize:
                 pos = np.vstack(rng.permutation(pos.reshape((segments, -1, 3))))
 
@@ -274,7 +279,7 @@ def create_atoms(
             cell_dims[np.isinf(cell_dims)] = 0
 
             # Replicate unit cell in x-, y-, and z-directions
-            pos = utility.replicate(cell_dims, cell_pos, n_cells)
+            pos = replicate(cell_dims, cell_pos, n_cells)
 
         # Remove particles outside of system boundaries
         if flexible:
@@ -375,6 +380,152 @@ def unwrap(
         images[mask] -= np.sign(dpos[mask]).astype(int)
         positions += images * dimensions
         return positions, positions_old, images
+
+def unwrap_edge(
+        *, group: mda.AtomGroup = None, positions: np.ndarray[float] = None,
+        bonds: np.ndarray[int] = None, dimensions: np.ndarray[float] = None, 
+        thresholds: np.ndarray[float] = None, masses: np.ndarray[float] = None,
+    ) -> np.ndarray[float]:
+
+    """
+    Locally unwraps the positions of molecules at the edge of the
+    simulation box.
+
+    Parameters
+    ----------
+    group : `MDAnalysis.AtomGroup`, optional
+        Atom group. If not provided, the atom positions, bonds, and
+        dimensions must be provided in `positions`, `bonds`, and 
+        `dimensions`, respectively.
+
+    positions : `numpy.ndarray`, optional
+        Atom positions.
+
+        **Shape**: :math:`(N,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    bonds : `numpy.ndarray`, optional
+        Pairs of all bonded atom indices with respect to `positions`.
+
+        **Shape**: :math:`(N_\mathrm{bonds},\,2)`.
+
+    dimensions : `numpy.ndarray`, optional
+        System dimensions and, optionally, angles.
+
+        **Shape**: :math:`(3,)` or :math:`(6,)`.
+
+        **Reference unit**: :math:`\mathrm{nm}` (lengths) and
+        :math:`^\\circ` (angles).
+
+    thresholds : `numpy.ndarray`, optional
+        Maximum distances in each direction an atom can move before it 
+        is considered to have crossed a boundary.
+
+        **Shape**: :math:`(3,)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+
+    masses : `numpy.ndarray`, optional
+        Atom masses. If not specified, all atoms are assumed to have the
+        same mass.
+
+        **Shape**: :math:`(N,)`.
+
+        **Reference unit**: :math:`\mathrm{amu}`.
+
+    Returns
+    -------
+    positions : `numpy.ndarray`
+        Unwrapped atom positions.
+
+        **Shape**: :math:`(N,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{nm}`.
+    """
+    
+    if group is not None:
+        positions = group.positions
+        for fragment in group.fragments:
+
+            # Get locally unwrapped atom positions for fragment
+            fragment_positions = mda.lib.mdamath.make_whole(fragment)
+
+            # Find fragment atoms that are actually in the AtomGroup
+            fragment_mask = np.in1d(fragment.ix, group.ix, assume_unique=True)
+
+            # Get corresponding indices for the AtomGroup positions array
+            mask = np.in1d(group.ix, fragment.ix[fragment_mask], 
+                           assume_unique=True)
+            
+            # Update the AtomGroup positions
+            positions[mask] = fragment_positions[fragment_mask]
+
+        return positions
+    
+    elif positions is not None:
+        if bonds is None:
+            emsg = "Bond information must be specified in 'bonds'."
+            raise ValueError(emsg)
+        if dimensions is None:
+            emsg = "System dimensions must be specified in 'dimensions'."
+            raise ValueError(emsg)
+        elif len(dimensions) == 3:
+            dimensions = np.concatenate((dimensions, (90, 90, 90)))
+        if thresholds is None:
+            thresholds = dimensions[:3] / 2
+        
+        # Get graph of connected atoms
+        bond_pairs = {}
+        for a, b in bonds:
+            bond_pairs.setdefault(a, []).append(b)
+            bond_pairs.setdefault(b, []).append(a)
+
+        # Determine indices of connected atoms in each molecule
+        molecules = find_connected_nodes(bond_pairs)
+
+        # Specify which atoms have had their positions updated
+        done = {m[0] for m in molecules}
+        todo = set(range(len(positions))).difference(done)
+
+        # Upwrap atom positions using that of the nearest bonded atom
+        # that has already been unwrapped
+        while len(todo) > 0:
+            for particle_index in todo:
+                for bonded_index in bond_pairs[particle_index]:
+                    if bonded_index in done:
+                        positions[particle_index] = (
+                            positions[bonded_index] 
+                            + minimize_vectors(positions[particle_index] 
+                                               - positions[bonded_index],
+                                               dimensions)
+                        )
+                        done.add(particle_index)
+                        break
+            todo -= done
+        
+        if masses is None:
+            wmsg = ("No masses specified. All atoms are assumed to "
+                    "have a mass of 1.")
+            warnings.warn(wmsg)
+            masses = np.ones(len(positions))
+        elif len(masses) == len(molecules):
+            masses = np.concatenate(masses)
+        elif len(masses) != len(positions):
+            emsg = ("The number of masses must be equal to the number "
+                    "of atoms or the number of molecules.")
+            raise ValueError(emsg)
+        
+        # Recenter molecules using their centers of mass
+        for molecule_indices in molecules:
+            com = center_of_mass(positions=positions[molecule_indices], 
+                                 masses=masses[molecule_indices])
+            positions[molecule_indices] \
+                += wrap(com, dimensions[:3], in_place=False) - com
+
+        return positions
+    else:
+        raise ValueError("Either 'group' or 'positions' must be specified.")
 
 def wrap(
         positions: np.ndarray[float], dimensions: np.ndarray[float], *,

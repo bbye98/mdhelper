@@ -31,25 +31,25 @@ def test_class_gyradius():
                           (r_sq[:, [0, 2]]).sum(axis=1),
                           (r_sq[:, [0, 1]]).sum(axis=1)))
         return np.sqrt((masses * r_ssq).sum(axis=1) / masses.sum())
-    
-    rog = AnalysisFromFunction(radius_of_gyration, universe.trajectory, 
+
+    rog = AnalysisFromFunction(radius_of_gyration, universe.trajectory,
                                protein).run()
     gyradius = polymer.Gyradius(protein, grouping="residues").run()
-    gyradius_parallel = polymer.Gyradius(protein, grouping="residues", 
+    gyradius_parallel = polymer.Gyradius(protein, grouping="residues",
                                          parallel=True).run()
 
     # TEST CASE 1: Time series of overall radii of gyration
-    assert np.allclose(rog.results["timeseries"][:, 0], 
+    assert np.allclose(rog.results["timeseries"][:, 0],
                        gyradius.results.gyradii[0])
-    assert np.allclose(rog.results["timeseries"][:, 0], 
+    assert np.allclose(rog.results["timeseries"][:, 0],
                        gyradius_parallel.results.gyradii[0])
 
     # TEST CASE 2: Time series of radius of gyration components
-    gyradius = polymer.Gyradius(protein, grouping="residues", 
+    gyradius = polymer.Gyradius(protein, grouping="residues",
                                 components=True).run()
-    gyradius_parallel = polymer.Gyradius(protein, grouping="residues", 
+    gyradius_parallel = polymer.Gyradius(protein, grouping="residues",
                                          components=True, parallel=True).run()
-    assert np.allclose(rog.results["timeseries"][:, 1:], 
+    assert np.allclose(rog.results["timeseries"][:, 1:],
                        gyradius.results.gyradii[0])
-    assert np.allclose(rog.results["timeseries"][:, 1:], 
+    assert np.allclose(rog.results["timeseries"][:, 1:],
                        gyradius_parallel.results.gyradii[0])

@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 
 from .. import FOUND_OPENMM, ureg, Q_
-from ..algorithm.utility import strip_unit
+from ..algorithm.unit import strip_unit
 from .base import Hash
 
 if FOUND_OPENMM:

@@ -1,6 +1,6 @@
 strip\_unit
 ===========
 
-.. currentmodule:: mdhelper.algorithm.utility
+.. currentmodule:: mdhelper.algorithm.unit
 
 .. autofunction:: strip_unit

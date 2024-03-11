@@ -9,7 +9,7 @@ reduction.
 
 from openmm import unit
 
-from ..algorithm import utility
+from ..algorithm import unit as u
 
 VACUUM_PERMITTIVITY = 8.854187812813e-12 * unit.farad / unit.meter
 
@@ -48,7 +48,7 @@ def get_scaling_factors(
         Scaling factors.
     """
 
-    return utility.get_scaling_factors(bases, other)
+    return u.get_scaling_factors(bases, other)
 
 def get_lj_scaling_factors(
         bases: dict[str, unit.Quantity], other: dict[str, list] = {}
@@ -99,4 +99,4 @@ def get_lj_scaling_factors(
         Scaling factors.
     """
 
-    return utility.get_lj_scaling_factors(bases, other)
+    return u.get_lj_scaling_factors(bases, other)

@@ -31,5 +31,3 @@ def test_class_dipole_moment():
     # TEST CASE 1: Relative permittivity of water system
     assert np.isclose(diel.results.eps_mean, rp.results.dielectric)
     assert np.isclose(diel.results.eps_mean, prp.results.dielectric)
-
-test_class_dipole_moment()

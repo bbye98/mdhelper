@@ -16,7 +16,7 @@ def center_of_mass(
         group: mda.AtomGroup = None, grouping: str = None, *,
         masses: Union[list[float], np.ndarray[float]] = None,
         positions: Union[list[float], np.ndarray[float]] = None,
-        images: np.ndarray[int] = None, dims: np.ndarray[float] = None,
+        images: np.ndarray[int] = None, dimensions: np.ndarray[float] = None,
         n_groups: int = None, raw: bool = False
     ) -> Union[np.ndarray[float],
                tuple[np.ndarray[float], np.ndarray[float], np.ndarray[float]]]:
@@ -152,7 +152,7 @@ def center_of_mass(
 
         **Shape**: :math:`(N,\,3)`.
 
-    dims : `numpy.ndarray`, keyword-only, optional
+    dimensions : `numpy.ndarray`, keyword-only, optional
         System dimensions. Must be provided if `images` is provided and
         `group` does not contain the system dimensions.
 
@@ -251,16 +251,16 @@ def center_of_mass(
         if missing[1]:
             positions = group.positions
             if images is not None:
-                if dims is None:
+                if dimensions is None:
                     try:
-                        dims = group.dimensions[:3]
+                        dimensions = group.dimensions[:3]
                     except TypeError:
                         emsg = ("The number of periodic boundary "
                                 "crossings was provided, but no "
                                 "system dimensions were provided or "
                                 "found in the trajectory.")
                         raise ValueError(emsg)
-                positions += images * dims[:3]
+                positions += images * dimensions[:3]
 
         # Get particle masses and ensure correct dimensionality, if
         # necessary
@@ -314,7 +314,7 @@ def radius_of_gyration(
         positions: Union[list[tuple[tuple[float]]], np.ndarray[float]] = None,
         masses: Union[list[tuple[float]], np.ndarray[float]] = None,
         com: np.ndarray[float] = None, images: np.ndarray[int] = None,
-        dims: np.ndarray[float] = None, n_groups: int = None,
+        dimensions: np.ndarray[float] = None, n_groups: int = None,
         components: bool = False) -> Union[float, np.ndarray[float]]:
 
     r"""
@@ -476,7 +476,7 @@ def radius_of_gyration(
 
         **Shape**: :math:`(N,\,3)`.
 
-    dims : `numpy.ndarray`, keyword-only, optional
+    dimensions : `numpy.ndarray`, keyword-only, optional
         System dimensions. Must be provided if `images` is provided and
         `group` does not contain the system dimensions.
 
@@ -521,7 +521,7 @@ def radius_of_gyration(
     if any(missing[:2]):
         com, masses, positions = center_of_mass(group, grouping, masses=masses,
                                                 positions=positions, raw=True,
-                                                images=images, dims=dims)
+                                                images=images, dimensions=dimensions)
     elif missing[2]:
         com = center_of_mass(masses=masses, positions=positions,
                              n_groups=n_groups)

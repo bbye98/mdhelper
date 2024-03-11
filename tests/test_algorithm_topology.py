@@ -59,7 +59,7 @@ def test_func_create_atoms_polymer():
     pos = topology.create_atoms(dims, N, N_p)
     assert pos.shape == (N, 3)
 
-    # TEST CASE 2: Random polymer melt with bond, angle, and dihedral 
+    # TEST CASE 2: Random polymer melt with bond, angle, and dihedral
     # nformation and wrapped positions
     pos, bonds, angles, dihedrals = topology.create_atoms(
         dims, N, N_p, bonds=True, angles=True, dihedrals=True, randomize=True,
@@ -103,7 +103,7 @@ def test_func_create_atoms_lattice():
     # TEST CASE 5: Cubic crystal lattice
     pos, new_dims = topology.create_atoms(dims, lattice="cubic", length=1)
     assert np.allclose(pos[-1], dims - 1)
-    
+
 def test_func_unwrap():
 
     pos_old = np.array(((2.0, 2.0, 2.0),))
@@ -113,7 +113,7 @@ def test_func_unwrap():
 
     # TEST CASE 1: Unwrap not in-place
     pos_unwrapped, pos_old_updated, images = topology.unwrap(
-        pos, pos_old, dims, thresholds=thresholds, images=images, 
+        pos, pos_old, dims, thresholds=thresholds, images=images,
         in_place=False
     )
     assert (np.allclose(pos_unwrapped[0], -2)
@@ -124,7 +124,7 @@ def test_func_unwrap():
     assert np.allclose(pos[0], -2)
 
 def test_func_wrap():
-    
+
     pos = np.array(((9.0, 10.0, 11.0),))
 
     # TEST CASE 1: Wrap not in-place

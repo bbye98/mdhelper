@@ -61,7 +61,7 @@ def test_center_of_mass_mda():
     c, m, p = molecule.center_of_mass(
         universe.atoms,
         images=np.zeros((universe.atoms.n_atoms, 3), dtype=int),
-        dims=np.array((0, 0, 0)),
+        dimensions=np.array((0, 0, 0)),
         raw=True
     )
     assert np.allclose(c, com)
@@ -70,7 +70,7 @@ def test_center_of_mass_mda():
 
     # TEST CASE 4: Centers of mass of different residues using AtomGroup
     res_coms = np.array([r.atoms.center_of_mass()
-                        for r in universe.residues])
+                         for r in universe.residues])
     assert np.allclose(molecule.center_of_mass(universe.atoms, "residues"),
                        res_coms)
 

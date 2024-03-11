@@ -15,12 +15,11 @@ utility
       :toctree:
       :nosignatures:
    
+      depth_first_search
+      find_connected_nodes
       get_closest_factors
-      get_lj_scaling_factors
-      get_scaling_factors
       rebin
       replicate
-      strip_unit
    
    
 

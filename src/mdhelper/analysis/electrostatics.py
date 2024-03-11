@@ -16,7 +16,7 @@ import numpy as np
 from .base import DynamicAnalysisBase
 from .. import FOUND_OPENMM, Q_, ureg
 from ..algorithm.topology import unwrap
-from ..algorithm.utility import strip_unit
+from ..algorithm.unit import strip_unit
 
 if FOUND_OPENMM:
     from openmm import unit

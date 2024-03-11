@@ -22,7 +22,8 @@ from .base import DynamicAnalysisBase
 from .. import FOUND_OPENMM, ureg, Q_
 from ..algorithm.correlation import correlation_fft, correlation_shift
 from ..algorithm.molecule import center_of_mass
-from ..algorithm.utility import get_closest_factors, strip_unit
+from ..algorithm.unit import strip_unit
+from ..algorithm.utility import get_closest_factors
 
 if FOUND_OPENMM:
     from openmm import unit

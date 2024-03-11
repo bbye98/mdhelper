@@ -19,8 +19,8 @@ from .base import DynamicAnalysisBase
 from .. import FOUND_OPENMM, Q_, ureg
 from ..algorithm import correlation
 from ..algorithm.molecule import center_of_mass, radius_of_gyration
-from ..algorithm.topology import unwrap
-from ..algorithm.utility import strip_unit
+from ..algorithm.topology import unwrap, unwrap_edge
+from ..algorithm.unit import strip_unit
 from ..fit.exponential import stretched_exp
 
 if FOUND_OPENMM:
@@ -695,12 +695,20 @@ class EndToEndVector(_PolymerAnalysisBase):
                                         self._slices, self._n_chains,
                                         self._n_monomers):
                 if self._internal and gr == "residues":
+                    for f in g.fragments:
+                        mda.lib.mdamath.make_whole(f)
                     self._positions_end_old[s] = np.stack(
                         [center_of_mass(s.residues[[0, -1]].atoms, "residues")
                          for s in g.segments]
                     )
                 else:
-                    positions = g.positions.reshape(M, N_p, -1, 3)[:, (0, -1)]
+                    positions = unwrap_edge(
+                        positions=g.positions, 
+                        bonds=np.array([(i * N_p + j, i * N_p + j + 1) 
+                                        for i in range(M) for j in range(N_p - 1)]), 
+                        dimensions=self._dimensions, 
+                        masses=g.masses
+                    ).reshape(M, N_p, -1, 3)[:, (0, -1)]
                     self._positions_end_old[s] = (
                         positions[:, :, 0] if gr == "atoms"
                         else center_of_mass(
@@ -756,8 +764,8 @@ class EndToEndVector(_PolymerAnalysisBase):
         for i, (s, M) in ProgressBar(enumerate(zip(self._slices, 
                                                    self._n_chains))):
             self.results.acf[i] = _acf(
-                (self._e2e[s] 
-                 / np.linalg.norm(self._e2e[s], axis=-1, keepdims=True))
+                (self._e2e[:, s] 
+                 / np.linalg.norm(self._e2e[:, s], axis=-1, keepdims=True))
                 .reshape(self._n_blocks, -1, M, 3),
                 average=True, vector=True
             )
