@@ -604,7 +604,7 @@ class DensityProfile(DynamicAnalysisBase):
                         "the number of groups.")
                 raise ValueError(emsg)
             charges, unit_ = strip_unit(charges, "elementary_charge")
-            if reduced and not isinstance(unit_,  str):
+            if reduced and not isinstance(unit_, str):
                 emsg = "'charges' cannot have units when reduced=True."
                 raise TypeError(emsg)
             self._charges = np.asarray(charges)
@@ -856,7 +856,7 @@ class DensityProfile(DynamicAnalysisBase):
 
             if self._charges is not None:
                 self.results.charge_densities[a] = np.einsum(
-                    "g,g...b->...b",
+                    "g,...gb->...b",
                     self._charges,
                     self.results.number_densities[a]
                 )

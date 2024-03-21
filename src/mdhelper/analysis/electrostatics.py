@@ -283,10 +283,7 @@ class DipoleMoment(DynamicAnalysisBase):
             index += N
 
         if charges is not None:
-            try:
-                charges = np.asarray(charges)
-            except ValueError:
-                charges = list(charges)
+            charges = list(charges)
             if len(charges) == self._n_groups:
                 for i, (g, q) in enumerate(zip(self._groups, charges)):
                     charges[i] = strip_unit(q, "elementary_charge")[0]

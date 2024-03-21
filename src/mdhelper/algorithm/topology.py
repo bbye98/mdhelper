@@ -417,7 +417,7 @@ def unwrap_edge(
         **Shape**: :math:`(3,)` or :math:`(6,)`.
 
         **Reference unit**: :math:`\mathrm{nm}` (lengths) and
-        :math:`^\\circ` (angles).
+        :math:`^\circ` (angles).
 
     thresholds : `numpy.ndarray`, optional
         Maximum distances in each direction an atom can move before it 
