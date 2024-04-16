@@ -317,11 +317,10 @@ def calculate_conductivity(
     Returns
     -------
     kappas : `numpy.ndarray`
-        Conductivities :math:`\kappa` for the atoms or residues in the
-        :math:`N_\mathrm{g}` groups and :math:`N_\mathrm{b}` trajectory
-        blocks.
+        Conductivities :math:`\kappa` for the :math:`N_\mathrm{b}` 
+        trajectory blocks.
 
-        **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
+        **Shape**: :math:`(N_\mathrm{b},\,)`.
 
         **Reference unit**: :math:`\mathrm{C}^2/(\mathrm{kJ}\cdot
         \mathrm{Å}\cdot\mathrm{ps})`.
@@ -329,7 +328,7 @@ def calculate_conductivity(
         **To SI unit**: :math:`1\times10^{19}\,\mathrm{S}/\mathrm{m}`.
     """
 
-    kappas = np.einsum("ij, ij", L_ij, z * z[:, None])
+    kappas = np.einsum("bij,ij->b", L_ij, z * z[:, None])
     if not reduced:
         kappas = (kappas * ureg.avogadro_constant
                   * ureg.elementary_charge ** 2 * ureg.mole
@@ -389,7 +388,7 @@ def calculate_electrophoretic_mobility(
         (\mathrm{V}\cdot\mathrm{s})`.
     """
 
-    mus = (L_ij * z / rho[:, None]).sum(axis=1)
+    mus = (L_ij * z / rho[:, None]).sum(axis=-1)
     if not reduced:
         mus = (mus * ureg.avogadro_constant * ureg.elementary_charge
                * ureg.mole / ureg.coulomb).to_reduced_units().magnitude
@@ -430,8 +429,8 @@ def calculate_transference_number(
         **Shape**: :math:`(N_\mathrm{b},\,N_\mathrm{g})`.
     """
 
-    return (z * (L_ij * z).sum(axis=1) /
-            np.einsum("ij, ij", L_ij, z * z[:, None]))
+    s = z * (L_ij * z).sum(axis=-1)
+    return s / s.sum(axis=-1)
 
 class Onsager(SerialAnalysisBase):
 
@@ -1198,7 +1197,7 @@ class Onsager(SerialAnalysisBase):
             raise ValueError("No charge number information available.")
 
         self.results.conductivities = calculate_conductivity(
-            self.results.L_ij.mean(axis=0), self._charges,
+            self.results.L_ij, self._charges,
             reduced=self._reduced
         )
 
@@ -1268,9 +1267,11 @@ class Onsager(SerialAnalysisBase):
                 emsg = "'rhos' cannot have units when reduced=True."
                 raise TypeError(emsg)
             self._rhos = np.asarray(rhos)
+        if self._rhos is None:
+            raise ValueError("No number density information available.")
 
         self.results.electrophoretic_mobilities = calculate_electrophoretic_mobility(
-            self.results.L_ij.mean(axis=0), charges, rhos,
+            self.results.L_ij, self._charges, self._rhos,
             reduced=self._reduced
         )
 
@@ -1321,5 +1322,5 @@ class Onsager(SerialAnalysisBase):
             raise ValueError("No charge number information available.")
 
         self.results.transference_numbers = calculate_transference_number(
-            self.results.L_ij.mean(axis=0), self._charges
+            self.results.L_ij, self._charges
         )
