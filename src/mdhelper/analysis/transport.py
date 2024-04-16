@@ -224,7 +224,6 @@ def calculate_transport_coefficients(
 
     # Iterate through all blocks
     for b in ProgressBar(range(n_blocks), verbose=verbose):
-        print(b)
         # Iterate through all unique group pairings
         for i, msd in enumerate(msd_cross[:, b] / denom):
             y = msd[start:stop]
@@ -257,8 +256,8 @@ def calculate_transport_coefficients(
         L_ij[b] = L_ij[b] + L_ij[b].T - np.diag(np.diag(L_ij[b]))
 
         # Iterate through all self groups
-        for i, msd_self in enumerate(msd_self[:, b]):
-            y = msd_self[start_self:stop_self]
+        for i, msd in enumerate(msd_self[:, b]):
+            y = msd[start_self:stop_self]
             valid = np.isfinite(y) & (y > 0)
             y = y[valid]
             x = time[start_self:stop_self][valid]
