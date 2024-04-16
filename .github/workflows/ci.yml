@@ -28,6 +28,4 @@ jobs:
           ruff --target-version=py39 .
         continue-on-error: true
       - name: pytest-test
-        run: |
-          python3 -m pip install mdanalysistests pytest tidynamics
-          pytest
+        run: pytest
