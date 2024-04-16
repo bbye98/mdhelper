@@ -24,6 +24,7 @@ sphinx-copybutton
 
 # TEST DEPENDENCIES
 coverage
+dynasor
 mdanalysistests
 pytest
 ruff
