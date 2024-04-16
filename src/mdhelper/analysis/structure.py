@@ -1128,6 +1128,12 @@ class StructureFactor(DynamicAnalysisBase):
         Number of extra wavevectors to introduce per spherical surface.
         Has no effect if `n_surfaces` is not specified.
 
+    q_max : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
+    keyword-only, optional
+        Maximum scattering wavevector magnitude.
+
+        **Reference unit**: :math:`\mathrm{Å}^{-1}`.
+
     wavevectors : `numpy.ndarray`, keyword-only, optional
         Scattering wavevectors for which to compute the structure factor.
         Has precedence over `n_points` if specified.
@@ -1181,9 +1187,10 @@ class StructureFactor(DynamicAnalysisBase):
             groupings: Union[str, tuple[str]] = "atoms",
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             n_points: int = 32, mode: str = None, *, n_surfaces: int = None,
-            n_surface_points: int = 8, wavevectors: np.ndarray[float] = None,
-            n_batches: int = None, parallel: bool = False,
-            verbose: bool = True, **kwargs) -> None:
+            n_surface_points: int = 8, 
+            q_max: Union[float, "unit.Quantity", Q_] = None,
+            wavevectors: np.ndarray[float] = None, n_batches: int = None,
+            parallel: bool = False, verbose: bool = True, **kwargs) -> None:
 
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
@@ -1275,6 +1282,13 @@ class StructureFactor(DynamicAnalysisBase):
                 ), -1
             ).reshape(-1, 3)
         self._wavenumbers = np.linalg.norm(self._wavevectors, axis=1)
+
+        # Remove wavevectors with magnitudes greater than q_max
+        if q_max is not None:
+            q_max, _ = strip_unit(q_max, "angstrom^-1")
+            keep = self._wavenumbers <= q_max
+            self._wavevectors = self._wavevectors[keep]
+            self._wavenumbers = self._wavenumbers[keep]
 
         self._n_batches = n_batches
         self._verbose = verbose
@@ -1445,7 +1459,7 @@ class StructureFactor(DynamicAnalysisBase):
 
         # Consolidate parallel results
         if self._parallel:
-            self.results.ssf = np.vstack(self._results).sum(axis=0)
+            self.results.ssf = np.stack(self._results).sum(axis=0)
         else:
             del self._positions
 
@@ -1559,6 +1573,12 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
         Number of extra wavevectors to introduce per spherical surface.
         Has no effect if `n_surfaces` is not specified.
 
+    q_max : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
+    keyword-only, optional
+        Maximum scattering wavevector magnitude.
+
+        **Reference unit**: :math:`\mathrm{Å}^{-1}`.
+
     wavevectors : `numpy.ndarray`, keyword-only, optional
         Scattering wavevectors for which to compute the incoherent
         scattering function. Has precedence over `n_points` if
@@ -1619,7 +1639,9 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
             self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
             groupings: Union[str, tuple[str]] = "atoms",
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
-            n_points: int = 32, *, n_surfaces: int = None, n_surface_points: int = 8,
+            n_points: int = 32, *, n_surfaces: int = None, 
+            n_surface_points: int = 8,
+            q_max: Union[float, "unit.Quantity", Q_] = None,
             wavevectors: np.ndarray[float] = None, n_batches: int = None,
             fft: bool = True, parallel: bool = False, verbose: bool = True,
             **kwargs) -> None:
@@ -1705,6 +1727,13 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
                 ), -1
             ).reshape(-1, 3)
         self._wavenumbers = np.linalg.norm(self._wavevectors, axis=1)
+
+        # Remove wavevectors with magnitudes greater than q_max
+        if q_max is not None:
+            q_max, _ = strip_unit(q_max, "angstrom^-1")
+            keep = self._wavenumbers <= q_max
+            self._wavevectors = self._wavevectors[keep]
+            self._wavenumbers = self._wavenumbers[keep]
 
         self._n_batches = n_batches
         self._fft = fft
