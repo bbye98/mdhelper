@@ -23,6 +23,7 @@ sphinx
 sphinx-copybutton
 
 # TEST DEPENDENCIES
+ase
 coverage
 dynasor
 mdanalysistests

@@ -1,0 +1,30 @@
+name: mdhelper
+channels:
+  - conda-forge
+dependencies:
+  # CORE DEPENDENCIES
+  - matplotlib
+  - mdanalysis
+  - netcdf4
+  - numpy
+  - pandas
+  - pint
+  - scipy
+  - sympy
+  # OPTIONAL DEPENDENCIES
+  - dask
+  - joblib
+  - openmm
+  # DOCUMENTATION DEPENDENCIES
+  - furo
+  - numpydoc
+  - sphinx
+  - sphinx-copybutton
+  # TEST DEPENDENCIES
+  - ase
+  - coverage
+  - dynasor
+  - mdanalysistests
+  - pytest
+  - ruff
+  - tidynamics
