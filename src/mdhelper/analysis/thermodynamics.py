@@ -153,7 +153,7 @@ class ConstantVolumeHeatCapacity:
                     raise ValueError(emsg)
                 log = "\n".join(log)
                 log = log[:log.index("Loop time of ")]
-                kwargs = {"delim_whitespace": True}
+                kwargs = {"sep": "\s+"}
                 self.results.units["results.energies"] \
                     = ureg.kilocalorie / ureg.mole
                 self.results.units["results.heat_capacity"] \

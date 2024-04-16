@@ -112,8 +112,6 @@ def test_class_onsager_transport_coefficients():
     def fit_data(times, f, start, stop):
         return linregress(times[start:stop], f[start:stop])[0]
 
-    url = "https://raw.githubusercontent.com/kdfong/transport-coefficients-MSD/master/example-data"
-
     path = os.getcwd()
     if "tests" in path:
         path_split = path.split("/")
@@ -124,11 +122,11 @@ def test_class_onsager_transport_coefficients():
         os.makedirs(f"{path}/data/onsager")
     os.chdir(f"{path}/data/onsager")
 
+    url = "https://raw.githubusercontent.com/kdfong/transport-coefficients-MSD/master/example-data"
     if not os.path.isfile("system.data"):
         with urllib.request.urlopen(f"{url}/system.data") as r:
             with open("system.data", "w") as f:
                 f.write(r.read().decode())
-    
     for i in range(1, 6):
         if not os.path.isfile(f"traj_{i}.dcd"):
             with urllib.request.urlopen(f"{url}/traj_{i}.dcd") as r:

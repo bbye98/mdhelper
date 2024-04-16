@@ -1,4 +1,4 @@
-plot
+﻿plot
 ====
 
 .. automodule:: mdhelper.plot
@@ -27,5 +27,6 @@ plot
    :recursive:
 
    mdhelper.plot.axis
+   mdhelper.plot.color
    mdhelper.plot.rcparam
 
