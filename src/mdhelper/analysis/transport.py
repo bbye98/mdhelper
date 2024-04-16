@@ -224,7 +224,7 @@ def calculate_transport_coefficients(
 
     # Iterate through all blocks
     for b in ProgressBar(range(n_blocks), verbose=verbose):
-
+        print(b)
         # Iterate through all unique group pairings
         for i, msd in enumerate(msd_cross[:, b] / denom):
             y = msd[start:stop]
@@ -284,7 +284,7 @@ def calculate_transport_coefficients(
             else:
                 D_i[b, i] = np.nan
 
-        return L_ij, Ns * D_i / denom, D_i
+    return L_ij, Ns * D_i / denom, D_i
 
 def calculate_conductivity(
         L_ij: np.ndarray[float], z: np.ndarray[float], *, reduced: bool = False
