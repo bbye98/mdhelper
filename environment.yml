@@ -4,7 +4,7 @@ channels:
 dependencies:
   # CORE DEPENDENCIES
   - matplotlib
-  - mdanalysis
+  - mdanalysis >=2.2
   - netcdf4
   - numpy
   - pandas

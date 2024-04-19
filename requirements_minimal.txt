@@ -1,5 +1,5 @@
 matplotlib
-mdanalysis
+mdanalysis >= 2.2.0
 netcdf4
 numpy
 pandas
