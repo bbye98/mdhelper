@@ -2,6 +2,7 @@
 Analysis base classes
 =====================
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
+.. moduleauthor:: Alec Glisman <GitHub: @alec-glisman>
 
 This module contains custom base classes :class:`SerialAnalysisBase` and
 :class:`ParallelAnalysisBase` for serial and multithreaded data
@@ -10,11 +11,14 @@ multiprocessing, Dask, and Joblib libraries for parallelization.
 """
 
 from abc import abstractmethod
+from collections.abc import Generator, Iterable
+import contextlib
 from datetime import datetime
 import logging
 import multiprocessing
 import os
-from typing import TextIO, Union
+from tqdm import tqdm
+from typing import Any, Callable, TextIO, Union
 import warnings
 
 try:
@@ -33,6 +37,45 @@ except ImportError:
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.coordinates.base import ReaderBase
 import numpy as np
+
+@contextlib.contextmanager
+def _tqdm_joblib(tqdm_obj: tqdm) -> Generator:
+
+    class TqdmBatchCompletionCallback(joblib.parallel.BatchCompletionCallBack):
+        def __call__(self, *args, **kwargs) -> None:
+            tqdm_obj.update(n=self.batch_size)
+            return super().__call__(*args, **kwargs)
+
+    old_batch_callback = joblib.parallel.BatchCompletionCallBack
+    joblib.parallel.BatchCompletionCallBack = TqdmBatchCompletionCallback
+    try:
+        yield tqdm_obj
+    finally:
+        joblib.parallel.BatchCompletionCallBack = old_batch_callback
+        tqdm_obj.close()
+
+def _istarmap(
+        self: multiprocessing.pool.Pool, func: Callable[[Any], Any], 
+        iterable: Iterable, chunk_size: int = 1) -> Iterable:
+
+    self._check_running()
+    if chunk_size < 1:
+        raise ValueError("Chunk size must be greater than 1.")
+
+    task_batches = multiprocessing.pool.Pool._get_tasks(func, iterable,
+                                                        chunk_size)
+    result = multiprocessing.pool.IMapIterator(self)
+    self._taskqueue.put((
+        self._guarded_task_generation(
+            result._job,
+            multiprocessing.pool.starmapstar,
+            task_batches
+        ),
+        result._set_length
+    ))
+    return (item for chunk in result for item in chunk)
+
+multiprocessing.pool.Pool.istarmap = _istarmap
 
 class Hash(dict):
 
@@ -201,8 +244,8 @@ class ParallelAnalysisBase(SerialAnalysisBase):
     def run(
             self, start: int = None, stop: int = None, step: int = None,
             frames: Union[slice, np.ndarray[int]] = None, verbose: bool = None,
-            n_jobs: int = None, module: str = "joblib", block: bool = True,
-            method: str = None, **kwargs
+            n_jobs: int = None, module: str = "multiprocessing", 
+            block: bool = True, method: str = None, **kwargs
         ) -> "ParallelAnalysisBase":
 
         """
@@ -231,7 +274,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             fully analyze the trajectory or the maximum number of CPU
             threads available.
 
-        module : `str`, keyword-only, default: :code:`"joblib"`
+        module : `str`, keyword-only, default: :code:`"multiprocessing"`
             Parallelization module to use for analysis.
 
             **Valid values**: :code:`"dask"`, :code:`"joblib"`, and
@@ -261,11 +304,11 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             Parallel analysis base object.
         """
 
-        _verbose = (getattr(self, '_verbose', False) if verbose is None
-                    else verbose)
+        if verbose is None:
+            verbose = getattr(self, '_verbose', False)
         logging.basicConfig(format="{asctime} | {levelname:^8s} | {message}",
                             style="{",
-                            level=logging.INFO if _verbose else logging.WARNING)
+                            level=logging.INFO if verbose else logging.WARNING)
 
         self._setup_frames(self._trajectory, start=start, stop=stop,
                            step=step, frames=frames)
@@ -276,9 +319,10 @@ class ParallelAnalysisBase(SerialAnalysisBase):
         frames = (frames if frames
                   else np.arange(self.start or 0, self.stop or self.n_frames,
                                  self.step))
-        indices = np.arange(len(frames))
+        n_frames = len(frames)
+        indices = np.arange(n_frames)
 
-        if _verbose:
+        if verbose:
             time_start = datetime.now()
 
         if module == "dask" and FOUND_DASK:
@@ -328,34 +372,39 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                     jobs.append(dask.delayed(self._single_frame_parallel)
                                 (frame, index))
 
-            self._results = dask.delayed(jobs).compute(**config)
+            blocks = dask.delayed(jobs).persist(**config)
+            if verbose:
+                distributed.progress(blocks)
+            self._results = blocks.compute(**config)
             if block:
                 self._results = [r for b in self._results for r in b]
 
         elif module == "joblib" and FOUND_JOBLIB:
-            if method is not None and method not in {"processes", "threads",
-                                                     None}:
+            if method is not None and method not in {"loky", "multiprocessing",
+                                                     "threading", None}:
                 raise ValueError("Invalid Joblib backend.")
 
             logging.info("Starting analysis using Joblib "
                          f"({n_jobs=}, backend={method})...")
-            if block:
-                self._results = joblib.Parallel(
-                    n_jobs=n_jobs, prefer=method, **kwargs
-                )(
-                    joblib.delayed(self._single_frame_parallel)(f, i)
-                    for frames_, indices_ in zip(
-                        np.array_split(frames, n_jobs),
-                        np.array_split(indices, n_jobs)
-                    ) for f, i in zip(frames_, indices_)
-                )
-            else:
-                self._results = joblib.Parallel(
-                    n_jobs=n_jobs, prefer=method, **kwargs
-                )(
-                    joblib.delayed(self._single_frame_parallel)(f, i)
-                    for f, i in zip(frames, indices)
-                )
+            with (_tqdm_joblib(tqdm(total=n_frames)) if verbose 
+                  else contextlib.suppress()):
+                if block:
+                    self._results = joblib.Parallel(
+                        n_jobs=n_jobs, backend=method, **kwargs
+                    )(
+                        joblib.delayed(self._single_frame_parallel)(f, i)
+                        for frames_, indices_ in zip(
+                            np.array_split(frames, n_jobs),
+                            np.array_split(indices, n_jobs)
+                        ) for f, i in zip(frames_, indices_)
+                    )
+                else:
+                    self._results = joblib.Parallel(
+                        n_jobs=n_jobs, prefer=method, **kwargs
+                    )(
+                        joblib.delayed(self._single_frame_parallel)(f, i)
+                        for f, i in zip(frames, indices)
+                    )
 
         else:
             if module != "multiprocessing":
@@ -372,9 +421,19 @@ class ParallelAnalysisBase(SerialAnalysisBase):
             logging.info("Starting analysis using multiprocessing "
                          f"({n_jobs=}, {method=})...")
             with multiprocessing.get_context(method).Pool(n_jobs, **kwargs) as p:
-                self._results = p.starmap(self._single_frame_parallel,
-                                          zip(frames, indices))
-        logging.info(f"Analysis finished in {datetime.now() - time_start}.")
+                self._results = (
+                    tuple(
+                        tqdm(
+                            p.istarmap(self._single_frame_parallel, 
+                                    zip(frames, indices)),
+                            total=n_frames
+                        )
+                    ) if verbose else p.starmap(self._single_frame_parallel, 
+                                              zip(frames, indices))
+                )
+
+        if verbose:
+            logging.info(f"Analysis finished in {datetime.now() - time_start}.")
 
         self._conclude()
         return self
@@ -417,6 +476,11 @@ class DynamicAnalysisBase(ParallelAnalysisBase, SerialAnalysisBase):
 
         """
         Performs the calculation.
+
+        .. seealso::
+
+           For parallel-specific keyword arguments, see 
+           :meth:`ParallelAnalysisBase.run`.
 
         Parameters
         ----------

@@ -13,6 +13,7 @@ import warnings
 
 import MDAnalysis as mda
 from MDAnalysis.lib import distances
+import numba
 import numpy as np
 from scipy.integrate import simpson
 from scipy.signal import argrelextrema
@@ -27,6 +28,56 @@ from ..algorithm.utility import get_closest_factors
 
 if FOUND_OPENMM:
     from openmm import unit
+
+@numba.njit(fastmath=True)
+def _dot_3d(a, b):
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+
+@numba.njit(fastmath=True)
+def _exp_iqr_single(q, r):
+    e = 0.0j
+    for i in range(r.shape[0]):
+        e += np.exp(1j * _dot_3d(q, r[i]))
+    return e
+
+@numba.njit(fastmath=True, parallel=True)
+def exp_iqr_parallel(
+        qs: np.ndarray[float], rs: np.ndarray[float]
+    ) -> np.ndarray[float]:
+
+    r"""
+    Computes the exponential term :math:`\exp(i\mathbf{q}\cdot\mathbf{r})`
+    for a set of wavenumbers :math:`\mathbf{q}` and positions
+    :math:`\mathbf{r}` using a parallelized Numba implementation.
+
+    Parameters
+    ----------
+    qs : `numpy.ndarray`
+        Wavenumbers :math:`\mathbf{q}`.
+
+        **Shape**: :math:`(N_q,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{Å}^{-1}`.
+
+    rs : `numpy.ndarray`
+        Positions :math:`\mathbf{r}`.
+
+        **Shape**: :math:`(N,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{Å}`.
+
+    Returns
+    -------
+    exp_iqr : `numpy.ndarray`
+        Exponential terms.
+
+        **Shape**: :math:`(N_q,)`.
+    """
+    
+    e = np.empty(qs.shape[0], dtype=np.complex128)
+    for i in numba.prange(qs.shape[0]):
+        e[i] = _exp_iqr_single(qs[i], rs)
+    return e
 
 def radial_histogram(
         pos1: np.ndarray[float], pos2: np.ndarray[float], n_bins: int,
@@ -1033,11 +1084,13 @@ class StructureFactor(DynamicAnalysisBase):
 
     .. math::
 
-        S(\\mathbf{q})&=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N\\sum_{k=1}^N
-        \\exp{[-i\\mathbf{q}\\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\
+        S(\\mathbf{q})&=\\frac{1}{N}\\left\\langle
+        \\sum_{j=1}^N\\sum_{k=1}^N\\exp{[-i\\mathbf{q}
+        \\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\
         &=\\frac{1}{N}\\left\\langle\\left[
-        \\sum_{j=1}^N\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2+\\left[
-        \\sum_{j=1}^N\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2\\right\\rangle
+        \\sum_{j=1}^N\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2
+        +\\left[\\sum_{j=1}^N\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
+        \\right]^2\\right\\rangle
 
     where :math:`N` is the number of particles, :math:`\\mathbf{q}` is
     the scattering wavevector, and :math:`\\mathbf{r}_i` is the position
@@ -1048,11 +1101,13 @@ class StructureFactor(DynamicAnalysisBase):
 
     .. math::
 
-       S_{\\alpha\\beta}(\\mathbf{q})=\\frac{1}{\\sqrt{N_\\alpha N_\\beta}}
-       \\left\\langle\\sum_{j=1}^{N_\\alpha}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
+       S_{\\alpha\\beta}(\\mathbf{q})
+       =\\frac{1}{\\sqrt{N_\\alpha N_\\beta}}\\left\\langle
+       \\sum_{j=1}^{N_\\alpha}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
        \\sum_{k=1}^{N_\\beta}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_k)}
        +\\sum_{j=1}^{N_\\alpha}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
-       \\sum_{k=1}^{N_\\beta}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_k)}\\right\\rangle
+       \\sum_{k=1}^{N_\\beta}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_k)}
+       \\right\\rangle
 
     where :math:`N_\\alpha` and :math:`N_\\beta` are the numbers of
     particles for species :math:`\\alpha` and :math:`\\beta`.
@@ -1085,27 +1140,11 @@ class StructureFactor(DynamicAnalysisBase):
            * :code:`"atoms"`: Atom positions (generally for
              coarse-grained simulations).
            * :code:`"residues"`: Residues' centers of mass (for
-             atomistic simulations).
+             atomistic simulations). 
            * :code:`"segments"`: Segments' centers of mass (for
              atomistic polymer simulations).
 
-    dimensions : array-like, `openmm.unit.Quantity`, or \
-    `pint.Quantity`, keyword-only, optional
-        System dimensions. If not provided, they are retrieved from the
-        topology or trajectory.
-
-        **Shape**: :math:`(3,)`.
-
-        **Reference unit**: :math:`\\mathrm{Å}`.
-
-    n_points : `int`, default: :code:`32`
-        Number of points in the scattering wavevector grid. Additional
-        wavevectors can be introduced via `n_surfaces` and
-        `n_surface_points` for more accurate structure factor values.
-        Alternatively, the desired wavevectors can be specified directly
-        in `wavevectors`.
-
-    mode : `str`, optional
+    mode : `str`, keyword-only, optional
         Evaluation mode.
 
         .. container::
@@ -1117,6 +1156,35 @@ class StructureFactor(DynamicAnalysisBase):
              between the group(s) in `groups`.
            * :code:`"partial"`: The partial structure factors for all
              unique pairs from `groups` is computed.
+
+    form : `str`, keyword-only, default: :code:`"exp"`
+        Expression to use for the structure factor.
+
+        .. container::
+
+           **Valid values**: 
+
+           * :code:`"exp"`: Exponential form. Faster due to fewer 
+             mathematical operations.
+           * :code:`"trig"`: Trigonometric form. Slower but doesn't
+             have overflow issues.
+
+    dimensions : array-like, keyword-only, `openmm.unit.Quantity`, or \
+    `pint.Quantity`, keyword-only, optional
+        System dimensions. If not provided, they are retrieved from the
+        topology or trajectory. Only necessary if `wavevectors` is not
+        specified.
+
+        **Shape**: :math:`(3,)`.
+
+        **Reference unit**: :math:`\\mathrm{Å}`.
+
+    n_points : `int`, keyword-only, default: :code:`32`
+        Number of points in the scattering wavevector grid. Additional
+        wavevectors can be introduced via `n_surfaces` and
+        `n_surface_points` for more accurate structure factor values.
+        Alternatively, the desired wavevectors can be specified directly
+        in `wavevectors`.
 
     n_surfaces : `int`, keyword-only, optional
         Number of spherical surfaces in the first octant that intersect
@@ -1132,13 +1200,14 @@ class StructureFactor(DynamicAnalysisBase):
     keyword-only, optional
         Maximum scattering wavevector magnitude.
 
-        **Reference unit**: :math:`\mathrm{Å}^{-1}`.
+        **Reference unit**: :math:`\\mathrm{Å}^{-1}`.
 
     wavevectors : `numpy.ndarray`, keyword-only, optional
         Scattering wavevectors for which to compute the structure factor.
-        Has precedence over `n_points` if specified.
+        Has precedence over `n_points`, `n_surfaces`, and 
+        `n_surface_points` if specified.
 
-    n_batches : `int`, keyword-only, optional
+    n_batches : `int`, keyword-only, default: :code:`1`
         Number of batches to divide the structure factor calculation
         into. This is useful for large systems that cannot be processed
         in a single pass.
@@ -1170,32 +1239,35 @@ class StructureFactor(DynamicAnalysisBase):
         `results.ssf`.
 
     results.wavenumbers : `numpy.ndarray`
-        :math:`N_\\mathrm{w}` unique scattering wavenumbers :math:`q`.
+        :math:`N_\\mathrm{q}` unique scattering wavenumbers :math:`q`.
 
-        **Shape**: :math:`(N_\\mathrm{w},)`.
+        **Shape**: :math:`(N_\\mathrm{q},)`.
 
     results.ssf : `numpy.ndarray`
         Static structure factor :math:`S(q)` or partial structure
         factor(s) :math:`S_{\\alpha\\beta}(q)`.
 
-        **Shape**: :math:`(N_\\mathrm{w},)`, :math:`(1,\\,N_\\mathrm{w})`,
-        or :math:`(C(N_\\mathrm{g}+1,\\,2),\\,N_\\mathrm{w})`.
+        **Shape**: :math:`(N_\\mathrm{q},)`, 
+        :math:`(1,\\,N_\\mathrm{q})`, or 
+        :math:`(C(N_\\mathrm{g}+1,\\,2),\\,N_\\mathrm{q})`.
     """
 
     def __init__(
             self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
-            groupings: Union[str, tuple[str]] = "atoms",
-            dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
-            n_points: int = 32, mode: str = None, *, n_surfaces: int = None,
+            groupings: Union[str, tuple[str]] = "atoms", *,
+            mode: str = None, form: str = "exp", 
+            dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None, 
+            n_points: int = 32, n_surfaces: int = None, 
             n_surface_points: int = 8, 
             q_max: Union[float, "unit.Quantity", Q_] = None,
-            wavevectors: np.ndarray[float] = None, n_batches: int = None,
+            wavevectors: np.ndarray[float] = None, n_batches: int = 1,
             parallel: bool = False, verbose: bool = True, **kwargs) -> None:
 
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
-        self.universe = self._groups[0].universe
+        self.universe = self._groups[0].universe         
 
-        super().__init__(self.universe.trajectory, parallel, verbose, **kwargs)
+        super().__init__(self.universe.trajectory, parallel and form == "trig",
+                         verbose, **kwargs)
 
         if dimensions is not None:
             if len(dimensions) != 3:
@@ -1203,7 +1275,7 @@ class StructureFactor(DynamicAnalysisBase):
             self._dimensions = np.asarray(strip_unit(dimensions, "angstrom")[0])
         elif self.universe.dimensions is not None:
             self._dimensions = self.universe.dimensions[:3].copy()
-        else:
+        elif wavevectors is None:
             raise ValueError("No system dimensions found or provided.")
 
         self._mode = mode
@@ -1211,7 +1283,8 @@ class StructureFactor(DynamicAnalysisBase):
             emsg = "There must be exactly one or two groups when mode='pair'."
             raise ValueError(emsg)
         elif self._mode is None:
-            if sum(g.n_atoms for g in self._groups) != self.universe.atoms.n_atoms:
+            if sum(g.n_atoms for g in self._groups) \
+                    != self.universe.atoms.n_atoms:
                 emsg = ("The provided atom groups do not contain all atoms "
                         "in the universe.")
                 raise ValueError(emsg)
@@ -1290,6 +1363,7 @@ class StructureFactor(DynamicAnalysisBase):
             self._wavevectors = self._wavevectors[keep]
             self._wavenumbers = self._wavenumbers[keep]
 
+        self._form = form
         self._n_batches = n_batches
         self._verbose = verbose
 
@@ -1326,61 +1400,119 @@ class StructureFactor(DynamicAnalysisBase):
             self._positions[s] = (g.positions if gr == "atoms"
                                   else center_of_mass(g, gr))
 
-        # Compute the structure factor by multiplying the cosine and
-        # sine terms and adding them together
-        if self._mode is None:
-            if self._n_batches:
-                start = 0
-                for w in np.array_split(self._wavevectors, self._n_batches,
-                                        axis=0):
-                    arg = np.einsum("wd,pd->pw", w, self._positions)
-                    self.results.ssf[start:start + w.shape[0]] += (
-                        np.sin(arg).sum(axis=0) ** 2
-                        + np.cos(arg).sum(axis=0) ** 2
-                    )
-                    start += w.shape[0]
-            else:
-                arg = np.einsum("wd,pd->pw", self._wavevectors, self._positions)
-                self.results.ssf += (np.sin(arg).sum(axis=0) ** 2
-                                     + np.cos(arg).sum(axis=0) ** 2)
-        else:
-            for i, (j, k) in enumerate(self.results.pairs):
-                if self._n_batches:
+        if self._form == "exp":
+            
+            # Compute the structure factor by multiplying the exponential
+            # terms by their conjugates and adding them together
+            if self._mode is None:
+                if self._n_batches > 1:
                     start = 0
                     for w in np.array_split(self._wavevectors, self._n_batches,
                                             axis=0):
-                        arg_j = np.einsum("wd,pd->pw", w,
-                                          self._positions[self._slices[j]])
-                        if j == k:
-                            self.results.ssf[i, start:start + w.shape[0]] += (
-                                np.sin(arg_j).sum(axis=0) ** 2
-                                + np.cos(arg_j).sum(axis=0) ** 2
-                            )
-                        else:
-                            arg_k = np.einsum("wd,pd->pw", w,
-                                              self._positions[self._slices[k]])
-                            self.results.ssf[i, start:start + w.shape[0]] += (
-                                np.sin(arg_j).sum(axis=0)
-                                * np.sin(arg_k).sum(axis=0)
-                                + np.cos(arg_j).sum(axis=0)
-                                * np.cos(arg_k).sum(axis=0)
-                            )
+                        arg = exp_iqr_parallel(w, self._positions)
+                        self.results.ssf[start:start + w.shape[0]] \
+                            += (arg * arg.conjugate()).real
                         start += w.shape[0]
                 else:
-                    arg_j = np.einsum("wd,pd->pw", self._wavevectors,
-                                      self._positions[self._slices[j]])
-                    if j == k:
-                        self.results.ssf[i] += (np.sin(arg_j).sum(axis=0) ** 2
-                                                + np.cos(arg_j).sum(axis=0) ** 2)
+                    arg = exp_iqr_parallel(self._wavevectors, self._positions)
+                    self.results.ssf += (arg * arg.conjugate()).real
+            else:
+                for i, (j, k) in enumerate(self.results.pairs):
+                    if self._n_batches > 1:
+                        start = 0
+                        for w in np.array_split(
+                                self._wavevectors, self._n_batches, axis=0
+                            ):
+                            arg_j = exp_iqr_parallel(w, self._positions[self._slices[j]])
+                            if j == k:
+                                self.results.ssf[i, start:start + w.shape[0]] \
+                                    += (arg_j * arg_j.conjugate()).real
+                            else:
+                                arg_k = exp_iqr_parallel(
+                                    w, self._positions[self._slices[k]]
+                                )
+                                self.results.ssf[i, start:start + w.shape[0]] \
+                                    += (arg_j * arg_k.conjugate()
+                                        + arg_k * arg_j.conjugate()).real
+                            start += w.shape[0]
                     else:
-                        arg_k = np.einsum("wd,pd->pw", self._wavevectors,
-                                          self._positions[self._slices[k]])
-                        self.results.ssf[i] += (
-                            np.sin(arg_j).sum(axis=0)
-                            * np.sin(arg_k).sum(axis=0)
-                            + np.cos(arg_j).sum(axis=0)
-                            * np.cos(arg_k).sum(axis=0)
+                        arg_j = exp_iqr_parallel(self._wavevectors,
+                                        self._positions[self._slices[j]])
+                        if j == k:
+                            self.results.ssf[i] \
+                                += (arg_j * arg_j.conjugate()).real
+                        else:
+                            arg_k = exp_iqr_parallel(self._wavevectors,
+                                            self._positions[self._slices[k]])
+                            self.results.ssf[i] += (
+                                arg_j * arg_k.conjugate()
+                                + arg_k * arg_j.conjugate()
+                            ).real
+
+        elif self._form == "trig":
+
+            # Compute the structure factor by multiplying the cosine and
+            # sine terms and adding them together
+            if self._mode is None:
+                if self._n_batches > 1:
+                    start = 0
+                    for w in np.array_split(self._wavevectors, self._n_batches,
+                                            axis=0):
+                        arg = np.inner(w, self._positions)
+                        self.results.ssf[start:start + w.shape[0]] += (
+                            np.sin(arg).sum(axis=1) ** 2
+                            + np.cos(arg).sum(axis=1) ** 2
                         )
+                        start += w.shape[0]
+                else:
+                    arg = np.inner(self._wavevectors, self._positions)
+                    self.results.ssf += (np.sin(arg).sum(axis=1) ** 2
+                                         + np.cos(arg).sum(axis=1) ** 2)
+            else:
+                for i, (j, k) in enumerate(self.results.pairs):
+                    if self._n_batches > 1:
+                        start = 0
+                        for w in np.array_split(
+                                self._wavevectors, self._n_batches, axis=0
+                            ):
+                            arg_j = np.inner(
+                                w, self._positions[self._slices[j]]
+                            )
+                            if j == k:
+                                self.results.ssf[i, start:start + w.shape[0]] \
+                                += (
+                                    np.sin(arg_j).sum(axis=1) ** 2
+                                    + np.cos(arg_j).sum(axis=1) ** 2
+                                )
+                            else:
+                                arg_k = np.inner(
+                                    w, self._positions[self._slices[k]]
+                                )
+                                self.results.ssf[i, start:start + w.shape[0]] \
+                                += (
+                                    np.sin(arg_j).sum(axis=1)
+                                    * np.sin(arg_k).sum(axis=1)
+                                    + np.cos(arg_j).sum(axis=1)
+                                    * np.cos(arg_k).sum(axis=1)
+                                )
+                            start += w.shape[0]
+                    else:
+                        arg_j = np.inner(self._wavevectors,
+                                         self._positions[self._slices[j]])
+                        if j == k:
+                            self.results.ssf[i] += (
+                                np.sin(arg_j).sum(axis=1) ** 2
+                                + np.cos(arg_j).sum(axis=1) ** 2
+                            )
+                        else:
+                            arg_k = np.inner(self._wavevectors,
+                                             self._positions[self._slices[k]])
+                            self.results.ssf[i] += (
+                                np.sin(arg_j).sum(axis=1)
+                                * np.sin(arg_k).sum(axis=1)
+                                + np.cos(arg_j).sum(axis=1)
+                                * np.cos(arg_k).sum(axis=1)
+                            )
 
     def _single_frame_parallel(
             self, frame: int, index: int) -> np.ndarray[float]:
@@ -1396,64 +1528,61 @@ class StructureFactor(DynamicAnalysisBase):
         # Compute the structure factor by multiplying the cosine and
         # sine terms and adding them together
         if self._mode is None:
-            if self._n_batches:
+            if self._n_batches > 1:
                 start = 0
                 ssf = np.empty(len(self._wavenumbers))
                 for w in np.array_split(self._wavevectors, self._n_batches,
                                         axis=0):
-                    arg = np.einsum("wd,pd->pw", w, positions)
+                    arg = np.inner(w, positions)
                     ssf[start:start + w.shape[0]] = (
-                        np.sin(arg).sum(axis=0) ** 2
-                        + np.cos(arg).sum(axis=0) ** 2
+                        np.sin(arg).sum(axis=1) ** 2
+                        + np.cos(arg).sum(axis=1) ** 2
                     )
                     start += w.shape[0]
-                return ssf
             else:
-                arg = np.einsum("wd,pd->pw", self._wavevectors, positions)
-                return (np.sin(arg).sum(axis=0) ** 2
-                        + np.cos(arg).sum(axis=0) ** 2)
+                arg = np.inner(self._wavevectors, positions)
+                ssf = (np.sin(arg).sum(axis=1) ** 2
+                        + np.cos(arg).sum(axis=1) ** 2)
         else:
-            ssf = np.empty((len(self.results.pairs), len(self._wavenumbers)))
+            ssf = np.empty((len(self.results.pairs), 
+                            len(self._wavenumbers)))
             for i, (j, k) in enumerate(self.results.pairs):
-                if self._n_batches:
+                if self._n_batches > 1:
                     start = 0
-                    for w in np.array_split(self._wavevectors, self._n_batches,
-                                            axis=0):
-                        arg_j = np.einsum(
-                            "wd,pd->pw", w, positions[self._slices[j]]
-                        )
+                    for w in np.array_split(
+                            self._wavevectors, self._n_batches, axis=0
+                        ):
+                        arg_j = np.inner(w, positions[self._slices[j]])
                         if j == k:
                             ssf[i, start:start + w.shape[0]] = (
-                                np.sin(arg_j).sum(axis=0) ** 2
-                                + np.cos(arg_j).sum(axis=0) ** 2
+                                np.sin(arg_j).sum(axis=1) ** 2
+                                + np.cos(arg_j).sum(axis=1) ** 2
                             )
                         else:
-                            arg_k = np.einsum(
-                                "wd,pd->pw", w, positions[self._slices[k]]
-                            )
+                            arg_k = np.inner(w, positions[self._slices[k]])
                             ssf[i, start:start + w.shape[0]] = (
-                                np.sin(arg_j).sum(axis=0)
-                                * np.sin(arg_k).sum(axis=0)
-                                + np.cos(arg_j).sum(axis=0)
-                                * np.cos(arg_k).sum(axis=0)
+                                np.sin(arg_j).sum(axis=1)
+                                * np.sin(arg_k).sum(axis=1)
+                                + np.cos(arg_j).sum(axis=1)
+                                * np.cos(arg_k).sum(axis=1)
                             )
                         start += w.shape[0]
                 else:
-                    arg_j = np.einsum("wd,pd->pw", self._wavevectors,
-                                      positions[self._slices[j]])
+                    arg_j = np.inner(self._wavevectors, 
+                                        positions[self._slices[j]])
                     if j == k:
-                        ssf[i] = (np.sin(arg_j).sum(axis=0) ** 2
-                                  + np.cos(arg_j).sum(axis=0) ** 2)
+                        ssf[i] = (np.sin(arg_j).sum(axis=1) ** 2
+                                    + np.cos(arg_j).sum(axis=1) ** 2)
                     else:
-                        arg_k = np.einsum("wd,pd->pw", self._wavevectors,
-                                          positions[self._slices[k]])
+                        arg_k = np.inner(self._wavevectors,
+                                            positions[self._slices[k]])
                         ssf[i] = (
-                            np.sin(arg_j).sum(axis=0)
-                            * np.sin(arg_k).sum(axis=0)
-                            + np.cos(arg_j).sum(axis=0)
-                            * np.cos(arg_k).sum(axis=0)
+                            np.sin(arg_j).sum(axis=1)
+                            * np.sin(arg_k).sum(axis=1)
+                            + np.cos(arg_j).sum(axis=1)
+                            * np.cos(arg_k).sum(axis=1)
                         )
-            return ssf
+        return ssf
 
     def _conclude(self) -> None:
 
@@ -1555,7 +1684,7 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
 
         **Reference unit**: :math:`\\mathrm{Å}`.
 
-    n_points : `int`, default: :code:`32`
+    n_points : `int`, keyword-only, default: :code:`32`
         Number of points in the scattering wavevector grid. Additional
         wavevectors can be introduced via `n_surfaces` and
         `n_surface_points` for more accurate structure factor values.
@@ -1637,9 +1766,9 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
 
     def __init__(
             self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
-            groupings: Union[str, tuple[str]] = "atoms",
+            groupings: Union[str, tuple[str]] = "atoms", *,
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
-            n_points: int = 32, *, n_surfaces: int = None, 
+            n_points: int = 32, n_surfaces: int = None, 
             n_surface_points: int = 8,
             q_max: Union[float, "unit.Quantity", Q_] = None,
             wavevectors: np.ndarray[float] = None, n_batches: int = None,
@@ -1779,14 +1908,14 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
         if self._n_batches:
             start = 0
             for w in np.array_split(self._wavevectors, self._n_batches, axis=0):
-                arg = np.einsum("wd,pd->pw", w, self._positions)
+                arg = np.inner(self._positions, w)
                 self._cos_sum[self._frame_index, start:start + w.shape[0]] \
                     = np.cos(arg).sum(axis=0)
                 self._sin_sum[self._frame_index, start:start + w.shape[0]] \
                     = np.sin(arg).sum(axis=0)
                 start += w.shape[0]
         else:
-            arg = np.einsum("wd,pd->pw", self._wavevectors, self._positions)
+            arg = np.inner(self._positions, self._wavevectors)
             self._cos_sum[self._frame_index] = np.cos(arg).sum(axis=0)
             self._sin_sum[self._frame_index] = np.sin(arg).sum(axis=0)
 
@@ -1807,12 +1936,12 @@ class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
         if self._n_batches:
             start = 0
             for w in np.array_split(self._wavevectors, self._n_batches, axis=0):
-                arg = np.einsum("wd,pd->pw", w, positions)
+                arg = np.inner(positions, w)
                 results[0, start:start + w.shape[0]] = np.cos(arg).sum(axis=0)
                 results[1, start:start + w.shape[0]] = np.sin(arg).sum(axis=0)
                 start += w.shape[0]
         else:
-            arg = np.einsum("wd,pd->pw", self._wavevectors, positions)
+            arg = np.inner(positions, self._wavevectors)
             results[0] = np.cos(arg).sum(axis=0)
             results[1] = np.sin(arg).sum(axis=0)
 

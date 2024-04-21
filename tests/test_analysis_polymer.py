@@ -34,11 +34,12 @@ def test_class_gyradius():
 
     rog = AnalysisFromFunction(radius_of_gyration, universe.trajectory,
                                protein).run()
-    gyradius = polymer.Gyradius(protein, grouping="residues").run()
-    gyradius_parallel = polymer.Gyradius(protein, grouping="residues",
-                                         parallel=True).run()
 
     # TEST CASE 1: Time series of overall radii of gyration
+    gyradius = polymer.Gyradius(protein, grouping="residues").run()
+    gyradius_parallel = polymer.Gyradius(
+        protein, grouping="residues", parallel=True
+    ).run()
     assert np.allclose(rog.results["timeseries"][:, 0],
                        gyradius.results.gyradii[0])
     assert np.allclose(rog.results["timeseries"][:, 0],
@@ -47,8 +48,9 @@ def test_class_gyradius():
     # TEST CASE 2: Time series of radius of gyration components
     gyradius = polymer.Gyradius(protein, grouping="residues",
                                 components=True).run()
-    gyradius_parallel = polymer.Gyradius(protein, grouping="residues",
-                                         components=True, parallel=True).run()
+    gyradius_parallel = polymer.Gyradius(
+        protein, grouping="residues", components=True, parallel=True
+    ).run()
     assert np.allclose(rog.results["timeseries"][:, 1:],
                        gyradius.results.gyradii[0])
     assert np.allclose(rog.results["timeseries"][:, 1:],

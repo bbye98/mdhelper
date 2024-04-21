@@ -4,9 +4,10 @@ requires = ["setuptools"]
 
 [project]
 name = "mdhelper"
-version = "0.0.2"
+version = "1.0.0"
 authors = [
-  { name = "Benjamin B. Ye", email = "bye@caltech.edu" }
+  { name = "Benjamin B. Ye", email = "bye@caltech.edu" },
+  { name = "Pierre J. Walker", email = "pjwalker@caltech.edu" }
 ]
 classifiers = [
   "Intended Audience :: Science/Research",
