@@ -68,13 +68,16 @@ def test_class_rdf():
     rdf = InterRDF(res60, water, nbins=n_bins).run()
 
     # TEST CASE 1: Batched serial RDF calculation
-    serial_rdf = structure.RDF(res60, water, n_bins=n_bins, n_batches=2).run()
+    serial_rdf = structure.RadialDistributionFunction(
+        res60, water, n_bins=n_bins, n_batches=2
+    ).run()
     assert np.allclose(rdf.results.bins, serial_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
     # TEST CASE 2: Batched parallel RDF calculation
-    parallel_rdf = structure.RDF(res60, water, n_bins=n_bins, n_batches=2, 
-                                 parallel=True).run()
+    parallel_rdf = structure.RadialDistributionFunction(
+        res60, water, n_bins=n_bins, n_batches=2, parallel=True
+    ).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)
 
@@ -83,13 +86,16 @@ def test_class_rdf():
     rdf = InterRDF(res60, res60, nbins=n_bins, exclusion_block=exclusion).run()
 
     # TEST CASE 1: Serial RDF calculation
-    serial_rdf = structure.RDF(res60, n_bins=n_bins, exclusion=exclusion).run()
+    serial_rdf = structure.RadialDistributionFunction(
+        res60, n_bins=n_bins, exclusion=exclusion
+    ).run()
     assert np.allclose(rdf.results.bins, serial_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
     # TEST CASE 2: Parallel RDF calculation
-    parallel_rdf = structure.RDF(res60, n_bins=n_bins, exclusion=exclusion, 
-                                 parallel=True).run()
+    parallel_rdf = structure.RadialDistributionFunction(
+        res60, n_bins=n_bins, exclusion=exclusion, parallel=True
+    ).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)
 
@@ -98,13 +104,16 @@ def test_class_rdf():
     rdf = InterRDF(thr, thr, nbins=n_bins, exclusion_block=exclusion).run()
 
     # TEST CASE 1: Serial RDF calculation
-    serial_rdf = structure.RDF(thr, n_bins=n_bins, exclusion=exclusion).run()
+    serial_rdf = structure.RadialDistributionFunction(
+        thr, n_bins=n_bins, exclusion=exclusion
+    ).run()
     assert np.allclose(rdf.results.bins, serial_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
     # TEST CASE 2: Parallel RDF calculation
-    parallel_rdf = structure.RDF(thr, n_bins=n_bins, exclusion=exclusion, 
-                                 parallel=True).run()
+    parallel_rdf = structure.RadialDistributionFunction(
+        thr, n_bins=n_bins, exclusion=exclusion, parallel=True
+    ).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)
 
@@ -113,13 +122,16 @@ def test_class_rdf():
     rdf = InterRDF(thr, thr, nbins=n_bins, exclusion_block=exclusion).run()
 
     # TEST CASE 1: Serial RDF calculation
-    serial_rdf = structure.RDF(thr, n_bins=n_bins, exclusion=exclusion).run()
+    serial_rdf = structure.RadialDistributionFunction(
+        thr, n_bins=n_bins, exclusion=exclusion
+    ).run()
     assert np.allclose(rdf.results.bins, serial_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, serial_rdf.results.rdf)
 
     # TEST CASE 2: Parallel RDF calculation
-    parallel_rdf = structure.RDF(thr, n_bins=n_bins, exclusion=exclusion, 
-                                 parallel=True).run()
+    parallel_rdf = structure.RadialDistributionFunction(
+        thr, n_bins=n_bins, exclusion=exclusion, parallel=True
+    ).run()
     assert np.allclose(rdf.results.bins, parallel_rdf.results.bins)
     assert np.allclose(rdf.results.rdf, parallel_rdf.results.rdf)
 

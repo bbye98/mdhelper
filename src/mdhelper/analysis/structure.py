@@ -21,6 +21,11 @@ from scipy.special import jv
 
 from .base import DynamicAnalysisBase
 from .. import FOUND_OPENMM, ureg, Q_
+from ..algorithm import accelerated
+from ..algorithm.accelerated import (
+    delta_fourier_transform_2d_2d, delta_fourier_transform_parallel_2d_2d,
+    ssf_trigonometric_2d, ssf_trigonometric_parallel_2d
+)
 from ..algorithm.correlation import correlation_fft, correlation_shift
 from ..algorithm.molecule import center_of_mass
 from ..algorithm.unit import strip_unit
@@ -29,55 +34,75 @@ from ..algorithm.utility import get_closest_factors
 if FOUND_OPENMM:
     from openmm import unit
 
-@numba.njit(fastmath=True)
-def _dot_3d(a, b):
-    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+# @numba.njit(fastmath=True)
+# def _exp_iqr_single(q, rs):
+#     e = 0.0j
+#     for i in range(rs.shape[0]):
+#         e += np.exp(1j * dot_3d(q, rs[i]))
+#     return e
 
-@numba.njit(fastmath=True)
-def _exp_iqr_single(q, r):
-    e = 0.0j
-    for i in range(r.shape[0]):
-        e += np.exp(1j * _dot_3d(q, r[i]))
-    return e
+# @numba.njit(fastmath=True, parallel=True)
+# def exp_iqr_parallel(
+#         qs: np.ndarray[float], rs: np.ndarray[float]
+#     ) -> np.ndarray[float]:
+#     e = np.empty(qs.shape[0], dtype=np.complex128)
+#     for i in numba.prange(qs.shape[0]):
+#         e[i] = _exp_iqr_single(qs[i], rs)
+#     return e
 
-@numba.njit(fastmath=True, parallel=True)
-def exp_iqr_parallel(
-        qs: np.ndarray[float], rs: np.ndarray[float]
-    ) -> np.ndarray[float]:
+def delta_fourier_transform_2d_2d(*args, **kwargs) -> np.ndarray[float]:
 
-    r"""
-    Computes the exponential term :math:`\exp(i\mathbf{q}\cdot\mathbf{r})`
-    for a set of wavenumbers :math:`\mathbf{q}` and positions
-    :math:`\mathbf{r}` using a parallelized Numba implementation.
-
-    Parameters
-    ----------
-    qs : `numpy.ndarray`
-        Wavenumbers :math:`\mathbf{q}`.
-
-        **Shape**: :math:`(N_q,\,3)`.
-
-        **Reference unit**: :math:`\mathrm{Å}^{-1}`.
-
-    rs : `numpy.ndarray`
-        Positions :math:`\mathbf{r}`.
-
-        **Shape**: :math:`(N,\,3)`.
-
-        **Reference unit**: :math:`\mathrm{Å}`.
-
-    Returns
-    -------
-    exp_iqr : `numpy.ndarray`
-        Exponential terms.
-
-        **Shape**: :math:`(N_q,)`.
     """
-    
-    e = np.empty(qs.shape[0], dtype=np.complex128)
-    for i in numba.prange(qs.shape[0]):
-        e[i] = _exp_iqr_single(qs[i], rs)
-    return e
+    Computes the Fourier transforms of Dirac delta functions.
+
+    .. note::
+
+       This is an alias function. For more information, see
+       :func:`mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d`.
+    """
+
+    return accelerated.delta_fourier_transform_2d_2d(*args, **kwargs)
+
+def delta_fourier_transform_parallel_2d_2d(*args, **kwargs) -> np.ndarray[float]:
+
+    """
+    Computes the Fourier transforms of Dirac delta functions in parallel.
+
+    .. note::
+
+       This is an alias function. For more information, see
+       :func:`mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d`.
+    """
+
+    return accelerated.delta_fourier_transform_parallel_2d_2d(*args, **kwargs)
+
+def ssf_trigonometric_2d(*args, **kwargs) -> np.ndarray[float]:
+
+    """
+    Computes the static structure factor using the trigonometric 
+    expression.
+
+    .. note::
+
+       This is an alias function. For more information, see
+       :func:`mdhelper.algorithm.accelerated.ssf_trigonometric_2d`.
+    """
+
+    return accelerated.ssf_trigonometric_2d(*args, **kwargs)
+
+def ssf_trigonometric_parallel_2d(*args, **kwargs) -> np.ndarray[float]:
+
+    """
+    Computes the static structure factor using the trigonometric 
+    expression in parallel.
+
+    .. note::
+
+       This is an alias function. For more information, see
+       :func:`mdhelper.algorithm.accelerated.ssf_trigonometric_parallel_2d`.
+    """
+
+    return accelerated.ssf_trigonometric_2d(*args, **kwargs)
 
 def radial_histogram(
         pos1: np.ndarray[float], pos2: np.ndarray[float], n_bins: int,
@@ -487,7 +512,7 @@ def calculate_structure_factor(
             return q, 1 + x_i * x_j * rho_sft
     raise ValueError("Invalid formalism.")
 
-class RDF(DynamicAnalysisBase):
+class RadialDistributionFunction(DynamicAnalysisBase):
 
     r"""
     Serial and parallel implementations to calculate the radial
@@ -1409,12 +1434,12 @@ class StructureFactor(DynamicAnalysisBase):
                     start = 0
                     for w in np.array_split(self._wavevectors, self._n_batches,
                                             axis=0):
-                        arg = exp_iqr_parallel(w, self._positions)
+                        arg = delta_fourier_transform_parallel_2d_2d(w, self._positions)
                         self.results.ssf[start:start + w.shape[0]] \
                             += (arg * arg.conjugate()).real
                         start += w.shape[0]
                 else:
-                    arg = exp_iqr_parallel(self._wavevectors, self._positions)
+                    arg = delta_fourier_transform_parallel_2d_2d(self._wavevectors, self._positions)
                     self.results.ssf += (arg * arg.conjugate()).real
             else:
                 for i, (j, k) in enumerate(self.results.pairs):
@@ -1423,12 +1448,12 @@ class StructureFactor(DynamicAnalysisBase):
                         for w in np.array_split(
                                 self._wavevectors, self._n_batches, axis=0
                             ):
-                            arg_j = exp_iqr_parallel(w, self._positions[self._slices[j]])
+                            arg_j = delta_fourier_transform_parallel_2d_2d(w, self._positions[self._slices[j]])
                             if j == k:
                                 self.results.ssf[i, start:start + w.shape[0]] \
                                     += (arg_j * arg_j.conjugate()).real
                             else:
-                                arg_k = exp_iqr_parallel(
+                                arg_k = delta_fourier_transform_parallel_2d_2d(
                                     w, self._positions[self._slices[k]]
                                 )
                                 self.results.ssf[i, start:start + w.shape[0]] \
@@ -1436,13 +1461,13 @@ class StructureFactor(DynamicAnalysisBase):
                                         + arg_k * arg_j.conjugate()).real
                             start += w.shape[0]
                     else:
-                        arg_j = exp_iqr_parallel(self._wavevectors,
+                        arg_j = delta_fourier_transform_parallel_2d_2d(self._wavevectors,
                                         self._positions[self._slices[j]])
                         if j == k:
                             self.results.ssf[i] \
                                 += (arg_j * arg_j.conjugate()).real
                         else:
-                            arg_k = exp_iqr_parallel(self._wavevectors,
+                            arg_k = delta_fourier_transform_parallel_2d_2d(self._wavevectors,
                                             self._positions[self._slices[k]])
                             self.results.ssf[i] += (
                                 arg_j * arg_k.conjugate()

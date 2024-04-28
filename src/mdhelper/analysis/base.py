@@ -4,10 +4,9 @@ Analysis base classes
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 .. moduleauthor:: Alec Glisman <GitHub: @alec-glisman>
 
-This module contains custom base classes :class:`SerialAnalysisBase` and
-:class:`ParallelAnalysisBase` for serial and multithreaded data
-analysis, respectively, with the latter supporting the native
-multiprocessing, Dask, and Joblib libraries for parallelization.
+This module contains custom base classes for serial and multithreaded 
+data analysis with support for the multiprocessing, Dask, Joblib, and 
+Numba libraries for parallelization.
 """
 
 from abc import abstractmethod
@@ -17,7 +16,6 @@ from datetime import datetime
 import logging
 import multiprocessing
 import os
-from tqdm import tqdm
 from typing import Any, Callable, TextIO, Union
 import warnings
 
@@ -36,7 +34,9 @@ except ImportError:
 
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.coordinates.base import ReaderBase
+import numba
 import numpy as np
+from tqdm import tqdm
 
 @contextlib.contextmanager
 def _tqdm_joblib(tqdm_obj: tqdm) -> Generator:
@@ -137,7 +137,7 @@ class SerialAnalysisBase(AnalysisBase):
 
     def run(
             self, start: int = None, stop: int = None, step: int = None,
-            frames: Union[slice, np.ndarray[int]] = None,
+            frames: Union[slice, np.ndarray[int]] = None, n_jobs: int = 1,
             verbose: bool = None, **kwargs) -> "SerialAnalysisBase":
 
         """
@@ -209,6 +209,80 @@ class SerialAnalysisBase(AnalysisBase):
         else:
             for data in self.results:
                 np.save(f"{file}_{data}", self.results[data], **kwargs)
+
+class NumbaAnalysisBase(SerialAnalysisBase):
+
+    """
+    A Numba-accelerated analysis base object.
+
+    Parameters
+    ----------
+    trajectory : `MDAnalysis.coordinates.base.ReaderBase`
+        Simulation trajectory.
+
+    verbose : `bool`, default: :code:`True`
+        Determines whether detailed progress is shown.
+
+    **kwargs
+        Additional keyword arguments to pass to
+        :class:`MDAnalysis
+    """
+
+    def __init__(
+            self, trajectory: ReaderBase, verbose: bool = False, **kwargs):
+        super().__init__(trajectory, verbose, **kwargs)
+
+    def run(
+            self, start: int = None, stop: int = None, step: int = None,
+            frames: Union[slice, np.ndarray[int]] = None, n_threads: int = None,
+            verbose: bool = None, **kwargs
+        ) -> "NumbaAnalysisBase":
+
+        """
+        Performs the calculation.
+
+        .. seealso::
+
+           For parallel-specific keyword arguments, see 
+           :meth:`ParallelAnalysisBase.run`.
+
+        Parameters
+        ----------
+        start : `int`, optional
+            Starting frame for analysis.
+
+        stop : `int`, optional
+            Ending frame for analysis.
+
+        step : `int`, optional
+            Number of frames to skip between each analyzed frame.
+
+        frames : `slice` or array-like, optional
+            Index or logical array of the desired trajectory frames.
+
+        n_threads : `int`, keyword-only, optional
+            Number of threads to use for analysis.
+
+        verbose : `bool`, optional
+            Determines whether detailed progress is shown.
+
+        **kwargs
+            Additional keyword arguments to pass to
+            :class:`MDAnalysis.lib.log.ProgressBar`.
+
+        Returns
+        -------
+        self : `SerialAnalysisBase` or `ParallelAnalysisBase`
+            Analysis object with results.
+        """
+
+        if n_threads is not None:
+            numba.set_num_threads(n_threads)
+
+        return super().run(
+            self, start=start, stop=stop, step=step, frames=frames,
+            verbose=verbose, **kwargs
+        )
 
 class ParallelAnalysisBase(SerialAnalysisBase):
 
