@@ -1,5 +1,5 @@
 {% set name = "mdhelper" %}
-{% set version = "0.0.2" %}
+{% set version = "1.0.0" %}
 
 package:
   name: {{ name|lower }}
@@ -20,10 +20,13 @@ requirements:
   run:
     - python >=3.9
     - matplotlib
-    - mdanalysis
+    - mdanalysis >=2.2
     - netCDF4
+    - numba
     - numpy
     - openmm
+    - pandas
+    - pint
     - scipy
     - sympy
 

@@ -22,6 +22,7 @@ base
    
       DynamicAnalysisBase
       Hash
+      NumbaAnalysisBase
       ParallelAnalysisBase
       SerialAnalysisBase
    

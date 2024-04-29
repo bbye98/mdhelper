@@ -6,6 +6,7 @@ dependencies:
   - matplotlib
   - mdanalysis >=2.2
   - netcdf4
+  - numba
   - numpy
   - pandas
   - pint

@@ -1,4 +1,4 @@
-﻿plot
+plot
 ====
 
 .. automodule:: mdhelper.plot

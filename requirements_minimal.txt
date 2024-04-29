@@ -1,6 +1,7 @@
 matplotlib
 mdanalysis >= 2.2.0
 netcdf4
+numba
 numpy
 pandas
 pint

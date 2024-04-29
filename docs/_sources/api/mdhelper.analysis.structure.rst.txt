@@ -33,7 +33,7 @@ structure
       :nosignatures:
    
       IncoherentIntermediateScatteringFunction
-      RDF
+      RadialDistributionFunction
       StructureFactor
    
    

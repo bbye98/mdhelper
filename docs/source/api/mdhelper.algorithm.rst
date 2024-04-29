@@ -26,6 +26,7 @@ algorithm
    :template: autosummary/module.rst
    :recursive:
 
+   mdhelper.algorithm.accelerated
    mdhelper.algorithm.correlation
    mdhelper.algorithm.molecule
    mdhelper.algorithm.topology

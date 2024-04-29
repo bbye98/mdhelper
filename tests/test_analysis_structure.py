@@ -164,54 +164,36 @@ def test_class_structurefactor():
         os.remove("md_runs.tar.gz")
     os.chdir("md_runs/NVT_tetra_size8_T450_nframes1000")
 
-    from datetime import datetime
-
-    start = datetime.now()
     atoms = ase.io.read("model.xyz")
+    atomic_indices = atoms.symbols.indices()
+    atom_types = sorted(atomic_indices.keys())
     traj = dynasor.Trajectory("movie.nc", trajectory_format="nc", 
-                              atomic_indices=atoms.symbols.indices(), 
+                              atomic_indices=atomic_indices,
                               frame_stop=10)
     q_points = dynasor.get_spherical_qpoints(traj.cell, q_max=2.2)
     sample = dynasor.compute_static_structure_factors(traj, q_points)
-    print(datetime.now() - start)
     q_norms = np.linalg.norm(sample.q_points, axis=1)
+    q_norms_unique = np.unique(np.round(q_norms, 11))
 
     universe = mda.Universe("model.xyz", "movie.nc")
-    groups = [universe.select_atoms(f"element {e}") for e in ["Cs", "I", "Pb"]]
-    ssf_exp = structure.StructureFactor(groups, mode="partial", 
-                                        q_max=2.2).run(stop=10)
-    ssf_trig = structure.StructureFactor(groups, mode="partial", q_max=2.2,
-                                         form="trig", parallel=True).run(stop=10)
+    groups = [universe.select_atoms(f"element {e}") for e in atom_types]
+    ssf_exp = structure.StructureFactor(
+        groups, mode="partial", q_max=2.2, parallel=True
+    ).run(stop=10)
+    ssf_trig = structure.StructureFactor(
+        groups, mode="partial", q_max=2.2, form="trig", parallel=True
+    ).run(stop=10)
 
-    # TEST CASE 1: Static structure factor peaks at the same (rounded) 
-    # wavenumbers
-    peaks = np.unique(np.round(q_norms[sample.Sq[:, 0] >= 50], 3))
-    assert np.array_equal(
-        peaks, 
-        np.unique(
-            np.round(ssf_exp.results["wavenumbers"]
-                     [ssf_exp.results["ssf"].sum(axis=0) >= 50], 3)
+    ssf_dynasor = np.empty((len(ssf_exp.results.pairs), len(q_norms_unique)))
+    for i, (j, k) in enumerate(ssf_exp.results.pairs):
+        ssf_dynasor[i] = np.fromiter(
+            (sample[f"Sq_{atom_types[j]}_{atom_types[k]}"][np.isclose(q, q_norms)].mean()
+             for q in q_norms_unique),
+            dtype=float,
+            count=len(q_norms_unique)
         )
-    )
-    assert np.array_equal(
-        peaks, 
-        np.unique(
-            np.round(ssf_trig.results["wavenumbers"]
-                     [ssf_trig.results["ssf"].sum(axis=0) >= 50], 3)
-        )
-    )
 
-    # TEST CASE 2: Partial static structure factor peaks at the same
-    # (rounded) wavenumbers
-    for (a1, a2), mdc_ssf in zip(sample.pairs, ssf_exp.results["ssf"]):
-        peaks = np.unique(
-            np.round(q_norms[sample[f"Sq_{a1}_{a2}"][:, 0] >= 50], 3)
-        )
-        assert np.array_equal(
-            peaks,
-            np.unique(np.round(ssf_exp.results["wavenumbers"][mdc_ssf >= 50], 3))
-        )
-        assert np.array_equal(
-            peaks,
-            np.unique(np.round(ssf_trig.results["wavenumbers"][mdc_ssf >= 50], 3))
-        )
+    # TEST CASE 1: Partial structure factors
+    assert np.allclose(ssf_exp.results.wavenumbers, q_norms_unique)
+    assert np.allclose(ssf_exp.results.ssf, ssf_dynasor, atol=1e-6)
+    assert np.allclose(ssf_trig.results.ssf, ssf_dynasor, atol=1e-6)

@@ -19,13 +19,9 @@ from scipy.integrate import simpson
 from scipy.signal import argrelextrema
 from scipy.special import jv
 
-from .base import DynamicAnalysisBase
+from .base import DynamicAnalysisBase, NumbaAnalysisBase
 from .. import FOUND_OPENMM, ureg, Q_
 from ..algorithm import accelerated
-from ..algorithm.accelerated import (
-    delta_fourier_transform_2d_2d, delta_fourier_transform_parallel_2d_2d,
-    ssf_trigonometric_2d, ssf_trigonometric_parallel_2d
-)
 from ..algorithm.correlation import correlation_fft, correlation_shift
 from ..algorithm.molecule import center_of_mass
 from ..algorithm.unit import strip_unit
@@ -33,76 +29,6 @@ from ..algorithm.utility import get_closest_factors
 
 if FOUND_OPENMM:
     from openmm import unit
-
-# @numba.njit(fastmath=True)
-# def _exp_iqr_single(q, rs):
-#     e = 0.0j
-#     for i in range(rs.shape[0]):
-#         e += np.exp(1j * dot_3d(q, rs[i]))
-#     return e
-
-# @numba.njit(fastmath=True, parallel=True)
-# def exp_iqr_parallel(
-#         qs: np.ndarray[float], rs: np.ndarray[float]
-#     ) -> np.ndarray[float]:
-#     e = np.empty(qs.shape[0], dtype=np.complex128)
-#     for i in numba.prange(qs.shape[0]):
-#         e[i] = _exp_iqr_single(qs[i], rs)
-#     return e
-
-def delta_fourier_transform_2d_2d(*args, **kwargs) -> np.ndarray[float]:
-
-    """
-    Computes the Fourier transforms of Dirac delta functions.
-
-    .. note::
-
-       This is an alias function. For more information, see
-       :func:`mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d`.
-    """
-
-    return accelerated.delta_fourier_transform_2d_2d(*args, **kwargs)
-
-def delta_fourier_transform_parallel_2d_2d(*args, **kwargs) -> np.ndarray[float]:
-
-    """
-    Computes the Fourier transforms of Dirac delta functions in parallel.
-
-    .. note::
-
-       This is an alias function. For more information, see
-       :func:`mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d`.
-    """
-
-    return accelerated.delta_fourier_transform_parallel_2d_2d(*args, **kwargs)
-
-def ssf_trigonometric_2d(*args, **kwargs) -> np.ndarray[float]:
-
-    """
-    Computes the static structure factor using the trigonometric 
-    expression.
-
-    .. note::
-
-       This is an alias function. For more information, see
-       :func:`mdhelper.algorithm.accelerated.ssf_trigonometric_2d`.
-    """
-
-    return accelerated.ssf_trigonometric_2d(*args, **kwargs)
-
-def ssf_trigonometric_parallel_2d(*args, **kwargs) -> np.ndarray[float]:
-
-    """
-    Computes the static structure factor using the trigonometric 
-    expression in parallel.
-
-    .. note::
-
-       This is an alias function. For more information, see
-       :func:`mdhelper.algorithm.accelerated.ssf_trigonometric_parallel_2d`.
-    """
-
-    return accelerated.ssf_trigonometric_2d(*args, **kwargs)
 
 def radial_histogram(
         pos1: np.ndarray[float], pos2: np.ndarray[float], n_bins: int,
@@ -1095,7 +1021,7 @@ class RadialDistributionFunction(DynamicAnalysisBase):
             n_q=n_q, n_dims=2 + (self._drop_axis is None), formalism=formalism
         )
 
-class StructureFactor(DynamicAnalysisBase):
+class StructureFactor(NumbaAnalysisBase):
 
     """
     Serial and parallel implementations to calculate the static
@@ -1105,7 +1031,7 @@ class StructureFactor(DynamicAnalysisBase):
 
     The static structure factor is a measure of how a material scatters
     incident radiation, and can be computed directly from a molecular
-    dynamics trajectory using
+    dynamics simulation trajectory using
 
     .. math::
 
@@ -1117,9 +1043,10 @@ class StructureFactor(DynamicAnalysisBase):
         +\\left[\\sum_{j=1}^N\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
         \\right]^2\\right\\rangle
 
-    where :math:`N` is the number of particles, :math:`\\mathbf{q}` is
-    the scattering wavevector, and :math:`\\mathbf{r}_i` is the position
-    of the :math:`i`-th particle.
+    where :math:`\\delta_{ij}` is the Kronecker delta, :math:`N` is the
+    number of particles, :math:`\\mathbf{q}` is the scattering 
+    wavevector, and :math:`\\mathbf{r}_i` is the position of the 
+    :math:`i`-th particle.
 
     For multicomponent systems, the equation above can be generalized to
     get the partial structure factor
@@ -1127,7 +1054,10 @@ class StructureFactor(DynamicAnalysisBase):
     .. math::
 
        S_{\\alpha\\beta}(\\mathbf{q})
-       =\\frac{1}{\\sqrt{N_\\alpha N_\\beta}}\\left\\langle
+       &=\\frac{2-\\delta_{\\alpha\\beta}}{N}\\left\\langle
+       \\sum_{j=1}^{N_\\alpha}\\sum_{k=1}^{N_\\beta}\\exp{[-i
+       \\mathbf{q}\\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}\\right\\rangle\\\\
+       &=\\frac{2-\\delta_{\\alpha\\beta}}{N}\\left\\langle
        \\sum_{j=1}^{N_\\alpha}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
        \\sum_{k=1}^{N_\\beta}\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_k)}
        +\\sum_{j=1}^{N_\\alpha}\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
@@ -1176,7 +1106,8 @@ class StructureFactor(DynamicAnalysisBase):
 
            **Valid values**:
 
-           * :code:`None`: The overall structure factor is computed.
+           * :code:`None`: The overall static structure factor is 
+             computed.
            * :code:`"pair"`: The partial structure factor is computed
              between the group(s) in `groups`.
            * :code:`"partial"`: The partial structure factors for all
@@ -1189,12 +1120,12 @@ class StructureFactor(DynamicAnalysisBase):
 
            **Valid values**: 
 
-           * :code:`"exp"`: Exponential form. Faster due to fewer 
-             mathematical operations.
-           * :code:`"trig"`: Trigonometric form. Slower but doesn't
-             have overflow issues.
+           * :code:`"exp"`: Exponential form. Slightly faster due to 
+             fewer mathematical operations.
+           * :code:`"trig"`: Trigonometric form. Slightly slower but
+             doesn't have overflow issues.
 
-    dimensions : array-like, keyword-only, `openmm.unit.Quantity`, or \
+    dimensions : array-like, `openmm.unit.Quantity`, or \
     `pint.Quantity`, keyword-only, optional
         System dimensions. If not provided, they are retrieved from the
         topology or trajectory. Only necessary if `wavevectors` is not
@@ -1232,6 +1163,15 @@ class StructureFactor(DynamicAnalysisBase):
         Has precedence over `n_points`, `n_surfaces`, and 
         `n_surface_points` if specified.
 
+        **Reference unit**: :math:`\\mathrm{Å}^{-1}`.
+
+    sort : `bool`, keyword-only, default: :code:`True`
+        Determines whether the results are sorted by the wavenumbers.
+
+    unique : `bool`, keyword-only, default: :code:`True`
+        Determines whether the structure factors are averaged over the
+        wavenumbers with the same value.
+
     n_batches : `int`, keyword-only, default: :code:`1`
         Number of batches to divide the structure factor calculation
         into. This is useful for large systems that cannot be processed
@@ -1264,18 +1204,148 @@ class StructureFactor(DynamicAnalysisBase):
         `results.ssf`.
 
     results.wavenumbers : `numpy.ndarray`
-        :math:`N_\\mathrm{q}` unique scattering wavenumbers :math:`q`.
+        :math:`N_q` unique scattering wavenumbers :math:`q`.
 
-        **Shape**: :math:`(N_\\mathrm{q},)`.
+        **Shape**: :math:`(N_q,)`.
+        
+        **Reference unit**: :math:`\\mathrm{Å}^{-1}`.
 
     results.ssf : `numpy.ndarray`
         Static structure factor :math:`S(q)` or partial structure
         factor(s) :math:`S_{\\alpha\\beta}(q)`.
 
-        **Shape**: :math:`(N_\\mathrm{q},)`, 
-        :math:`(1,\\,N_\\mathrm{q})`, or 
-        :math:`(C(N_\\mathrm{g}+1,\\,2),\\,N_\\mathrm{q})`.
+        **Shape**: :math:`(N_q,)`, 
+        :math:`(1,\\,N_q)`, or 
+        :math:`(C(N_\\mathrm{g}+1,\\,2),\\,N_q)`.
     """
+
+    @staticmethod
+    @numba.njit(fastmath=True)
+    def _ssf_trig_2d(qrs: np.ndarray[float]) -> np.ndarray[float]:
+
+        r"""
+        Serial Numba-accelerated evaluation of the static structure factors
+        given a two-dimensional NumPy array containing 
+        :math:`\mathbf{q}\cdot\mathbf{r}`.
+
+        Parameters
+        ----------
+        qrs : `np.ndarray`
+            Inner products :math:`\mathbf{q}\cdot\mathbf{r}`.
+
+            **Shape**: :math:`(N_q,\,N_r)`.
+
+        Returns
+        -------
+        ssf : `np.ndarray`
+            Static structure factors.
+
+            **Shape**: :math:`(N_q,)`.
+        """
+
+        ssf = np.empty(qrs.shape[0])
+        for i in range(qrs.shape[0]):
+            ssf[i] = accelerated.pythagorean_trigonometric_identity_1d(qrs[i])
+        return ssf
+
+    @staticmethod
+    @numba.njit(fastmath=True, parallel=True)
+    def _ssf_trig_par_2d(qrs: np.ndarray[float]) -> np.ndarray[float]:
+
+        r"""
+        Parallel Numba-accelerated evaluation of the static structure factors
+        given a two-dimensional NumPy array containing 
+        :math:`\mathbf{q}\cdot\mathbf{r}`.
+
+        Parameters
+        ----------
+        qrs : `np.ndarray`
+            Inner products :math:`\mathbf{q}\cdot\mathbf{r}`.
+
+            **Shape**: :math:`(N_q,\,N_r)`.
+
+        Returns
+        -------
+        ssf : `np.ndarray`
+            Static structure factors.
+
+            **Shape**: :math:`(N_q,)`.
+        """
+
+        ssf = np.empty(qrs.shape[0])
+        for i in numba.prange(qrs.shape[0]):
+            ssf[i] = accelerated.pythagorean_trigonometric_identity_1d(qrs[i])
+        return ssf
+
+    @staticmethod
+    @numba.njit(fastmath=True)
+    def _ssf_trig_2d_2d(
+            qrs1: np.ndarray[float], qrs2: np.ndarray[float]) -> np.ndarray[float]:
+
+        r"""
+        Parallel Numba-accelerated evaluation of the partial structure factors
+        given two two-dimensional NumPy arrays, each containing 
+        :math:`\mathbf{q}\cdot\mathbf{r}`.
+
+        Parameters
+        ----------
+        qrs1 : `np.ndarray`
+            First set of inner products :math:`\mathbf{q}\cdot\mathbf{r}`.
+
+            **Shape**: :math:`(N_q,\,N_r)`.
+
+        qrs2 : `np.ndarray`
+            Second set of inner products :math:`\mathbf{q}\cdot\mathbf{s}`.
+
+            **Shape**: :math:`(N_q,\,N_s)`.
+
+        Returns
+        -------
+        ssf : `np.ndarray`
+            Partial structure factors.
+
+            **Shape**: :math:`(N_q,)`.
+        """
+
+        ssf = np.empty(qrs1.shape[0])
+        for i in range(qrs1.shape[0]):
+            ssf[i] = accelerated.cross_pythagorean_trigonometric_identity_1d(qrs1[i], qrs2[i])
+        return ssf
+
+    @staticmethod
+    @numba.njit(fastmath=True, parallel=True)
+    def _ssf_trig_par_2d_2d(
+            qrs1: np.ndarray[float], qrs2: np.ndarray[float]) -> np.ndarray[float]:
+
+        r"""
+        Parallel Numba-accelerated evaluation of the partial structure factors
+        given two two-dimensional NumPy arrays, each containing 
+        :math:`\mathbf{q}\cdot\mathbf{r}`.
+
+        Parameters
+        ----------
+        qrs1 : `np.ndarray`
+            First set of inner products :math:`\mathbf{q}\cdot\mathbf{r}`.
+
+            **Shape**: :math:`(N_q,\,N_r)`.
+
+        qrs2 : `np.ndarray`
+            Second set of inner products :math:`\mathbf{q}\cdot\mathbf{s}`.
+
+            **Shape**: :math:`(N_q,\,N_s)`.
+
+        Returns
+        -------
+        ssf : `np.ndarray`
+            Partial structure factors.
+
+            **Shape**: :math:`(N_q,)`.
+        """
+
+        ssf = np.empty(qrs1.shape[0])
+        for i in numba.prange(qrs1.shape[0]):
+            ssf[i] = accelerated.cross_pythagorean_trigonometric_identity_1d(qrs1[i], qrs2[i])
+        return ssf
 
     def __init__(
             self, groups: Union[mda.AtomGroup, tuple[mda.AtomGroup]],
@@ -1285,14 +1355,14 @@ class StructureFactor(DynamicAnalysisBase):
             n_points: int = 32, n_surfaces: int = None, 
             n_surface_points: int = 8, 
             q_max: Union[float, "unit.Quantity", Q_] = None,
-            wavevectors: np.ndarray[float] = None, n_batches: int = 1,
-            parallel: bool = False, verbose: bool = True, **kwargs) -> None:
+            wavevectors: np.ndarray[float] = None, sort: bool = True,
+            unique: bool = True, n_batches: int = 1, parallel: bool = False,
+            verbose: bool = True, **kwargs) -> None:
 
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe         
 
-        super().__init__(self.universe.trajectory, parallel and form == "trig",
-                         verbose, **kwargs)
+        super().__init__(self.universe.trajectory, verbose, **kwargs)
 
         if dimensions is not None:
             if len(dimensions) != 3:
@@ -1388,7 +1458,20 @@ class StructureFactor(DynamicAnalysisBase):
             self._wavevectors = self._wavevectors[keep]
             self._wavenumbers = self._wavenumbers[keep]
 
+        if parallel:
+            self._delta_fourier_transform = accelerated.delta_fourier_transform_parallel_2d_2d
+            self._inner = accelerated.inner_parallel_2d_2d
+            self._ssf_trig = self._ssf_trig_par_2d
+            self._ssf_trig_cross = self._ssf_trig_par_2d_2d
+        else:
+            self._delta_fourier_transform = accelerated.delta_fourier_transform_2d_2d
+            self._inner = accelerated.inner_2d_2d
+            self._ssf_trig = self._ssf_trig_2d
+            self._ssf_trig_cross = self._ssf_trig_2d_2d
+
         self._form = form
+        self._sort = sort
+        self._unique = unique
         self._n_batches = n_batches
         self._verbose = verbose
 
@@ -1400,21 +1483,22 @@ class StructureFactor(DynamicAnalysisBase):
                 combinations_with_replacement(range(self._n_groups), 2)
             ) if self._mode == "partial" else ((0, self._n_groups - 1),)
 
-        if not self._parallel:
+        # Create a persisting array to hold atom positions for a
+        # given frame so that it doesn't have to be recreated each
+        # frame
+        self._positions = np.empty((self._N, 3))
 
-            # Create a persisting array to hold atom positions for a
-            # given frame so that it doesn't have to be recreated each
-            # frame
-            self._positions = np.empty((self._N, 3))
+        # Preallocate arrays to store results
+        self.results.ssf = np.zeros(
+            len(self._wavenumbers) if self._mode is None
+            else (len(self.results.pairs), len(self._wavenumbers))
+        )
 
-            # Preallocate arrays to store results
-            self.results.ssf = np.zeros(
-                len(self._wavenumbers) if self._mode is None
-                else (len(self.results.pairs), len(self._wavenumbers))
-            )
-
-        # Determine the unique wavenumbers
-        self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
+        # Determine the unique wavenumbers, if desired
+        if self._unique:
+            self.results.wavenumbers = np.unique(self._wavenumbers.round(11))
+        else:
+            self.results.wavenumbers = self._wavenumbers
         self.results.units = {"results.wavenumbers": ureg.angstrom ** -1}
 
     def _single_frame(self) -> None:
@@ -1434,12 +1518,13 @@ class StructureFactor(DynamicAnalysisBase):
                     start = 0
                     for w in np.array_split(self._wavevectors, self._n_batches,
                                             axis=0):
-                        arg = delta_fourier_transform_parallel_2d_2d(w, self._positions)
+                        arg = self._delta_fourier_transform(w, self._positions)
                         self.results.ssf[start:start + w.shape[0]] \
                             += (arg * arg.conjugate()).real
                         start += w.shape[0]
                 else:
-                    arg = delta_fourier_transform_parallel_2d_2d(self._wavevectors, self._positions)
+                    arg = self._delta_fourier_transform(self._wavevectors, 
+                                                        self._positions)
                     self.results.ssf += (arg * arg.conjugate()).real
             else:
                 for i, (j, k) in enumerate(self.results.pairs):
@@ -1448,31 +1533,33 @@ class StructureFactor(DynamicAnalysisBase):
                         for w in np.array_split(
                                 self._wavevectors, self._n_batches, axis=0
                             ):
-                            arg_j = delta_fourier_transform_parallel_2d_2d(w, self._positions[self._slices[j]])
+                            arg_j = self._delta_fourier_transform(
+                                w, self._positions[self._slices[j]]
+                            )
                             if j == k:
                                 self.results.ssf[i, start:start + w.shape[0]] \
                                     += (arg_j * arg_j.conjugate()).real
                             else:
-                                arg_k = delta_fourier_transform_parallel_2d_2d(
+                                arg_k = self._delta_fourier_transform(
                                     w, self._positions[self._slices[k]]
                                 )
                                 self.results.ssf[i, start:start + w.shape[0]] \
-                                    += (arg_j * arg_k.conjugate()
-                                        + arg_k * arg_j.conjugate()).real
+                                    += 2 * (arg_j * arg_k.conjugate()).real
                             start += w.shape[0]
                     else:
-                        arg_j = delta_fourier_transform_parallel_2d_2d(self._wavevectors,
-                                        self._positions[self._slices[j]])
+                        arg_j = self._delta_fourier_transform(
+                            self._wavevectors, self._positions[self._slices[j]]
+                        )
                         if j == k:
                             self.results.ssf[i] \
                                 += (arg_j * arg_j.conjugate()).real
                         else:
-                            arg_k = delta_fourier_transform_parallel_2d_2d(self._wavevectors,
-                                            self._positions[self._slices[k]])
-                            self.results.ssf[i] += (
-                                arg_j * arg_k.conjugate()
-                                + arg_k * arg_j.conjugate()
-                            ).real
+                            arg_k = self._delta_fourier_transform(
+                                self._wavevectors, 
+                                self._positions[self._slices[k]]
+                            )
+                            self.results.ssf[i] \
+                                += 2 * (arg_j * arg_k.conjugate()).real
 
         elif self._form == "trig":
 
@@ -1483,16 +1570,15 @@ class StructureFactor(DynamicAnalysisBase):
                     start = 0
                     for w in np.array_split(self._wavevectors, self._n_batches,
                                             axis=0):
-                        arg = np.inner(w, self._positions)
-                        self.results.ssf[start:start + w.shape[0]] += (
-                            np.sin(arg).sum(axis=1) ** 2
-                            + np.cos(arg).sum(axis=1) ** 2
-                        )
+                        self.results.ssf[start:start + w.shape[0]] \
+                            += self._ssf_trig(
+                                self._inner(w, self._positions)
+                            )
                         start += w.shape[0]
                 else:
-                    arg = np.inner(self._wavevectors, self._positions)
-                    self.results.ssf += (np.sin(arg).sum(axis=1) ** 2
-                                         + np.cos(arg).sum(axis=1) ** 2)
+                    self.results.ssf += self._ssf_trig(
+                        self._inner(self._wavevectors, self._positions)
+                    )
             else:
                 for i, (j, k) in enumerate(self.results.pairs):
                     if self._n_batches > 1:
@@ -1500,147 +1586,64 @@ class StructureFactor(DynamicAnalysisBase):
                         for w in np.array_split(
                                 self._wavevectors, self._n_batches, axis=0
                             ):
-                            arg_j = np.inner(
+                            arg_j = self._inner(
                                 w, self._positions[self._slices[j]]
                             )
                             if j == k:
                                 self.results.ssf[i, start:start + w.shape[0]] \
-                                += (
-                                    np.sin(arg_j).sum(axis=1) ** 2
-                                    + np.cos(arg_j).sum(axis=1) ** 2
-                                )
+                                    += self._ssf_trig(arg_j)
                             else:
-                                arg_k = np.inner(
-                                    w, self._positions[self._slices[k]]
-                                )
                                 self.results.ssf[i, start:start + w.shape[0]] \
-                                += (
-                                    np.sin(arg_j).sum(axis=1)
-                                    * np.sin(arg_k).sum(axis=1)
-                                    + np.cos(arg_j).sum(axis=1)
-                                    * np.cos(arg_k).sum(axis=1)
-                                )
+                                    += self._ssf_trig_cross(
+                                        arg_j, 
+                                        self._inner(
+                                            w, self._positions[self._slices[k]]
+                                        )
+                                    )
                             start += w.shape[0]
                     else:
-                        arg_j = np.inner(self._wavevectors,
-                                         self._positions[self._slices[j]])
+                        arg_j = self._inner(self._wavevectors,
+                                            self._positions[self._slices[j]])
                         if j == k:
-                            self.results.ssf[i] += (
-                                np.sin(arg_j).sum(axis=1) ** 2
-                                + np.cos(arg_j).sum(axis=1) ** 2
-                            )
+                            self.results.ssf[i] += self._ssf_trig(arg_j)
                         else:
-                            arg_k = np.inner(self._wavevectors,
-                                             self._positions[self._slices[k]])
-                            self.results.ssf[i] += (
-                                np.sin(arg_j).sum(axis=1)
-                                * np.sin(arg_k).sum(axis=1)
-                                + np.cos(arg_j).sum(axis=1)
-                                * np.cos(arg_k).sum(axis=1)
+                            self.results.ssf[i] += self._ssf_trig_cross(
+                                arg_j,
+                                self._inner(self._wavevectors, 
+                                            self._positions[self._slices[k]])
                             )
-
-    def _single_frame_parallel(
-            self, frame: int, index: int) -> np.ndarray[float]:
-
-        self._trajectory[frame]
-        positions = np.empty((self._N, 3))
-        for g, gr, s in zip(self._groups, self._groupings, self._slices):
-
-            # Store atom or center-of-mass positions in the current frame
-            positions[s] = (g.positions if gr == "atoms"
-                            else center_of_mass(g, gr))
-
-        # Compute the structure factor by multiplying the cosine and
-        # sine terms and adding them together
-        if self._mode is None:
-            if self._n_batches > 1:
-                start = 0
-                ssf = np.empty(len(self._wavenumbers))
-                for w in np.array_split(self._wavevectors, self._n_batches,
-                                        axis=0):
-                    arg = np.inner(w, positions)
-                    ssf[start:start + w.shape[0]] = (
-                        np.sin(arg).sum(axis=1) ** 2
-                        + np.cos(arg).sum(axis=1) ** 2
-                    )
-                    start += w.shape[0]
-            else:
-                arg = np.inner(self._wavevectors, positions)
-                ssf = (np.sin(arg).sum(axis=1) ** 2
-                        + np.cos(arg).sum(axis=1) ** 2)
-        else:
-            ssf = np.empty((len(self.results.pairs), 
-                            len(self._wavenumbers)))
-            for i, (j, k) in enumerate(self.results.pairs):
-                if self._n_batches > 1:
-                    start = 0
-                    for w in np.array_split(
-                            self._wavevectors, self._n_batches, axis=0
-                        ):
-                        arg_j = np.inner(w, positions[self._slices[j]])
-                        if j == k:
-                            ssf[i, start:start + w.shape[0]] = (
-                                np.sin(arg_j).sum(axis=1) ** 2
-                                + np.cos(arg_j).sum(axis=1) ** 2
-                            )
-                        else:
-                            arg_k = np.inner(w, positions[self._slices[k]])
-                            ssf[i, start:start + w.shape[0]] = (
-                                np.sin(arg_j).sum(axis=1)
-                                * np.sin(arg_k).sum(axis=1)
-                                + np.cos(arg_j).sum(axis=1)
-                                * np.cos(arg_k).sum(axis=1)
-                            )
-                        start += w.shape[0]
-                else:
-                    arg_j = np.inner(self._wavevectors, 
-                                        positions[self._slices[j]])
-                    if j == k:
-                        ssf[i] = (np.sin(arg_j).sum(axis=1) ** 2
-                                    + np.cos(arg_j).sum(axis=1) ** 2)
-                    else:
-                        arg_k = np.inner(self._wavevectors,
-                                            positions[self._slices[k]])
-                        ssf[i] = (
-                            np.sin(arg_j).sum(axis=1)
-                            * np.sin(arg_k).sum(axis=1)
-                            + np.cos(arg_j).sum(axis=1)
-                            * np.cos(arg_k).sum(axis=1)
-                        )
-        return ssf
 
     def _conclude(self) -> None:
 
-        # Consolidate parallel results
-        if self._parallel:
-            self.results.ssf = np.stack(self._results).sum(axis=0)
-        else:
-            del self._positions
+        del self._positions
 
         # Normalize the structure factor by the number of particles and
         # timesteps, and flatten the array by combining values sharing
-        # the same wavevector magnitude
-        if self._mode is None:
-            self.results.ssf /= self.n_frames * self._N
-            self.results.ssf = np.fromiter(
-                (self.results.ssf[np.isclose(q, self._wavenumbers)].mean()
-                 for q in self.results.wavenumbers),
-                dtype=float,
-                count=len(self.results.wavenumbers)
-            )
-        else:
-            self.results.ssf /= (
-                self.n_frames *
-                np.fromiter((np.sqrt(self._Ns[i] * self._Ns[j])
-                             for i, j in self.results.pairs),
-                            dtype=float,
-                            count=len(self.results.pairs))[:, None]
-            )
-            self.results.ssf = np.hstack(
-                [self.results.ssf[:, np.isclose(q, self._wavenumbers)]
-                 .mean(axis=1, keepdims=True)
-                 for q in self.results.wavenumbers]
-            )
+        # the same wavevector magnitude (if desired)
+        self.results.ssf /= self.n_frames * self._N
+        if self._unique:
+            if self._mode is None:
+                self.results.ssf = np.fromiter(
+                    (self.results.ssf[np.isclose(q, self._wavenumbers)].mean()
+                     for q in self.results.wavenumbers),
+                    dtype=float,
+                    count=len(self.results.wavenumbers)
+                )
+            else:
+                self.results.ssf = np.hstack(
+                    [self.results.ssf[:, np.isclose(q, self._wavenumbers)]
+                     .mean(axis=1, keepdims=True)
+                    for q in self.results.wavenumbers]
+                )
+
+        # Sort the results (if desired)
+        if self._sort:
+            order = np.argsort(self.results.wavenumbers)
+            self.results.wavenumbers = self.results.wavenumbers[order]
+            if self._mode is None:
+                self.results.ssf = self.results.ssf[order]
+            else:
+                self.results.ssf = self.results.ssf[:, order]
 
 class IncoherentIntermediateScatteringFunction(DynamicAnalysisBase):
 

@@ -225,7 +225,7 @@ class NumbaAnalysisBase(SerialAnalysisBase):
 
     **kwargs
         Additional keyword arguments to pass to
-        :class:`MDAnalysis
+        :class:`MDAnalysis.analysis.base.AnalysisBase`.
     """
 
     def __init__(
@@ -272,7 +272,7 @@ class NumbaAnalysisBase(SerialAnalysisBase):
 
         Returns
         -------
-        self : `SerialAnalysisBase` or `ParallelAnalysisBase`
+        self : `NumbaAnalysisBase`
             Analysis object with results.
         """
 
@@ -280,7 +280,7 @@ class NumbaAnalysisBase(SerialAnalysisBase):
             numba.set_num_threads(n_threads)
 
         return super().run(
-            self, start=start, stop=stop, step=step, frames=frames,
+            start=start, stop=stop, step=step, frames=frames,
             verbose=verbose, **kwargs
         )
 
