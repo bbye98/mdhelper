@@ -10,7 +10,7 @@
  * for other STL types like maps.
  */
 
-%include "std_vector.i" 
+%include "std_vector.i"
 namespace std {
     %template(vectord) vector<double>;
     %template(vectori) vector<int>;
@@ -26,38 +26,38 @@ namespace std {
 %}
 
 %pythoncode %{
-    import openmm.unit as unit 
+    import openmm.unit as unit
 %}
 
 /*
  * Add units to function outputs.
  */
 %pythonappend ICPlugin::ICLangevinIntegrator::getTemperature() const %{
-    val = unit.Quantity(val, unit.kelvin) 
+    val = unit.Quantity(val, unit.kelvin)
 %}
 
 %pythonappend ICPlugin::ICLangevinIntegrator::getFriction() const %{
-    val = unit.Quantity(val, 1 / unit.picosecond) 
+    val = unit.Quantity(val, 1 / unit.picosecond)
 %}
 
 %pythonappend ICPlugin::ICDrudeLangevinIntegrator::getTemperature() const %{
-    val = unit.Quantity(val, unit.kelvin) 
+    val = unit.Quantity(val, unit.kelvin)
 %}
 
 %pythonappend ICPlugin::ICDrudeLangevinIntegrator::getFriction() const %{
-    val = unit.Quantity(val, 1 / unit.picosecond) 
+    val = unit.Quantity(val, 1 / unit.picosecond)
 %}
 
 %pythonappend ICPlugin::ICDrudeLangevinIntegrator::getDrudeTemperature() const %{
-    val = unit.Quantity(val, unit.kelvin) 
+    val = unit.Quantity(val, unit.kelvin)
 %}
 
 %pythonappend ICPlugin::ICDrudeLangevinIntegrator::getDrudeFriction() const %{
-    val = unit.Quantity(val, 1 / unit.picosecond) 
+    val = unit.Quantity(val, 1 / unit.picosecond)
 %}
 
 %pythonappend ICPlugin::ICDrudeLangevinIntegrator::getMaxDrudeDistance() const %{
-    val = unit.Quantity(val, unit.nanometer) 
+    val = unit.Quantity(val, unit.nanometer)
 %}
 
 /*

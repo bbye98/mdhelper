@@ -3,6 +3,7 @@ import pathlib
 import sys
 import tarfile
 import urllib
+import warnings
 
 import ase.io
 import dynasor
@@ -14,6 +15,7 @@ import numpy as np
 sys.path.insert(0, f"{pathlib.Path(__file__).parents[1].resolve().as_posix()}/src")
 from mdhelper.analysis import structure # noqa: E402
 
+warnings.filterwarnings("ignore")
 rng = np.random.default_rng()
 
 def test_func_radial_histogram():
@@ -51,7 +53,7 @@ def test_func_radial_fourier_transform():
                        atol=4e-5)
 
 """
-The following test cases (test_class_rdf_*) are adapted from the 
+The following test cases (test_class_rdf_*) are adapted from the
 "Average radial distribution functions" page from the MDAnalysis User
 Guide (https://userguide.mdanalysis.org/stable/examples/analysis/structure/average_rdf.html).
 """
@@ -164,36 +166,134 @@ def test_class_structurefactor():
         os.remove("md_runs.tar.gz")
     os.chdir("md_runs/NVT_tetra_size8_T450_nframes1000")
 
+    q_max = 2.2
+    stop = 10
     atoms = ase.io.read("model.xyz")
     atomic_indices = atoms.symbols.indices()
     atom_types = sorted(atomic_indices.keys())
-    traj = dynasor.Trajectory("movie.nc", trajectory_format="nc", 
+    traj = dynasor.Trajectory("movie.nc", trajectory_format="nc",
                               atomic_indices=atomic_indices,
-                              frame_stop=10)
-    q_points = dynasor.get_spherical_qpoints(traj.cell, q_max=2.2)
+                              frame_stop=stop)
+    q_points = dynasor.get_spherical_qpoints(traj.cell, q_max=q_max)
     sample = dynasor.compute_static_structure_factors(traj, q_points)
     q_norms = np.linalg.norm(sample.q_points, axis=1)
     q_norms_unique = np.unique(np.round(q_norms, 11))
 
     universe = mda.Universe("model.xyz", "movie.nc")
     groups = [universe.select_atoms(f"element {e}") for e in atom_types]
-    ssf_exp = structure.StructureFactor(
-        groups, mode="partial", q_max=2.2, parallel=True
-    ).run(stop=10)
-    ssf_trig = structure.StructureFactor(
-        groups, mode="partial", q_max=2.2, form="trig", parallel=True
-    ).run(stop=10)
 
-    ssf_dynasor = np.empty((len(ssf_exp.results.pairs), len(q_norms_unique)))
-    for i, (j, k) in enumerate(ssf_exp.results.pairs):
-        ssf_dynasor[i] = np.fromiter(
-            (sample[f"Sq_{atom_types[j]}_{atom_types[k]}"][np.isclose(q, q_norms)].mean()
-             for q in q_norms_unique),
+    # TEST CASE 1: Partial structure factors
+    psf_exp = structure.StructureFactor(
+        groups, mode="partial", q_max=q_max, parallel=True
+    ).run(stop=stop)
+    psf_trig = structure.StructureFactor(
+        groups, mode="partial", q_max=q_max, form="trig", parallel=True
+    ).run(stop=stop)
+    psf_dynasor = np.empty((len(psf_exp.results.pairs), len(q_norms_unique)))
+    for i, (j, k) in enumerate(psf_exp.results.pairs):
+        psf_dynasor[i] = np.fromiter(
+            (sample[f"Sq_{atom_types[j]}_{atom_types[k]}"]
+             [np.isclose(q, q_norms)].mean() for q in q_norms_unique),
             dtype=float,
             count=len(q_norms_unique)
         )
+    assert np.allclose(psf_exp.results.wavenumbers, q_norms_unique)
+    assert np.allclose(psf_exp.results.ssf, psf_dynasor, atol=1e-6)
+    assert np.allclose(psf_trig.results.ssf, psf_dynasor, atol=1e-6)
 
-    # TEST CASE 1: Partial structure factors
-    assert np.allclose(ssf_exp.results.wavenumbers, q_norms_unique)
-    assert np.allclose(ssf_exp.results.ssf, ssf_dynasor, atol=1e-6)
-    assert np.allclose(ssf_trig.results.ssf, ssf_dynasor, atol=1e-6)
+    # TEST CASE 2: Static structure factors
+    ssf_exp = structure.StructureFactor(
+        groups, wavevectors=q_points, sort=False, unique=False, parallel=True
+    ).run(stop=stop)
+    ssf_trig = structure.StructureFactor(
+        groups, form="trig", wavevectors=q_points, sort=False, unique=False,
+        parallel=True
+    ).run(stop=stop)
+    assert np.allclose(ssf_exp.results.ssf[0], sample.Sq[:, 0])
+    assert np.allclose(ssf_trig.results.ssf[0], sample.Sq[:, 0])
+
+def test_class_intermediatescatteringfunction():
+
+    path = os.getcwd()
+    if "tests" in path:
+        path_split = path.split("/")
+        path = "/".join(path_split[:path_split.index("tests") + 1])
+    else:
+        path += "/tests"
+    if not os.path.isdir(f"{path}/data/ssf"):
+        os.makedirs(f"{path}/data/ssf")
+    os.chdir(f"{path}/data/ssf")
+
+    if not os.path.isdir("md_runs"):
+        with urllib.request.urlopen(
+                "https://zenodo.org/records/10149723/files/md_runs.tar.gz"
+            ) as r:
+            with open("md_runs.tar.gz", "wb") as f:
+                f.write(r.read())
+        with tarfile.open("md_runs.tar.gz", "r:gz") as tar:
+            tar.extractall()
+        os.remove("md_runs.tar.gz")
+    os.chdir("md_runs/NVT_tetra_size8_T450_nframes1000")
+
+    stop = 20
+    atoms = ase.io.read("model.xyz")
+    atomic_indices = atoms.symbols.indices()
+    atom_types = sorted(atomic_indices.keys())
+    traj = dynasor.Trajectory("movie.nc", trajectory_format="nc",
+                              atomic_indices=atomic_indices,
+                              frame_stop=stop)
+    q_points = dynasor.get_spherical_qpoints(traj.cell, q_max=2, max_points=2_000)
+    sample = dynasor.compute_dynamic_structure_factors(
+        traj, q_points, dt=1, window_size=stop, calculate_incoherent=True
+    )
+    q_norms = np.linalg.norm(sample.q_points, axis=1)
+    q_norms_unique = np.unique(np.round(q_norms, 11))
+
+    universe = mda.Universe("model.xyz", "movie.nc")
+    groups = [universe.select_atoms(f"element {e}") for e in atom_types]
+    isf_exp = structure.IntermediateScatteringFunction(
+        groups, mode="partial", wavevectors=q_points, incoherent=True, parallel=True
+    ).run(stop=stop)
+    isf_trig = structure.IntermediateScatteringFunction(
+        groups, mode="partial", form="trig", wavevectors=q_points, incoherent=True,
+        parallel=True
+    ).run(stop=stop)
+
+    # TEST CASE 1: Partial coherent intermediate scattering functions
+    cisf_dynasor = np.empty((stop, len(isf_exp.results.pairs), len(q_norms_unique)))
+    for i, (j, k) in enumerate(isf_exp.results.pairs):
+        for iq, q in enumerate(q_norms_unique):
+            cisf_dynasor[:, i, iq] = (
+                sample[f"Fqt_coh_{atom_types[j]}_{atom_types[k]}"]
+                [np.isclose(q, q_norms), :stop].mean(axis=0)
+            )
+    assert np.allclose(isf_exp.results.cisf, cisf_dynasor)
+    assert np.allclose(isf_trig.results.cisf, cisf_dynasor)
+
+    # TEST CASE 2: Partial incoherent intermediate scattering functions
+    iisf_dynasor = np.empty((stop, len(atom_types), len(q_norms_unique)))
+    for i in range(len(atom_types)):
+        for iq, q in enumerate(q_norms_unique):
+            iisf_dynasor[:, i, iq] = (
+                sample[f"Fqt_incoh_{atom_types[i]}"]
+                [np.isclose(q, q_norms), :stop].mean(axis=0)
+            )
+    assert np.allclose(isf_exp.results.iisf, iisf_dynasor)
+    assert np.allclose(isf_trig.results.iisf, iisf_dynasor)
+
+    isf_exp = structure.IntermediateScatteringFunction(
+        groups, wavevectors=q_points, incoherent=True, sort=False, unique=False,
+        parallel=True
+    ).run(stop=stop)
+    isf_trig = structure.IntermediateScatteringFunction(
+        groups, form="trig", wavevectors=q_points, incoherent=True, sort=False,
+        unique=False, parallel=True
+    ).run(stop=stop)
+
+    # TEST CASE 3: Coherent intermediate scattering function
+    assert np.allclose(isf_exp.results.cisf[:, 0], sample.Fqt_coh[:, :stop].T)
+    assert np.allclose(isf_trig.results.cisf[:, 0], sample.Fqt_coh[:, :stop].T)
+
+    # TEST CASE 4: Incoherent intermediate scattering function
+    assert np.allclose(isf_exp.results.iisf[:, 0], sample.Fqt_incoh[:, :stop].T)
+    assert np.allclose(isf_trig.results.iisf[:, 0], sample.Fqt_incoh[:, :stop].T)

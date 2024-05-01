@@ -3,12 +3,12 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="RadialDistributionFunction" href="mdhelper.analysis.structure.RadialDistributionFunction.html" /><link rel="prev" title="zeroth_order_hankel_transform" href="mdhelper.analysis.structure.zeroth_order_hankel_transform.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dot_1d_1d" href="mdhelper.algorithm.accelerated.dot_1d_1d.html" /><link rel="prev" title="delta_fourier_transform_sum_2d_2d" href="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>IncoherentIntermediateScatteringFunction - MDHelper 1.0.0 documentation</title>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
+        <title>delta_fourier_transform_sum_parallel_2d_2d - MDHelper 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     
@@ -113,6 +113,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -160,16 +162,26 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="mdhelper.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 has-children"><a class="reference internal" href="mdhelper.algorithm.html">algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.algorithm.accelerated.html">accelerated</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of accelerated</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="mdhelper.algorithm.html">algorithm</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current has-children"><a class="reference internal" href="mdhelper.algorithm.accelerated.html">accelerated</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of accelerated</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_parallel_2d.html">cosine_parallel_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_1d.html">cosine_sum_1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_2d.html">cosine_sum_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_parallel_2d.html">cosine_sum_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d.html">cross_pythagorean_trigonometric_identity_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d.html">delta_fourier_transform_1d_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d.html">delta_fourier_transform_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d.html">delta_fourier_transform_parallel_2d_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html">delta_fourier_transform_sum_2d_2d</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">delta_fourier_transform_sum_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.dot_1d_1d.html">dot_1d_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.inner_2d_2d.html">inner_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.inner_parallel_2d_2d.html">inner_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d.html">pythagorean_trigonometric_identity_1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_parallel_2d.html">sine_parallel_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_1d.html">sine_sum_1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_2d.html">sine_sum_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_parallel_2d.html">sine_sum_parallel_2d</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.algorithm.correlation.html">correlation</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of correlation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -207,7 +219,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2 current has-children"><a class="reference internal" href="mdhelper.analysis.html">analysis</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="mdhelper.analysis.html">analysis</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of analysis</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.analysis.base.html">base</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of base</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.DynamicAnalysisBase.html">DynamicAnalysisBase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.base.Hash.html">Hash</a></li>
@@ -235,13 +247,13 @@
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.profile.DensityProfile.html">DensityProfile</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current has-children"><a class="reference internal" href="mdhelper.analysis.structure.html">structure</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="mdhelper.analysis.structure.html">structure</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of structure</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.calculate_coordination_numbers.html">calculate_coordination_numbers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.calculate_structure_factor.html">calculate_structure_factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_fourier_transform.html">radial_fourier_transform</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.radial_histogram.html">radial_histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.zeroth_order_hankel_transform.html">zeroth_order_hankel_transform</a></li>
-<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">IncoherentIntermediateScatteringFunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.IntermediateScatteringFunction.html">IntermediateScatteringFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.RadialDistributionFunction.html">RadialDistributionFunction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.analysis.structure.StructureFactor.html">StructureFactor</a></li>
 </ul>
@@ -426,208 +438,41 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
-          <section id="incoherentintermediatescatteringfunction">
-<h1>IncoherentIntermediateScatteringFunction<a class="headerlink" href="#incoherentintermediatescatteringfunction" title="Link to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mdhelper.analysis.structure.</span></span><span class="sig-name descname"><span class="pre">IncoherentIntermediateScatteringFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v2.7.0)"><span class="pre">AtomGroup</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v2.7.0)"><span class="pre">AtomGroup</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'atoms'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.1.0)"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://pint.readthedocs.io/en/stable/api/base.html#pint.Quantity" title="(in pint v0.23rc3.dev1+g52ac9f5)"><span class="pre">Quantity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_surfaces</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_surface_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.unit.quantity.Quantity.html#openmm.unit.quantity.Quantity" title="(in OpenMM Python API v8.1.0)"><span class="pre">Quantity</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://pint.readthedocs.io/en/stable/api/base.html#pint.Quantity" title="(in pint v0.23rc3.dev1+g52ac9f5)"><span class="pre">Quantity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavevectors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_batches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fft</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mdhelper/analysis/structure.html#IncoherentIntermediateScatteringFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="mdhelper.analysis.base.DynamicAnalysisBase.html#mdhelper.analysis.base.DynamicAnalysisBase" title="mdhelper.analysis.base.DynamicAnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DynamicAnalysisBase</span></code></a></p>
-<p>Serial and parallel implementations to calculate the incoherent (or
-self) intermediate scattering function <span class="math notranslate nohighlight">\(F_\mathrm{s}(q,\,t)\)</span>.</p>
-<p>The incoherent intermediate scattering function characterizes the
-mean relaxation time of a system, and its spatial fluctuations
-provide information about dynamic heterogeneities. It is defined as</p>
+        <article role="main" id="furo-main-content">
+          <section id="delta-fourier-transform-sum-parallel-2d-2d">
+<h1>delta_fourier_transform_sum_parallel_2d_2d<a class="headerlink" href="#delta-fourier-transform-sum-parallel-2d-2d" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d">
+<span class="sig-prename descclassname"><span class="pre">mdhelper.algorithm.accelerated.</span></span><span class="sig-name descname"><span class="pre">delta_fourier_transform_sum_parallel_2d_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.12)"><span class="pre">complex</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mdhelper/algorithm/accelerated.html#delta_fourier_transform_sum_parallel_2d_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d" title="Link to this definition">¶</a></dt>
+<dd><p>Parallel Numba-accelerated Fourier transforms of Dirac delta
+functions involving all possible combinations of multiple
+one-dimensional NumPy arrays <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and
+<span class="math notranslate nohighlight">\(\mathbf{r}\)</span>, each with shape <span class="math notranslate nohighlight">\((3,)\)</span>.</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
-\[F_\mathrm{s}(\mathbf{q},t)=\frac{1}{N}\left\langle\sum_{j=1}^N
-\exp\left[i\mathbf{q}\cdot\left(\mathbf{r}_j(t_0+t)
--\mathbf{r}_j(t_0)\right)\right]\right\rangle\]</div>
-</div>
-<p>where <span class="math notranslate nohighlight">\(N\)</span> is the number of particles, <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> is
-the wavevector, <span class="math notranslate nohighlight">\(t_0\)</span> and <span class="math notranslate nohighlight">\(t\)</span> are the initial and lag
-times, and <span class="math notranslate nohighlight">\(\mathbf{r}_j\)</span> is the position of particle
-<span class="math notranslate nohighlight">\(j\)</span>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The simulation must have been run with a constant timestep
-<span class="math notranslate nohighlight">\(\Delta t\)</span> and the frames to be analyzed must be evenly
-spaced and proceed forward in time for this analysis module to
-function correctly.</p>
+\[\sum_\mathbf{r}\mathcal{F}[\delta(\mathbf{q}-\mathbf{r})]
+=\sum_\mathbf{r}\exp(i\mathbf{q}\cdot\mathbf{r})\]</div>
 </div>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>groups</strong><span class="classifier"><cite>MDAnalysis.AtomGroup</cite> or array-like</span></dt><dd><p>Group(s) of atoms that share the same grouping type. All atoms
-in the universe must be assigned to a group.</p>
+<dt><strong>qs</strong><span class="classifier"><cite>np.ndarray</cite></span></dt><dd><p>Multiple vectors <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>.</p>
+<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_q,\,3)\)</span>.</p>
 </dd>
-<dt><strong>groupings</strong><span class="classifier"><cite>str</cite> or array-like, default: <code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code></span></dt><dd><p>Determines whether the centers of mass are used in lieu of
-individual atom positions. If <cite>groupings</cite> is a <cite>str</cite>, the same
-value is used for all <cite>groups</cite>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In a standard trajectory file, segments (or chains) contain
-residues (or molecules), and residues contain atoms. This
-heirarchy must be adhered to for this analysis module to
-function correctly, unless your selected grouping is always
-<code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code>.</p>
-</div>
-<div class="docutils container">
-<p><strong>Valid values</strong>:</p>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code>: Atom positions (generally for
-coarse-grained simulations).</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;residues&quot;</span></code>: Residues’ centers of mass (for
-atomistic simulations).</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;segments&quot;</span></code>: Segments’ centers of mass (for
-atomistic polymer simulations).</p></li>
-</ul>
-</div>
-</dd>
-<dt><strong>dimensions</strong><span class="classifier">array-like, <cite>openmm.unit.Quantity</cite>, or     <cite>pint.Quantity</cite>, keyword-only, optional</span></dt><dd><p>System dimensions. If not provided, they are retrieved from the
-topology or trajectory.</p>
-<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((3,)\)</span>.</p>
-<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å}\)</span>.</p>
-</dd>
-<dt><strong>n_points</strong><span class="classifier"><cite>int</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">32</span></code></span></dt><dd><p>Number of points in the scattering wavevector grid. Additional
-wavevectors can be introduced via <cite>n_surfaces</cite> and
-<cite>n_surface_points</cite> for more accurate structure factor values.
-Alternatively, the desired wavevectors can be specified directly
-in <cite>wavevectors</cite>.</p>
-</dd>
-<dt><strong>n_surfaces</strong><span class="classifier"><cite>int</cite>, keyword-only, optional</span></dt><dd><p>Number of spherical surfaces in the first octant that intersect
-with the grid wavevectors along the three coordinate axes for
-which to introduce extra wavevectors for more accurate incoherent
-scattering function values. Only available if the system is
-perfectly cubic.</p>
-</dd>
-<dt><strong>n_surface_points</strong><span class="classifier"><cite>int</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">8</span></code></span></dt><dd><p>Number of extra wavevectors to introduce per spherical surface.
-Has no effect if <cite>n_surfaces</cite> is not specified.</p>
-</dd>
-<dt><strong>q_max</strong><span class="classifier"><cite>float</cite>, <cite>openmm.unit.Quantity</cite>, or <cite>pint.Quantity</cite>,     keyword-only, optional</span></dt><dd><p>Maximum scattering wavevector magnitude.</p>
-<p><strong>Reference unit</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å}^{-1}\)</span>.</p>
-</dd>
-<dt><strong>wavevectors</strong><span class="classifier"><cite>numpy.ndarray</cite>, keyword-only, optional</span></dt><dd><p>Scattering wavevectors for which to compute the incoherent
-scattering function. Has precedence over <cite>n_points</cite> if
-specified.</p>
-</dd>
-<dt><strong>n_batches</strong><span class="classifier"><cite>int</cite>, keyword-only, optional</span></dt><dd><p>Number of batches to divide the incoherent scattering function
-calculation into. This is useful for large systems that cannot
-be processed in a single pass.</p>
-</dd>
-<dt><strong>fft</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether fast Fourier transforms (FFT) are used to
-evaluate the auto- and cross-correlations.</p>
-</dd>
-<dt><strong>parallel</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">False</span></code></span></dt><dd><p>Determines whether the analysis is performed in parallel.</p>
-</dd>
-<dt><strong>verbose</strong><span class="classifier"><cite>bool</cite>, keyword-only, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether detailed progress is shown.</p>
-</dd>
-<dt><strong>**kwargs</strong></dt><dd><p>Additional keyword arguments to pass to
-<a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="(in MDAnalysis v2.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.AnalysisBase</span></code></a>.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Attributes<span class="colon">:</span></dt>
-<dd class="field-even"><dl>
-<dt><strong>universe</strong><span class="classifier"><cite>MDAnalysis.Universe</cite></span></dt><dd><p><a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v2.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a> object containing all
-information describing the system.</p>
-</dd>
-<dt><strong>results.units</strong><span class="classifier"><cite>dict</cite></span></dt><dd><p>Reference units for the results. For example, to get the
-reference units for <code class="code docutils literal notranslate"><span class="pre">results.wavenumbers</span></code>, call
-<code class="code docutils literal notranslate"><span class="pre">results.units[&quot;results.wavenumbers&quot;]</span></code>.</p>
-</dd>
-<dt><strong>results.times</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Lag times <span class="math notranslate nohighlight">\(t\)</span>.</p>
-<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_\mathrm{t},)\)</span>.</p>
-<p><strong>Reference units</strong>: <span class="math notranslate nohighlight">\(\mathrm{ps}\)</span>.</p>
-</dd>
-<dt><strong>results.wavenumbers</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Scattering wavenumbers <span class="math notranslate nohighlight">\(q\)</span>.</p>
-<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_\mathrm{w},)\)</span>.</p>
-<p><strong>Reference units</strong>: <span class="math notranslate nohighlight">\(\mathrm{Å}^{-1}\)</span>.</p>
-</dd>
-<dt><strong>results.isf</strong><span class="classifier"><cite>numpy.ndarray</cite></span></dt><dd><p>Incoherent (self) intermediate scattering function
-<span class="math notranslate nohighlight">\(F_\mathrm{s}(q,\,t)\)</span>.</p>
-<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_\mathrm{t},\,N_\mathrm{w})\)</span>.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<div class="table-wrapper autosummary longtable docutils container">
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.run" title="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a></p></td>
-<td><p>Performs the calculation.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.save" title="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a></p></td>
-<td><p>Saves results to a binary or archive file in NumPy format.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><span class="pre">slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mdhelper.analysis.base.SerialAnalysisBase.html#mdhelper.analysis.base.SerialAnalysisBase" title="mdhelper.analysis.base.SerialAnalysisBase"><span class="pre">SerialAnalysisBase</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="mdhelper.analysis.base.ParallelAnalysisBase.html#mdhelper.analysis.base.ParallelAnalysisBase" title="mdhelper.analysis.base.ParallelAnalysisBase"><span class="pre">ParallelAnalysisBase</span></a></span></span><a class="headerlink" href="#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.run" title="Link to this definition">#</a></dt>
-<dd><p>Performs the calculation.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>For parallel-specific keyword arguments, see
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ParallelAnalysisBase.run()</span></code>.</p>
-</div>
-<dl class="field-list">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl>
-<dt><strong>start</strong><span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Starting frame for analysis.</p>
-</dd>
-<dt><strong>stop</strong><span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Ending frame for analysis.</p>
-</dd>
-<dt><strong>step</strong><span class="classifier"><cite>int</cite>, optional</span></dt><dd><p>Number of frames to skip between each analyzed frame.</p>
-</dd>
-<dt><strong>frames</strong><span class="classifier"><cite>slice</cite> or array-like, optional</span></dt><dd><p>Index or logical array of the desired trajectory frames.</p>
-</dd>
-<dt><strong>verbose</strong><span class="classifier"><cite>bool</cite>, optional</span></dt><dd><p>Determines whether detailed progress is shown.</p>
-</dd>
-<dt><strong>**kwargs</strong></dt><dd><p>Additional keyword arguments to pass to
-<a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/lib/log.html#MDAnalysis.lib.log.ProgressBar" title="(in MDAnalysis v2.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressBar</span></code></a>.</p>
+<dt><strong>rs</strong><span class="classifier"><cite>np.ndarray</cite></span></dt><dd><p>Multiple vectors <span class="math notranslate nohighlight">\(\mathbf{r}\)</span>.</p>
+<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_r,\,3,)\)</span>.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>self</strong><span class="classifier"><cite>SerialAnalysisBase</cite> or <cite>ParallelAnalysisBase</cite></span></dt><dd><p>Analysis object with results.</p>
+<dt><strong>F</strong><span class="classifier"><cite>np.ndarray</cite></span></dt><dd><p>Fourier transforms of the Dirac delta functions,
+<span class="math notranslate nohighlight">\(\mathcal{F}[\delta(\mathbf{q}-\mathbf{r})]\)</span>.</p>
+<p><strong>Shape</strong>: <span class="math notranslate nohighlight">\((N_q,)\)</span>.</p>
 </dd>
 </dl>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TextIO" title="(in Python v3.12)"><span class="pre">TextIO</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.save" title="Link to this definition">#</a></dt>
-<dd><p>Saves results to a binary or archive file in NumPy format.</p>
-<dl class="field-list">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl>
-<dt><strong>file</strong><span class="classifier"><cite>str</cite> or <cite>file</cite></span></dt><dd><p>Filename or file-like object where the data will be saved.
-If <cite>file</cite> is a <cite>str</cite>, the <code class="code docutils literal notranslate"><span class="pre">.npy</span></code> or <code class="code docutils literal notranslate"><span class="pre">.npz</span></code>
-extension will be appended automatically if not already
-present.</p>
-</dd>
-<dt><strong>archive</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the results are saved to a single archive
-file. If <cite>True</cite>, the data is stored in a <code class="code docutils literal notranslate"><span class="pre">.npz</span></code> file.
-Otherwise, the data is saved to multiple <code class="code docutils literal notranslate"><span class="pre">.npy</span></code> files.</p>
-</dd>
-<dt><strong>compress</strong><span class="classifier"><cite>bool</cite>, default: <code class="code docutils literal notranslate"><span class="pre">True</span></code></span></dt><dd><p>Determines whether the <code class="code docutils literal notranslate"><span class="pre">.npz</span></code> file is compressed. Has
-no effect when <code class="code docutils literal notranslate"><span class="pre">archive=False</span></code>.</p>
-</dd>
-<dt><strong>**kwargs</strong></dt><dd><p>Additional keyword arguments to pass to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.save.html#numpy.save" title="(in NumPy v1.26)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.save()</span></code></a>,
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.savez.html#numpy.savez" title="(in NumPy v1.26)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.savez()</span></code></a>, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.savez_compressed.html#numpy.savez_compressed" title="(in NumPy v1.26)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.savez_compressed()</span></code></a>,
-depending on the values of <cite>archive</cite> and <cite>compress</cite>.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -637,23 +482,23 @@ depending on the values of <cite>archive</cite> and <cite>compress</cite>.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="mdhelper.analysis.structure.RadialDistributionFunction.html">
+          <a class="next-page" href="mdhelper.algorithm.accelerated.dot_1d_1d.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">RadialDistributionFunction</div>
+                <div class="title">dot_1d_1d</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="mdhelper.analysis.structure.zeroth_order_hankel_transform.html">
+          <a class="prev-page" href="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">zeroth_order_hankel_transform</div>
+                <div class="title">delta_fourier_transform_sum_2d_2d</div>
                 
               </div>
             </a>
@@ -687,12 +532,8 @@ depending on the values of <cite>archive</cite> and <cite>compress</cite>.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">IncoherentIntermediateScatteringFunction</a><ul>
-<li><a class="reference internal" href="#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction"><code class="docutils literal notranslate"><span class="pre">IncoherentIntermediateScatteringFunction</span></code></a><ul>
-<li><a class="reference internal" href="#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
-<li><a class="reference internal" href="#mdhelper.analysis.structure.IncoherentIntermediateScatteringFunction.save"><code class="docutils literal notranslate"><span class="pre">save()</span></code></a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#">delta_fourier_transform_sum_parallel_2d_2d</a><ul>
+<li><a class="reference internal" href="#mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d"><code class="docutils literal notranslate"><span class="pre">delta_fourier_transform_sum_parallel_2d_2d()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -705,9 +546,9 @@ depending on the values of <cite>archive</cite> and <cite>compress</cite>.</p>
     </aside>
   </div>
 </div><script src="../_static/documentation_options.js?v=8d563738"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../_static/scripts/furo.js?v=4e2eecee"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

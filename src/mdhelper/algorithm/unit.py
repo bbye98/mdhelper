@@ -1,9 +1,9 @@
 """
-Utility algorithms
-==================
+Unit manipulation
+=================
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
-This module contains helper functions for unit reduction.
+This module contains helper functions for unit manipulation and reduction.
 """
 
 from numbers import Number

@@ -174,19 +174,22 @@ def correlation_fft(
     # Calculate the PSD by first zero-padding the arrays for linear
     # convolution, and then invert it to get the ACF/CCF
     N_t = arr1.shape[axis]
+    all_real = np.isrealobj(arr1) and (arr2 is None or np.isrealobj(arr2))
+    _fft = fft.rfft if all_real else fft.fft
+    _ifft = fft.irfft if all_real else fft.ifft
     if arr2 is None:
-        f = fft.rfft(arr1, n=2 * N_t, axis=axis)
-        corr = (double + 1) * fft.irfft(f * f.conjugate(), axis=axis)
+        f = _fft(arr1, n=2 * N_t, axis=axis)
+        corr = (double + 1) * _ifft(f * f.conjugate(), axis=axis)
         corr = corr[:, :N_t] if axis else corr[:N_t]
     else:
-        f1 = fft.rfft(arr1, n=2 * N_t, axis=axis)
-        f2 = fft.rfft(arr2, n=2 * N_t, axis=axis)
+        f1 = _fft(arr1, n=2 * N_t, axis=axis)
+        f2 = _fft(arr2, n=2 * N_t, axis=axis)
         f = f1.conjugate() * f2
         if double:
-            corr = fft.irfft(f + f1 * f2.conjugate(), axis=axis)
+            corr = _ifft(f + f1 * f2.conjugate(), axis=axis)
             corr = corr[:, :N_t] if axis else corr[:N_t]
         else:
-            corr = fft.irfft(f, axis=axis)
+            corr = _ifft(f, axis=axis)
 
     # Determine the axes over which to expand the reversed
     # time array for correct matrix division

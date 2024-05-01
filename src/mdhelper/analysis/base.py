@@ -4,8 +4,8 @@ Analysis base classes
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 .. moduleauthor:: Alec Glisman <GitHub: @alec-glisman>
 
-This module contains custom base classes for serial and multithreaded 
-data analysis with support for the multiprocessing, Dask, Joblib, and 
+This module contains custom base classes for serial and multithreaded
+data analysis with support for the multiprocessing, Dask, Joblib, and
 Numba libraries for parallelization.
 """
 
@@ -55,7 +55,7 @@ def _tqdm_joblib(tqdm_obj: tqdm) -> Generator:
         tqdm_obj.close()
 
 def _istarmap(
-        self: multiprocessing.pool.Pool, func: Callable[[Any], Any], 
+        self: multiprocessing.pool.Pool, func: Callable[[Any], Any],
         iterable: Iterable, chunk_size: int = 1) -> Iterable:
 
     self._check_running()
@@ -241,11 +241,6 @@ class NumbaAnalysisBase(SerialAnalysisBase):
         """
         Performs the calculation.
 
-        .. seealso::
-
-           For parallel-specific keyword arguments, see 
-           :meth:`ParallelAnalysisBase.run`.
-
         Parameters
         ----------
         start : `int`, optional
@@ -318,7 +313,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
     def run(
             self, start: int = None, stop: int = None, step: int = None,
             frames: Union[slice, np.ndarray[int]] = None, verbose: bool = None,
-            n_jobs: int = None, module: str = "multiprocessing", 
+            n_jobs: int = None, module: str = "multiprocessing",
             block: bool = True, method: str = None, **kwargs
         ) -> "ParallelAnalysisBase":
 
@@ -460,7 +455,7 @@ class ParallelAnalysisBase(SerialAnalysisBase):
 
             logging.info("Starting analysis using Joblib "
                          f"({n_jobs=}, backend={method})...")
-            with (_tqdm_joblib(tqdm(total=n_frames)) if verbose 
+            with (_tqdm_joblib(tqdm(total=n_frames)) if verbose
                   else contextlib.suppress()):
                 if block:
                     self._results = joblib.Parallel(
@@ -498,11 +493,11 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                 self._results = (
                     tuple(
                         tqdm(
-                            p.istarmap(self._single_frame_parallel, 
+                            p.istarmap(self._single_frame_parallel,
                                     zip(frames, indices)),
                             total=n_frames
                         )
-                    ) if verbose else p.starmap(self._single_frame_parallel, 
+                    ) if verbose else p.starmap(self._single_frame_parallel,
                                               zip(frames, indices))
                 )
 
@@ -553,7 +548,7 @@ class DynamicAnalysisBase(ParallelAnalysisBase, SerialAnalysisBase):
 
         .. seealso::
 
-           For parallel-specific keyword arguments, see 
+           For parallel-specific keyword arguments, see
            :meth:`ParallelAnalysisBase.run`.
 
         Parameters

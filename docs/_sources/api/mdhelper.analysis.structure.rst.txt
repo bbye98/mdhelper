@@ -32,7 +32,7 @@ structure
       :template: autosummary/class.rst
       :nosignatures:
    
-      IncoherentIntermediateScatteringFunction
+      IntermediateScatteringFunction
       RadialDistributionFunction
       StructureFactor
    

@@ -1,6 +1,6 @@
 """
-Numba algorithms
-================
+Accelerated algorithms
+======================
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
 
 This module contains miscellaneous Numba-accelerated algorithms.
@@ -36,10 +36,10 @@ def dot_1d_1d(a: np.ndarray[float], b: np.ndarray[float]) -> float:
     Returns
     -------
     ab : `float`
-        Dot product of the two vectors, 
+        Dot product of the two vectors,
         :math:`\mathbf{a}\cdot\mathbf{b}`.
     """
-    
+
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 
 @numba.njit(fastmath=True)
@@ -47,9 +47,9 @@ def delta_fourier_transform_1d_1d(
         q: np.ndarray[float], r: np.ndarray[float]) -> complex:
 
     r"""
-    Serial Numba-accelerated Fourier transform of a Dirac delta 
-    function involving two one-dimensional NumPy arrays 
-    :math:`\mathbf{q}` and :math:`\mathbf{r}`, each with shape 
+    Serial Numba-accelerated Fourier transform of a Dirac delta
+    function involving two one-dimensional NumPy arrays
+    :math:`\mathbf{q}` and :math:`\mathbf{r}`, each with shape
     :math:`(3,)`.
 
     .. math::
@@ -72,7 +72,7 @@ def delta_fourier_transform_1d_1d(
     Returns
     -------
     F : `complex`
-        Fourier transforms of the Dirac delta functions, 
+        Fourier transforms of the Dirac delta functions,
         :math:`\mathcal{F}[\delta(\mathbf{q}-\mathbf{r})]`.
     """
 
@@ -81,17 +81,35 @@ def delta_fourier_transform_1d_1d(
 @numba.njit(fastmath=True)
 def delta_fourier_transform_2d_2d(
         qs: np.ndarray[float], rs: np.ndarray[float]) -> np.ndarray[complex]:
+    F = np.empty((qs.shape[0], rs.shape[0]), dtype=np.complex128)
+    for i in range(qs.shape[0]):
+        for j in range(rs.shape[0]):
+            F[i, j] = delta_fourier_transform_1d_1d(qs[i], rs[j])
+    return F
+
+@numba.njit(fastmath=True, parallel=True)
+def delta_fourier_transform_parallel_2d_2d(
+        qs: np.ndarray[float], rs: np.ndarray[float]) -> np.ndarray[complex]:
+    F = np.empty((qs.shape[0], rs.shape[0]), dtype=np.complex128)
+    for i in numba.prange(qs.shape[0]):
+        for j in range(rs.shape[0]):
+            F[i, j] = delta_fourier_transform_1d_1d(qs[i], rs[j])
+    return F
+
+@numba.njit(fastmath=True)
+def delta_fourier_transform_sum_2d_2d(
+        qs: np.ndarray[float], rs: np.ndarray[float]) -> np.ndarray[complex]:
 
     r"""
-    Serial Numba-accelerated Fourier transforms of Dirac delta 
-    functions involving all possible combinations of multiple 
-    one-dimensional NumPy arrays :math:`\mathbf{q}` and 
+    Serial Numba-accelerated Fourier transforms of Dirac delta
+    functions involving all possible combinations of multiple
+    one-dimensional NumPy arrays :math:`\mathbf{q}` and
     :math:`\mathbf{r}`, each with shape :math:`(3,)`.
 
     .. math::
 
-       \mathcal{F}[\delta(\mathbf{q}-\mathbf{r})]
-       =\exp(i\mathbf{q}\cdot\mathbf{r})
+       \sum_\mathbf{r}\mathcal{F}[\delta(\mathbf{q}-\mathbf{r})]
+       =\sum_\mathbf{r}\exp(i\mathbf{q}\cdot\mathbf{r})
 
     Parameters
     ----------
@@ -108,10 +126,10 @@ def delta_fourier_transform_2d_2d(
     Returns
     -------
     F : `np.ndarray`
-        Fourier transforms of the Dirac delta functions, 
+        Fourier transforms of the Dirac delta functions,
         :math:`\mathcal{F}[\delta(\mathbf{q}-\mathbf{r})]`.
 
-        **Shape**: :math:`(N_q,\,N_r)`.
+        **Shape**: :math:`(N_q,)`.
     """
 
     F = np.empty(qs.shape[0], dtype=np.complex128)
@@ -122,19 +140,19 @@ def delta_fourier_transform_2d_2d(
     return F
 
 @numba.njit(fastmath=True, parallel=True)
-def delta_fourier_transform_parallel_2d_2d(
+def delta_fourier_transform_sum_parallel_2d_2d(
         qs: np.ndarray[float], rs: np.ndarray[float]) -> np.ndarray[complex]:
 
     r"""
-    Parallel Numba-accelerated Fourier transforms of Dirac delta 
-    functions involving all possible combinations of multiple 
-    one-dimensional NumPy arrays :math:`\mathbf{q}` and 
+    Parallel Numba-accelerated Fourier transforms of Dirac delta
+    functions involving all possible combinations of multiple
+    one-dimensional NumPy arrays :math:`\mathbf{q}` and
     :math:`\mathbf{r}`, each with shape :math:`(3,)`.
 
     .. math::
 
-       \mathcal{F}[\delta(\mathbf{q}-\mathbf{r})]
-       =\exp(i\mathbf{q}\cdot\mathbf{r})
+       \sum_\mathbf{r}\mathcal{F}[\delta(\mathbf{q}-\mathbf{r})]
+       =\sum_\mathbf{r}\exp(i\mathbf{q}\cdot\mathbf{r})
 
     Parameters
     ----------
@@ -151,10 +169,10 @@ def delta_fourier_transform_parallel_2d_2d(
     Returns
     -------
     F : `np.ndarray`
-        Fourier transforms of the Dirac delta functions, 
+        Fourier transforms of the Dirac delta functions,
         :math:`\mathcal{F}[\delta(\mathbf{q}-\mathbf{r})]`.
 
-        **Shape**: :math:`(N_q,\,N_r)`.
+        **Shape**: :math:`(N_q,)`.
     """
 
     F = np.empty(qs.shape[0], dtype=np.complex128)
@@ -193,7 +211,7 @@ def inner_2d_2d(
     Returns
     -------
     s : `np.ndarray`
-        Inner products of the vectors, 
+        Inner products of the vectors,
         :math:`\mathbf{q}\cdot\mathbf{r}`.
 
         **Shape**: :math:`(N_q,\,N_r)`.
@@ -234,7 +252,7 @@ def inner_parallel_2d_2d(
     Returns
     -------
     s : `np.ndarray`
-        Inner products of the vectors, 
+        Inner products of the vectors,
         :math:`\mathbf{q}\cdot\mathbf{r}`.
 
         **Shape**: :math:`(N_q,\,N_r)`.
@@ -268,7 +286,7 @@ def pythagorean_trigonometric_identity_1d(r: np.ndarray[float]) -> float:
     Returns
     -------
     c2_s2 : `float`
-        Pythagorean trigonometric identity for the vector 
+        Pythagorean trigonometric identity for the vector
         :math:`\mathbf{r}`.
     """
 
@@ -283,7 +301,7 @@ def cross_pythagorean_trigonometric_identity_1d(
         r: np.ndarray[float], s: np.ndarray[float]) -> float:
 
     r"""
-    Serial Numba-accelerated evaluation of the cross Pythagorean 
+    Serial Numba-accelerated evaluation of the cross Pythagorean
     trigonometric identity for two one-dimensional NumPy arrays
     :math:`\mathbf{r}` and :math:`\mathbf{s}`.
 
@@ -319,3 +337,65 @@ def cross_pythagorean_trigonometric_identity_1d(
         c2 += np.cos(s[j])
         s2 += np.sin(s[j])
     return 2 * (c1 * c2 + s1 * s2)
+
+@numba.njit(fastmath=True, parallel=True)
+def cosine_parallel_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
+    s = np.empty_like(xs)
+    for i in numba.prange(xs.shape[0]):
+        for j in range(xs.shape[1]):
+            s[i, j] = np.cos(xs[i, j])
+    return s
+
+@numba.njit(fastmath=True, parallel=True)
+def sine_parallel_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
+    s = np.empty_like(xs)
+    for i in numba.prange(xs.shape[0]):
+        for j in range(xs.shape[1]):
+            s[i, j] = np.sin(xs[i, j])
+    return s
+
+@numba.njit(fastmath=True)
+def cosine_sum_1d(x: np.ndarray[float]) -> float:
+    s = 0
+    for i in range(x.shape[0]):
+        s += np.cos(x[i])
+    return s
+
+@numba.njit(fastmath=True)
+def cosine_sum_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
+    s = np.empty(xs.shape[0])
+    for i in range(xs.shape[0]):
+        s[i] = 0
+        for j in range(xs.shape[1]):
+            s[i] += np.cos(xs[i, j])
+    return s
+
+@numba.njit(fastmath=True, parallel=True)
+def cosine_sum_parallel_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
+    s = np.empty(xs.shape[0])
+    for i in numba.prange(xs.shape[0]):
+        s[i] = cosine_sum_1d(xs[i])
+    return s
+
+@numba.njit(fastmath=True)
+def sine_sum_1d(x: np.ndarray[float]) -> float:
+    s = 0
+    for i in range(x.shape[0]):
+        s += np.sin(x[i])
+    return s
+
+@numba.njit(fastmath=True)
+def sine_sum_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
+    s = np.empty(xs.shape[0])
+    for i in range(xs.shape[0]):
+        s[i] = 0
+        for j in range(xs.shape[1]):
+            s[i] += np.sin(xs[i, j])
+    return s
+
+@numba.njit(fastmath=True, parallel=True)
+def sine_sum_parallel_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
+    s = np.empty(xs.shape[0])
+    for i in numba.prange(xs.shape[0]):
+        s[i] = sine_sum_1d(xs[i])
+    return s
