@@ -317,7 +317,7 @@ def calculate_conductivity(
     Returns
     -------
     kappas : `numpy.ndarray`
-        Conductivities :math:`\kappa` for the :math:`N_\mathrm{b}` 
+        Conductivities :math:`\kappa` for the :math:`N_\mathrm{b}`
         trajectory blocks.
 
         **Shape**: :math:`(N_\mathrm{b},\,)`.
@@ -782,10 +782,6 @@ class Onsager(SerialAnalysisBase):
 
     Notes
     -----
-    * In a standard trajectory file, segments (or chains) contain
-      residues, and residues contain atoms. This heirarchy must be
-      adhered to for this analysis module to function correctly.
-
     * The values in `results.msd_cross` are actually "summed squared
       displacements"—that is, `results.msd_cross` contains the sum of
       all particles' squared displacements instead of their average.

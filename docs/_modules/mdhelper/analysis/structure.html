@@ -489,11 +489,15 @@
 
 <span class="sd">        **Shape**: :math:`(N_1,\,3)`.</span>
 
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
+
 <span class="sd">    pos2 : `numpy.ndarray`</span>
 <span class="sd">        :math:`N_2` positions or center of masses of particles in the</span>
 <span class="sd">        second group.</span>
 
 <span class="sd">        **Shape**: :math:`(N_2,\,3)`.</span>
+
+<span class="sd">        **Reference unit**: :math:`\mathrm{Å}`.</span>
 
 <span class="sd">    n_bins : `int`</span>
 <span class="sd">        Number of histogram bins :math:`N_\mathrm{bins}`.</span>
@@ -1110,7 +1114,7 @@
 
 <span class="sd">    results.coordination_numbers : `numpy.ndarray`</span>
 <span class="sd">        Coordination numbers :math:`n_k`. Only available after running</span>
-<span class="sd">        :meth:`calculate_coordination_number`.</span>
+<span class="sd">        :meth:`calculate_coordination_numbers`.</span>
 
 <span class="sd">    results.pmf : `numpy.ndarray`</span>
 <span class="sd">        Potential of mean force :math:`w(r)`. Only available after</span>
@@ -1427,7 +1431,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        rho : `float`</span>
-<span class="sd">            Bulk number density :math:`rho`.</span>
+<span class="sd">            Bulk number density :math:`\rho`.</span>
 
 <span class="sd">            **Reference unit**: :math:`\mathrm{Å}^{-3}`.</span>
 
@@ -1685,7 +1689,7 @@
 <span class="sd">        `results.ssf`.</span>
 
 <span class="sd">    results.wavenumbers : `numpy.ndarray`</span>
-<span class="sd">        :math:`N_q` scattering wavenumbers :math:`q`.</span>
+<span class="sd">        Wavenumbers :math:`q`.</span>
 
 <span class="sd">        **Shape**: :math:`(N_q,)`.</span>
 
@@ -2320,14 +2324,14 @@
 <span class="sd">        `results.cisf` and `results.iisf`.</span>
 
 <span class="sd">    results.times : `numpy.ndarray`</span>
-<span class="sd">        :math:`N_t` lag times :math:`t`.</span>
+<span class="sd">        Lag times :math:`t`.</span>
 
 <span class="sd">        **Shape**: :math:`(N_t,)`.</span>
 
 <span class="sd">        **Reference unit**: :math:`\\mathrm{ps}`.</span>
 
 <span class="sd">    results.wavenumbers : `numpy.ndarray`</span>
-<span class="sd">        :math:`N_q` scattering wavenumbers :math:`q`.</span>
+<span class="sd">        Wavenumbers :math:`q`.</span>
 
 <span class="sd">        **Shape**: :math:`(N_q,)`.</span>
 

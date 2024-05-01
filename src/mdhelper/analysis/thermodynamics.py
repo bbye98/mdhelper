@@ -50,7 +50,7 @@ class ConstantVolumeHeatCapacity:
         Format of the log file. If not provided, the format will be
         determined automatically (if possible).
 
-        **Valid values**: `"lammps"`, `"openmm"`.
+        **Valid values**: :code:`"lammps"`, :code:`"openmm"`.
 
     energies : `numpy.ndarray` or `pint.Quantity`, optional
         Potential energies. If not provided, the log file must be

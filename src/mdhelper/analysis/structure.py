@@ -47,11 +47,15 @@ def radial_histogram(
 
         **Shape**: :math:`(N_1,\,3)`.
 
+        **Reference unit**: :math:`\mathrm{Å}`.
+
     pos2 : `numpy.ndarray`
         :math:`N_2` positions or center of masses of particles in the
         second group.
 
         **Shape**: :math:`(N_2,\,3)`.
+
+        **Reference unit**: :math:`\mathrm{Å}`.
 
     n_bins : `int`
         Number of histogram bins :math:`N_\mathrm{bins}`.
@@ -653,7 +657,7 @@ class RadialDistributionFunction(DynamicAnalysisBase):
 
     results.coordination_numbers : `numpy.ndarray`
         Coordination numbers :math:`n_k`. Only available after running
-        :meth:`calculate_coordination_number`.
+        :meth:`calculate_coordination_numbers`.
 
     results.pmf : `numpy.ndarray`
         Potential of mean force :math:`w(r)`. Only available after
@@ -962,7 +966,7 @@ class RadialDistributionFunction(DynamicAnalysisBase):
         Parameters
         ----------
         rho : `float`
-            Bulk number density :math:`rho`.
+            Bulk number density :math:`\rho`.
 
             **Reference unit**: :math:`\mathrm{Å}^{-3}`.
 
@@ -1216,7 +1220,7 @@ class StructureFactor(NumbaAnalysisBase):
         `results.ssf`.
 
     results.wavenumbers : `numpy.ndarray`
-        :math:`N_q` scattering wavenumbers :math:`q`.
+        Wavenumbers :math:`q`.
 
         **Shape**: :math:`(N_q,)`.
 
@@ -1848,14 +1852,14 @@ class IntermediateScatteringFunction(StructureFactor):
         `results.cisf` and `results.iisf`.
 
     results.times : `numpy.ndarray`
-        :math:`N_t` lag times :math:`t`.
+        Lag times :math:`t`.
 
         **Shape**: :math:`(N_t,)`.
 
         **Reference unit**: :math:`\\mathrm{ps}`.
 
     results.wavenumbers : `numpy.ndarray`
-        :math:`N_q` scattering wavenumbers :math:`q`.
+        Wavenumbers :math:`q`.
 
         **Shape**: :math:`(N_q,)`.
 
