@@ -9,7 +9,7 @@ This module contains miscellaneous Numba-accelerated algorithms.
 import numba
 import numpy as np
 
-@numba.njit(fastmath=True)
+@numba.njit("f8(f8[:],f8[:])", fastmath=True)
 def dot_1d_1d(a: np.ndarray[float], b: np.ndarray[float]) -> float:
 
     r"""
@@ -42,7 +42,7 @@ def dot_1d_1d(a: np.ndarray[float], b: np.ndarray[float]) -> float:
 
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 
-@numba.njit(fastmath=True)
+@numba.njit("c16(f8[:],f8[:])", fastmath=True)
 def delta_fourier_transform_1d_1d(
         q: np.ndarray[float], r: np.ndarray[float]) -> complex:
 
@@ -78,25 +78,7 @@ def delta_fourier_transform_1d_1d(
 
     return np.exp(1j * dot_1d_1d(q, r))
 
-@numba.njit(fastmath=True)
-def delta_fourier_transform_2d_2d(
-        qs: np.ndarray[float], rs: np.ndarray[float]) -> np.ndarray[complex]:
-    F = np.empty((qs.shape[0], rs.shape[0]), dtype=np.complex128)
-    for i in range(qs.shape[0]):
-        for j in range(rs.shape[0]):
-            F[i, j] = delta_fourier_transform_1d_1d(qs[i], rs[j])
-    return F
-
-@numba.njit(fastmath=True, parallel=True)
-def delta_fourier_transform_parallel_2d_2d(
-        qs: np.ndarray[float], rs: np.ndarray[float]) -> np.ndarray[complex]:
-    F = np.empty((qs.shape[0], rs.shape[0]), dtype=np.complex128)
-    for i in numba.prange(qs.shape[0]):
-        for j in range(rs.shape[0]):
-            F[i, j] = delta_fourier_transform_1d_1d(qs[i], rs[j])
-    return F
-
-@numba.njit(fastmath=True)
+@numba.njit("c16[:](f8[:,:],f8[:,:])", fastmath=True)
 def delta_fourier_transform_sum_2d_2d(
         qs: np.ndarray[float], rs: np.ndarray[float]) -> np.ndarray[complex]:
 
@@ -139,7 +121,7 @@ def delta_fourier_transform_sum_2d_2d(
             F[i] += delta_fourier_transform_1d_1d(qs[i], rs[j])
     return F
 
-@numba.njit(fastmath=True, parallel=True)
+@numba.njit("c16[:](f8[:,:],f8[:,:])", fastmath=True, parallel=True)
 def delta_fourier_transform_sum_parallel_2d_2d(
         qs: np.ndarray[float], rs: np.ndarray[float]) -> np.ndarray[complex]:
 
@@ -182,7 +164,7 @@ def delta_fourier_transform_sum_parallel_2d_2d(
             F[i] += delta_fourier_transform_1d_1d(qs[i], rs[j])
     return F
 
-@numba.njit(fastmath=True)
+@numba.njit("f8[:,:](f8[:,:],f8[:,:])", fastmath=True)
 def inner_2d_2d(
         qs: np.ndarray[float], rs: np.ndarray[float]) -> np.ndarray[float]:
 
@@ -223,7 +205,7 @@ def inner_2d_2d(
             s[i, j] = dot_1d_1d(qs[i], rs[j])
     return s
 
-@numba.njit(fastmath=True, parallel=True)
+@numba.njit("f8[:,:](f8[:,:],f8[:,:])", fastmath=True, parallel=True)
 def inner_parallel_2d_2d(
         qs: np.ndarray[float], rs: np.ndarray[float]) -> np.ndarray[float]:
 
@@ -264,7 +246,7 @@ def inner_parallel_2d_2d(
             s[i, j] = dot_1d_1d(qs[i], rs[j])
     return s
 
-@numba.njit(fastmath=True)
+@numba.njit("f8(f8[:])", fastmath=True)
 def pythagorean_trigonometric_identity_1d(r: np.ndarray[float]) -> float:
 
     r"""
@@ -296,7 +278,7 @@ def pythagorean_trigonometric_identity_1d(r: np.ndarray[float]) -> float:
         s += np.sin(r[i])
     return c ** 2 + s ** 2
 
-@numba.njit(fastmath=True)
+@numba.njit("f8(f8[:],f8[:])", fastmath=True)
 def cross_pythagorean_trigonometric_identity_1d(
         r: np.ndarray[float], s: np.ndarray[float]) -> float:
 
@@ -338,64 +320,308 @@ def cross_pythagorean_trigonometric_identity_1d(
         s2 += np.sin(s[j])
     return 2 * (c1 * c2 + s1 * s2)
 
-@numba.njit(fastmath=True, parallel=True)
-def cosine_parallel_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
-    s = np.empty_like(xs)
-    for i in numba.prange(xs.shape[0]):
-        for j in range(xs.shape[1]):
-            s[i, j] = np.cos(xs[i, j])
-    return s
-
-@numba.njit(fastmath=True, parallel=True)
-def sine_parallel_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
-    s = np.empty_like(xs)
-    for i in numba.prange(xs.shape[0]):
-        for j in range(xs.shape[1]):
-            s[i, j] = np.sin(xs[i, j])
-    return s
-
-@numba.njit(fastmath=True)
+@numba.njit("f8(f8[:])", fastmath=True)
 def cosine_sum_1d(x: np.ndarray[float]) -> float:
+
+    r"""
+    Serial Numba-accelerated sum of the cosines of the elements of a
+    one-dimensional NumPy array :math:`\mathbf{x}`.
+
+    .. math::
+
+       \sum_{i=1}^N\cos(x_i)
+
+    Parameters
+    ----------
+    x : `np.ndarray`
+        Vector :math:`\mathbf{x}`.
+
+        **Shape**: :math:`(N,)`.
+
+    Returns
+    -------
+    s : `float`
+        Sum of the cosines of the elements of the vector
+        :math:`\mathbf{x}`.
+    """
+
     s = 0
     for i in range(x.shape[0]):
         s += np.cos(x[i])
     return s
 
-@numba.njit(fastmath=True)
+@numba.njit("f8[:](f8[:,:])", fastmath=True)
 def cosine_sum_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
+
+    r"""
+    Serial Numba-accelerated row-wise sum of the cosines of the elements
+    of a two-dimensional NumPy array :math:`\mathbf{xs}`.
+
+    .. math::
+
+       \sum_{i=1}^N\cos(x_{ij})
+
+    Parameters
+    ----------
+    xs : `np.ndarray`
+        Matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,\,M)`.
+
+    Returns
+    -------
+    s : `np.ndarray`
+        Row-wise sum of the cosines of the elements of the matrix
+        :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,)`.
+    """
+
     s = np.empty(xs.shape[0])
     for i in range(xs.shape[0]):
-        s[i] = 0
-        for j in range(xs.shape[1]):
-            s[i] += np.cos(xs[i, j])
+        s[i] = cosine_sum_1d(xs[i])
     return s
 
-@numba.njit(fastmath=True, parallel=True)
+@numba.njit("f8[:](f8[:,:])", fastmath=True, parallel=True)
 def cosine_sum_parallel_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
+
+    r"""
+    Parallel Numba-accelerated row-wise sum of the cosines of the
+    elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.
+
+    .. math::
+
+       \sum_{i=1}^N\cos(x_{ij})
+
+    Parameters
+    ----------
+    xs : `np.ndarray`
+        Matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,\,M)`.
+
+    Returns
+    -------
+    s : `np.ndarray`
+        Row-wise sum of the cosines of the elements of the matrix
+        :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,)`.
+    """
+
     s = np.empty(xs.shape[0])
     for i in numba.prange(xs.shape[0]):
         s[i] = cosine_sum_1d(xs[i])
     return s
 
-@numba.njit(fastmath=True)
+@numba.njit("void(f8[:,:],f8[:])", fastmath=True)
+def cosine_sum_inplace_2d(xs: np.ndarray[float], s: np.ndarray[float]) -> None:
+
+    r"""
+    Serial in-place Numba-accelerated row-wise sum of the cosines of the
+    elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.
+
+    .. math::
+
+       \sum_{i=1}^N\cos(x_{ij})
+
+    Parameters
+    ----------
+    xs : `np.ndarray`
+        Matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,\,M)`.
+
+    s : `np.ndarray`
+        Array to hold row-wise sum of the cosines of the elements of the
+        matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,)`.
+    """
+
+    assert s.shape[0] == xs.shape[0]
+    for i in range(xs.shape[0]):
+        s[i] = cosine_sum_1d(xs[i])
+
+@numba.njit("void(f8[:,:],f8[:])", fastmath=True, parallel=True)
+def cosine_sum_inplace_parallel_2d(
+        xs: np.ndarray[float], s: np.ndarray[float]) -> None:
+
+    r"""
+    Parallel in-place Numba-accelerated row-wise sum of the cosines of
+    the elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.
+
+    .. math::
+
+       \sum_{i=1}^N\cos(x_{ij})
+
+    Parameters
+    ----------
+    xs : `np.ndarray`
+        Matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,\,M)`.
+
+    s : `np.ndarray`
+        Array to hold row-wise sum of the cosines of the elements of the
+        matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,)`.
+    """
+
+    assert s.shape[0] == xs.shape[0]
+    for i in numba.prange(xs.shape[0]):
+        s[i] = cosine_sum_1d(xs[i])
+
+@numba.njit("f8(f8[:])", fastmath=True)
 def sine_sum_1d(x: np.ndarray[float]) -> float:
+
+    r"""
+    Serial Numba-accelerated sum of the sines of the elements of a
+    one-dimensional NumPy array :math:`\mathbf{x}`.
+
+    .. math::
+
+       \sum_{i=1}^N\sin(x_i)
+
+    Parameters
+    ----------
+    x : `np.ndarray`
+        Vector :math:`\mathbf{x}`.
+
+        **Shape**: :math:`(N,)`.
+
+    Returns
+    -------
+    s : `float`
+        Sum of the sines of the elements of the vector
+        :math:`\mathbf{x}`.
+    """
+
     s = 0
     for i in range(x.shape[0]):
         s += np.sin(x[i])
     return s
 
-@numba.njit(fastmath=True)
-def sine_sum_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
+@numba.njit("f8[:](f8[:,:])", fastmath=True)
+def sine_sum_2d(xs: np.ndarray[float]) -> None:
+
+    r"""
+    Serial Numba-accelerated row-wise sum of the sines of the elements
+    of a two-dimensional NumPy array :math:`\mathbf{xs}`.
+
+    .. math::
+
+       \sum_{i=1}^N\sin(x_{ij})
+
+    Parameters
+    ----------
+    xs : `np.ndarray`
+        Matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,\,M)`.
+
+    Returns
+    -------
+    s : `np.ndarray`
+        Row-wise sum of the sines of the elements of the matrix
+        :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,)`.
+    """
+
     s = np.empty(xs.shape[0])
     for i in range(xs.shape[0]):
-        s[i] = 0
-        for j in range(xs.shape[1]):
-            s[i] += np.sin(xs[i, j])
+        s[i] = sine_sum_1d(xs[i])
     return s
 
-@numba.njit(fastmath=True, parallel=True)
-def sine_sum_parallel_2d(xs: np.ndarray[float]) -> np.ndarray[float]:
+@numba.njit("f8[:](f8[:,:])", fastmath=True, parallel=True)
+def sine_sum_parallel_2d(xs: np.ndarray[float]) -> None:
+
+    r"""
+    Parallel Numba-accelerated row-wise sum of the sines of the
+    elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.
+
+    .. math::
+
+       \sum_{i=1}^N\sin(x_{ij})
+
+    Parameters
+    ----------
+    xs : `np.ndarray`
+        Matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,\,M)`.
+
+    Returns
+    -------
+    s : `np.ndarray`
+        Row-wise sum of the sines of the elements of the matrix
+        :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,)`.
+    """
+
     s = np.empty(xs.shape[0])
     for i in numba.prange(xs.shape[0]):
         s[i] = sine_sum_1d(xs[i])
     return s
+
+@numba.njit("void(f8[:,:],f8[:])", fastmath=True)
+def sine_sum_inplace_2d(xs: np.ndarray[float], s: np.ndarray[float]) -> None:
+
+    r"""
+    Serial in-place Numba-accelerated row-wise sum of the sines of the
+    elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.
+
+    .. math::
+
+       \sum_{i=1}^N\sin(x_{ij})
+
+    Parameters
+    ----------
+    xs : `np.ndarray`
+        Matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,\,M)`.
+
+    s : `np.ndarray`
+        Array to hold row-wise sum of the sines of the elements of the
+        matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,)`.
+    """
+
+    assert s.shape[0] == xs.shape[0]
+    for i in range(xs.shape[0]):
+        s[i] = sine_sum_1d(xs[i])
+
+@numba.njit("void(f8[:,:],f8[:])", fastmath=True, parallel=True)
+def sine_sum_inplace_parallel_2d(
+        xs: np.ndarray[float], s: np.ndarray[float]) -> None:
+
+    r"""
+    Parallel in-place Numba-accelerated row-wise sum of the sines of
+    the elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.
+
+    .. math::
+
+       \sum_{i=1}^N\sin(x_{ij})
+
+    Parameters
+    ----------
+    xs : `np.ndarray`
+        Matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,\,M)`.
+
+    s : `np.ndarray`
+        Array to hold row-wise sum of the sines of the elements of the
+        matrix :math:`\mathbf{xs}`.
+
+        **Shape**: :math:`(N,)`.
+    """
+
+    assert s.shape[0] == xs.shape[0]
+    for i in numba.prange(xs.shape[0]):
+        s[i] = sine_sum_1d(xs[i])

@@ -156,9 +156,9 @@ def rebin(x: np.ndarray[float], factor: int = None) -> np.ndarray[float]:
     return x.reshape((*x.shape[:-1], -1, factor)).mean(axis=-1)
 
 def depth_first_search(
-        graph: dict[Any, list[Any]], start: Any, visited: bool, 
+        graph: dict[Any, list[Any]], start: Any, visited: bool,
         group: list[Any]) -> None:
-    
+
     """
     Implements the depth-first search algorithm to find connected
     components in a graph.
@@ -177,7 +177,7 @@ def depth_first_search(
     group : `list`
         Connected nodes. This `list` is updated in-place.
     """
-    
+
     visited[start] = True
     group.append(start)
     for neighbor in graph[start]:

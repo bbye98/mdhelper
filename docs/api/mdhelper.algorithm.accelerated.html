@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="cosine_parallel_2d" href="mdhelper.algorithm.accelerated.cosine_parallel_2d.html" /><link rel="prev" title="algorithm" href="mdhelper.algorithm.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="cosine_sum_1d" href="mdhelper.algorithm.accelerated.cosine_sum_1d.html" /><link rel="prev" title="algorithm" href="mdhelper.algorithm.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
         <title>accelerated - MDHelper 1.0.0 documentation</title>
@@ -164,23 +164,23 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="mdhelper.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children"><a class="reference internal" href="mdhelper.algorithm.html">algorithm</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">accelerated</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of accelerated</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_parallel_2d.html">cosine_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_1d.html">cosine_sum_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_2d.html">cosine_sum_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_inplace_2d.html">cosine_sum_inplace_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_inplace_parallel_2d.html">cosine_sum_inplace_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_parallel_2d.html">cosine_sum_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d.html">cross_pythagorean_trigonometric_identity_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d.html">delta_fourier_transform_1d_1d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d.html">delta_fourier_transform_2d_2d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d.html">delta_fourier_transform_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html">delta_fourier_transform_sum_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d.html">delta_fourier_transform_sum_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.dot_1d_1d.html">dot_1d_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.inner_2d_2d.html">inner_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.inner_parallel_2d_2d.html">inner_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d.html">pythagorean_trigonometric_identity_1d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_parallel_2d.html">sine_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_1d.html">sine_sum_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_2d.html">sine_sum_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_inplace_2d.html">sine_sum_inplace_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_inplace_parallel_2d.html">sine_sum_inplace_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_parallel_2d.html">sine_sum_parallel_2d</a></li>
 </ul>
 </li>
@@ -449,59 +449,59 @@
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_parallel_2d.html#mdhelper.algorithm.accelerated.cosine_parallel_2d" title="mdhelper.algorithm.accelerated.cosine_parallel_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosine_parallel_2d</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_1d.html#mdhelper.algorithm.accelerated.cosine_sum_1d" title="mdhelper.algorithm.accelerated.cosine_sum_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosine_sum_1d</span></code></a></p></td>
+<td><p>Serial Numba-accelerated sum of the cosines of the elements of a one-dimensional NumPy array <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_1d.html#mdhelper.algorithm.accelerated.cosine_sum_1d" title="mdhelper.algorithm.accelerated.cosine_sum_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosine_sum_1d</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_2d.html#mdhelper.algorithm.accelerated.cosine_sum_2d" title="mdhelper.algorithm.accelerated.cosine_sum_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosine_sum_2d</span></code></a></p></td>
+<td><p>Serial Numba-accelerated row-wise sum of the cosines of the elements of a two-dimensional NumPy array <span class="math notranslate nohighlight">\(\mathbf{xs}\)</span>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_2d.html#mdhelper.algorithm.accelerated.cosine_sum_2d" title="mdhelper.algorithm.accelerated.cosine_sum_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosine_sum_2d</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_inplace_2d.html#mdhelper.algorithm.accelerated.cosine_sum_inplace_2d" title="mdhelper.algorithm.accelerated.cosine_sum_inplace_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosine_sum_inplace_2d</span></code></a></p></td>
+<td><p>Serial in-place Numba-accelerated row-wise sum of the cosines of the elements of a two-dimensional NumPy array <span class="math notranslate nohighlight">\(\mathbf{xs}\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_parallel_2d.html#mdhelper.algorithm.accelerated.cosine_sum_parallel_2d" title="mdhelper.algorithm.accelerated.cosine_sum_parallel_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosine_sum_parallel_2d</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_inplace_parallel_2d.html#mdhelper.algorithm.accelerated.cosine_sum_inplace_parallel_2d" title="mdhelper.algorithm.accelerated.cosine_sum_inplace_parallel_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosine_sum_inplace_parallel_2d</span></code></a></p></td>
+<td><p>Parallel in-place Numba-accelerated row-wise sum of the cosines of the elements of a two-dimensional NumPy array <span class="math notranslate nohighlight">\(\mathbf{xs}\)</span>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d.html#mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d" title="mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_pythagorean_trigonometric_identity_1d</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.cosine_sum_parallel_2d.html#mdhelper.algorithm.accelerated.cosine_sum_parallel_2d" title="mdhelper.algorithm.accelerated.cosine_sum_parallel_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosine_sum_parallel_2d</span></code></a></p></td>
+<td><p>Parallel Numba-accelerated row-wise sum of the cosines of the elements of a two-dimensional NumPy array <span class="math notranslate nohighlight">\(\mathbf{xs}\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d.html#mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d" title="mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_pythagorean_trigonometric_identity_1d</span></code></a></p></td>
 <td><p>Serial Numba-accelerated evaluation of the cross Pythagorean trigonometric identity for two one-dimensional NumPy arrays <span class="math notranslate nohighlight">\(\mathbf{r}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{s}\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d" title="mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delta_fourier_transform_1d_1d</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d" title="mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delta_fourier_transform_1d_1d</span></code></a></p></td>
 <td><p>Serial Numba-accelerated Fourier transform of a Dirac delta function involving two one-dimensional NumPy arrays <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{r}\)</span>, each with shape <span class="math notranslate nohighlight">\((3,)\)</span>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d" title="mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delta_fourier_transform_2d_2d</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d" title="mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delta_fourier_transform_parallel_2d_2d</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d" title="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delta_fourier_transform_sum_2d_2d</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d" title="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delta_fourier_transform_sum_2d_2d</span></code></a></p></td>
 <td><p>Serial Numba-accelerated Fourier transforms of Dirac delta functions involving all possible combinations of multiple one-dimensional NumPy arrays <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{r}\)</span>, each with shape <span class="math notranslate nohighlight">\((3,)\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d" title="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delta_fourier_transform_sum_parallel_2d_2d</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d" title="mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delta_fourier_transform_sum_parallel_2d_2d</span></code></a></p></td>
 <td><p>Parallel Numba-accelerated Fourier transforms of Dirac delta functions involving all possible combinations of multiple one-dimensional NumPy arrays <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{r}\)</span>, each with shape <span class="math notranslate nohighlight">\((3,)\)</span>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.dot_1d_1d.html#mdhelper.algorithm.accelerated.dot_1d_1d" title="mdhelper.algorithm.accelerated.dot_1d_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dot_1d_1d</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.dot_1d_1d.html#mdhelper.algorithm.accelerated.dot_1d_1d" title="mdhelper.algorithm.accelerated.dot_1d_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dot_1d_1d</span></code></a></p></td>
 <td><p>Serial Numba-accelerated dot product between two one-dimensional NumPy arrays <span class="math notranslate nohighlight">\(\mathbf{a}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{b}\)</span>, each with shape <span class="math notranslate nohighlight">\((3,)\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.inner_2d_2d.html#mdhelper.algorithm.accelerated.inner_2d_2d" title="mdhelper.algorithm.accelerated.inner_2d_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inner_2d_2d</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.inner_2d_2d.html#mdhelper.algorithm.accelerated.inner_2d_2d" title="mdhelper.algorithm.accelerated.inner_2d_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inner_2d_2d</span></code></a></p></td>
 <td><p>Serial Numba-accelerated inner product between all possible combinations of multiple one-dimensional NumPy arrays <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{r}\)</span>, each with shape <span class="math notranslate nohighlight">\((3,)\)</span>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.inner_parallel_2d_2d.html#mdhelper.algorithm.accelerated.inner_parallel_2d_2d" title="mdhelper.algorithm.accelerated.inner_parallel_2d_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inner_parallel_2d_2d</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.inner_parallel_2d_2d.html#mdhelper.algorithm.accelerated.inner_parallel_2d_2d" title="mdhelper.algorithm.accelerated.inner_parallel_2d_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inner_parallel_2d_2d</span></code></a></p></td>
 <td><p>Parallel Numba-accelerated inner product between all possible combinations of multiple one-dimensional NumPy arrays <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{r}\)</span>, each with shape <span class="math notranslate nohighlight">\((3,)\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d.html#mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d" title="mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pythagorean_trigonometric_identity_1d</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d.html#mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d" title="mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pythagorean_trigonometric_identity_1d</span></code></a></p></td>
 <td><p>Serial Numba-accelerated evaluation of the Pythagorean trigonometric identity for a one-dimensional NumPy array <span class="math notranslate nohighlight">\(\mathbf{r}\)</span>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_parallel_2d.html#mdhelper.algorithm.accelerated.sine_parallel_2d" title="mdhelper.algorithm.accelerated.sine_parallel_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sine_parallel_2d</span></code></a></p></td>
-<td><p></p></td>
-</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_1d.html#mdhelper.algorithm.accelerated.sine_sum_1d" title="mdhelper.algorithm.accelerated.sine_sum_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sine_sum_1d</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Serial Numba-accelerated sum of the sines of the elements of a one-dimensional NumPy array <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_2d.html#mdhelper.algorithm.accelerated.sine_sum_2d" title="mdhelper.algorithm.accelerated.sine_sum_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sine_sum_2d</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Serial Numba-accelerated row-wise sum of the sines of the elements of a two-dimensional NumPy array <span class="math notranslate nohighlight">\(\mathbf{xs}\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_inplace_2d.html#mdhelper.algorithm.accelerated.sine_sum_inplace_2d" title="mdhelper.algorithm.accelerated.sine_sum_inplace_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sine_sum_inplace_2d</span></code></a></p></td>
+<td><p>Serial in-place Numba-accelerated row-wise sum of the sines of the elements of a two-dimensional NumPy array <span class="math notranslate nohighlight">\(\mathbf{xs}\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_inplace_parallel_2d.html#mdhelper.algorithm.accelerated.sine_sum_inplace_parallel_2d" title="mdhelper.algorithm.accelerated.sine_sum_inplace_parallel_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sine_sum_inplace_parallel_2d</span></code></a></p></td>
+<td><p>Parallel in-place Numba-accelerated row-wise sum of the sines of the elements of a two-dimensional NumPy array <span class="math notranslate nohighlight">\(\mathbf{xs}\)</span>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="mdhelper.algorithm.accelerated.sine_sum_parallel_2d.html#mdhelper.algorithm.accelerated.sine_sum_parallel_2d" title="mdhelper.algorithm.accelerated.sine_sum_parallel_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sine_sum_parallel_2d</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Parallel Numba-accelerated row-wise sum of the sines of the elements of a two-dimensional NumPy array <span class="math notranslate nohighlight">\(\mathbf{xs}\)</span>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -513,12 +513,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="mdhelper.algorithm.accelerated.cosine_parallel_2d.html">
+          <a class="next-page" href="mdhelper.algorithm.accelerated.cosine_sum_1d.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">cosine_parallel_2d</div>
+                <div class="title">cosine_sum_1d</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

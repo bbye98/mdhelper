@@ -163,23 +163,23 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/mdhelper.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.html">algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.html">accelerated</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of accelerated</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_parallel_2d.html">cosine_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_1d.html">cosine_sum_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_2d.html">cosine_sum_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_2d.html">cosine_sum_inplace_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_parallel_2d.html">cosine_sum_inplace_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_parallel_2d.html">cosine_sum_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d.html">cross_pythagorean_trigonometric_identity_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d.html">delta_fourier_transform_1d_1d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d.html">delta_fourier_transform_2d_2d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d.html">delta_fourier_transform_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html">delta_fourier_transform_sum_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d.html">delta_fourier_transform_sum_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.dot_1d_1d.html">dot_1d_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.inner_2d_2d.html">inner_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.inner_parallel_2d_2d.html">inner_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d.html">pythagorean_trigonometric_identity_1d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_parallel_2d.html">sine_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_1d.html">sine_sum_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_2d.html">sine_sum_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_inplace_2d.html">sine_sum_inplace_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_inplace_parallel_2d.html">sine_sum_inplace_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_parallel_2d.html">sine_sum_parallel_2d</a></li>
 </ul>
 </li>
@@ -451,7 +451,7 @@
 
 <div class="viewcode-block" id="dot_1d_1d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.dot_1d_1d.html#mdhelper.algorithm.accelerated.dot_1d_1d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8(f8[:],f8[:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">dot_1d_1d</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -487,7 +487,7 @@
 
 <div class="viewcode-block" id="delta_fourier_transform_1d_1d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;c16(f8[:],f8[:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">delta_fourier_transform_1d_1d</span><span class="p">(</span>
         <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">complex</span><span class="p">:</span>
 
@@ -524,33 +524,9 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">dot_1d_1d</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="delta_fourier_transform_2d_2d">
-<a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">delta_fourier_transform_2d_2d</span><span class="p">(</span>
-        <span class="n">qs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">rs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">complex</span><span class="p">]:</span>
-    <span class="n">F</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">qs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">qs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_fourier_transform_1d_1d</span><span class="p">(</span><span class="n">qs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">rs</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">F</span></div>
-
-
-<div class="viewcode-block" id="delta_fourier_transform_parallel_2d_2d">
-<a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">delta_fourier_transform_parallel_2d_2d</span><span class="p">(</span>
-        <span class="n">qs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">rs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">complex</span><span class="p">]:</span>
-    <span class="n">F</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">qs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="n">qs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_fourier_transform_1d_1d</span><span class="p">(</span><span class="n">qs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">rs</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">F</span></div>
-
-
 <div class="viewcode-block" id="delta_fourier_transform_sum_2d_2d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;c16[:](f8[:,:],f8[:,:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">delta_fourier_transform_sum_2d_2d</span><span class="p">(</span>
         <span class="n">qs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">rs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">complex</span><span class="p">]:</span>
 
@@ -596,7 +572,7 @@
 
 <div class="viewcode-block" id="delta_fourier_transform_sum_parallel_2d_2d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d.html#mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;c16[:](f8[:,:],f8[:,:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">delta_fourier_transform_sum_parallel_2d_2d</span><span class="p">(</span>
         <span class="n">qs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">rs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">complex</span><span class="p">]:</span>
 
@@ -642,7 +618,7 @@
 
 <div class="viewcode-block" id="inner_2d_2d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.inner_2d_2d.html#mdhelper.algorithm.accelerated.inner_2d_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8[:,:](f8[:,:],f8[:,:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">inner_2d_2d</span><span class="p">(</span>
         <span class="n">qs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">rs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
@@ -686,7 +662,7 @@
 
 <div class="viewcode-block" id="inner_parallel_2d_2d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.inner_parallel_2d_2d.html#mdhelper.algorithm.accelerated.inner_parallel_2d_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8[:,:](f8[:,:],f8[:,:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">inner_parallel_2d_2d</span><span class="p">(</span>
         <span class="n">qs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">rs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
@@ -730,7 +706,7 @@
 
 <div class="viewcode-block" id="pythagorean_trigonometric_identity_1d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d.html#mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8(f8[:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">pythagorean_trigonometric_identity_1d</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -765,7 +741,7 @@
 
 <div class="viewcode-block" id="cross_pythagorean_trigonometric_identity_1d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d.html#mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8(f8[:],f8[:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cross_pythagorean_trigonometric_identity_1d</span><span class="p">(</span>
         <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">s</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 
@@ -808,32 +784,33 @@
     <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">c1</span> <span class="o">*</span> <span class="n">c2</span> <span class="o">+</span> <span class="n">s1</span> <span class="o">*</span> <span class="n">s2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="cosine_parallel_2d">
-<a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.cosine_parallel_2d.html#mdhelper.algorithm.accelerated.cosine_parallel_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">cosine_parallel_2d</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">s</span></div>
-
-
-<div class="viewcode-block" id="sine_parallel_2d">
-<a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.sine_parallel_2d.html#mdhelper.algorithm.accelerated.sine_parallel_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">sine_parallel_2d</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">s</span></div>
-
-
 <div class="viewcode-block" id="cosine_sum_1d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_1d.html#mdhelper.algorithm.accelerated.cosine_sum_1d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8(f8[:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cosine_sum_1d</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serial Numba-accelerated sum of the cosines of the elements of a</span>
+<span class="sd">    one-dimensional NumPy array :math:`\mathbf{x}`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \sum_{i=1}^N\cos(x_i)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : `np.ndarray`</span>
+<span class="sd">        Vector :math:`\mathbf{x}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,)`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    s : `float`</span>
+<span class="sd">        Sum of the cosines of the elements of the vector</span>
+<span class="sd">        :math:`\mathbf{x}`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -842,30 +819,166 @@
 
 <div class="viewcode-block" id="cosine_sum_2d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_2d.html#mdhelper.algorithm.accelerated.cosine_sum_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8[:](f8[:,:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cosine_sum_2d</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serial Numba-accelerated row-wise sum of the cosines of the elements</span>
+<span class="sd">    of a two-dimensional NumPy array :math:`\mathbf{xs}`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \sum_{i=1}^N\cos(x_{ij})</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs : `np.ndarray`</span>
+<span class="sd">        Matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,\,M)`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    s : `np.ndarray`</span>
+<span class="sd">        Row-wise sum of the cosines of the elements of the matrix</span>
+<span class="sd">        :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,)`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+        <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cosine_sum_1d</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">s</span></div>
 
 
 <div class="viewcode-block" id="cosine_sum_parallel_2d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_parallel_2d.html#mdhelper.algorithm.accelerated.cosine_sum_parallel_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8[:](f8[:,:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cosine_sum_parallel_2d</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parallel Numba-accelerated row-wise sum of the cosines of the</span>
+<span class="sd">    elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \sum_{i=1}^N\cos(x_{ij})</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs : `np.ndarray`</span>
+<span class="sd">        Matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,\,M)`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    s : `np.ndarray`</span>
+<span class="sd">        Row-wise sum of the cosines of the elements of the matrix</span>
+<span class="sd">        :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,)`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cosine_sum_1d</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">s</span></div>
 
 
+<div class="viewcode-block" id="cosine_sum_inplace_2d">
+<a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_2d.html#mdhelper.algorithm.accelerated.cosine_sum_inplace_2d">[docs]</a>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;void(f8[:,:],f8[:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cosine_sum_inplace_2d</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">s</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serial in-place Numba-accelerated row-wise sum of the cosines of the</span>
+<span class="sd">    elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \sum_{i=1}^N\cos(x_{ij})</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs : `np.ndarray`</span>
+<span class="sd">        Matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,\,M)`.</span>
+
+<span class="sd">    s : `np.ndarray`</span>
+<span class="sd">        Array to hold row-wise sum of the cosines of the elements of the</span>
+<span class="sd">        matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,)`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cosine_sum_1d</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="cosine_sum_inplace_parallel_2d">
+<a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_parallel_2d.html#mdhelper.algorithm.accelerated.cosine_sum_inplace_parallel_2d">[docs]</a>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;void(f8[:,:],f8[:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cosine_sum_inplace_parallel_2d</span><span class="p">(</span>
+        <span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">s</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parallel in-place Numba-accelerated row-wise sum of the cosines of</span>
+<span class="sd">    the elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \sum_{i=1}^N\cos(x_{ij})</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs : `np.ndarray`</span>
+<span class="sd">        Matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,\,M)`.</span>
+
+<span class="sd">    s : `np.ndarray`</span>
+<span class="sd">        Array to hold row-wise sum of the cosines of the elements of the</span>
+<span class="sd">        matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,)`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cosine_sum_1d</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+
+
 <div class="viewcode-block" id="sine_sum_1d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_1d.html#mdhelper.algorithm.accelerated.sine_sum_1d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8(f8[:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">sine_sum_1d</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serial Numba-accelerated sum of the sines of the elements of a</span>
+<span class="sd">    one-dimensional NumPy array :math:`\mathbf{x}`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \sum_{i=1}^N\sin(x_i)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : `np.ndarray`</span>
+<span class="sd">        Vector :math:`\mathbf{x}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,)`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    s : `float`</span>
+<span class="sd">        Sum of the sines of the elements of the vector</span>
+<span class="sd">        :math:`\mathbf{x}`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -874,24 +987,137 @@
 
 <div class="viewcode-block" id="sine_sum_2d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_2d.html#mdhelper.algorithm.accelerated.sine_sum_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">sine_sum_2d</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8[:](f8[:,:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sine_sum_2d</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serial Numba-accelerated row-wise sum of the sines of the elements</span>
+<span class="sd">    of a two-dimensional NumPy array :math:`\mathbf{xs}`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \sum_{i=1}^N\sin(x_{ij})</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs : `np.ndarray`</span>
+<span class="sd">        Matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,\,M)`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    s : `np.ndarray`</span>
+<span class="sd">        Row-wise sum of the sines of the elements of the matrix</span>
+<span class="sd">        :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,)`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+        <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sine_sum_1d</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">s</span></div>
 
 
 <div class="viewcode-block" id="sine_sum_parallel_2d">
 <a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_parallel_2d.html#mdhelper.algorithm.accelerated.sine_sum_parallel_2d">[docs]</a>
-<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">sine_sum_parallel_2d</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8[:](f8[:,:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sine_sum_parallel_2d</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parallel Numba-accelerated row-wise sum of the sines of the</span>
+<span class="sd">    elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \sum_{i=1}^N\sin(x_{ij})</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs : `np.ndarray`</span>
+<span class="sd">        Matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,\,M)`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    s : `np.ndarray`</span>
+<span class="sd">        Row-wise sum of the sines of the elements of the matrix</span>
+<span class="sd">        :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,)`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sine_sum_1d</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">s</span></div>
+
+
+<div class="viewcode-block" id="sine_sum_inplace_2d">
+<a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_inplace_2d.html#mdhelper.algorithm.accelerated.sine_sum_inplace_2d">[docs]</a>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;void(f8[:,:],f8[:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sine_sum_inplace_2d</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">s</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serial in-place Numba-accelerated row-wise sum of the sines of the</span>
+<span class="sd">    elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \sum_{i=1}^N\sin(x_{ij})</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs : `np.ndarray`</span>
+<span class="sd">        Matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,\,M)`.</span>
+
+<span class="sd">    s : `np.ndarray`</span>
+<span class="sd">        Array to hold row-wise sum of the sines of the elements of the</span>
+<span class="sd">        matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,)`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sine_sum_1d</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="sine_sum_inplace_parallel_2d">
+<a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_inplace_parallel_2d.html#mdhelper.algorithm.accelerated.sine_sum_inplace_parallel_2d">[docs]</a>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;void(f8[:,:],f8[:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sine_sum_inplace_parallel_2d</span><span class="p">(</span>
+        <span class="n">xs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">s</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parallel in-place Numba-accelerated row-wise sum of the sines of</span>
+<span class="sd">    the elements of a two-dimensional NumPy array :math:`\mathbf{xs}`.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \sum_{i=1}^N\sin(x_{ij})</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs : `np.ndarray`</span>
+<span class="sd">        Matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,\,M)`.</span>
+
+<span class="sd">    s : `np.ndarray`</span>
+<span class="sd">        Array to hold row-wise sum of the sines of the elements of the</span>
+<span class="sd">        matrix :math:`\mathbf{xs}`.</span>
+
+<span class="sd">        **Shape**: :math:`(N,)`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sine_sum_1d</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
 
 </pre></div>
         </article>

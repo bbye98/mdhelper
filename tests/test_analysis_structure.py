@@ -236,6 +236,7 @@ def test_class_intermediatescatteringfunction():
     os.chdir("md_runs/NVT_tetra_size8_T450_nframes1000")
 
     stop = 20
+    n_lags = stop // 5
     atoms = ase.io.read("model.xyz")
     atomic_indices = atoms.symbols.indices()
     atom_types = sorted(atomic_indices.keys())
@@ -244,7 +245,7 @@ def test_class_intermediatescatteringfunction():
                               frame_stop=stop)
     q_points = dynasor.get_spherical_qpoints(traj.cell, q_max=2, max_points=2_000)
     sample = dynasor.compute_dynamic_structure_factors(
-        traj, q_points, dt=1, window_size=stop, calculate_incoherent=True
+        traj, q_points, dt=1, window_size=n_lags, calculate_incoherent=True
     )
     q_norms = np.linalg.norm(sample.q_points, axis=1)
     q_norms_unique = np.unique(np.round(q_norms, 11))
@@ -252,48 +253,48 @@ def test_class_intermediatescatteringfunction():
     universe = mda.Universe("model.xyz", "movie.nc")
     groups = [universe.select_atoms(f"element {e}") for e in atom_types]
     isf_exp = structure.IntermediateScatteringFunction(
-        groups, mode="partial", wavevectors=q_points, incoherent=True, parallel=True
+        groups, mode="partial", wavevectors=q_points, n_lags=n_lags, incoherent=True, parallel=True
     ).run(stop=stop)
     isf_trig = structure.IntermediateScatteringFunction(
-        groups, mode="partial", form="trig", wavevectors=q_points, incoherent=True,
+        groups, mode="partial", form="trig", wavevectors=q_points, n_lags=n_lags, incoherent=True,
         parallel=True
     ).run(stop=stop)
 
     # TEST CASE 1: Partial coherent intermediate scattering functions
-    cisf_dynasor = np.empty((stop, len(isf_exp.results.pairs), len(q_norms_unique)))
+    cisf_dynasor = np.empty((n_lags, len(isf_exp.results.pairs), len(q_norms_unique)))
     for i, (j, k) in enumerate(isf_exp.results.pairs):
         for iq, q in enumerate(q_norms_unique):
             cisf_dynasor[:, i, iq] = (
                 sample[f"Fqt_coh_{atom_types[j]}_{atom_types[k]}"]
-                [np.isclose(q, q_norms), :stop].mean(axis=0)
+                [np.isclose(q, q_norms), :n_lags].mean(axis=0)
             )
     assert np.allclose(isf_exp.results.cisf, cisf_dynasor)
     assert np.allclose(isf_trig.results.cisf, cisf_dynasor)
 
     # TEST CASE 2: Partial incoherent intermediate scattering functions
-    iisf_dynasor = np.empty((stop, len(atom_types), len(q_norms_unique)))
+    iisf_dynasor = np.empty((n_lags, len(atom_types), len(q_norms_unique)))
     for i in range(len(atom_types)):
         for iq, q in enumerate(q_norms_unique):
             iisf_dynasor[:, i, iq] = (
                 sample[f"Fqt_incoh_{atom_types[i]}"]
-                [np.isclose(q, q_norms), :stop].mean(axis=0)
+                [np.isclose(q, q_norms), :n_lags].mean(axis=0)
             )
     assert np.allclose(isf_exp.results.iisf, iisf_dynasor)
     assert np.allclose(isf_trig.results.iisf, iisf_dynasor)
 
     isf_exp = structure.IntermediateScatteringFunction(
-        groups, wavevectors=q_points, incoherent=True, sort=False, unique=False,
+        groups, wavevectors=q_points, n_lags=n_lags, incoherent=True, sort=False, unique=False,
         parallel=True
     ).run(stop=stop)
     isf_trig = structure.IntermediateScatteringFunction(
-        groups, form="trig", wavevectors=q_points, incoherent=True, sort=False,
+        groups, form="trig", wavevectors=q_points, n_lags=n_lags, incoherent=True, sort=False,
         unique=False, parallel=True
     ).run(stop=stop)
 
     # TEST CASE 3: Coherent intermediate scattering function
-    assert np.allclose(isf_exp.results.cisf[:, 0], sample.Fqt_coh[:, :stop].T)
-    assert np.allclose(isf_trig.results.cisf[:, 0], sample.Fqt_coh[:, :stop].T)
+    assert np.allclose(isf_exp.results.cisf[:, 0], sample.Fqt_coh[:, :n_lags].T)
+    assert np.allclose(isf_trig.results.cisf[:, 0], sample.Fqt_coh[:, :n_lags].T)
 
     # TEST CASE 4: Incoherent intermediate scattering function
-    assert np.allclose(isf_exp.results.iisf[:, 0], sample.Fqt_incoh[:, :stop].T)
-    assert np.allclose(isf_trig.results.iisf[:, 0], sample.Fqt_incoh[:, :stop].T)
+    assert np.allclose(isf_exp.results.iisf[:, 0], sample.Fqt_incoh[:, :n_lags].T)
+    assert np.allclose(isf_trig.results.iisf[:, 0], sample.Fqt_incoh[:, :n_lags].T)

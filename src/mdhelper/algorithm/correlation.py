@@ -175,37 +175,35 @@ def correlation_fft(
     # convolution, and then invert it to get the ACF/CCF
     N_t = arr1.shape[axis]
     all_real = np.isrealobj(arr1) and (arr2 is None or np.isrealobj(arr2))
-    _fft = fft.rfft if all_real else fft.fft
-    _ifft = fft.irfft if all_real else fft.ifft
-    if arr2 is None:
-        f = _fft(arr1, n=2 * N_t, axis=axis)
-        corr = (double + 1) * _ifft(f * f.conjugate(), axis=axis)
-        corr = corr[:, :N_t] if axis else corr[:N_t]
+    N_fft = 2 * fft.next_fast_len(N_t, real=all_real)
+    if all_real:
+        _fft = fft.rfft
+        _ifft = fft.irfft
     else:
-        f1 = _fft(arr1, n=2 * N_t, axis=axis)
-        f2 = _fft(arr2, n=2 * N_t, axis=axis)
-        f = f1.conjugate() * f2
+        _fft = fft.fft
+        _ifft = fft.ifft
+    if arr2 is None:
+        f = _fft(arr1, n=N_fft, axis=axis)
+        corr = _ifft(f * f.conj(), axis=axis)
+        corr = (double + 1) * (corr[:, :N_t] if axis else corr[:N_t])
+    else:
+        f1 = _fft(arr1, n=N_fft, axis=axis)
+        f2 = _fft(arr2, n=N_fft, axis=axis)
+        f = f1.conj() * f2
         if double:
-            corr = _ifft(f + f1 * f2.conjugate(), axis=axis)
+            corr = _ifft(f + f1 * f2.conj(), axis=axis)
             corr = corr[:, :N_t] if axis else corr[:N_t]
         else:
             corr = _ifft(f, axis=axis)
 
+    # Sum over the last dimension if the arrays contain vectors
+    if vector:
+        corr = corr.sum(axis=-1)
+
     # Determine the axes over which to expand the reversed
     # time array for correct matrix division
-    if vector:
-        axes = list(range(ndim - 1))
-        if axis in axes:
-            axes.remove(axis)
-
-        # Sum over the last dimension if the arrays contain vectors
-        corr = corr.sum(axis=-1)
-    elif axis:
-        axes = list(range(ndim))
-        if axis in axes:
-            axes.remove(axis)
-    else:
-        axes = list(range(1, ndim))
+    axes = list(range(ndim - vector))
+    axes.remove(axis)
 
     # Normalize the ACF/CCF
     if axis:
@@ -221,7 +219,7 @@ def correlation_fft(
 
     # Average over all entities, if desired
     if average:
-        axis_avg = ndim - 1 - vector
+        axis_avg = ndim - vector - 1
         if axis != axis_avg:
             return corr.mean(axis=axis_avg)
 

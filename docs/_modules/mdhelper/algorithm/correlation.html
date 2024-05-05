@@ -163,23 +163,23 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/mdhelper.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.html">algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.html">accelerated</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of accelerated</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_parallel_2d.html">cosine_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_1d.html">cosine_sum_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_2d.html">cosine_sum_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_2d.html">cosine_sum_inplace_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_parallel_2d.html">cosine_sum_inplace_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_parallel_2d.html">cosine_sum_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d.html">cross_pythagorean_trigonometric_identity_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d.html">delta_fourier_transform_1d_1d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d.html">delta_fourier_transform_2d_2d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d.html">delta_fourier_transform_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html">delta_fourier_transform_sum_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d.html">delta_fourier_transform_sum_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.dot_1d_1d.html">dot_1d_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.inner_2d_2d.html">inner_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.inner_parallel_2d_2d.html">inner_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d.html">pythagorean_trigonometric_identity_1d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_parallel_2d.html">sine_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_1d.html">sine_sum_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_2d.html">sine_sum_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_inplace_2d.html">sine_sum_inplace_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_inplace_parallel_2d.html">sine_sum_inplace_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_parallel_2d.html">sine_sum_parallel_2d</a></li>
 </ul>
 </li>
@@ -617,37 +617,35 @@
     <span class="c1"># convolution, and then invert it to get the ACF/CCF</span>
     <span class="n">N_t</span> <span class="o">=</span> <span class="n">arr1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
     <span class="n">all_real</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isrealobj</span><span class="p">(</span><span class="n">arr1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">arr2</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isrealobj</span><span class="p">(</span><span class="n">arr2</span><span class="p">))</span>
-    <span class="n">_fft</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">rfft</span> <span class="k">if</span> <span class="n">all_real</span> <span class="k">else</span> <span class="n">fft</span><span class="o">.</span><span class="n">fft</span>
-    <span class="n">_ifft</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">irfft</span> <span class="k">if</span> <span class="n">all_real</span> <span class="k">else</span> <span class="n">fft</span><span class="o">.</span><span class="n">ifft</span>
-    <span class="k">if</span> <span class="n">arr2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">_fft</span><span class="p">(</span><span class="n">arr1</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">N_t</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
-        <span class="n">corr</span> <span class="o">=</span> <span class="p">(</span><span class="n">double</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">_ifft</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">f</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
-        <span class="n">corr</span> <span class="o">=</span> <span class="n">corr</span><span class="p">[:,</span> <span class="p">:</span><span class="n">N_t</span><span class="p">]</span> <span class="k">if</span> <span class="n">axis</span> <span class="k">else</span> <span class="n">corr</span><span class="p">[:</span><span class="n">N_t</span><span class="p">]</span>
+    <span class="n">N_fft</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">fft</span><span class="o">.</span><span class="n">next_fast_len</span><span class="p">(</span><span class="n">N_t</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="n">all_real</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">all_real</span><span class="p">:</span>
+        <span class="n">_fft</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">rfft</span>
+        <span class="n">_ifft</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">irfft</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">f1</span> <span class="o">=</span> <span class="n">_fft</span><span class="p">(</span><span class="n">arr1</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">N_t</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
-        <span class="n">f2</span> <span class="o">=</span> <span class="n">_fft</span><span class="p">(</span><span class="n">arr2</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">N_t</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">f1</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span> <span class="o">*</span> <span class="n">f2</span>
+        <span class="n">_fft</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">fft</span>
+        <span class="n">_ifft</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">ifft</span>
+    <span class="k">if</span> <span class="n">arr2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">_fft</span><span class="p">(</span><span class="n">arr1</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">N_fft</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">corr</span> <span class="o">=</span> <span class="n">_ifft</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">f</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">corr</span> <span class="o">=</span> <span class="p">(</span><span class="n">double</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">corr</span><span class="p">[:,</span> <span class="p">:</span><span class="n">N_t</span><span class="p">]</span> <span class="k">if</span> <span class="n">axis</span> <span class="k">else</span> <span class="n">corr</span><span class="p">[:</span><span class="n">N_t</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="n">_fft</span><span class="p">(</span><span class="n">arr1</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">N_fft</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">f2</span> <span class="o">=</span> <span class="n">_fft</span><span class="p">(</span><span class="n">arr2</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">N_fft</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">f1</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">*</span> <span class="n">f2</span>
         <span class="k">if</span> <span class="n">double</span><span class="p">:</span>
-            <span class="n">corr</span> <span class="o">=</span> <span class="n">_ifft</span><span class="p">(</span><span class="n">f</span> <span class="o">+</span> <span class="n">f1</span> <span class="o">*</span> <span class="n">f2</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+            <span class="n">corr</span> <span class="o">=</span> <span class="n">_ifft</span><span class="p">(</span><span class="n">f</span> <span class="o">+</span> <span class="n">f1</span> <span class="o">*</span> <span class="n">f2</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
             <span class="n">corr</span> <span class="o">=</span> <span class="n">corr</span><span class="p">[:,</span> <span class="p">:</span><span class="n">N_t</span><span class="p">]</span> <span class="k">if</span> <span class="n">axis</span> <span class="k">else</span> <span class="n">corr</span><span class="p">[:</span><span class="n">N_t</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">corr</span> <span class="o">=</span> <span class="n">_ifft</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
 
+    <span class="c1"># Sum over the last dimension if the arrays contain vectors</span>
+    <span class="k">if</span> <span class="n">vector</span><span class="p">:</span>
+        <span class="n">corr</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
     <span class="c1"># Determine the axes over which to expand the reversed</span>
     <span class="c1"># time array for correct matrix division</span>
-    <span class="k">if</span> <span class="n">vector</span><span class="p">:</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
-            <span class="n">axes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
-
-        <span class="c1"># Sum over the last dimension if the arrays contain vectors</span>
-        <span class="n">corr</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">axis</span><span class="p">:</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
-            <span class="n">axes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ndim</span><span class="p">))</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">ndim</span> <span class="o">-</span> <span class="n">vector</span><span class="p">))</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
 
     <span class="c1"># Normalize the ACF/CCF</span>
     <span class="k">if</span> <span class="n">axis</span><span class="p">:</span>
@@ -663,7 +661,7 @@
 
     <span class="c1"># Average over all entities, if desired</span>
     <span class="k">if</span> <span class="n">average</span><span class="p">:</span>
-        <span class="n">axis_avg</span> <span class="o">=</span> <span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">vector</span>
+        <span class="n">axis_avg</span> <span class="o">=</span> <span class="n">ndim</span> <span class="o">-</span> <span class="n">vector</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="o">!=</span> <span class="n">axis_avg</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">corr</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis_avg</span><span class="p">)</span>
 
