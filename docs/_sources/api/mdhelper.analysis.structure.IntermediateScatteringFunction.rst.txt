@@ -16,7 +16,9 @@ IntermediateScatteringFunction
    .. autosummary::
       :nosignatures:
    
+      ~IntermediateScatteringFunction.psf_trigonometric_2d_2d
       ~IntermediateScatteringFunction.run
       ~IntermediateScatteringFunction.save
+      ~IntermediateScatteringFunction.ssf_trigonometric_2d
    
    

@@ -168,7 +168,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_2d.html">cosine_sum_inplace_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_parallel_2d.html">cosine_sum_inplace_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_parallel_2d.html">cosine_sum_parallel_2d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d.html">cross_pythagorean_trigonometric_identity_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d.html">delta_fourier_transform_1d_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html">delta_fourier_transform_sum_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d.html">delta_fourier_transform_sum_parallel_2d_2d</a></li>
@@ -176,6 +175,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.inner_2d_2d.html">inner_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.inner_parallel_2d_2d.html">inner_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d.html">pythagorean_trigonometric_identity_1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d_1d.html">pythagorean_trigonometric_identity_1d_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_1d.html">sine_sum_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_2d.html">sine_sum_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_inplace_2d.html">sine_sum_inplace_2d</a></li>
@@ -1697,48 +1697,27 @@
 <span class="sd">        :math:`(C(N_\\mathrm{g}+1,\\,2),\\,N_q)`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="StructureFactor.ssf_trigonometric_2d">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.StructureFactor.html#mdhelper.analysis.structure.StructureFactor.ssf_trigonometric_2d">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_ssf_trigonometric_2d</span><span class="p">(</span><span class="n">qrs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">ssf_trigonometric_2d</span><span class="p">(</span><span class="n">qrs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Serial Numba-accelerated evaluation of the static structure factors</span>
-<span class="sd">        given a two-dimensional NumPy array containing</span>
-<span class="sd">        :math:`\mathbf{q}\cdot\mathbf{r}`.</span>
+<span class="sd">        Compute the static structure factors using a two-dimensional</span>
+<span class="sd">        NumPy array containing :math:`\mathbf{q}\cdot\mathbf{r}` using</span>
+<span class="sd">        the trigonometric form.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           S(q)=\frac{1}{N}\left\langle\left[</span>
+<span class="sd">           \sum_{j=1}^N\\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\right]^2</span>
+<span class="sd">           +\left[\sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}</span>
+<span class="sd">           \right]^2\right\rangle</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        qrs : `np.ndarray`</span>
-<span class="sd">            Inner products :math:`\mathbf{q}\cdot\mathbf{r}`.</span>
-
-<span class="sd">            **Shape**: :math:`(N_q,\,N_r)`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ssf : `np.ndarray`</span>
-<span class="sd">            Static structure factors.</span>
-
-<span class="sd">            **Shape**: :math:`(N_q,)`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">qrs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">qrs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">accelerated</span><span class="o">.</span><span class="n">pythagorean_trigonometric_identity_1d</span><span class="p">(</span><span class="n">qrs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">ssf</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_ssf_trigonometric_parallel_2d</span><span class="p">(</span><span class="n">qrs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parallel Numba-accelerated evaluation of the static structure factors</span>
-<span class="sd">        given a two-dimensional NumPy array containing</span>
-<span class="sd">        :math:`\mathbf{q}\cdot\mathbf{r}`.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        qrs : `np.ndarray`</span>
-<span class="sd">            Inner products :math:`\mathbf{q}\cdot\mathbf{r}`.</span>
+<span class="sd">            Inner products :math:`\mathbf{q}\cdot\mathbf{r}_j`.</span>
 
 <span class="sd">            **Shape**: :math:`(N_q,\,N_r)`.</span>
 
@@ -1753,66 +1732,41 @@
         <span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">qrs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="n">qrs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">accelerated</span><span class="o">.</span><span class="n">pythagorean_trigonometric_identity_1d</span><span class="p">(</span><span class="n">qrs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">ssf</span>
+        <span class="k">return</span> <span class="n">ssf</span></div>
 
+
+<div class="viewcode-block" id="StructureFactor.psf_trigonometric_2d_2d">
+<a class="viewcode-back" href="../../../api/mdhelper.analysis.structure.StructureFactor.html#mdhelper.analysis.structure.StructureFactor.psf_trigonometric_2d_2d">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_ssf_trigonometric_2d_2d</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">psf_trigonometric_2d_2d</span><span class="p">(</span>
             <span class="n">qrs1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">qrs2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parallel Numba-accelerated evaluation of the partial structure factors</span>
-<span class="sd">        given two two-dimensional NumPy arrays, each containing</span>
-<span class="sd">        :math:`\mathbf{q}\cdot\mathbf{r}`.</span>
+<span class="sd">        Compute the partial structure factors given two two-dimensional</span>
+<span class="sd">        NumPy arrays, each containing :math:`\mathbf{q}\cdot\mathbf{r}`,</span>
+<span class="sd">        using the trigonometric form.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \frac{NS_{\alpha\beta}(q)}{2-\delta_{\alpha\beta}}=\\</span>
+<span class="sd">           \left\langle</span>
+<span class="sd">           \sum_{j=1}^{N_\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}</span>
+<span class="sd">           \sum_{k=1}^{N_\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}</span>
+<span class="sd">           +\sum_{j=1}^{N_\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}</span>
+<span class="sd">           \sum_{k=1}^{N_\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}</span>
+<span class="sd">           \right\rangle</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        qrs1 : `np.ndarray`</span>
-<span class="sd">            First set of inner products :math:`\mathbf{q}\cdot\mathbf{r}`.</span>
+<span class="sd">            First set of inner products :math:`\mathbf{q}\cdot\mathbf{r}_j`.</span>
 
 <span class="sd">            **Shape**: :math:`(N_q,\,N_r)`.</span>
 
 <span class="sd">        qrs2 : `np.ndarray`</span>
-<span class="sd">            Second set of inner products :math:`\mathbf{q}\cdot\mathbf{s}`.</span>
-
-<span class="sd">            **Shape**: :math:`(N_q,\,N_s)`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ssf : `np.ndarray`</span>
-<span class="sd">            Partial structure factors.</span>
-
-<span class="sd">            **Shape**: :math:`(N_q,)`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">qrs1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">qrs1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">accelerated</span><span class="o">.</span><span class="n">cross_pythagorean_trigonometric_identity_1d</span><span class="p">(</span>
-                <span class="n">qrs1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">qrs2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">ssf</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_ssf_trigonometric_parallel_2d_2d</span><span class="p">(</span>
-            <span class="n">qrs1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">qrs2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parallel Numba-accelerated evaluation of the partial structure factors</span>
-<span class="sd">        given two two-dimensional NumPy arrays, each containing</span>
-<span class="sd">        :math:`\mathbf{q}\cdot\mathbf{r}`.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        qrs1 : `np.ndarray`</span>
-<span class="sd">            First set of inner products :math:`\mathbf{q}\cdot\mathbf{r}`.</span>
+<span class="sd">            Second set of inner products :math:`\mathbf{q}\cdot\mathbf{r}_k`.</span>
 
 <span class="sd">            **Shape**: :math:`(N_q,\,N_r)`.</span>
-
-<span class="sd">        qrs2 : `np.ndarray`</span>
-<span class="sd">            Second set of inner products :math:`\mathbf{q}\cdot\mathbf{s}`.</span>
-
-<span class="sd">            **Shape**: :math:`(N_q,\,N_s)`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1824,10 +1778,11 @@
 
         <span class="n">ssf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">qrs1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="n">qrs1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">accelerated</span><span class="o">.</span><span class="n">cross_pythagorean_trigonometric_identity_1d</span><span class="p">(</span>
+            <span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">accelerated</span><span class="o">.</span><span class="n">pythagorean_trigonometric_identity_1d_1d</span><span class="p">(</span>
                 <span class="n">qrs1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">qrs2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="n">ssf</span>
+        <span class="k">return</span> <span class="n">ssf</span></div>
+
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]],</span>
@@ -1943,19 +1898,23 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
 
+        <span class="c1"># Define the functions to use depending on whether the user</span>
+        <span class="c1"># wants parallelization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_njit</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ssf_trigonometric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_njit</span><span class="p">(</span><span class="s2">&quot;f8[:](f8[:,:])&quot;</span><span class="p">)(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssf_trigonometric_2d</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_psf_trigonometric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_njit</span><span class="p">(</span><span class="s2">&quot;f8[:](f8[:,:],f8[:,:])&quot;</span><span class="p">)(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">psf_trigonometric_2d_2d</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_delta_fourier_transform_sum</span> \
                 <span class="o">=</span> <span class="n">accelerated</span><span class="o">.</span><span class="n">delta_fourier_transform_sum_parallel_2d_2d</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span> <span class="o">=</span> <span class="n">accelerated</span><span class="o">.</span><span class="n">inner_parallel_2d_2d</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ssf_trigonometric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssf_trigonometric_parallel_2d</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ssf_trigonometric_cross</span> \
-                <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssf_trigonometric_parallel_2d_2d</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_delta_fourier_transform_sum</span> \
                 <span class="o">=</span> <span class="n">accelerated</span><span class="o">.</span><span class="n">delta_fourier_transform_sum_2d_2d</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span> <span class="o">=</span> <span class="n">accelerated</span><span class="o">.</span><span class="n">inner_2d_2d</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ssf_trigonometric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssf_trigonometric_2d</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ssf_trigonometric_cross</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssf_trigonometric_2d_2d</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_form</span> <span class="o">=</span> <span class="n">form</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sort</span> <span class="o">=</span> <span class="n">sort</span>
@@ -2029,7 +1988,7 @@
                     <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssf_trigonometric</span><span class="p">(</span><span class="n">qrs_j</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssf_trigonometric_cross</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">ssf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_trigonometric</span><span class="p">(</span>
                             <span class="n">qrs_j</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
                                         <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">k</span><span class="p">]])</span>
@@ -2264,10 +2223,10 @@
 <span class="sd">        Determines whether intermediate scattering functions for the</span>
 <span class="sd">        same wavenumber are grouped and averaged.</span>
 
-<span class="sd">    n_lags = `int`, keyword-only, optional</span>
+<span class="sd">    n_lags : `int`, keyword-only, optional</span>
 <span class="sd">        Number of time lags :math:`t` or &quot;windows&quot; for which to evaluate</span>
-<span class="sd">        the intermediate scattering functions. If not specified, the</span>
-<span class="sd">        number of frames in the trajectory is used.</span>
+<span class="sd">        the intermediate scattering functions, including zero. If not</span>
+<span class="sd">        specified, the number of frames in the trajectory is used.</span>
 
 <span class="sd">    incoherent : `bool`, keyword-only, default: :code:`False`</span>
 <span class="sd">        Determines whether the incoherent intermediate scattering</span>
@@ -2300,7 +2259,7 @@
 <span class="sd">        `results.cisf` and `results.iisf`.</span>
 
 <span class="sd">    results.times : `numpy.ndarray`</span>
-<span class="sd">        Lag times :math:`t`.</span>
+<span class="sd">        Time lags :math:`t`.</span>
 
 <span class="sd">        **Shape**: :math:`(N_t,)`.</span>
 
@@ -2351,6 +2310,8 @@
             <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span>
 
+        <span class="c1"># Define the functions to use depending on whether the user</span>
+        <span class="c1"># wants parallelization</span>
         <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cosine_sum_2d</span> <span class="o">=</span> <span class="n">accelerated</span><span class="o">.</span><span class="n">cosine_sum_parallel_2d</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cosine_sum_inplace_2d</span> \
@@ -2369,30 +2330,34 @@
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="c1"># Ensure frames are evenly spaced and proceed forward in time</span>
+        <span class="c1"># Update number of time lags now that the user has specified</span>
+        <span class="c1"># the frames to analyze, if necessary</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
+
+        <span class="c1"># Ensure frames are evenly spaced and proceed forward in time</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;frames&quot;</span><span class="p">):</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                 <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The selected frames must be evenly spaced and &quot;</span>
                         <span class="s2">&quot;proceed forward in time.&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">)</span> \
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">step</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The analysis must proceed forward in time.&quot;</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">step</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The analysis must proceed forward in time.&quot;</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="o">.</span><span class="n">step</span>
 
         <span class="c1"># Determine all unique pairs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="nb">tuple</span><span class="p">(</span>
-                <span class="n">combinations_with_replacement</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">==</span> <span class="s2">&quot;partial&quot;</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="n">combinations_with_replacement</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">==</span> <span class="s2">&quot;partial&quot;</span>
             <span class="k">else</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">==</span> <span class="s2">&quot;pair&quot;</span>
             <span class="k">else</span> <span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),)</span>
         <span class="p">)</span>
 
         <span class="c1"># Preallocate arrays to store results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span><span class="p">,</span>
                  <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">,</span>
                  <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span> <span class="o">==</span> <span class="s2">&quot;exp&quot;</span><span class="p">:</span>
@@ -2419,96 +2384,93 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">wavenumbers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavenumbers</span>
 
         <span class="c1"># Store reference units</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="n">df</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;results.times&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picosecond</span><span class="p">,</span>
                               <span class="s2">&quot;results.wavenumbers&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
+        <span class="c1"># Relative current frame index</span>
+        <span class="n">rcfi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span>
+
         <span class="c1"># Store atom or center-of-mass positions in the current frame</span>
         <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">g</span><span class="o">.</span><span class="n">positions</span> <span class="k">if</span> <span class="n">gr</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span> <span class="k">else</span> <span class="n">center_of_mass</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">gr</span><span class="p">)</span>
             <span class="p">)</span>
 
+        <span class="c1"># Calculate intermediate scattering functions using exponential</span>
+        <span class="c1"># form</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span> <span class="o">==</span> <span class="s2">&quot;exp&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> \
-                    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta_fourier_transform_sum</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span>
-                    <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta_fourier_transform_sum</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rcfi</span><span class="p">]</span>
+                <span class="p">)</span>
                 <span class="k">for</span> <span class="n">time_lag</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
-                    <span class="n">initial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">-</span> <span class="n">time_lag</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">]</span> \
-                        <span class="o">+=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">]</span>
-                            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span><span class="o">.</span><span class="n">real</span>
+                    <span class="n">rifi</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">-</span> <span class="n">time_lag</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">real</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incoherent</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">iisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">]</span> \
                             <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta_fourier_transform_sum</span><span class="p">(</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span>
-                                <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">initial</span><span class="p">]</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rcfi</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rifi</span><span class="p">]</span>
                             <span class="p">)</span><span class="o">.</span><span class="n">real</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> \
-                        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta_fourier_transform_sum</span><span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
-                        <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta_fourier_transform_sum</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+                    <span class="p">)</span>
                 <span class="k">for</span> <span class="n">time_lag</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
-                    <span class="n">initial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">-</span> <span class="n">time_lag</span>
+                    <span class="n">rifi</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">-</span> <span class="n">time_lag</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span>
                     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">):</span>
                         <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
-                                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
                             <span class="p">)</span><span class="o">.</span><span class="n">real</span>
                             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incoherent</span><span class="p">:</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">iisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> \
                                     <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta_fourier_transform_sum</span><span class="p">(</span>
                                         <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span>
-                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
-                                        <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">initial</span><span class="p">,</span>
-                                                          <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+                                        <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rifi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
                                     <span class="p">)</span><span class="o">.</span><span class="n">real</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
-                                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
-                                 <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
-                                   <span class="o">.</span><span class="n">conj</span><span class="p">())</span><span class="o">.</span><span class="n">real</span>
-                                <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
-                                   <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
-                                     <span class="o">.</span><span class="n">conj</span><span class="p">())</span><span class="o">.</span><span class="n">real</span>
+                                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                 <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span><span class="o">.</span><span class="n">real</span>
+                                <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+                                   <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span><span class="o">.</span><span class="n">real</span>
                             <span class="p">)</span>
+
+        <span class="c1"># Calculate intermediate scattering functions using</span>
+        <span class="c1"># trigonometric form</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span> <span class="o">==</span> <span class="s2">&quot;trig&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">qrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
-                                  <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">])</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rcfi</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_cosine_sum_inplace_2d</span><span class="p">(</span>
-                    <span class="n">qrs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                    <span class="n">qrs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sine_sum_inplace_2d</span><span class="p">(</span>
-                    <span class="n">qrs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                    <span class="n">qrs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">time_lag</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
-                    <span class="n">initial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">-</span> <span class="n">time_lag</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">]</span> \
-                        <span class="o">+=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">]</span>
-                            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span>
-                            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">]</span> <span class="o">*</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">])</span>
+                    <span class="n">rifi</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">-</span> <span class="n">time_lag</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">]</span>
+                    <span class="p">)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incoherent</span><span class="p">:</span>
-                        <span class="n">qrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span>
-                            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">initial</span><span class="p">]</span>
-                        <span class="p">)</span>
+                        <span class="n">qrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rcfi</span><span class="p">]</span>
+                                          <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rifi</span><span class="p">])</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">iisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_cosine_sum_2d</span><span class="p">(</span><span class="n">qrs</span><span class="p">)</span>
                             <span class="o">-</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sine_sum_2d</span><span class="p">(</span><span class="n">qrs</span><span class="p">)</span>
@@ -2516,31 +2478,24 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_groups</span><span class="p">):</span>
                     <span class="n">qrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span>
-                                                      <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_cosine_sum_inplace_2d</span><span class="p">(</span>
-                        <span class="n">qrs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
-                    <span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_sine_sum_inplace_2d</span><span class="p">(</span>
-                        <span class="n">qrs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
-                    <span class="p">)</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cosine_sum_inplace_2d</span><span class="p">(</span><span class="n">qrs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_sine_sum_inplace_2d</span><span class="p">(</span><span class="n">qrs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
                 <span class="k">for</span> <span class="n">time_lag</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
-                    <span class="n">initial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">-</span> <span class="n">time_lag</span>
+                    <span class="n">rifi</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">-</span> <span class="n">time_lag</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_lags</span>
                     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pairs</span><span class="p">):</span>
                         <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
-                                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                  <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
                             <span class="p">)</span>
                             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incoherent</span><span class="p">:</span>
                                 <span class="n">qrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="p">(</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">_wavevectors</span><span class="p">,</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span>
-                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
-                                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+                                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="n">rifi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slices</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
                                 <span class="p">)</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">iisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">_cosine_sum_2d</span><span class="p">(</span><span class="n">qrs</span><span class="p">)</span>
@@ -2548,16 +2503,14 @@
                                 <span class="p">)</span><span class="o">.</span><span class="n">real</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cisf</span><span class="p">[</span><span class="n">time_lag</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
-                                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
-                                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
-                                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+                                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                  <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+                                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+                                  <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">rifi</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+                                  <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span><span class="p">[</span><span class="n">rcfi</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
                             <span class="p">)</span>
-
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -2595,7 +2548,11 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">iisf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">iisf</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">order</span><span class="p">]</span>
 
         <span class="c1"># Clean up memory by deleting arrays that will not be reused</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span></div>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span> <span class="o">==</span> <span class="s2">&quot;exp&quot;</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_sum</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_form</span> <span class="o">==</span> <span class="s2">&quot;trig&quot;</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cos_sum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sin_sum</span></div>
 
 </pre></div>
         </article>

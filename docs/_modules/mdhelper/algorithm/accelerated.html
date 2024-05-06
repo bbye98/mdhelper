@@ -168,7 +168,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_2d.html">cosine_sum_inplace_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_parallel_2d.html">cosine_sum_inplace_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_parallel_2d.html">cosine_sum_parallel_2d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d.html">cross_pythagorean_trigonometric_identity_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d.html">delta_fourier_transform_1d_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html">delta_fourier_transform_sum_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d.html">delta_fourier_transform_sum_parallel_2d_2d</a></li>
@@ -176,6 +175,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.inner_2d_2d.html">inner_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.inner_parallel_2d_2d.html">inner_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d.html">pythagorean_trigonometric_identity_1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d_1d.html">pythagorean_trigonometric_identity_1d_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_1d.html">sine_sum_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_2d.html">sine_sum_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_inplace_2d.html">sine_sum_inplace_2d</a></li>
@@ -739,10 +739,10 @@
     <span class="k">return</span> <span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">s</span> <span class="o">**</span> <span class="mi">2</span></div>
 
 
-<div class="viewcode-block" id="cross_pythagorean_trigonometric_identity_1d">
-<a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d.html#mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d">[docs]</a>
+<div class="viewcode-block" id="pythagorean_trigonometric_identity_1d_1d">
+<a class="viewcode-back" href="../../../api/mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d_1d.html#mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d_1d">[docs]</a>
 <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="s2">&quot;f8(f8[:],f8[:])&quot;</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">cross_pythagorean_trigonometric_identity_1d</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">pythagorean_trigonometric_identity_1d_1d</span><span class="p">(</span>
         <span class="n">r</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">s</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>

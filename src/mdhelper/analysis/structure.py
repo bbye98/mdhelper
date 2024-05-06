@@ -1229,47 +1229,24 @@ class StructureFactor(NumbaAnalysisBase):
     """
 
     @staticmethod
-    @numba.njit(fastmath=True)
-    def _ssf_trigonometric_2d(qrs: np.ndarray[float]) -> np.ndarray[float]:
+    def ssf_trigonometric_2d(qrs: np.ndarray[float]) -> np.ndarray[float]:
 
         r"""
-        Serial Numba-accelerated evaluation of the static structure factors
-        given a two-dimensional NumPy array containing
-        :math:`\mathbf{q}\cdot\mathbf{r}`.
+        Compute the static structure factors using a two-dimensional
+        NumPy array containing :math:`\mathbf{q}\cdot\mathbf{r}` using
+        the trigonometric form.
+
+        .. math::
+
+           S(q)=\frac{1}{N}\left\langle\left[
+           \sum_{j=1}^N\\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\right]^2
+           +\left[\sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
+           \right]^2\right\rangle
 
         Parameters
         ----------
         qrs : `np.ndarray`
-            Inner products :math:`\mathbf{q}\cdot\mathbf{r}`.
-
-            **Shape**: :math:`(N_q,\,N_r)`.
-
-        Returns
-        -------
-        ssf : `np.ndarray`
-            Static structure factors.
-
-            **Shape**: :math:`(N_q,)`.
-        """
-
-        ssf = np.empty(qrs.shape[0])
-        for i in range(qrs.shape[0]):
-            ssf[i] = accelerated.pythagorean_trigonometric_identity_1d(qrs[i])
-        return ssf
-
-    @staticmethod
-    @numba.njit(fastmath=True, parallel=True)
-    def _ssf_trigonometric_parallel_2d(qrs: np.ndarray[float]) -> np.ndarray[float]:
-
-        r"""
-        Parallel Numba-accelerated evaluation of the static structure factors
-        given a two-dimensional NumPy array containing
-        :math:`\mathbf{q}\cdot\mathbf{r}`.
-
-        Parameters
-        ----------
-        qrs : `np.ndarray`
-            Inner products :math:`\mathbf{q}\cdot\mathbf{r}`.
+            Inner products :math:`\mathbf{q}\cdot\mathbf{r}_j`.
 
             **Shape**: :math:`(N_q,\,N_r)`.
 
@@ -1287,63 +1264,35 @@ class StructureFactor(NumbaAnalysisBase):
         return ssf
 
     @staticmethod
-    @numba.njit(fastmath=True)
-    def _ssf_trigonometric_2d_2d(
+    def psf_trigonometric_2d_2d(
             qrs1: np.ndarray[float], qrs2: np.ndarray[float]) -> np.ndarray[float]:
 
         r"""
-        Parallel Numba-accelerated evaluation of the partial structure factors
-        given two two-dimensional NumPy arrays, each containing
-        :math:`\mathbf{q}\cdot\mathbf{r}`.
+        Compute the partial structure factors given two two-dimensional
+        NumPy arrays, each containing :math:`\mathbf{q}\cdot\mathbf{r}`,
+        using the trigonometric form.
+
+        .. math::
+
+           \frac{NS_{\alpha\beta}(q)}{2-\delta_{\alpha\beta}}=\\
+           \left\langle
+           \sum_{j=1}^{N_\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
+           \sum_{k=1}^{N_\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}
+           +\sum_{j=1}^{N_\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}
+           \sum_{k=1}^{N_\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}
+           \right\rangle
 
         Parameters
         ----------
         qrs1 : `np.ndarray`
-            First set of inner products :math:`\mathbf{q}\cdot\mathbf{r}`.
+            First set of inner products :math:`\mathbf{q}\cdot\mathbf{r}_j`.
 
             **Shape**: :math:`(N_q,\,N_r)`.
 
         qrs2 : `np.ndarray`
-            Second set of inner products :math:`\mathbf{q}\cdot\mathbf{s}`.
-
-            **Shape**: :math:`(N_q,\,N_s)`.
-
-        Returns
-        -------
-        ssf : `np.ndarray`
-            Partial structure factors.
-
-            **Shape**: :math:`(N_q,)`.
-        """
-
-        ssf = np.empty(qrs1.shape[0])
-        for i in range(qrs1.shape[0]):
-            ssf[i] = accelerated.cross_pythagorean_trigonometric_identity_1d(
-                qrs1[i], qrs2[i]
-            )
-        return ssf
-
-    @staticmethod
-    @numba.njit(fastmath=True, parallel=True)
-    def _ssf_trigonometric_parallel_2d_2d(
-            qrs1: np.ndarray[float], qrs2: np.ndarray[float]) -> np.ndarray[float]:
-
-        r"""
-        Parallel Numba-accelerated evaluation of the partial structure factors
-        given two two-dimensional NumPy arrays, each containing
-        :math:`\mathbf{q}\cdot\mathbf{r}`.
-
-        Parameters
-        ----------
-        qrs1 : `np.ndarray`
-            First set of inner products :math:`\mathbf{q}\cdot\mathbf{r}`.
+            Second set of inner products :math:`\mathbf{q}\cdot\mathbf{r}_k`.
 
             **Shape**: :math:`(N_q,\,N_r)`.
-
-        qrs2 : `np.ndarray`
-            Second set of inner products :math:`\mathbf{q}\cdot\mathbf{s}`.
-
-            **Shape**: :math:`(N_q,\,N_s)`.
 
         Returns
         -------
@@ -1355,7 +1304,7 @@ class StructureFactor(NumbaAnalysisBase):
 
         ssf = np.empty(qrs1.shape[0])
         for i in numba.prange(qrs1.shape[0]):
-            ssf[i] = accelerated.cross_pythagorean_trigonometric_identity_1d(
+            ssf[i] = accelerated.pythagorean_trigonometric_identity_1d_1d(
                 qrs1[i], qrs2[i]
             )
         return ssf
@@ -1474,19 +1423,23 @@ class StructureFactor(NumbaAnalysisBase):
             self._wavevectors = self._wavevectors[keep]
             self._wavenumbers = self._wavenumbers[keep]
 
+        # Define the functions to use depending on whether the user
+        # wants parallelization
+        self._njit = lambda s: numba.njit(s, fastmath=True, parallel=parallel)
+        self._ssf_trigonometric = self._njit("f8[:](f8[:,:])")(
+            self.ssf_trigonometric_2d
+        )
+        self._psf_trigonometric = self._njit("f8[:](f8[:,:],f8[:,:])")(
+            self.psf_trigonometric_2d_2d
+        )
         if parallel:
             self._delta_fourier_transform_sum \
                 = accelerated.delta_fourier_transform_sum_parallel_2d_2d
             self._inner = accelerated.inner_parallel_2d_2d
-            self._ssf_trigonometric = self._ssf_trigonometric_parallel_2d
-            self._ssf_trigonometric_cross \
-                = self._ssf_trigonometric_parallel_2d_2d
         else:
             self._delta_fourier_transform_sum \
                 = accelerated.delta_fourier_transform_sum_2d_2d
             self._inner = accelerated.inner_2d_2d
-            self._ssf_trigonometric = self._ssf_trigonometric_2d
-            self._ssf_trigonometric_cross = self._ssf_trigonometric_2d_2d
 
         self._form = form
         self._sort = sort
@@ -1560,7 +1513,7 @@ class StructureFactor(NumbaAnalysisBase):
                     if j == k:
                         self.results.ssf[i] += self._ssf_trigonometric(qrs_j)
                     else:
-                        self.results.ssf[i] += self._ssf_trigonometric_cross(
+                        self.results.ssf[i] += self._psf_trigonometric(
                             qrs_j,
                             self._inner(self._wavevectors,
                                         self._positions[self._slices[k]])
@@ -1792,10 +1745,10 @@ class IntermediateScatteringFunction(StructureFactor):
         Determines whether intermediate scattering functions for the
         same wavenumber are grouped and averaged.
 
-    n_lags = `int`, keyword-only, optional
+    n_lags : `int`, keyword-only, optional
         Number of time lags :math:`t` or "windows" for which to evaluate
-        the intermediate scattering functions. If not specified, the
-        number of frames in the trajectory is used.
+        the intermediate scattering functions, including zero. If not
+        specified, the number of frames in the trajectory is used.
 
     incoherent : `bool`, keyword-only, default: :code:`False`
         Determines whether the incoherent intermediate scattering
@@ -1828,7 +1781,7 @@ class IntermediateScatteringFunction(StructureFactor):
         `results.cisf` and `results.iisf`.
 
     results.times : `numpy.ndarray`
-        Lag times :math:`t`.
+        Time lags :math:`t`.
 
         **Shape**: :math:`(N_t,)`.
 
@@ -1879,6 +1832,8 @@ class IntermediateScatteringFunction(StructureFactor):
             parallel=parallel, verbose=verbose, **kwargs
         )
 
+        # Define the functions to use depending on whether the user
+        # wants parallelization
         if parallel:
             self._cosine_sum_2d = accelerated.cosine_sum_parallel_2d
             self._cosine_sum_inplace_2d \
@@ -1897,30 +1852,34 @@ class IntermediateScatteringFunction(StructureFactor):
 
     def _prepare(self) -> None:
 
-        # Ensure frames are evenly spaced and proceed forward in time
+        # Update number of time lags now that the user has specified
+        # the frames to analyze, if necessary
         self._n_lags = self._n_lags or self.n_frames
+
+        # Ensure frames are evenly spaced and proceed forward in time
         if hasattr(self._sliced_trajectory, "frames"):
             df = np.diff(self._sliced_trajectory.frames)
             if df[0] <= 0 or not np.allclose(df, df[0]):
                 emsg = ("The selected frames must be evenly spaced and "
                         "proceed forward in time.")
                 raise ValueError(emsg)
-        elif hasattr(self._sliced_trajectory, "step") \
-                and self._sliced_trajectory.step <= 0:
-            raise ValueError("The analysis must proceed forward in time.")
+            df = df[0]
+        elif hasattr(self._sliced_trajectory, "step"):
+            if self._sliced_trajectory.step <= 0:
+                raise ValueError("The analysis must proceed forward in time.")
+            df = self._sliced_trajectory.step
 
         # Determine all unique pairs
         self.results.pairs = (
-            tuple(
-                combinations_with_replacement(range(self._n_groups), 2)
-            ) if self._mode == "partial"
+            tuple(combinations_with_replacement(range(self._n_groups), 2))
+            if self._mode == "partial"
             else ((0, self._n_groups - 1),) if self._mode == "pair"
             else ((None, None),)
         )
 
         # Preallocate arrays to store results
-        self._positions = np.zeros((self.n_frames, self._N, 3))
-        shape = (self.n_frames,
+        self._positions = np.zeros((self._n_lags, self._N, 3))
+        shape = (self._n_lags,
                  1 if self._mode is None else self._n_groups,
                  len(self._wavenumbers))
         if self._form == "exp":
@@ -1947,96 +1906,93 @@ class IntermediateScatteringFunction(StructureFactor):
             self.results.wavenumbers = self._wavenumbers
 
         # Store reference units
-        self.results.times = self._trajectory.dt * np.arange(self._n_lags)
+        self.results.times = df * self._trajectory.dt * np.arange(self._n_lags)
         self.results.units = {"results.times": ureg.picosecond,
                               "results.wavenumbers": ureg.angstrom ** -1}
 
     def _single_frame(self) -> None:
 
+        # Relative current frame index
+        rcfi = self._frame_index % self._n_lags
+
         # Store atom or center-of-mass positions in the current frame
         for g, gr, s in zip(self._groups, self._groupings, self._slices):
-            self._positions[self._frame_index, s] = (
+            self._positions[rcfi, s] = (
                 g.positions if gr == "atoms" else center_of_mass(g, gr)
             )
 
+        # Calculate intermediate scattering functions using exponential
+        # form
         if self._form == "exp":
             if self._mode is None:
-                self._exp_sum[self._frame_index] \
-                    = self._delta_fourier_transform_sum(
-                        self._wavevectors,
-                        self._positions[self._frame_index]
-                    )
+                self._exp_sum[rcfi] = self._delta_fourier_transform_sum(
+                    self._wavevectors, self._positions[rcfi]
+                )
                 for time_lag in range(min(self._n_lags,
                                           self._frame_index + 1)):
-                    initial = self._frame_index - time_lag
-                    self.results.cisf[time_lag] \
-                        += (self._exp_sum[initial]
-                            * self._exp_sum[self._frame_index].conj()).real
+                    rifi = (self._frame_index - time_lag) % self._n_lags
+                    self.results.cisf[time_lag] += (
+                        self._exp_sum[rifi] * self._exp_sum[rcfi].conj()
+                    ).real
                     if self._incoherent:
                         self.results.iisf[time_lag] \
                             += self._delta_fourier_transform_sum(
                                 self._wavevectors,
-                                self._positions[self._frame_index]
-                                - self._positions[initial]
+                                self._positions[rcfi] - self._positions[rifi]
                             ).real
             else:
                 for i in range(self._n_groups):
-                    self._exp_sum[self._frame_index, i] \
-                        = self._delta_fourier_transform_sum(
-                            self._wavevectors,
-                            self._positions[self._frame_index, self._slices[i]]
-                        )
+                    self._exp_sum[rcfi, i] = self._delta_fourier_transform_sum(
+                        self._wavevectors,
+                        self._positions[rcfi, self._slices[i]]
+                    )
                 for time_lag in range(min(self._n_lags,
                                           self._frame_index + 1)):
-                    initial = self._frame_index - time_lag
+                    rifi = (self._frame_index - time_lag) % self._n_lags
                     for i, (j, k) in enumerate(self.results.pairs):
                         if j == k:
                             self.results.cisf[time_lag, i] += (
-                                self._exp_sum[initial, j]
-                                * self._exp_sum[self._frame_index, j].conj()
+                                self._exp_sum[rifi, j]
+                                * self._exp_sum[rcfi, j].conj()
                             ).real
                             if self._incoherent:
                                 self.results.iisf[time_lag, j] \
                                     += self._delta_fourier_transform_sum(
                                         self._wavevectors,
-                                        self._positions[self._frame_index,
-                                                        self._slices[j]]
-                                        - self._positions[initial,
-                                                          self._slices[j]]
+                                        self._positions[rcfi, self._slices[j]]
+                                        - self._positions[rifi, self._slices[j]]
                                     ).real
                         else:
                             self.results.cisf[time_lag, i] += (
-                                (self._exp_sum[initial, j]
-                                 * self._exp_sum[self._frame_index, k]
-                                   .conj()).real
-                                + (self._exp_sum[initial, k]
-                                   * self._exp_sum[self._frame_index, j]
-                                     .conj()).real
+                                (self._exp_sum[rifi, j]
+                                 * self._exp_sum[rcfi, k].conj()).real
+                                + (self._exp_sum[rifi, k]
+                                   * self._exp_sum[rcfi, j].conj()).real
                             )
+
+        # Calculate intermediate scattering functions using
+        # trigonometric form
         elif self._form == "trig":
             if self._mode is None:
                 qrs = self._inner(self._wavevectors,
-                                  self._positions[self._frame_index])
+                                  self._positions[rcfi])
                 self._cosine_sum_inplace_2d(
-                    qrs, self._cos_sum[self._frame_index, 0]
+                    qrs, self._cos_sum[rcfi, 0]
                 )
                 self._sine_sum_inplace_2d(
-                    qrs, self._sin_sum[self._frame_index, 0]
+                    qrs, self._sin_sum[rcfi, 0]
                 )
                 for time_lag in range(min(self._n_lags,
                                           self._frame_index + 1)):
-                    initial = self._frame_index - time_lag
-                    self.results.cisf[time_lag] \
-                        += (self._cos_sum[initial]
-                            * self._cos_sum[self._frame_index]
-                            + self._sin_sum[initial] *
-                            self._sin_sum[self._frame_index])
+                    rifi = (self._frame_index - time_lag) % self._n_lags
+                    self.results.cisf[time_lag] += (
+                        self._cos_sum[rifi] * self._cos_sum[rcfi]
+                        + self._sin_sum[rifi] * self._sin_sum[rcfi]
+                    )
                     if self._incoherent:
-                        qrs = self._inner(
-                            self._wavevectors,
-                            self._positions[self._frame_index]
-                            - self._positions[initial]
-                        )
+                        qrs = self._inner(self._wavevectors,
+                                          self._positions[rcfi]
+                                          - self._positions[rifi])
                         self.results.iisf[time_lag] += (
                             self._cosine_sum_2d(qrs)
                             - 1j * self._sine_sum_2d(qrs)
@@ -2044,31 +2000,24 @@ class IntermediateScatteringFunction(StructureFactor):
             else:
                 for i in range(self._n_groups):
                     qrs = self._inner(self._wavevectors,
-                                      self._positions[self._frame_index,
-                                                      self._slices[i]])
-                    self._cosine_sum_inplace_2d(
-                        qrs, self._cos_sum[self._frame_index, i]
-                    )
-                    self._sine_sum_inplace_2d(
-                        qrs, self._sin_sum[self._frame_index, i]
-                    )
+                                      self._positions[rcfi, self._slices[i]])
+                    self._cosine_sum_inplace_2d(qrs, self._cos_sum[rcfi, i])
+                    self._sine_sum_inplace_2d(qrs, self._sin_sum[rcfi, i])
                 for time_lag in range(min(self._n_lags,
                                           self._frame_index + 1)):
-                    initial = self._frame_index - time_lag
+                    rifi = (self._frame_index - time_lag) % self._n_lags
                     for i, (j, k) in enumerate(self.results.pairs):
                         if j == k:
                             self.results.cisf[time_lag, i] += (
-                                self._cos_sum[initial, j] *
-                                self._cos_sum[self._frame_index, j]
-                                + self._sin_sum[initial, j] *
-                                self._sin_sum[self._frame_index, j]
+                                self._cos_sum[rifi, j] * self._cos_sum[rcfi, j]
+                                + self._sin_sum[rifi, j]
+                                  * self._sin_sum[rcfi, j]
                             )
                             if self._incoherent:
                                 qrs = self._inner(
                                     self._wavevectors,
-                                    self._positions[self._frame_index,
-                                                    self._slices[j]]
-                                    - self._positions[initial, self._slices[j]]
+                                    self._positions[rcfi, self._slices[j]]
+                                    - self._positions[rifi, self._slices[j]]
                                 )
                                 self.results.iisf[time_lag, j] += (
                                     self._cosine_sum_2d(qrs)
@@ -2076,16 +2025,14 @@ class IntermediateScatteringFunction(StructureFactor):
                                 ).real
                         else:
                             self.results.cisf[time_lag, i] += (
-                                self._cos_sum[initial, j] *
-                                self._cos_sum[self._frame_index, k]
-                                + self._sin_sum[initial, j] *
-                                self._sin_sum[self._frame_index, k]
-                                + self._cos_sum[initial, k] *
-                                self._cos_sum[self._frame_index, j]
-                                + self._sin_sum[initial, k] *
-                                self._sin_sum[self._frame_index, j]
+                                self._cos_sum[rifi, j] * self._cos_sum[rcfi, k]
+                                + self._sin_sum[rifi, j]
+                                  * self._sin_sum[rcfi, k]
+                                + self._cos_sum[rifi, k]
+                                  * self._cos_sum[rcfi, j]
+                                + self._sin_sum[rifi, k]
+                                  * self._sin_sum[rcfi, j]
                             )
-
 
     def _conclude(self) -> None:
 
@@ -2124,3 +2071,7 @@ class IntermediateScatteringFunction(StructureFactor):
 
         # Clean up memory by deleting arrays that will not be reused
         del self._positions
+        if self._form == "exp":
+            del self._exp_sum
+        elif self._form == "trig":
+            del self._cos_sum, self._sin_sum

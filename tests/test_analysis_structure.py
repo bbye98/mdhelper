@@ -236,7 +236,7 @@ def test_class_intermediatescatteringfunction():
     os.chdir("md_runs/NVT_tetra_size8_T450_nframes1000")
 
     stop = 20
-    n_lags = stop // 5
+    n_lags = stop // 2
     atoms = ase.io.read("model.xyz")
     atomic_indices = atoms.symbols.indices()
     atom_types = sorted(atomic_indices.keys())

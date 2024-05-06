@@ -16,7 +16,9 @@ StructureFactor
    .. autosummary::
       :nosignatures:
    
+      ~StructureFactor.psf_trigonometric_2d_2d
       ~StructureFactor.run
       ~StructureFactor.save
+      ~StructureFactor.ssf_trigonometric_2d
    
    

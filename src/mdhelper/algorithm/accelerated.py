@@ -279,7 +279,7 @@ def pythagorean_trigonometric_identity_1d(r: np.ndarray[float]) -> float:
     return c ** 2 + s ** 2
 
 @numba.njit("f8(f8[:],f8[:])", fastmath=True)
-def cross_pythagorean_trigonometric_identity_1d(
+def pythagorean_trigonometric_identity_1d_1d(
         r: np.ndarray[float], s: np.ndarray[float]) -> float:
 
     r"""
