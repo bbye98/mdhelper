@@ -163,23 +163,23 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/mdhelper.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.html">algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.html">accelerated</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of accelerated</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_parallel_2d.html">cosine_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_1d.html">cosine_sum_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_2d.html">cosine_sum_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_2d.html">cosine_sum_inplace_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_inplace_parallel_2d.html">cosine_sum_inplace_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cosine_sum_parallel_2d.html">cosine_sum_parallel_2d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.cross_pythagorean_trigonometric_identity_1d.html">cross_pythagorean_trigonometric_identity_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_1d_1d.html">delta_fourier_transform_1d_1d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_2d_2d.html">delta_fourier_transform_2d_2d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_parallel_2d_2d.html">delta_fourier_transform_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_2d_2d.html">delta_fourier_transform_sum_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.delta_fourier_transform_sum_parallel_2d_2d.html">delta_fourier_transform_sum_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.dot_1d_1d.html">dot_1d_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.inner_2d_2d.html">inner_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.inner_parallel_2d_2d.html">inner_parallel_2d_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d.html">pythagorean_trigonometric_identity_1d</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_parallel_2d.html">sine_parallel_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.pythagorean_trigonometric_identity_1d_1d.html">pythagorean_trigonometric_identity_1d_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_1d.html">sine_sum_1d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_2d.html">sine_sum_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_inplace_2d.html">sine_sum_inplace_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_inplace_parallel_2d.html">sine_sum_inplace_parallel_2d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/mdhelper.algorithm.accelerated.sine_sum_parallel_2d.html">sine_sum_parallel_2d</a></li>
 </ul>
 </li>
@@ -442,7 +442,6 @@
 <span class="sd">Analysis base classes</span>
 <span class="sd">=====================</span>
 <span class="sd">.. moduleauthor:: Benjamin Ye &lt;GitHub: @bbye98&gt;</span>
-<span class="sd">.. moduleauthor:: Alec Glisman &lt;GitHub: @alec-glisman&gt;</span>
 
 <span class="sd">This module contains custom base classes for serial and multithreaded</span>
 <span class="sd">data analysis with support for the multiprocessing, Dask, Joblib, and</span>
@@ -956,11 +955,11 @@
                     <span class="nb">tuple</span><span class="p">(</span>
                         <span class="n">tqdm</span><span class="p">(</span>
                             <span class="n">p</span><span class="o">.</span><span class="n">istarmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_frame_parallel</span><span class="p">,</span>
-                                    <span class="nb">zip</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">indices</span><span class="p">)),</span>
+                                       <span class="nb">zip</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">indices</span><span class="p">)),</span>
                             <span class="n">total</span><span class="o">=</span><span class="n">n_frames</span>
                         <span class="p">)</span>
                     <span class="p">)</span> <span class="k">if</span> <span class="n">verbose</span> <span class="k">else</span> <span class="n">p</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_frame_parallel</span><span class="p">,</span>
-                                              <span class="nb">zip</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">indices</span><span class="p">))</span>
+                                                <span class="nb">zip</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">indices</span><span class="p">))</span>
                 <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>

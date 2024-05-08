@@ -20,11 +20,12 @@ def test_class_density_profile():
     """
 
     density = LinearDensity(universe.atoms, grouping="residues").run()
-    density_profile = profile.DensityProfile(universe.atoms, "residues",
-                                             n_bins=200).run()
+    density_profile = profile.DensityProfile(
+        universe.atoms, "residues", n_bins=200
+    ).run()
     parallel_density_profile = profile.DensityProfile(
         universe.atoms, "residues", n_bins=200, parallel=True
-    ).run(n_jobs=1)
+    ).run()
 
     for i, axis in enumerate("xyz"):
 
@@ -32,7 +33,7 @@ def test_class_density_profile():
             0.602214076 * getattr(density.results, axis).mass_density
             / universe.residues.masses[0]
         )
-        charge_density = (0.602214076 
+        charge_density = (0.602214076
                           * getattr(density.results, axis).charge_density)
 
         # TEST CASE 1: Number density profiles

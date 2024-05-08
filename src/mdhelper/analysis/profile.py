@@ -9,11 +9,10 @@ density profiles.
 
 import logging
 from numbers import Real
-from typing import Any, Union
+from typing import Union
 import warnings
 
 import MDAnalysis as mda
-from MDAnalysis.lib.mdamath import make_whole
 import numpy as np
 from scipy import integrate, sparse
 
@@ -334,17 +333,23 @@ class DensityProfile(DynamicAnalysisBase):
 
         .. note::
 
-           In a standard trajectory file, segments (or chains) contain
-           residues (or molecules), and residues contain atoms. This
-           heirarchy must be adhered to for this analysis module to
-           function correctly, unless your selected grouping is always
-           :code:`"atoms"`.
+           If the desired grouping is not :code:`"atoms"`,
+
+           * the trajectory file should have segments (or chains)
+             containing residues (or molecules) and residues containing
+             atoms, and
+
+           * residues and segments should be locally unwrapped at the
+             simulation box edges, if not already, using
+             :class:`MDAnalysis.transformations.wrap.unwrap`,
+             :meth:`MDAnalysis.core.groups.AtomGroup.unwrap`, or
+             :func:`MDAnalysis.lib.mdamath.make_whole`.
 
         .. container::
 
            **Valid values**:
 
-           * :code:`"atoms"`: Atom positions (generally for
+           * :code:`"atoms"`: Atom positions (generally or for
              coarse-grained simulations).
            * :code:`"residues"`: Residues' centers of mass (for
              atomistic simulations).
@@ -417,14 +422,16 @@ class DensityProfile(DynamicAnalysisBase):
         Determines whether the density profiles are averaged over the
         specified frames.
 
-    recenter : `int`, `MDAnalysis.AtomGroup` or `tuple`, keyword-only, optional
+    recenter : `int`, `list`, `MDAnalysis.AtomGroup`, or `tuple`, \
+    keyword-only, optional
         Constrains the center of mass of an atom group by adjusting the
         particle coordinates every analysis frame. Either specify an
         :class:`MDAnalysis.core.groups.AtomGroup`, its index within
-        `groups`, or a tuple containing an
-        :class:`MDAnalysis.core.groups.AtomGroup` or `int` and the fixed
-        center of mass coordinates, in that order. If the center of mass
-        is not specified, the center of the simulation box is used.
+        `groups`, or a tuple containing the aforementioned information
+        and the fixed center of mass coordinates, in that order. To
+        avoid recentering in a specific dimension, set the coordinate to
+        :code:`numpy.nan`. If the center of mass is not specified, the
+        center of the simulation box is used.
 
         **Shape**: :math:`(3,)` for the fixed center of mass.
 
@@ -506,8 +513,11 @@ class DensityProfile(DynamicAnalysisBase):
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
             dt: Union[float, "unit.Quantity", Q_] = None,
             scales: Union[float, tuple[float]] = 1, average: bool = True,
-            recenter: dict[str, Any] = None, reduced: bool = False,
-            parallel: bool = False, verbose: bool = True, **kwargs) -> None:
+            recenter: Union[mda.AtomGroup, int,
+                            tuple[Union[mda.AtomGroup, int],
+                                  np.ndarray[float]]] = None,
+            reduced: bool = False, parallel: bool = False,
+            verbose: bool = True, **kwargs) -> None:
 
         self._groups = [groups] if isinstance(groups, mda.AtomGroup) else groups
         self.universe = self._groups[0].universe
@@ -533,17 +543,6 @@ class DensityProfile(DynamicAnalysisBase):
                             f"{', '.join(GROUPINGS)}.")
                     raise ValueError(emsg)
             self._groupings = groupings
-
-        # Determine the number of particles in each group and their
-        # corresponding indices
-        self._Ns = tuple(getattr(a, f"n_{g}")
-                         for (a, g) in zip(self._groups, self._groupings))
-        self._N = sum(self._Ns)
-        self._slices = []
-        index = 0
-        for N in self._Ns:
-            self._slices.append(slice(index, index + N))
-            index += N
 
         if isinstance(axes, int):
             self._axes = np.array((axes,), dtype=int)
@@ -574,30 +573,6 @@ class DensityProfile(DynamicAnalysisBase):
                     "iterable object.")
             raise ValueError(emsg)
 
-        if dimensions is not None:
-            if len(dimensions) != 3:
-                raise ValueError("'dimensions' must have length 3.")
-            self._dimensions = np.asarray(
-                strip_unit(dimensions, "angstrom")[0]
-            )
-        elif self.universe.dimensions is not None:
-            self._dimensions = self.universe.dimensions[:3].copy()
-        else:
-            raise ValueError("No system dimensions found or provided.")
-
-        if isinstance(scales, Real) or (len(scales) == 3
-                                        and isinstance(scales[0], Real)):
-            self._dimensions *= scales
-        else:
-            emsg = ("The scaling factor(s) must be provided as a "
-                    "floating-point number or in an array with shape "
-                    "(3,).")
-            raise ValueError(emsg)
-
-        self._dt, unit_ = strip_unit(dt or self._trajectory.dt, "picosecond")
-        if reduced and not isinstance(unit_,  str):
-            raise TypeError("'dt' cannot have units when reduced=True.")
-
         if charges is not None:
             if len(charges) != self._n_groups:
                 emsg = ("The number of group charges is not equal to "
@@ -623,42 +598,72 @@ class DensityProfile(DynamicAnalysisBase):
         else:
             self._charges = None
 
+        if dimensions is not None:
+            if len(dimensions) != 3:
+                raise ValueError("'dimensions' must have length 3.")
+            self._dimensions = np.asarray(
+                strip_unit(dimensions, "angstrom")[0]
+            )
+        elif self.universe.dimensions is not None:
+            self._dimensions = self.universe.dimensions[:3].copy()
+        else:
+            raise ValueError("No system dimensions found or provided.")
+
+        if isinstance(scales, Real) or (len(scales) == 3
+                                        and isinstance(scales[0], Real)):
+            self._dimensions *= scales
+        else:
+            emsg = ("The scaling factor(s) must be provided as a "
+                    "floating-point number or in an array with shape "
+                    "(3,).")
+            raise ValueError(emsg)
+
+        self._dt, unit_ = strip_unit(dt or self._trajectory.dt, "picosecond")
+        if reduced and not isinstance(unit_,  str):
+            raise TypeError("'dt' cannot have units when reduced=True.")
+
         if recenter is None:
             self._recenter = recenter
-        elif isinstance(recenter, int):
-            if not 0 <= recenter < self._n_groups:
-                raise ValueError("Invalid group index passed to 'recenter'.")
-            self._recenter = (recenter, self._dimensions / 2)
-        elif isinstance(recenter, mda.AtomGroup):
-            try:
-                self._recenter = (self._groups.index(recenter),
-                                  self._dimensions / 2)
-            except ValueError:
-                emsg = ("The specified AtomGroup in 'recenter' is not "
-                        "in 'groups'.")
+        else:
+            if isinstance(recenter, (int, mda.AtomGroup)):
+                recenter_group = recenter
+                recenter_position = self._dimensions / 2
+            elif isinstance(recenter, tuple) and len(recenter) == 2:
+                recenter_group, recenter_position = recenter
+                recenter_position = np.asarray(recenter_position)
+            else:
+                emsg = ("Invalid value passed to 'recenter'. The argument "
+                        "must either be a MDAnalysis.AtomGroup, its index "
+                        "in 'groups', multiple groups/indices, or a tuple "
+                        "containing the aforementioned information and a "
+                        "specified center of mass, in that order.")
                 raise ValueError(emsg)
-        elif isinstance(recenter, tuple) \
-                and isinstance(recenter[0], (int, mda.AtomGroup)) \
-                and len(recenter) == 2:
-            if isinstance(recenter[0], mda.AtomGroup):
+            if isinstance(recenter_group, int) \
+                    and not 0 <= recenter_group < self._n_groups:
+                raise ValueError("Invalid group index passed to 'recenter'.")
+            elif isinstance(recenter_group, mda.AtomGroup):
                 try:
-                    self._recenter = (self._groups.index(recenter[0]),
-                                      np.asarray(recenter[1]))
+                    recenter_group = self._groups.index(recenter_group)
                 except ValueError:
                     emsg = ("The specified AtomGroup in 'recenter' is not "
                             "in 'groups'.")
                     raise ValueError(emsg)
-            else:
-                if not 0 <= recenter[0] < self._n_groups:
-                    raise ValueError("Invalid group index passed to 'recenter'.")
-                self._recenter = (recenter[0], np.asarray(recenter[1]))
-        else:
-            emsg = ("Invalid value passed to 'recenter'. The argument "
-                    "must either be a MDAnalysis.AtomGroup, its index "
-                    "in 'groups', or a tuple containing a "
-                    "MDAnalysis.AtomGroup or an integer and a "
-                    "specified center of mass, in that order.")
-            raise ValueError(emsg)
+            self._recenter = (recenter_group, recenter_position)
+
+        # Determine the number of particles in each group and their
+        # corresponding indices
+        self._Ns = np.fromiter(
+            (getattr(a, f"n_{g}")
+             for (a, g) in zip(self._groups, self._groupings)),
+            dtype=int,
+            count=self._n_groups
+        )
+        self._N = self._Ns.sum()
+        self._slices = []
+        index = 0
+        for N in self._Ns:
+            self._slices.append(slice(index, index + N))
+            index += N
 
         self._average = average
         self._reduced = reduced
@@ -670,46 +675,46 @@ class DensityProfile(DynamicAnalysisBase):
             np.linspace(
                 self._dimensions[a] / (2 * self._n_bins[i]),
                 self._dimensions[a]
-                    - self._dimensions[a] / (2 * self._n_bins[i]),
+                - self._dimensions[a] / (2 * self._n_bins[i]),
                 self._n_bins[i]
             ) for i, a in enumerate(self._axes)
         ]
 
         if self._recenter is not None:
+
+            # Navigate to first frame in analysis
             self.universe.trajectory[
                 self._sliced_trajectory.frames[0]
                 if hasattr(self._sliced_trajectory, "frames")
                 else (self.start or 0)
             ]
 
-            # Preallocate arrays to store number of boundary crossings for
-            # each particle
+            # Preallocate arrays to store number of boundary crossings
+            # for each particle
             self._positions_old = np.empty((self._N, 3))
             for g, gr, s in zip(self._groups, self._groupings, self._slices):
-                for f in g.fragments:
-                    make_whole(f)
                 self._positions_old[s] = (g.positions if gr == "atoms"
                                           else center_of_mass(g, gr))
             self._images = np.zeros((self._N, 3), dtype=int)
             self._thresholds = self._dimensions / 2
 
-            # Store unwrapped particle positions in a shared memory array
-            # for parallel analysis
+            # [Parallel] Store unwrapped particle positions in a shared
+            # memory array for parallel analysis
             if self._parallel:
                 self._positions = np.empty((self.n_frames, self._N, 3))
-                for i, _ in enumerate(self.universe.trajectory[
-                        list(self._sliced_trajectory.frames)
-                        if hasattr(self._sliced_trajectory, "frames")
-                        else slice(self.start, self.stop, self.step)
-                    ]):
-                    for g, gr, s in zip(self._groups, self._groupings, self._slices):
+
+                # Store atom or center-of-mass positions in the current
+                # frame
+                for i, _ in enumerate(self._sliced_trajectory):
+                    for g, gr, s in zip(self._groups, self._groupings,
+                                        self._slices):
                         self._positions[i, s] = (g.positions if gr == "atoms"
                                                  else center_of_mass(g, gr))
 
-                    unwrap(self._positions[i],
-                           self._positions_old,
-                           self._dimensions,
-                           thresholds=self._thresholds,
+                    # Globally unwrap positions for correct center of
+                    # mass calculation
+                    unwrap(self._positions[i], self._positions_old,
+                           self._dimensions, thresholds=self._thresholds,
                            images=self._images)
 
                     # Calculate difference in center of mass and
@@ -722,61 +727,66 @@ class DensityProfile(DynamicAnalysisBase):
                             self._groupings[self._recenter[0]]
                         ).masses
                     )
-                    self._positions[i, s] -= np.fromiter(
+                    self._positions[i] -= np.fromiter(
                         (0 if np.isnan(cx) else sx - cx
                          for sx, cx in zip(scom, self._recenter[1])),
                         dtype=float,
                         count=3
                     )
 
-                    wrap(self._positions[i], self._dimensions)
+                # Wrap positions back into the simulation box so that they
+                # belong to a histogram bin
+                wrap(self._positions, self._dimensions)
 
-                del self._positions_old
-                del self._images
-                del self._thresholds
-
-        # Preallocate arrays to hold number density data
-        if not self._average:
-            self.results.times = (self.step * self._dt
-                                  * np.arange(self.n_frames))
+        # [Serial] Preallocate arrays to hold atom positions for a
+        # given frame so that it doesn't have to be recreated each
+        # frame, and number density profiles
         if not self._parallel:
-
-            # Create a persisting array to hold atom positions for a
-            # given frame so that it doesn't have to be recreated each
-            # frame
             self._positions = np.empty((self._N, 3))
-
             shape = [self._n_groups]
             if not self._average:
                 shape.append(self.n_frames)
             self.results.number_densities = [np.zeros((*shape, n))
                                              for n in self._n_bins]
 
-        # Store reference units
-        self.results.units = {"results.bins": ureg.angstrom}
-        self.results.units["results.number_densities"] = \
-            self.results.units["results.bins"] ** -3
+        # Store time information
+        if not self._average:
+            if hasattr(self._sliced_trajectory, "frames"):
+                self.results.times \
+                    = np.asarray(self._sliced_trajectory.frames) * self._dt
+            else:
+                self.results.times = self._dt * np.arange(
+                    self._sliced_trajectory.start,
+                    self._sliced_trajectory.stop,
+                    self._sliced_trajectory.step
+                )
 
-        # Preallocate a list to hold charge density data, if charge
-        # information is available
+        # Store reference units
+        self.results.units = {
+            "results.bins": ureg.angstrom,
+            "results.number_densities": ureg.angstrom ** -3
+        }
         if self._charges is not None:
             self.results.charge_densities = [None for _ in self._axes]
             self.results.units["results.charge_densities"] = (
-                ureg.elementary_charge
-                * self.results.units["results.number_densities"]
+                ureg.elementary_charge / ureg.angstrom ** 3
             )
 
     def _single_frame(self):
 
+        # Store atom or center-of-mass positions in the current frame
         for g, gr, s in zip(self._groups, self._groupings, self._slices):
             self._positions[s] = (g.positions if gr == "atoms"
                                   else center_of_mass(g, gr))
 
         if self._recenter is not None:
+
+            # Globally unwrap positions for correct center of mass
+            # calculation
             unwrap(self._positions, self._positions_old, self._dimensions,
                    thresholds=self._thresholds, images=self._images)
 
-            # Calculate difference in center of mass and shift particle
+            # Calculate difference in centers of mass and shift particle
             # positions by the difference
             scom = center_of_mass(
                 positions=self._positions[self._slices[self._recenter[0]]],
@@ -790,6 +800,8 @@ class DensityProfile(DynamicAnalysisBase):
                 count=3
             )
 
+        # Wrap positions back into the simulation box so that they
+        # belong to a histogram bin
         wrap(self._positions, self._dimensions)
 
         # Compute and tally the bin counts for the current positions
@@ -797,7 +809,8 @@ class DensityProfile(DynamicAnalysisBase):
             for a, (axis, n_bins) in enumerate(zip(self._axes, self._n_bins)):
                 if self._average:
                     self.results.number_densities[a][i] += np.histogram(
-                        self._positions[s, axis], n_bins, (0, self._dimensions[axis])
+                        self._positions[s, axis], n_bins,
+                        (0, self._dimensions[axis])
                     )[0]
                 else:
                     self.results.number_densities[a][i, self._frame_index] \
@@ -807,7 +820,10 @@ class DensityProfile(DynamicAnalysisBase):
     def _single_frame_parallel(
             self, frame: int, index: int) -> tuple[int, np.ndarray[float]]:
 
+        # Set current trajectory frame
         self._trajectory[frame]
+
+        # Preallocate array to hold bin counts for the current frame
         results = np.empty((len(self._axes), self._n_groups, self._n_bins[0]))
 
         if self._recenter is None:
@@ -830,7 +846,8 @@ class DensityProfile(DynamicAnalysisBase):
 
     def _conclude(self):
 
-        # Consolidate parallel results
+        # Consolidate parallel results and clean up memory by deleting
+        # arrays that will not be reused
         if self._parallel:
             if self._recenter is not None:
                 del self._positions
@@ -842,10 +859,8 @@ class DensityProfile(DynamicAnalysisBase):
                     = self.results.number_densities.sum(axis=1)
         else:
             del self._positions
-            if self._recenter is not None:
-                del self._positions_old
-                del self._images
-                del self._thresholds
+        if self._recenter is not None:
+            del self._positions_old, self._images, self._thresholds
 
         V = np.prod(self._dimensions)
         for a in range(len(self._axes)):

@@ -2,7 +2,6 @@
 Analysis base classes
 =====================
 .. moduleauthor:: Benjamin Ye <GitHub: @bbye98>
-.. moduleauthor:: Alec Glisman <GitHub: @alec-glisman>
 
 This module contains custom base classes for serial and multithreaded
 data analysis with support for the multiprocessing, Dask, Joblib, and
@@ -494,11 +493,11 @@ class ParallelAnalysisBase(SerialAnalysisBase):
                     tuple(
                         tqdm(
                             p.istarmap(self._single_frame_parallel,
-                                    zip(frames, indices)),
+                                       zip(frames, indices)),
                             total=n_frames
                         )
                     ) if verbose else p.starmap(self._single_frame_parallel,
-                                              zip(frames, indices))
+                                                zip(frames, indices))
                 )
 
         if verbose:

@@ -547,16 +547,22 @@ individual atom positions. If <cite>groupings</cite> is a <cite>str</cite>, the 
 value is used for all <cite>groups</cite>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>In a standard trajectory file, segments (or chains) contain
-residues (or molecules), and residues contain atoms. This
-heirarchy must be adhered to for this analysis module to
-function correctly, unless your selected grouping is always
-<code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code>.</p>
+<p>If the desired grouping is not <code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code>,</p>
+<ul class="simple">
+<li><p>the trajectory file should have segments (or chains)
+containing residues (or molecules) and residues containing
+atoms, and</p></li>
+<li><p>residues and segments should be locally unwrapped at the
+simulation box edges, if not already, using
+<a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/transformations/wrap.html#MDAnalysis.transformations.wrap.unwrap" title="(in MDAnalysis v2.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap.unwrap</span></code></a>,
+<a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.unwrap" title="(in MDAnalysis v2.7.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.unwrap()</span></code></a>, or
+<a class="reference external" href="https://docs.mdanalysis.org/stable/documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.make_whole" title="(in MDAnalysis v2.7.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath.make_whole()</span></code></a>.</p></li>
+</ul>
 </div>
 <div class="docutils container">
 <p><strong>Valid values</strong>:</p>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code>: Atom positions (generally for
+<li><p><code class="code docutils literal notranslate"><span class="pre">&quot;atoms&quot;</span></code>: Atom positions (generally or for
 coarse-grained simulations).</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">&quot;residues&quot;</span></code>: Residues’ centers of mass (for
 atomistic simulations).</p></li>

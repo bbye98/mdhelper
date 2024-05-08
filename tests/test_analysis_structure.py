@@ -25,7 +25,7 @@ def test_func_radial_histogram():
     dims = np.array((L, L, L, 90, 90, 90), dtype=int)
     origin = half_L * np.ones(3)
 
-    N = 1000
+    N = 1_000
     norm = L // 2 * rng.random(N)
     counts = np.histogram(norm, bins=half_L, range=(0, half_L + 1))[0]
     neighbors = rng.random((N, 3))
@@ -42,7 +42,7 @@ def test_func_radial_histogram():
 def test_func_radial_fourier_transform():
 
     alpha = 1 + 9 * rng.random()
-    r = np.linspace(1e-8, 20, 2000)
+    r = np.linspace(1e-8, 20, 2_000)
     q = 1 / r
     f = np.exp(-alpha * r) / r
     F = 4 * np.pi / (alpha ** 2 + q ** 2)
@@ -243,7 +243,8 @@ def test_class_intermediatescatteringfunction():
     traj = dynasor.Trajectory("movie.nc", trajectory_format="nc",
                               atomic_indices=atomic_indices,
                               frame_stop=stop)
-    q_points = dynasor.get_spherical_qpoints(traj.cell, q_max=2, max_points=2_000)
+    q_points = dynasor.get_spherical_qpoints(traj.cell, q_max=2,
+                                             max_points=2_000)
     sample = dynasor.compute_dynamic_structure_factors(
         traj, q_points, dt=1, window_size=n_lags, calculate_incoherent=True
     )
@@ -253,15 +254,17 @@ def test_class_intermediatescatteringfunction():
     universe = mda.Universe("model.xyz", "movie.nc")
     groups = [universe.select_atoms(f"element {e}") for e in atom_types]
     isf_exp = structure.IntermediateScatteringFunction(
-        groups, mode="partial", wavevectors=q_points, n_lags=n_lags, incoherent=True, parallel=True
+        groups, mode="partial", wavevectors=q_points, n_lags=n_lags,
+        incoherent=True, parallel=True
     ).run(stop=stop)
     isf_trig = structure.IntermediateScatteringFunction(
-        groups, mode="partial", form="trig", wavevectors=q_points, n_lags=n_lags, incoherent=True,
-        parallel=True
+        groups, mode="partial", form="trig", wavevectors=q_points,
+        n_lags=n_lags, incoherent=True, parallel=True
     ).run(stop=stop)
 
     # TEST CASE 1: Partial coherent intermediate scattering functions
-    cisf_dynasor = np.empty((n_lags, len(isf_exp.results.pairs), len(q_norms_unique)))
+    cisf_dynasor = np.empty((n_lags, len(isf_exp.results.pairs),
+                             len(q_norms_unique)))
     for i, (j, k) in enumerate(isf_exp.results.pairs):
         for iq, q in enumerate(q_norms_unique):
             cisf_dynasor[:, i, iq] = (
@@ -283,12 +286,12 @@ def test_class_intermediatescatteringfunction():
     assert np.allclose(isf_trig.results.iisf, iisf_dynasor)
 
     isf_exp = structure.IntermediateScatteringFunction(
-        groups, wavevectors=q_points, n_lags=n_lags, incoherent=True, sort=False, unique=False,
-        parallel=True
+        groups, wavevectors=q_points, n_lags=n_lags, incoherent=True,
+        sort=False, unique=False, parallel=True
     ).run(stop=stop)
     isf_trig = structure.IntermediateScatteringFunction(
-        groups, form="trig", wavevectors=q_points, n_lags=n_lags, incoherent=True, sort=False,
-        unique=False, parallel=True
+        groups, form="trig", wavevectors=q_points, n_lags=n_lags,
+        incoherent=True, sort=False, unique=False, parallel=True
     ).run(stop=stop)
 
     # TEST CASE 3: Coherent intermediate scattering function

@@ -456,10 +456,10 @@ dynamics simulation trajectory using</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}S(q)&amp;=\frac{1}{N}\left\langle\sum_{j=1}^N\sum_{k=1}^N
 \exp{[-i\mathbf{q}\cdot(\mathbf{r}_j-\mathbf{r}_k)]}
-\right\rangle\\&amp;=\frac{1}{N}\left\langle\left[
-\sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\right]^2
-+\left[\sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
-\right]^2\right\rangle\end{split}\]</div>
+\right\rangle\\&amp;=\frac{1}{N}\left\langle\left(
+\sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\right)^2
++\left(\sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
+\right)^2\right\rangle\end{split}\]</div>
 </div>
 <p>where <span class="math notranslate nohighlight">\(N\)</span> is the total number of particles or centers of mass,
 <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> is the scattering wavevector, and
@@ -621,7 +621,7 @@ factors <span class="math notranslate nohighlight">\(S_{\alpha\beta}(q)\)</span>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#mdhelper.analysis.structure.StructureFactor.psf_trigonometric_2d_2d" title="mdhelper.analysis.structure.StructureFactor.psf_trigonometric_2d_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psf_trigonometric_2d_2d</span></code></a></p></td>
-<td><p>Compute the partial structure factors given two two-dimensional NumPy arrays, each containing <span class="math notranslate nohighlight">\(\mathbf{q}\cdot\mathbf{r}\)</span>, using the trigonometric form.</p></td>
+<td><p>Computes the partial structure factors given two two-dimensional NumPy arrays, each containing <span class="math notranslate nohighlight">\(\mathbf{q}\cdot\mathbf{r}\)</span>, using the trigonometric form.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#mdhelper.analysis.structure.StructureFactor.run" title="mdhelper.analysis.structure.StructureFactor.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a></p></td>
 <td><p>Performs the calculation.</p></td>
@@ -630,7 +630,7 @@ factors <span class="math notranslate nohighlight">\(S_{\alpha\beta}(q)\)</span>
 <td><p>Saves results to a binary or archive file in NumPy format.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#mdhelper.analysis.structure.StructureFactor.ssf_trigonometric_2d" title="mdhelper.analysis.structure.StructureFactor.ssf_trigonometric_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssf_trigonometric_2d</span></code></a></p></td>
-<td><p>Compute the static structure factors using a two-dimensional NumPy array containing <span class="math notranslate nohighlight">\(\mathbf{q}\cdot\mathbf{r}\)</span> using the trigonometric form.</p></td>
+<td><p>Computes the static structure factors using a two-dimensional NumPy array containing <span class="math notranslate nohighlight">\(\mathbf{q}\cdot\mathbf{r}\)</span> using the trigonometric form.</p></td>
 </tr>
 </tbody>
 </table>
@@ -638,18 +638,18 @@ factors <span class="math notranslate nohighlight">\(S_{\alpha\beta}(q)\)</span>
 <dl class="py method">
 <dt class="sig sig-object py" id="mdhelper.analysis.structure.StructureFactor.psf_trigonometric_2d_2d">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">psf_trigonometric_2d_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qrs1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qrs2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mdhelper/analysis/structure.html#StructureFactor.psf_trigonometric_2d_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.analysis.structure.StructureFactor.psf_trigonometric_2d_2d" title="Link to this definition">¶</a></dt>
-<dd><p>Compute the partial structure factors given two two-dimensional
+<dd><p>Computes the partial structure factors given two two-dimensional
 NumPy arrays, each containing <span class="math notranslate nohighlight">\(\mathbf{q}\cdot\mathbf{r}\)</span>,
 using the trigonometric form.</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
-\[\begin{split}\frac{NS_{\alpha\beta}(q)}{2-\delta_{\alpha\beta}}=\\
-\left\langle
+\[\frac{NS_{\alpha\beta}(q)}{2-\delta_{\alpha\beta}}
+=\left\langle
 \sum_{j=1}^{N_\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
 \sum_{k=1}^{N_\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}
 +\sum_{j=1}^{N_\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}
 \sum_{k=1}^{N_\beta}\sin{(\mathbf{q}\cdot\mathbf{r}_k)}
-\right\rangle\end{split}\]</div>
+\right\rangle\]</div>
 </div>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -736,15 +736,15 @@ depending on the values of <cite>archive</cite> and <cite>compress</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mdhelper.analysis.structure.StructureFactor.ssf_trigonometric_2d">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ssf_trigonometric_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qrs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mdhelper/analysis/structure.html#StructureFactor.ssf_trigonometric_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mdhelper.analysis.structure.StructureFactor.ssf_trigonometric_2d" title="Link to this definition">¶</a></dt>
-<dd><p>Compute the static structure factors using a two-dimensional
+<dd><p>Computes the static structure factors using a two-dimensional
 NumPy array containing <span class="math notranslate nohighlight">\(\mathbf{q}\cdot\mathbf{r}\)</span> using
 the trigonometric form.</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
-\[\begin{split}S(q)=\frac{1}{N}\left\langle\left[
-\sum_{j=1}^N\\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\right]^2
-+\left[\sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
-\right]^2\right\rangle\end{split}\]</div>
+\[S(q)=\frac{1}{N}\left\langle\left(\sum_{j=1}^N
+\cos{(\mathbf{q}\cdot\mathbf{r}_j)}\right)^2+\left(
+\sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}
+\right)^2\right\rangle\]</div>
 </div>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

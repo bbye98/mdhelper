@@ -182,9 +182,9 @@ def radial_fourier_transform(
         **Shape**: Same as `q`.
     """
 
-    rft = 4 * np.pi * np.divide(simpson(f * r * np.sin(np.outer(q, r)), r), q)
+    rft = 4 * np.pi * np.divide(simpson(f * r * np.sin(np.outer(q, r)), x=r), q)
     if 0 in q:
-        rft[q == 0] = 4 * np.pi * simpson(f * r ** 2, r)
+        rft[q == 0] = 4 * np.pi * simpson(f * r ** 2, x=r)
     return rft
 
 def calculate_coordination_numbers(
@@ -567,17 +567,23 @@ class RadialDistributionFunction(DynamicAnalysisBase):
 
         .. note::
 
-           In a standard trajectory file, segments (or chains) contain
-           residues (or molecules), and residues contain atoms. This
-           heirarchy must be adhered to for this analysis module to
-           function correctly, unless your selected grouping is always
-           :code:`"atoms"`.
+           If the desired grouping is not :code:`"atoms"`,
+
+           * the trajectory file should have segments (or chains)
+             containing residues (or molecules) and residues containing
+             atoms, and
+
+           * residues and segments should be locally unwrapped at the
+             simulation box edges, if not already, using
+             :class:`MDAnalysis.transformations.wrap.unwrap`,
+             :meth:`MDAnalysis.core.groups.AtomGroup.unwrap`, or
+             :func:`MDAnalysis.lib.mdamath.make_whole`.
 
         .. container::
 
            **Valid values**:
 
-           * :code:`"atoms"`: Atom positions (generally for
+           * :code:`"atoms"`: Atom positions (generally or for
              coarse-grained simulations).
            * :code:`"residues"`: Residues' centers of mass (for
              atomistic simulations).
@@ -760,7 +766,8 @@ class RadialDistributionFunction(DynamicAnalysisBase):
             dims[self._drop_axis] = dims[:3].max()
 
             if self._norm == "rdf":
-                self._area_or_volume += np.delete(dims[:3], self._drop_axis).prod()
+                self._area_or_volume += np.delete(dims[:3],
+                                                  self._drop_axis).prod()
 
         # Tally counts in each pair separation distance bin
         if self._n_batches:
@@ -1040,10 +1047,10 @@ class StructureFactor(NumbaAnalysisBase):
 
         S(q)&=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N\\sum_{k=1}^N
         \\exp{[-i\\mathbf{q}\\cdot(\\mathbf{r}_j-\\mathbf{r}_k)]}
-        \\right\\rangle\\\\&=\\frac{1}{N}\\left\\langle\\left[
-        \\sum_{j=1}^N\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right]^2
-        +\\left[\\sum_{j=1}^N\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
-        \\right]^2\\right\\rangle
+        \\right\\rangle\\\\&=\\frac{1}{N}\\left\\langle\\left(
+        \\sum_{j=1}^N\\sin{(\\mathbf{q}\\cdot\\mathbf{r}_j)}\\right)^2
+        +\\left(\\sum_{j=1}^N\\cos{(\\mathbf{q}\\cdot\\mathbf{r}_j)}
+        \\right)^2\\right\\rangle
 
     where :math:`N` is the total number of particles or centers of mass,
     :math:`\\mathbf{q}` is the scattering wavevector, and
@@ -1232,16 +1239,16 @@ class StructureFactor(NumbaAnalysisBase):
     def ssf_trigonometric_2d(qrs: np.ndarray[float]) -> np.ndarray[float]:
 
         r"""
-        Compute the static structure factors using a two-dimensional
+        Computes the static structure factors using a two-dimensional
         NumPy array containing :math:`\mathbf{q}\cdot\mathbf{r}` using
         the trigonometric form.
 
         .. math::
 
-           S(q)=\frac{1}{N}\left\langle\left[
-           \sum_{j=1}^N\\sin{(\mathbf{q}\cdot\mathbf{r}_j)}\right]^2
-           +\left[\sum_{j=1}^N\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
-           \right]^2\right\rangle
+           S(q)=\frac{1}{N}\left\langle\left(\sum_{j=1}^N
+           \cos{(\mathbf{q}\cdot\mathbf{r}_j)}\right)^2+\left(
+           \sum_{j=1}^N\sin{(\mathbf{q}\cdot\mathbf{r}_j)}
+           \right)^2\right\rangle
 
         Parameters
         ----------
@@ -1268,14 +1275,14 @@ class StructureFactor(NumbaAnalysisBase):
             qrs1: np.ndarray[float], qrs2: np.ndarray[float]) -> np.ndarray[float]:
 
         r"""
-        Compute the partial structure factors given two two-dimensional
+        Computes the partial structure factors given two two-dimensional
         NumPy arrays, each containing :math:`\mathbf{q}\cdot\mathbf{r}`,
         using the trigonometric form.
 
         .. math::
 
-           \frac{NS_{\alpha\beta}(q)}{2-\delta_{\alpha\beta}}=\\
-           \left\langle
+           \frac{NS_{\alpha\beta}(q)}{2-\delta_{\alpha\beta}}
+           =\left\langle
            \sum_{j=1}^{N_\alpha}\cos{(\mathbf{q}\cdot\mathbf{r}_j)}
            \sum_{k=1}^{N_\beta}\cos{(\mathbf{q}\cdot\mathbf{r}_k)}
            +\sum_{j=1}^{N_\alpha}\sin{(\mathbf{q}\cdot\mathbf{r}_j)}
@@ -1326,26 +1333,6 @@ class StructureFactor(NumbaAnalysisBase):
 
         super().__init__(self.universe.trajectory, verbose, **kwargs)
 
-        if dimensions is not None:
-            if len(dimensions) != 3:
-                raise ValueError("'dimensions' must have length 3.")
-            self._dimensions = np.asarray(strip_unit(dimensions, "angstrom")[0])
-        elif self.universe.dimensions is not None:
-            self._dimensions = self.universe.dimensions[:3].copy()
-        elif wavevectors is None:
-            raise ValueError("No system dimensions found or provided.")
-
-        self._mode = mode
-        if self._mode == "pair" and not 1 <= len(self._groups) <= 2:
-            emsg = "There must be exactly one or two groups when mode='pair'."
-            raise ValueError(emsg)
-        elif self._mode is None:
-            if sum(g.n_atoms for g in self._groups) \
-                    != self.universe.atoms.n_atoms:
-                emsg = ("The provided atom groups do not contain all atoms "
-                        "in the universe.")
-                raise ValueError(emsg)
-
         self._n_groups = len(self._groups)
         if isinstance(groupings, str):
             if groupings not in (GROUPINGS := {"atoms", "residues"}):
@@ -1365,20 +1352,25 @@ class StructureFactor(NumbaAnalysisBase):
                     raise ValueError(emsg)
             self._groupings = groupings
 
-        # Determine the number of particles in each group and their
-        # corresponding indices
-        self._Ns = np.fromiter(
-            (getattr(a, f"n_{g}")
-             for (a, g) in zip(self._groups, self._groupings)),
-            dtype=int,
-            count=self._n_groups
-        )
-        self._N = self._Ns.sum()
-        self._slices = []
-        index = 0
-        for N in self._Ns:
-            self._slices.append(slice(index, index + N))
-            index += N
+        self._mode = mode
+        if self._mode == "pair" and not 1 <= len(self._groups) <= 2:
+            emsg = "There must be exactly one or two groups when mode='pair'."
+            raise ValueError(emsg)
+        elif self._mode is None:
+            if sum(g.n_atoms for g in self._groups) \
+                    != self.universe.atoms.n_atoms:
+                emsg = ("The provided atom groups do not contain all atoms "
+                        "in the universe.")
+                raise ValueError(emsg)
+
+        if dimensions is not None:
+            if len(dimensions) != 3:
+                raise ValueError("'dimensions' must have length 3.")
+            self._dimensions = np.asarray(strip_unit(dimensions, "angstrom")[0])
+        elif self.universe.dimensions is not None:
+            self._dimensions = self.universe.dimensions[:3].copy()
+        elif wavevectors is None:
+            raise ValueError("No system dimensions found or provided.")
 
         # Determine the wavevectors and their corresponding magnitudes
         if wavevectors is not None:
@@ -1422,6 +1414,21 @@ class StructureFactor(NumbaAnalysisBase):
             keep = self._wavenumbers <= q_max
             self._wavevectors = self._wavevectors[keep]
             self._wavenumbers = self._wavenumbers[keep]
+
+        # Determine the number of particles in each group and their
+        # corresponding indices
+        self._Ns = np.fromiter(
+            (getattr(a, f"n_{g}")
+             for (a, g) in zip(self._groups, self._groupings)),
+            dtype=int,
+            count=self._n_groups
+        )
+        self._N = self._Ns.sum()
+        self._slices = []
+        index = 0
+        for N in self._Ns:
+            self._slices.append(slice(index, index + N))
+            index += N
 
         # Define the functions to use depending on whether the user
         # wants parallelization
@@ -1558,9 +1565,15 @@ class IntermediateScatteringFunction(StructureFactor):
 
     .. math::
 
-        F(q,\\,t)=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N\\sum_{k=1}^N
-        \\exp{[-i\\mathbf{q}\\cdot(\\mathbf{r}_j(t_0+t)
-        -\\mathbf{r}_k(t_0))]}\\right\\rangle
+       F(q,\\,t)&=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N\\sum_{k=1}^N
+       \\exp{[-i\\mathbf{q}\\cdot(\\mathbf{r}_j(t_0+t)
+       -\\mathbf{r}_k(t_0))]}\\right\\rangle\\\\
+       &=\\frac{1}{N}\\left\\langle
+       \\sum_{j=1}^N\\cos(\\mathbf{q}\\cdot\\mathbf{r}_j(t_0+t))
+       \\sum_{j=1}^N\\cos(\\mathbf{q}\\cdot\\mathbf{r}_j(t_0))
+       +\\sum_{j=1}^N\\sin(\\mathbf{q}\\cdot\\mathbf{r}_j(t_0+t))
+       \\sum_{j=1}^N\\sin(\\mathbf{q}\\cdot\\mathbf{r}_j(t_0))
+       \\right\\rangle
 
     where :math:`N` is the total number of particles or centers of mass,
     :math:`\\mathbf{q}` is the scattering wavevector, :math:`t_0` and
@@ -1572,10 +1585,24 @@ class IntermediateScatteringFunction(StructureFactor):
 
     .. math::
 
-       F_{\\alpha\\beta}(q,\\,t)=\\frac{2-\\delta_{\\alpha\\beta}}{N}
+       F_{\\alpha\\beta}(q,\\,t)&=\\frac{2-\\delta_{\\alpha\\beta}}{N}
        \\left\\langle\\sum_{j=1}^{N_\\alpha}\\sum_{k=1}^{N_\\beta}
        \\exp{[-i\\mathbf{q}\\cdot(\\mathbf{r}_j(t_0+t)
-       -\\mathbf{r}_k(t_0))]}\\right\\rangle
+       -\\mathbf{r}_k(t_0))]}\\right\\rangle\\\\
+       &=\\frac{1}{(1+\\delta_{\\alpha\\beta})N}\\left\\langle
+       \\sum_{j=1}^{N_\\alpha}
+       \\cos(\\mathbf{q}\\cdot\\mathbf{r}_j(t_0+t))
+       \\sum_{k=1}^{N_\\beta}\\cos(\\mathbf{q}\\cdot\\mathbf{r}_k(t_0))
+       +\\sum_{j=1}^{N_\\alpha}
+       \\sin(\\mathbf{q}\\cdot\\mathbf{r}_j(t_0+t))
+       \\sum_{k=1}^{N_\\beta}\\sin(\\mathbf{q}\\cdot\\mathbf{r}_k(t_0))
+       +\\sum_{k=1}^{N_\\beta}
+       \\cos(\\mathbf{q}\\cdot\\mathbf{r}_k(t_0+t))
+       \\sum_{j=1}^{N_\\alpha}\\cos(\\mathbf{q}\\cdot\\mathbf{r}_j(t_0))
+       +\\sum_{k=1}^{N_\\beta}
+       \\sin(\\mathbf{q}\\cdot\\mathbf{r}_k(t_0+t))
+       \\sum_{j=1}^{N_\\alpha}\\sin(\\mathbf{q}\\cdot\\mathbf{r}_j(t_0))
+       \\right\\rangle
 
     where :math:`\\delta_{ij}` is the Kronecker delta, :math:`N_\\alpha`
     and :math:`N_\\beta` are the numbers of particles or centers of mass
@@ -1602,9 +1629,13 @@ class IntermediateScatteringFunction(StructureFactor):
 
     .. math::
 
-       F_\\mathrm{s}(q,\\,t)=\\frac{1}{N}\\left\\langle
+       F_\\mathrm{s}(q,\\,t)&=\\frac{1}{N}\\left\\langle
        \\sum_{j=1}^N\\exp{[-i\\mathbf{q}\\cdot(\\mathbf{r}_j(t_0+t)
-       -\\mathbf{r}_j(t_0))]}\\right\\rangle
+       -\\mathbf{r}_j(t_0))]}\\right\\rangle\\\\
+       &=\\frac{1}{N}\\left\\langle\\sum_{j=1}^N\\cos[\\mathbf{q}
+       \\cdot(\\mathbf{r}_j(t_0+t)-\\mathbf{r}_j(t_0))]
+       -\\Re\\left(i\\sum_{j=1}^N\\sin[\\mathbf{q}\\cdot(
+       \\mathbf{r}_j(t_0+t)-\\mathbf{r}_j(t_0))]\\right)\\right\\rangle
 
     Similarly, partial incoherent intermediate scattering functions
     :math:`F_{\\mathrm{s},\\,\\alpha}(q,\\,t)` can be defined for a
@@ -1612,10 +1643,14 @@ class IntermediateScatteringFunction(StructureFactor):
 
     .. math::
 
-       F_{\\mathrm{s},\\,\\alpha}(q,\\,t)=\\frac{1}{N}
+       F_{\\mathrm{s},\\,\\alpha}(q,\\,t)&=\\frac{1}{N}
        \\left\\langle\\sum_{j=1}^{N_\\alpha}
        \\exp{[-i\\mathbf{q}\\cdot(\\mathbf{r}_j(t_0+t)
-       -\\mathbf{r}_j(t_0))]}\\right\\rangle
+       -\\mathbf{r}_j(t_0))]}\\right\\rangle\\\\
+       &=\\frac{1}{N}\\left\\langle\\sum_{j=1}^{N_\\alpha}
+       \\cos[\\mathbf{q}\\cdot(\\mathbf{r}_j(t_0+t)-\\mathbf{r}_j(t_0))]
+       -\\Re\\left(i\\sum_{j=1}^{N_\\alpha}\\sin[\\mathbf{q}\\cdot(
+       \\mathbf{r}_j(t_0+t)-\\mathbf{r}_j(t_0))]\\right)\\right\\rangle
 
     and related to the incoherent intermediate scattering function via
 
@@ -1706,6 +1741,14 @@ class IntermediateScatteringFunction(StructureFactor):
         **Shape**: :math:`(3,)`.
 
         **Reference unit**: :math:`\\mathrm{Å}`.
+
+    dt : `float`, `openmm.unit.Quantity`, or `pint.Quantity`, \
+    keyword-only, optional
+        Time between frames :math:`\\Delta t`. While this is normally
+        determined from the trajectory, the trajectory may not have the
+        correct timestep information.
+
+        **Reference unit**: :math:`\\mathrm{ps}`.
 
     n_points : `int`, keyword-only, default: :code:`32`
         Number of points in the scattering wavevector grid. Additional
@@ -1817,6 +1860,7 @@ class IntermediateScatteringFunction(StructureFactor):
             groupings: Union[str, tuple[str]] = "atoms", *,
             mode: str = None, form: str = "exp",
             dimensions: Union[np.ndarray[float], "unit.Quantity", Q_] = None,
+            dt: Union[float, "unit.Quantity", Q_] = None,
             n_points: int = 32, n_surfaces: int = None,
             n_surface_points: int = 8,
             q_max: Union[float, "unit.Quantity", Q_] = None,
@@ -1831,6 +1875,8 @@ class IntermediateScatteringFunction(StructureFactor):
             wavevectors=wavevectors, sort=sort, unique=unique,
             parallel=parallel, verbose=verbose, **kwargs
         )
+
+        self._dt = strip_unit(dt or self._trajectory.dt, "picosecond")[0]
 
         # Define the functions to use depending on whether the user
         # wants parallelization
@@ -1898,6 +1944,7 @@ class IntermediateScatteringFunction(StructureFactor):
                 1 if self._mode is None else self._n_groups,
                 len(self._wavenumbers)
             ))
+        self.results.times = df * self._dt * np.arange(self._n_lags)
 
         # Determine the unique wavenumbers, if desired
         if self._unique:
@@ -1906,7 +1953,6 @@ class IntermediateScatteringFunction(StructureFactor):
             self.results.wavenumbers = self._wavenumbers
 
         # Store reference units
-        self.results.times = df * self._trajectory.dt * np.arange(self._n_lags)
         self.results.units = {"results.times": ureg.picosecond,
                               "results.wavenumbers": ureg.angstrom ** -1}
 
@@ -1920,6 +1966,14 @@ class IntermediateScatteringFunction(StructureFactor):
             self._positions[rcfi, s] = (
                 g.positions if gr == "atoms" else center_of_mass(g, gr)
             )
+
+        # Note: Although the intermediate scattering functions can be
+        # calculated using correlation functions more efficiently than
+        # using sliding windows, the memory requirement to store the
+        # exp(iqr) or cos(qr) and sin(qr) terms for all frames,
+        # wavevectors, and positions is prohibitive for most consumer
+        # machines. (For example, a 10-frame, 32,768-wavevector,
+        # 10,000-particle array requires over 52 GB of RAM.)
 
         # Calculate intermediate scattering functions using exponential
         # form
@@ -1976,12 +2030,8 @@ class IntermediateScatteringFunction(StructureFactor):
             if self._mode is None:
                 qrs = self._inner(self._wavevectors,
                                   self._positions[rcfi])
-                self._cosine_sum_inplace_2d(
-                    qrs, self._cos_sum[rcfi, 0]
-                )
-                self._sine_sum_inplace_2d(
-                    qrs, self._sin_sum[rcfi, 0]
-                )
+                self._cosine_sum_inplace_2d(qrs, self._cos_sum[rcfi, 0])
+                self._sine_sum_inplace_2d(qrs, self._sin_sum[rcfi, 0])
                 for time_lag in range(min(self._n_lags,
                                           self._frame_index + 1)):
                     rifi = (self._frame_index - time_lag) % self._n_lags
